@@ -359,6 +359,10 @@ include	$(PATH_PORT)/Mkfiles/$(COMPILER_FAMILY)_system_$(CORE).mk
 # With the statistic
 CONF_SYSTEM		+= -DKKERN_WITH_STATISTICS_S=true
 
+# Reco Log & trace
+CONF_SYSTEM		+= -DKRECORD_SZ_LOG_BUF=100
+CONF_SYSTEM		+= -DKRECORD_SZ_TRACE_FIFO=100
+
 # With the stack integrity
 CONF_SYSTEM		+= -DKDAEMONS_WITH_STACK_INT_S=true
 CONF_SYSTEM		+= -DKDAEMONS_ALERT_STACK_INT_S=false

@@ -244,6 +244,12 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
 
+# Record Log & trace
+add_compile_definitions(
+	KRECORD_SZ_LOG_BUF=50
+	KRECORD_SZ_TRACE_FIFO=50
+)
+
 # Stack integrity monitoring
 add_compile_definitions(
 	KDAEMONS_ALERT_STACK_INT_S=false

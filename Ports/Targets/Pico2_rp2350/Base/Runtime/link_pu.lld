@@ -80,9 +80,9 @@ INCLUDE		rp2350.ld
 /* Mapping:													*/
 /*															*/
 /* RAM:		stPrgmData_p		0x20000000					*/
-/*			96K												*/
-/*			stPrgmData_u		0x20018000					*/
-/*			96K												*/
+/*			64K												*/
+/*			stPrgmData_u		0x20010000					*/
+/*			128K											*/
 /*			stHeap				0x20030000					*/
 /*			128K											*/
 /*			stUMemo				0x20050000					*/
@@ -102,10 +102,10 @@ linker_lowStackSystem_C0	= rp_stSRAM;																			/* 0x20000000											
 linker_topStackSystem_C0 	= linker_lowStackSystem_C0 + linker_sizeStackSystem_C0 - 8;								/* 0x20000ff8												*/
 linker_lowStackSystem_C1	= linker_lowStackSystem_C0 + linker_sizeStackSystem_C0;									/* 0x20001000												*/
 linker_topStackSystem_C1 	= linker_lowStackSystem_C1 + linker_sizeStackSystem_C1 - 8;								/* 0x20001ff8												*/
-linker_lowStackFirst_C0 	= rp_stSRAM + (96K);																	/* 0x20018000												*/
-linker_topStackFirst_C0 	= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0 - 8;								/* 0x200187f8												*/
-linker_lowStackFirst_C1 	= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0;									/* 0x20018800												*/
-linker_topStackFirst_C1 	= linker_lowStackFirst_C1 + linker_sizeStackFirst_C1 - 8;								/* 0x20018ff8												*/
+linker_lowStackFirst_C0 	= rp_stSRAM + (64K);																	/* 0x20010000												*/
+linker_topStackFirst_C0 	= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0 - 8;								/* 0x200107f8												*/
+linker_lowStackFirst_C1 	= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0;									/* 0x20010800												*/
+linker_topStackFirst_C1 	= linker_lowStackFirst_C1 + linker_sizeStackFirst_C1 - 8;								/* 0x20010ff8												*/
 ASSERT((linker_lowStackSystem_C0 & 7) == 0, "Stack system must be 8-byte aligned")
 ASSERT((linker_topStackSystem_C0 & 7) == 0, "Stack system must be 8-byte aligned")
 ASSERT((linker_lowStackFirst_C0 & 7)  == 0, "Stack user must be 8-byte aligned")
@@ -141,10 +141,10 @@ linker_stPrgmCode			= rp_stINTFLASH;																		/* 0x10000000: PrgmCode, s
 linker_lnPrgmCode			= rp_lnINTFLASH;																		/* 0x00400000: Length of the the Flash						*/
 
 linker_stPrgmData_p			= linker_lowStackSystem_C0 + linker_sizeStackSystem_C0 + linker_sizeStackSystem_C1;		/* 0x20002000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_p			= (96K) - linker_sizeStackSystem_C0 - linker_sizeStackSystem_C1;						/* 0x00016000: (88K) Length_p of the RAM					*/
+linker_lnPrgmData_p			= (64K) - linker_sizeStackSystem_C0 - linker_sizeStackSystem_C1;						/* 0x00011000: (56K) Length_p of the RAM					*/
 
-linker_stPrgmData_u			= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0 + linker_sizeStackFirst_C1;		/* 0x20019000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_u			= (96K) - linker_sizeStackFirst_C0 - linker_sizeStackFirst_C1;							/* 0x00017000: (92K) Length_p of the RAM					*/
+linker_stPrgmData_u			= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0 + linker_sizeStackFirst_C1;		/* 0x20011000: PrgmData_p, start of the RAM					*/
+linker_lnPrgmData_u			= (128K) - linker_sizeStackFirst_C0 - linker_sizeStackFirst_C1;							/* 0x0001F000: (124K) Length_p of the RAM					*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
@@ -154,10 +154,10 @@ linker_ST_FLASH_INT_0		= rp_stINTFLASH;																		/* 0x10000000: Privileg
 linker_EN_FLASH_INT_0		= (rp_stINTFLASH + rp_lnINTFLASH - 1);													/* 0x103FFFFF: 4-M											*/
 
 linker_ST_RAM_INT_0_OS		= rp_stSRAM;																			/* 0x20000000: Privileged RAM								*/
-linker_EN_RAM_INT_0_OS		= (rp_stSRAM + 96K - 1);																/* 0x20017FFF: 96-K											*/
+linker_EN_RAM_INT_0_OS		= (rp_stSRAM + 64K - 1);																/* 0x2000FFFF: 64-K											*/
 
-linker_ST_RAM_INT_0			= (linker_lowStackFirst_C0);															/* 0x20018000: Privileged/User RAM							*/
-linker_EN_RAM_INT_0			= (linker_lowStackFirst_C0 + 96K + 128K + 136K - 1);									/* 0x20071FFF: 360-K										*/
+linker_ST_RAM_INT_0			= (linker_lowStackFirst_C0);															/* 0x20010000: Privileged/User RAM							*/
+linker_EN_RAM_INT_0			= (linker_lowStackFirst_C0 + 128K + 128K + 136K - 1);									/* 0x20071FFF: 392-K										*/
 
 linker_ST_RAM_INT_0_SHARED	= linker_stShare;																		/* 0x20072000: Privileged/User RAM							*/
 linker_EN_RAM_INT_0_SHARED	= (linker_stShare + 64K - 1);															/* 0x20081FFF: 64-K											*/

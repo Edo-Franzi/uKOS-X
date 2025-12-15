@@ -294,6 +294,12 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u shar_p proc_p proc_u tool
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
 
+# Record Log & trace
+add_compile_definitions(
+	KRECORD_SZ_LOG_BUF=100
+	KRECORD_SZ_TRACE_FIFO=100
+)
+
 # SPI MMX support
 add_compile_definitions(KGLOBAL_WITH_MMX1_S=false)
 

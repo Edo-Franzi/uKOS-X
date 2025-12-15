@@ -80,9 +80,9 @@ INCLUDE		rp2350.ld
 /* Mapping:													*/
 /*															*/
 /* RAM:		stPrgmData_p		0x20000000					*/
-/*			96K												*/
-/*			stPrgmData_u		0x20018000					*/
-/*			96K												*/
+/*			64K												*/
+/*			stPrgmData_u		0x20010000					*/
+/*			128K											*/
 /*			stHeap				0x20030000					*/
 /*			128K											*/
 /*			stUMemo				0x20050000					*/
@@ -125,10 +125,10 @@ linker_stPrgmCode			= rp_stINTFLASH;										/* 0x10000000: PrgmCode, start of 
 linker_lnPrgmCode			= rp_lnINTFLASH;										/* Length of the the Flash									*/
 
 linker_stPrgmData_p			= rp_stSRAM;											/* 0x20000000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_p			= (96K);												/* Length_p of the RAM										*/
+linker_lnPrgmData_p			= (64K);												/* Length_p of the RAM										*/
 
-linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);			/* 0x20018000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_u			= (96K);												/* Length_p of the RAM										*/
+linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);			/* 0x20010000: PrgmData_p, start of the RAM					*/
+linker_lnPrgmData_u			= (128K);												/* Length_p of the RAM										*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
@@ -138,10 +138,10 @@ linker_ST_FLASH_INT_0		= rp_stINTFLASH;										/* 0x10000000: Privileged/User 
 linker_EN_FLASH_INT_0		= (rp_stINTFLASH + rp_lnINTFLASH - 1);					/* 0x103FFFFF: 4-M											*/
 
 linker_ST_RAM_INT_0_OS		= rp_stSRAM;											/* 0x20000000: Privileged RAM								*/
-linker_EN_RAM_INT_0_OS		= (rp_stSRAM + 96K - 1);								/* 0x20017FFF: 96-K											*/
+linker_EN_RAM_INT_0_OS		= (rp_stSRAM + 64K - 1);								/* 0x2000FFFF: 64-K											*/
 
-linker_ST_RAM_INT_0			= linker_stPrgmData_u;									/* 0x20018000: Privileged/User RAM							*/
-linker_EN_RAM_INT_0			= (linker_stPrgmData_u + 96K + 128K + 136K - 1);		/* 0x20081FFF: 360-K										*/
+linker_ST_RAM_INT_0			= linker_stPrgmData_u;									/* 0x20010000: Privileged/User RAM							*/
+linker_EN_RAM_INT_0			= (linker_stPrgmData_u + 128K + 128K + 136K - 1);		/* 0x20071FFF: 392-K										*/
 
 linker_ST_RAM_INT_0_SHARED	= linker_stShare;										/* 0x20072000: Privileged/User RAM							*/
 linker_EN_RAM_INT_0_SHARED	= (linker_stShare + 64K - 1);							/* 0x20081FFF: 64-K											*/

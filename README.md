@@ -1,6 +1,6 @@
 # µKOS-X
 
-(c) 2025-20xx, Edo. Franzi, http://www.ukos.ch
+(c) 2025-20xx, Edo. Franzi, [http://www.ukos.ch](http://www.ukos.ch/)
 
 ## Introduction
 
