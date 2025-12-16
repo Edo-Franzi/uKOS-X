@@ -158,16 +158,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	kern_criticalSection(KENTER_CRITICAL);
 
-	#if (KNB_CORES > 1)
-	spin_lock(&vMemo);
-	#endif
-
+	SPIN_LOCK(vMemo);
 	usdMemory = vMemo_heapInfo.oUsdMemory;
 	nbBlocks  = vMemo_heapInfo.oNbBlocks;
-
-	#if (KNB_CORES > 1)
-	spin_unLock(&vMemo);
-	#endif
+	SPIN_UNLOCK(vMemo);
 
 	kern_criticalSection(KEXIT_CRITICAL);
 

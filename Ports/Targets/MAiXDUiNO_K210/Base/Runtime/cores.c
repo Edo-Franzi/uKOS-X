@@ -130,11 +130,11 @@ int32_t	cores_init(uint32_t core) {
 
 	while (true) {
 
-		spin_lock(&vLockVector);
+		SPIN_LOCK(vLockVector);
 		for (i = 2; i < KSZVECTOR; i++) {
 			vVector[i]++;
 		}
-		spin_unLock(&vLockVector);
+		SPIN_UNLOCK(vLockVector);
 
 		cmns_wait(1000u);
 	}

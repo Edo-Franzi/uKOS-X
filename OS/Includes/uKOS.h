@@ -86,8 +86,8 @@
 // -----------------------
 
 #define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.1.206"
+#define	uKOS_VERSION_NUMBER		"0.1.208"
 #define	uKOS_VERSION_MAJOR		0
 #define	uKOS_VERSION_MINOR		1
-#define	uKOS_VERSION_PATCH		206
+#define	uKOS_VERSION_PATCH		208
 #define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)

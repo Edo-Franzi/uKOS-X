@@ -109,7 +109,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	(void)dprintf(KSYST, "Size = %"PRIu8", core = %"PRIu8", Vector = ", vVector[0], vVector[1]);
 
-	spin_lock(&vLockVector);
+	SPIN_LOCK(vLockVector);
 	for (i = 2u; i < vVector[0]; i++) {
 		(void)dprintf(KSYST, "%"PRIu8" ", vVector[i]);
 	}
@@ -123,7 +123,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			vError[core] = true;
 		}
 	}
-	spin_unLock(&vLockVector);
+	SPIN_UNLOCK(vLockVector);
 
 	(void)dprintf(KSYST, "\n");
 	return (EXIT_OS_SUCCESS_CLI);

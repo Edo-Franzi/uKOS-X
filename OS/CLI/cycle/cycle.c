@@ -358,7 +358,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 
 	while ((*killRequest == false) && (nbRep != 0u)) {
 		kern_suspendProcess(time);
-		if ((*code)(argc, argv) != EXIT_OS_SUCCESS_CLI) { exit(EXIT_OS_SUCCESS); }
+		if ((*code)(argc, argv) != EXIT_OS_SUCCESS_CLI) { break; }
 		nbRep = (nbRep == -1) ? (nbRep) : (nbRep - 1);
 	}
 
@@ -366,6 +366,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 
 	system_release(KMODE_READ_WRITE);
 	vProcess[core][indexSerialManager] = NULL;
+	vKillRequest[core] = false;
 	(void)dprintf(KSYST, "Cycle terminated.\n\n");
 	exit(EXIT_OS_SUCCESS);
 }

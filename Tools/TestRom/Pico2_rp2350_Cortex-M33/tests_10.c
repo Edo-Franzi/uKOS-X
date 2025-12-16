@@ -107,10 +107,11 @@ static	void	local_codeCore_1(void) {
  *
  */
 void	local_TIM0_1_IRQHandler(void) {
+
 	static	bool	spin = false;
 
-	if (spin == false) { spin = true;  spin_lock(&vTest_10);   }
-	else			   { spin = false; spin_unLock(&vTest_10); }
+	if (spin == false) { spin = true;  SPIN_LOCK(vTest_10);  }
+	else			   { spin = false; SPIN_UNOCK(vTest_10); }
 
 // Acknowledge the TIM0 Alarme 1 interruption
 
@@ -172,8 +173,8 @@ void	test_10(void) {
 void	local_TIM0_0_IRQHandler(void) {
 	static	bool	spin = false;
 
-	if (spin == false) { spin = true;  spin_lock(&vTest_10);   }
-	else			   { spin = false; spin_unLock(&vTest_10); }
+	if (spin == false) { spin = true;  SPIN_LOCK(vTest_10);   }
+	else			   { spin = false; SPIN_UNLOCK(vTest_10); }
 
 // Acknowledge the TIM0 Alarme 0 interruption
 

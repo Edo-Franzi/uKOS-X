@@ -70,7 +70,7 @@
  * @{
  */
 
-#define	KMAB_SIGNATURE			(((uint32_t)'m'<<24u) | ((uint32_t)'a'<<16u) | ((uint32_t)'b'<<8u) | (uint32_t)'_')
+#define	KMAB_SIGNATURE		(((uint32_t)'m'<<24u) | ((uint32_t)'a'<<16u) | ((uint32_t)'b'<<8u) | (uint32_t)'_')
 
 #if (defined(__LP64__))
 // Mandatory:
@@ -83,11 +83,10 @@ struct	memoMab {
 				uint32_t	oMabSignature;									// Mab signature
 				uint32_t	oSzAllocated;									// Block size (allocated)
 				uint32_t	oSzAvailable;									// Block size (available)
-				uint32_t	oAlign0;										// To ensure the 64-byte alignment
+				uint32_t	oPadBlock;										// Paddering for the block alignement
 				memoMab_t  	*oPtrPreBlock;									// Ptr on the previous block
 				memoMab_t	*oPtrNexBlock;									// Ptr on the next block
-				uintptr_t	oCkSum;											// Mab checksum
-				uintptr_t	oAlign1;										// To ensure the 64-byte alignment
+				uintptr_t	oAlign[2];										// To ensure the 64-byte alignment
 };
 typedef char p__LINE__[ ((sizeof(struct memoMab) % 64) == 0) ? 1 : -1];		// Just to generate a compiler error if not % 64
 
@@ -102,11 +101,11 @@ struct	memoMab {
 				uint32_t	oMabSignature;									// Mab signature
 				uint32_t	oSzAllocated;									// Block size (allocated)
 				uint32_t	oSzAvailable;									// Block size (available)
+				uint32_t	oPadBlock;										// Paddering for the block alignement
 				memoMab_t  	*oPtrPreBlock;									// Ptr on the previous block
 				memoMab_t  	*oPtrNexBlock;									// Ptr on the next block
-				uintptr_t	oCkSum;											// Mab checksum
 };
-typedef char p__LINE__[ ((sizeof(struct memoMab) % 32) == 0) ? 1 : -1];	// Just to generate a compiler error if not % 32
+typedef char p__LINE__[ ((sizeof(struct memoMab) % 32) == 0) ? 1 : -1];		// Just to generate a compiler error if not % 32
 #endif
 
 typedef struct {

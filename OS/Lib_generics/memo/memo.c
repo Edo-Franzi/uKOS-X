@@ -102,9 +102,9 @@ static	bool				vFreeDelayed[KNB_CORES] = MCSET(false);				//
 								.oFailedAllocations = 0u						// Number of failed allocations
 							};
 
-#if (KNB_CORES > 1)
+		#if (KNB_CORES > 1)
 		spinlock_t			vMemo = SPIN_LOCK_INIT;
-#endif
+		#endif
 
 // Prototypes
 
@@ -146,10 +146,7 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 
 	local_init();
 
-	#if (KNB_CORES > 1)
-	spin_lock(&vMemo);
-	#endif
-
+	SPIN_LOCK(vMemo);
 	kern_lockMutex(vMutex[core], KWAIT_INFINITY);
 
 	switch (memoAlignement) {
@@ -194,29 +191,19 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 			newBlock->oProcess	   = vKern_runProc[core];
 			newBlock->oSzAllocated = wkSize;
 			newBlock->oSzAvailable = available;
+			newBlock->oPadBlock	   = (uint32_t)deltaNewBlock;
 
 // Cross link (current <--> new)
 // Adjust the number of blocks and the available memory
 // Add the bloc signature
 // Add the bloc identifier
-// Add the bloc checksum
 
 			newBlock->oPtrPreBlock  =  curBlock;
 			nexBlock				=  curBlock->oPtrNexBlock;
 			curBlock->oPtrNexBlock  =  newBlock;
-			curBlock->oCkSum		=  curBlock->oMabSignature;
-			curBlock->oCkSum		+= curBlock->oSzAllocated;
-			curBlock->oCkSum		+= curBlock->oSzAvailable;
-			curBlock->oCkSum		+= (uintptr_t)curBlock->oIdentifier;
-			curBlock->oCkSum		+= (uintptr_t)curBlock->oProcess;
 
 			newBlock->oMabSignature =  (uint32_t)KMAB_SIGNATURE;
 			newBlock->oIdentifier   =  identifier;
-			newBlock->oCkSum		=  newBlock->oMabSignature;
-			newBlock->oCkSum		+= newBlock->oSzAllocated;
-			newBlock->oCkSum		+= newBlock->oSzAvailable;
-			newBlock->oCkSum		+= (uintptr_t)newBlock->oIdentifier;
-			newBlock->oCkSum		+= (uintptr_t)newBlock->oProcess;
 
 			if (nexBlock != NULL) { nexBlock->oPtrPreBlock = newBlock; newBlock->oPtrNexBlock = nexBlock; }
 			else                  {                                    newBlock->oPtrNexBlock = NULL;     }
@@ -227,10 +214,7 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 			heapInfo->oUsdMaxMemory =  (heapInfo->oUsdMemory > heapInfo->oUsdMaxMemory) ? (heapInfo->oUsdMemory) : (heapInfo->oUsdMaxMemory);
 
 			kern_unlockMutex(vMutex[core]);
-
-			#if (KNB_CORES > 1)
-			spin_unLock(&vMemo);
-			#endif
+			SPIN_UNLOCK(vMemo);
 
 			PRIVILEGE_RESTORE;
 			return ((void *)((uintptr_t)newBlock + (uintptr_t)sizeof(memoMab_t)));
@@ -240,10 +224,7 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 	}
 	heapInfo->oFailedAllocations++;
 	kern_unlockMutex(vMutex[core]);
-
-	#if (KNB_CORES > 1)
-	spin_unLock(&vMemo);
-	#endif
+	SPIN_UNLOCK(vMemo);
 
 	PRIVILEGE_RESTORE;
 	return (NULL);
@@ -333,15 +314,9 @@ int32_t memo_readBlocInfo(void *address, memoMallocInf_t *allocInfo) {
 	PRIVILEGE_ELEVATE;
 	local_init();
 
-	#if (KNB_CORES > 1)
-	spin_lock(&vMemo);
-	#endif
-
+	SPIN_LOCK(vMemo);
 	if (address == NULL) {
-
-		#if (KNB_CORES > 1)
-		spin_unLock(&vMemo);
-		#endif
+		SPIN_UNLOCK(vMemo);
 
 		PRIVILEGE_RESTORE;
 		return (KERR_MEMO_GEERR);
@@ -350,10 +325,7 @@ int32_t memo_readBlocInfo(void *address, memoMallocInf_t *allocInfo) {
 	curBlock = (const memoMab_t *)((uintptr_t)address - (uintptr_t)sizeof(memoMab_t));
 
 	if (curBlock->oMabSignature != (uint32_t)KMAB_SIGNATURE) {
-
-		#if (KNB_CORES > 1)
-		spin_unLock(&vMemo);
-		#endif
+		SPIN_UNLOCK(vMemo);
 
 		PRIVILEGE_RESTORE;
 		return (KERR_MEMO_NOBKI);
@@ -361,10 +333,7 @@ int32_t memo_readBlocInfo(void *address, memoMallocInf_t *allocInfo) {
 
 	allocInfo->oSize	   = curBlock->oSzAllocated;
 	allocInfo->oIdentifier = curBlock->oIdentifier;
-
-	#if (KNB_CORES > 1)
-	spin_unLock(&vMemo);
-	#endif
+	SPIN_UNLOCK(vMemo);
 
 	PRIVILEGE_RESTORE;
 	return (KERR_MEMO_NOERR);
@@ -397,9 +366,7 @@ void	memo_free(void *address) {
 	PRIVILEGE_ELEVATE;
 	if ((IS_EXCEPTION) || (address == NULL)) { PRIVILEGE_RESTORE; return; }
 
-	#if (KNB_CORES > 1)
-	spin_lock(&vMemo);
-	#endif
+	SPIN_LOCK(vMemo);
 
 	local_init();
 
@@ -413,10 +380,7 @@ void	memo_free(void *address) {
 
 	if (curBlock->oMabSignature != (uint32_t)KMAB_SIGNATURE) {
 		kern_unlockMutex(vMutex[core]);
-
-		#if (KNB_CORES > 1)
-		spin_unLock(&vMemo);
-		#endif
+		SPIN_UNLOCK(vMemo);
 
 		PRIVILEGE_RESTORE;
 		return;
@@ -426,9 +390,8 @@ void	memo_free(void *address) {
 
 	curBlock->oMabSignature = 0u;
 	curBlock->oIdentifier   = NULL;
-	curBlock->oCkSum		= 0u;
 
-	released = (curBlock->oSzAllocated + sizeof(memoMab_t));
+	released = (curBlock->oSzAllocated + curBlock->oPadBlock + sizeof(memoMab_t));
 	if (curBlock != (memoMab_t *)stHeap) {
 		nexBlock			   =  curBlock->oPtrNexBlock;
 		preBlock			   =  curBlock->oPtrPreBlock;
@@ -438,12 +401,6 @@ void	memo_free(void *address) {
 			nexBlock->oPtrPreBlock = preBlock;
 		}
 
-		preBlock->oCkSum =  preBlock->oMabSignature;
-		preBlock->oCkSum += preBlock->oSzAllocated;
-		preBlock->oCkSum += preBlock->oSzAvailable;
-		preBlock->oCkSum += (uintptr_t)preBlock->oIdentifier;
-		preBlock->oCkSum += (uintptr_t)preBlock->oProcess;
-
 // Adjust the number of blocks and the available memory
 
 		heapInfo->oNbBlocks--;
@@ -451,10 +408,7 @@ void	memo_free(void *address) {
 	}
 
 	kern_unlockMutex(vMutex[core]);
-
-	#if (KNB_CORES > 1)
-	spin_unLock(&vMemo);
-	#endif
+	SPIN_UNLOCK(vMemo);
 
 	PRIVILEGE_RESTORE;
 }
@@ -531,11 +485,7 @@ static	void	local_init(void) {
 			curBlock->oSzAvailable	=  (uint32_t)(lnHeap - sizeof(memoMab_t));
 			curBlock->oPtrPreBlock	=  NULL;
 			curBlock->oPtrNexBlock	=  NULL;
-			curBlock->oCkSum		=  curBlock->oMabSignature;
-			curBlock->oCkSum		+= curBlock->oSzAllocated;
-			curBlock->oCkSum		+= curBlock->oSzAvailable;
-			curBlock->oCkSum		+= (uintptr_t)curBlock->oIdentifier;
-			curBlock->oCkSum		+= (uintptr_t)curBlock->oProcess;
+			curBlock->oPadBlock		=  0u;
 
 			vMemo_heapInfo.oNbBlocks	 = 1u;
 			vMemo_heapInfo.oNbMaxBlocks	 = 1u;

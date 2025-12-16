@@ -186,7 +186,7 @@ int32_t	stub_asmp_signal(uint32_t message) {
 	if ((message == KASMP_MESSAGE_ACKNOWLEDGE_THE_CORE_0) || (message == KASMP_MESSAGE_ACKNOWLEDGE_THE_CORE_1)) { return (KERR_ASMP_NOERR); }
 
 	INTERRUPTION_OFF;
-	spin_lock(&vSignal);
+	SPIN_LOCK(vSignal);
 	stub_asmp_getRunningCore(&core);
 
 // The core m generate an interruption on the core n.
@@ -228,7 +228,7 @@ int32_t	stub_asmp_signal(uint32_t message) {
 			break;
 		}
 	}
-	spin_unLock(&vSignal);
+	SPIN_UNLOCK(vSignal);
 	INTERRUPTION_RESTORE;
 	return (KERR_ASMP_NOERR);
 }

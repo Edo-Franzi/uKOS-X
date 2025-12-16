@@ -55,8 +55,6 @@
 // Structures for locks
 // --------------------
 
-#define	SPIN_LOCK_INIT { ATOMIC_FLAG_INIT }
-
 typedef	struct	spinlock	spinlock_t;
 typedef	struct	corelock	corelock_t;
 
@@ -78,6 +76,22 @@ __attribute__ ((always_inline))	static	inline	bool	spin_tryLockCore(corelock_t *
 __attribute__ ((always_inline))	static	inline	void	spin_lock(spinlock_t *lock);
 __attribute__ ((always_inline))	static	inline	void	spin_unLock(spinlock_t *lock);
 __attribute__ ((always_inline))	static	inline	bool	spin_tryLock(spinlock_t *lock);
+
+#define	SPIN_LOCK_INIT		{ ATOMIC_FLAG_INIT }
+
+#if (KNB_CORES > 1)
+#define SPIN_LOCK(lock)		do { spin_lock(&(lock)); } while (0)
+
+#else
+#define SPIN_LOCK(lock)
+#endif
+
+#if (KNB_CORES > 1)
+#define SPIN_UNLOCK(lock)	do { spin_unLock(&(lock)); } while (0)
+
+#else
+#define SPIN_UNLOCK(lock)
+#endif
 
 /*
  * \brief spin_lockCore

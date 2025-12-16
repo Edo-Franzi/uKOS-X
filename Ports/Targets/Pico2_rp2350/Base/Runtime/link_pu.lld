@@ -90,6 +90,12 @@ INCLUDE		rp2350.ld
 /*			stShare				0x20072000					*/
 /*			64K												*/
 
+local_sizeData_p = (64K);
+local_sizeData_u = (128K);
+local_sizeHeap   = (128K);
+local_sizeUMemo  = (136K);
+local_sizeShare  = (64K);
+
 /* IMPORTANT:												*/
 /* all the stacks have to be maintained aligned				*/
 /* on a boundary of 8-bytes									*/
@@ -122,17 +128,17 @@ linker_stEXRAM				= 0;																					/* 0x00000000: EXRAM, start of the ex
 linker_lnEXRAM				= (0);																					/* Length of the external memory	  						*/
 
 linker_stUMemo				= (linker_stHeap + linker_lnHeap);														/* 0x20050000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (136K);																				/* 0x00022000: Length of the user memory	  				*/
+linker_lnUMemo				= local_sizeUMemo;																		/* 0x00022000: Length of the user memory	  				*/
 
 linker_stShare				= (linker_stUMemo + linker_lnUMemo);													/* 0x20072000: Share, start of the multicore shared memory	*/
-linker_lnShare				= (64K);																				/* 0x00010000: Length of the user multicore shared memory	*/
+linker_lnShare				= local_sizeShare;																		/* 0x00010000: Length of the user multicore shared memory	*/
 
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
 linker_stHeap				= (linker_stPrgmData_u + linker_lnPrgmData_u);											/* 0x20030000: start of the heap							*/
-linker_lnHeap				= (128K);																				/* 0x00020000: Length of the heap							*/
+linker_lnHeap				= local_sizeHeap;																		/* 0x00020000: Length of the heap							*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
@@ -141,10 +147,10 @@ linker_stPrgmCode			= rp_stINTFLASH;																		/* 0x10000000: PrgmCode, s
 linker_lnPrgmCode			= rp_lnINTFLASH;																		/* 0x00400000: Length of the the Flash						*/
 
 linker_stPrgmData_p			= linker_lowStackSystem_C0 + linker_sizeStackSystem_C0 + linker_sizeStackSystem_C1;		/* 0x20002000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_p			= (64K) - linker_sizeStackSystem_C0 - linker_sizeStackSystem_C1;						/* 0x00011000: (56K) Length_p of the RAM					*/
+linker_lnPrgmData_p			= local_sizeData_p - linker_sizeStackSystem_C0 - linker_sizeStackSystem_C1;				/* 0x0000E000: (56K) Length_p of the RAM					*/
 
 linker_stPrgmData_u			= linker_lowStackFirst_C0 + linker_sizeStackFirst_C0 + linker_sizeStackFirst_C1;		/* 0x20011000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_u			= (128K) - linker_sizeStackFirst_C0 - linker_sizeStackFirst_C1;							/* 0x0001F000: (124K) Length_p of the RAM					*/
+linker_lnPrgmData_u			= local_sizeData_u - linker_sizeStackFirst_C0 - linker_sizeStackFirst_C1;				/* 0x0001F000: (124K) Length_p of the RAM					*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
@@ -154,13 +160,14 @@ linker_ST_FLASH_INT_0		= rp_stINTFLASH;																		/* 0x10000000: Privileg
 linker_EN_FLASH_INT_0		= (rp_stINTFLASH + rp_lnINTFLASH - 1);													/* 0x103FFFFF: 4-M											*/
 
 linker_ST_RAM_INT_0_OS		= rp_stSRAM;																			/* 0x20000000: Privileged RAM								*/
-linker_EN_RAM_INT_0_OS		= (rp_stSRAM + 64K - 1);																/* 0x2000FFFF: 64-K											*/
+linker_EN_RAM_INT_0_OS		= (rp_stSRAM + local_sizeData_p - 1);													/* 0x2000FFFF: 64-K											*/
 
 linker_ST_RAM_INT_0			= (linker_lowStackFirst_C0);															/* 0x20010000: Privileged/User RAM							*/
-linker_EN_RAM_INT_0			= (linker_lowStackFirst_C0 + 128K + 128K + 136K - 1);									/* 0x20071FFF: 392-K										*/
+local_sizeRAM_INT_0			= local_sizeData_u + local_sizeHeap + local_sizeUMemo;
+linker_EN_RAM_INT_0			= (linker_lowStackFirst_C0 + local_sizeRAM_INT_0 - 1);									/* 0x20071FFF: 392-K										*/
 
 linker_ST_RAM_INT_0_SHARED	= linker_stShare;																		/* 0x20072000: Privileged/User RAM							*/
-linker_EN_RAM_INT_0_SHARED	= (linker_stShare + 64K - 1);															/* 0x20081FFF: 64-K											*/
+linker_EN_RAM_INT_0_SHARED	= (linker_stShare + local_sizeShare - 1);												/* 0x20081FFF: 64-K											*/
 
 linker_ST_PERIPH_SOC		= rp_stPERIPH_NS;																		/* 0x40000000: Privileged PERIPHERALS						*/
 linker_EN_PERIPH_SOC		= (rp_stPERIPH_NS + 524288K - 1);														/* 0x5FFFFFFF: 2 x 256-M (_S & _NS)							*/

@@ -113,6 +113,10 @@ MODULE(
 
 static	uint64_t	vTotalTimeCPU[KNB_CORES] = MCSET(0u);
 
+#if (KNB_CORES > 1)
+static	spinlock_t	vProcess = SPIN_LOCK_INIT;
+#endif
+
 /*
  * \brief Main entry point
  *
@@ -127,10 +131,6 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			process_t	*sysProcess;
 			proc_t		*process;
 	const	char_t		*functionName;
-
-	#if (KNB_CORES > 1)
-	static	spinlock_t	vPrgm = SPIN_LOCK_INIT;
-	#endif
 
 	(void)dprintf(KSYST, "List of the system processes.\n");
 
@@ -170,10 +170,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			bufSysProcess = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_CORES * (size_t)KKERN_NB_PROCESSES * sizeof(process_t)), "process");
 			if (bufSysProcess != NULL) {
 
-				#if (KNB_CORES > 1)
-				spin_lock(&vPrgm);
-				#endif
-
+				SPIN_LOCK(vProcess);
 				kern_criticalSection(KENTER_CRITICAL);
 				for (j = 0u; j < KNB_CORES; j++) {
 					vTotalTimeCPU[j] = 0u;
@@ -228,10 +225,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 					}
 				}
 				kern_criticalSection(KEXIT_CRITICAL);
-
-				#if (KNB_CORES > 1)
-				spin_unLock(&vPrgm);
-				#endif
+				SPIN_UNLOCK(vProcess);
 
 // Compute the statistic in % of time CPU
 // Print the string process
