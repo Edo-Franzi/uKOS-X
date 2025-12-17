@@ -43,7 +43,7 @@ CMake accepts several build options that control compilation behavior:
 |--------|---------|-------------|
 | `-DWITH_LISTING=ON/OFF` | OFF | Generate listing and disassembly code from ELF file |
 | `-DCANARY=ON/OFF` | ON | Enable/disable canary stack protection |
-| `-DUSER_MODE=ON/OFF` | OFF | Activate user mode of processor (code protection) |
+| `-DUSER_MODE=ON/OFF` | ON | Activate user mode of processor (code protection) |
 | `-DUSE_LLVM=ON/OFF` | OFF | Use LLVM toolchain (clang) instead of GCC |
 | `-DVERBOSE_LINK=ON/OFF` | OFF | Add verbose option (-v) when linking with lld |
 
@@ -53,12 +53,12 @@ CMake can handle the entire build process beyond just configuration.
 
 ### Advanced Configuration Example
 
-To build a Nucleo_H743 system with user mode enabled and LLVM toolchain:
+To build a Nucleo_H743 system with user mode disabled and LLVM toolchain:
 
 **Configure the project:**
 ```shell
 cd ${PATH_UKOS_X_PACKAGE}/Ports/Nucleo_H743/Variant_Test
-cmake -S . -B build -DUSER_MODE=ON -DUSE_LLVM=ON
+cmake -S . -B build -DUSER_MODE=OFF -DUSE_LLVM=ON
 ```
 
 **Build the project:**

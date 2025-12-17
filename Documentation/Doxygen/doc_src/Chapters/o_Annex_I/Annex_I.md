@@ -47,21 +47,21 @@ This precaution allows the system to accommodate unexpected loads or growth in a
 
 ```makefile
 # Number of process
-CONF_SYSTEM		+= -DKKERN_NB_PROCESSES=32
+CONF_SYSTEM        += -DKKERN_NB_PROCESSES=32
 # Number of mailboxes
-CONF_SYSTEM		+= -DKKERN_NB_MAILBOXES=16
+CONF_SYSTEM        += -DKKERN_NB_MAILBOXES=16
 # Number of semaphores
-CONF_SYSTEM		+= -DKKERN_NB_SEMAPHORES=48
+CONF_SYSTEM        += -DKKERN_NB_SEMAPHORES=48
 # Number of mutexes
-CONF_SYSTEM		+= -DKKERN_NB_MUTEXES=48
+CONF_SYSTEM        += -DKKERN_NB_MUTEXES=48
 # Number of software timers
-CONF_SYSTEM		+= -DKKERN_NB_SOFTWARE_TIMERS=8
+CONF_SYSTEM        += -DKKERN_NB_SOFTWARE_TIMERS=8
 # Number of signal groups
-CONF_SYSTEM		+= -DKKERN_NB_SIGNALS=8
+CONF_SYSTEM        += -DKKERN_NB_SIGNALS=8
 # Number of memory pools
-CONF_SYSTEM		+= -DKKERN_NB_POOLS=8
+CONF_SYSTEM        += -DKKERN_NB_POOLS=8
 # Number of precise signals
-CONF_SYSTEM		+= -DKKERN_NB_PRECISE_SIGNALS=8
+CONF_SYSTEM        += -DKKERN_NB_PRECISE_SIGNALS=8
 ```
 
 ### Step 2

@@ -607,7 +607,7 @@ All parameters of the µKernel are fully **configurable**, allowing developers t
 ### Basic features of the µKOS-X µKernel
 
 1. µKOS-X µKernel implements the following basic features:
-2. Up to 65535 static processes or overlays.
+2. Up to 65535 static processes.
 3. Up to 254 dynamic priorities.
 4. Pre-emptive multitasking.
 5. Each process can run in supervisor or user spaces.

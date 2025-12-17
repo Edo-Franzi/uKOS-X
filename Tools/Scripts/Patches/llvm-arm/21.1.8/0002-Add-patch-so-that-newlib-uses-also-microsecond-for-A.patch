@@ -1,0 +1,50 @@
+From be4cd581f0aac376dfcd72101301487d3830506d Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Mon, 23 Jun 2025 19:01:02 +0300
+Subject: [PATCH 2/3] Add patch so that newlib uses also microsecond for Arm
+ processor
+
+(cherry picked from commit 021d39d19038aa5cecc6e0a9877bb0692dce50e8)
+(cherry picked from commit 6b6e3c57ba985b46379060fc96ab4470cffc763c)
+---
+ .../newlib/0002-Patch-time.h-for-uKOS.patch   | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+ create mode 100644 arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch
+
+diff --git a/arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch b/arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch
+new file mode 100644
+index 000000000000..1a97b0049f02
+--- /dev/null
++++ b/arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch
+@@ -0,0 +1,28 @@
++From 24556284f6bac3cb00a3099bf60389a34d94079c Mon Sep 17 00:00:00 2001
++From: Laur59 <148864407+Laur59@users.noreply.github.com>
++Date: Thu, 27 Mar 2025 13:44:52 +0200
++Subject: [PATCH 2/2] Patch time.h for uKOS
++
++---
++ newlib/libc/include/machine/time.h | 4 ++--
++ 1 file changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/newlib/libc/include/machine/time.h b/newlib/libc/include/machine/time.h
++index c75edafa7..deb35d845 100644
++--- a/newlib/libc/include/machine/time.h
+++++ b/newlib/libc/include/machine/time.h
++@@ -1,9 +1,9 @@
++ #ifndef	_MACHTIME_H_
++ #define	_MACHTIME_H_
++ 
++-#if defined(__rtems__) || defined(__VISIUM__) || defined(__riscv)
+++#if defined(__rtems__) || defined(__VISIUM__) || defined(__riscv) || defined(__arm__)
++ #define _CLOCKS_PER_SEC_ 1000000
++-#elif defined(__aarch64__) || defined(__arm__) || defined(__thumb__)
+++#elif defined(__aarch64__) || defined(__thumb__)
++ #define _CLOCKS_PER_SEC_ 100
++ #endif
++ 
++-- 
++2.39.5 (Apple Git-154)
++
+-- 
+2.50.1 (Apple Git-155)
+

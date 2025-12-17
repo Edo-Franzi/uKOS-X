@@ -190,6 +190,8 @@ pip3 install pillow
 #
 #------------------------------------------------------------------------
 
+PROMPT='%n:%~%# ‘
+
 # Set the PATH for the development environment
 # --------------------------------------------
 
@@ -244,84 +246,69 @@ export PATH
 
 ```
 
-#### Ubuntu server installation for Mac ARM Mx
+#### Ubuntu desktop installation for Mac ARM Mx
 
 ```bash
-# Download the Ubuntu image ubuntu-25.04-live-server-arm64.iso
-# Follow the installation steps
-#     Name: uKOS
-#     Server Name: ukos
-#     Username: ukos
-#     Password: ********
-# Deselect the DVD
-# Enter
-# Login ukos, ********
-
-sudo apt update && sudo apt upgrade
-sudo apt install slim
-sudo apt install lightdm
-slim
-sudo apt install ubuntu-desktop
-gdm3
 sudo reboot
 sudo apt install open-vm-tools-desktop
 
+# user = ukos and group = ukos
+cd /opt
+sudo mkdir -p uKOS
+sudo chown -R user:group uKOS
+sudo chmod -R o+rw uKOS
 git config --global user.email "ukos@ukos.ch"
-git config --global user.name "uKOS"
+git config --global user.name “uKOS"
 ```
-
-#### Activate the bash
-
-```bash
-sudo dpkg-reconfigure dash
-```
-
-![](Annex_F_02.png)
 
 #### Install some additional packages
 
 ```bash
-sudo apt-get install build-essential
-sudo apt-get install libtool bison flex gawk m4 texinfo automake
-sudo apt-get install libncurses-dev libusb-1.0-0-dev libusb-dev zlib1g-dev
-sudo apt-get install cmake
-sudo apt-get install gtkterm
-sudo apt-get install libpcre3 libpcre3-dev
-sudo apt-get install libgl1-mesa-dev
-sudo apt-get install git
-sudo apt-get install libhidapi-dev
-sudo apt-get install libvte-dev intltool build-essential libgtk2.0-dev
-sudo apt-get install ttf-mscorefonts-installer culmus
-sudo apt-get install lzip
-sudo apt-get install libudev-dev
-sudo apt-get install ninja-build
-sudo apt-get install meson
-sudo apt-get install clang
-sudo apt-get install pandoc
-sudo apt-get install libjaylink-dev
-sudo apt-get install python3-pip
-sudo apt-get install python-is-python3
-sudo apt-get install zsh
-sudo apt remove yq
+# Update the ready installed packages
+sudo apt update && sudo apt upgrade -y
+
+# Install the compilation tools
+sudo apt install -y \
+build-essential \
+libtool libtool-bin \
+bison flex gawk m4 texinfo automake \
+libncurses-dev \
+libusb-1.0-0-dev libusb-dev \
+zlib1g-dev \
+libpcre3 libpcre3-dev \
+libgl1-mesa-dev \
+libhidapi-dev \
+intltool \
+libgtk2.0-dev \
+libudev-dev \
+libjaylink-dev \
+ninja-build \
+meson \
+clang \
+cmake \
+git \
+gtkterm \
+curl \
+pandoc \
+lzip \
+zsh \
+python3-pip \
+python-is-python3 \
+python3.13-venv
+
+# Install additional fonts
+sudo apt install -y ttf-mscorefonts-installer culmus
+# Un-install/install yq
+sudo apt remove -y yq || true
 sudo snap install yq
-sudo pip3 install kflash
-
-
-# add TimeoutStartSec=X in the [Service] section X = 20
-
-sudo systemctl edit --full systemd-networkd-wait-online.service
-TimeoutStartSec=20
-
-cd /opt
-sudo mkdir -p uKOS
-sudo chown -R ukos:ukos uKOS
-
-sudo apt-get install python3-pip
-sudo apt-get install python-is-python3
-sudo apt install python3.11-venv
-python3 -m venv ukos_venv
-source ukos_venv/bin/activate
-pip3 install kflash
+# zsh by default
+chsh -s /usr/bin/zsh || true
+# Install venv-kflash
+apt install python3.13-venv
+python3 -m venv ~/uKOS_Soft/venv-uKOS
+source ~/uKOS_Soft/venv-uKOS/bin/activate
+pip install kflash
+pip3 install PyYAML
 ```
 
 #### Add a new rule for using the FTDI, the Silicon Lab chips & GD32DFU

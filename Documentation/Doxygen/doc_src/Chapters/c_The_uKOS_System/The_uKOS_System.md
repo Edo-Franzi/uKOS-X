@@ -732,6 +732,7 @@ int main(uint32_t argc, const char_t *argv[]) {
 ```
 
 ```c
+/*
 ; link_App.
 ; =========
 

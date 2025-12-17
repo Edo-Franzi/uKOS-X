@@ -1,0 +1,238 @@
+From 4c159626b74de356b4639efe74e3eb84e46bed76 Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Wed, 3 Dec 2025 09:35:32 +0200
+Subject: [PATCH 3/3] Adapt CMake configuration to needs for uKOS-X
+
+---
+ arm-software/embedded/CMakeLists.txt          |  10 +-
+ .../embedded/arm-multilib/json/multilib.json  | 120 ------------------
+ .../arm-multilib/multilib-generate.py         |   4 +-
+ .../embedded/arm-runtimes/CMakeLists.txt      |   8 +-
+ 4 files changed, 14 insertions(+), 128 deletions(-)
+
+diff --git a/arm-software/embedded/CMakeLists.txt b/arm-software/embedded/CMakeLists.txt
+index fe9879857888..46e23c0ed3aa 100644
+--- a/arm-software/embedded/CMakeLists.txt
++++ b/arm-software/embedded/CMakeLists.txt
+@@ -151,7 +151,7 @@ set(PARALLEL_LIB_BUILD_LEVELS
+ option(
+     ENABLE_QEMU_TESTING
+     "Enable tests that use QEMU. This option is ON by default."
+-    ON
++    OFF
+ )
+ option(
+     ENABLE_FVP_TESTING
+@@ -228,6 +228,8 @@ set(LLVM_DISTRIBUTION_COMPONENTS
+     llvm-strings
+     llvm-strip
+     llvm-symbolizer
++    scan-build
++    clang-tidy
+     LTO
+     CACHE STRING ""
+ )
+@@ -240,9 +242,9 @@ set(LLVM_TOOLCHAIN_DISTRIBUTION_COMPONENTS
+     CACHE STRING "Components defined by this CMakeLists that should be
+ installed by the install-llvm-toolchain target"
+ )
+-set(LLVM_ENABLE_PROJECTS clang;lld CACHE STRING "")
+-set(LLVM_TARGETS_TO_BUILD AArch64;ARM CACHE STRING "")
+-set(LLVM_DEFAULT_TARGET_TRIPLE aarch64-unknown-linux-gnu CACHE STRING "")
++set(LLVM_ENABLE_PROJECTS clang;lld;clang-tools-extra CACHE STRING "")
++set(LLVM_TARGETS_TO_BUILD ARM CACHE STRING "")
++set(LLVM_DEFAULT_TARGET_TRIPLE arm-none-eabi CACHE STRING "")
+ set(LLVM_APPEND_VC_REV OFF CACHE BOOL "")
+ set(LLVM_ENABLE_TERMINFO OFF CACHE BOOL "")
+ set(LLVM_ENABLE_ZSTD OFF CACHE BOOL "")
+diff --git a/arm-software/embedded/arm-multilib/json/multilib.json b/arm-software/embedded/arm-multilib/json/multilib.json
+index 934532fe9f08..5fbb90880d6d 100644
+--- a/arm-software/embedded/arm-multilib/json/multilib.json
++++ b/arm-software/embedded/arm-multilib/json/multilib.json
+@@ -1,125 +1,5 @@
+ {
+     "libs": [
+-        {
+-            "variant": "aarch64a_exn_rtti_unaligned",
+-            "json": "aarch64a_exn_rtti_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64a_unaligned",
+-            "json": "aarch64a_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -fno-exceptions -fno-rtti -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64a_be_exn_rtti",
+-            "json": "aarch64a_be_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf"
+-        },
+-        {
+-            "variant": "aarch64a_be",
+-            "json": "aarch64a_be.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -fno-exceptions -fno-rtti"
+-        },
+-        {
+-            "variant": "aarch64a_exn_rtti",
+-            "json": "aarch64a_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -mno-unaligned-access"
+-        },
+-        {
+-            "variant": "aarch64a",
+-            "json": "aarch64a.json",
+-            "flags": "--target=aarch64-unknown-none-elf -mno-unaligned-access -fno-exceptions -fno-rtti"
+-        },
+-        {
+-            "variant": "aarch64a_soft_nofp_exn_rtti",
+-            "json": "aarch64a_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64a_soft_nofp",
+-            "json": "aarch64a_soft_nofp.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -fno-exceptions -fno-rtti",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64a_be_soft_nofp_exn_rtti",
+-            "json": "aarch64a_be_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64a_be_soft_nofp",
+-            "json": "aarch64a_be_soft_nofp.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -fno-exceptions -fno-rtti",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_exn_rtti_unaligned",
+-            "json": "aarch64r_exn_rtti_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r_unaligned",
+-            "json": "aarch64r_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -fno-exceptions -fno-rtti -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r_be_exn_rtti",
+-            "json": "aarch64r_be_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r"
+-        },
+-        {
+-            "variant": "aarch64r_be",
+-            "json": "aarch64r_be.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r -fno-exceptions -fno-rtti"
+-        },
+-        {
+-            "variant": "aarch64r_exn_rtti",
+-            "json": "aarch64r_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -mno-unaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r",
+-            "json": "aarch64r.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -fno-exceptions -fno-rtti -mno-unaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp_exn_rtti_unaligned",
+-            "json": "aarch64r_soft_nofp_exn_rtti_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -munaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp_unaligned",
+-            "json": "aarch64r_soft_nofp_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft -munaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp_exn_rtti",
+-            "json": "aarch64r_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -mno-unaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp",
+-            "json": "aarch64r_soft_nofp.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft -mno-unaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_be_soft_nofp_exn_rtti",
+-            "json": "aarch64r_be_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_be_soft_nofp",
+-            "json": "aarch64r_be_soft_nofp.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+         {
+             "variant": "armv4t_exn_rtti_size",
+             "json": "armv4t_exn_rtti_size.json",
+diff --git a/arm-software/embedded/arm-multilib/multilib-generate.py b/arm-software/embedded/arm-multilib/multilib-generate.py
+index c7ea84c6e093..c54c244b81d3 100755
+--- a/arm-software/embedded/arm-multilib/multilib-generate.py
++++ b/arm-software/embedded/arm-multilib/multilib-generate.py
+@@ -238,11 +238,11 @@ def get_extension_list(clang, triple):
+ def generate_extensions(args):
+     aarch64_features = get_extension_list(args.clang, "aarch64-none-eabi")
+     aarch32_features = get_extension_list(args.clang, "arm-none-eabi")
+-    all_features = list(aarch64_features)
++    all_features = list(aarch32_features)
+     # Combine the aarch64 and aarch32 lists without duplication.
+     # Casting to sets and merging would be simpler, but creates
+     # non-deterministic output.
+-    all_features.extend(feat for feat in list(aarch32_features) if feat not in all_features)
++    # all_features.extend(feat for feat in list(aarch64_features) if feat not in all_features)
+ 
+     print("# Expand -march=...+[no]feature... into individual options we can match")
+     print("# on. We use 'armvX' to represent a feature applied to any architecture, so")
+diff --git a/arm-software/embedded/arm-runtimes/CMakeLists.txt b/arm-software/embedded/arm-runtimes/CMakeLists.txt
+index eff0caf6ef94..79b5724ad007 100644
+--- a/arm-software/embedded/arm-runtimes/CMakeLists.txt
++++ b/arm-software/embedded/arm-runtimes/CMakeLists.txt
+@@ -274,7 +274,7 @@ if(ENABLE_COMPILER_RT_TESTS)
+         -DCOMPILER_RT_EMULATOR=${lit_test_executor}
+         -DCOMPILER_RT_TEST_COMPILER=${LLVM_BINARY_DIR}/bin/clang
+         -DCOMPILER_RT_TEST_COMPILER_CFLAGS=${compiler_rt_test_flags}
+-        -DLLVM_INCLUDE_TESTS=ON
++        -DLLVM_INCLUDE_TESTS=OFF
+         -DLLVM_LIT_ARGS=${compiler_rt_lit_args}
+         -DLLVM_EXTERNAL_LIT=${external_lit_path}
+     )
+@@ -414,6 +414,7 @@ if(C_LIBRARY STREQUAL picolibc)
+ 
+     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/meson-cross-build.txt.in ${CMAKE_CURRENT_BINARY_DIR}/meson-cross-build.txt @ONLY)
+ 
++    set(PICOLIBC_OPTIONS -Dmultilib=false -Dio-c99-formats=true -Dio-long-long=true -Dpicolib=true -Dnewlib-multithread=true -Dposix-io=true -Dpicocrt=false -Dpicocrt-lib=false -Dtests=false)
+     ExternalProject_Add(
+         picolibc
+         STAMP_DIR ${PROJECT_PREFIX}/picolibc/${VARIANT_BUILD_ID}/stamp
+@@ -429,6 +430,7 @@ if(C_LIBRARY STREQUAL picolibc)
+             -Dincludedir=include
+             -Dlibdir=lib
+             -Dspecsdir=none
++            ${PICOLIBC_OPTIONS}
+             -Dmultilib=false
+             -Ddebug=false
+             -Dtests-enable-stack-protector=false
+@@ -553,7 +555,9 @@ if(C_LIBRARY MATCHES "^newlib")
+             --disable-nls
+             --enable-lite-exit
+             --disable-multilib
+-            --enable-newlib-retargetable-locking)
++            --enable-newlib-retargetable-locking
++            --enable-newlib-io-float)
++        set(newlib_optim_flags "-Os")
+     endif()
+ 
+     include(${TOOLCHAIN_SOURCE_DIR}/cmake/fetch_newlib.cmake)
+-- 
+2.50.1 (Apple Git-155)
+

@@ -386,33 +386,35 @@ static	void	local_waitOrder(serialManager_t serialManager, char_t *ascii, uint32
 	serial_getIdSemaphore(serialManager, BSERIAL_SEMAPHORE_RX, &identifier);
 	kern_getSemaphoreById((const char_t *)identifier, &semaphore);
 
-// Waiting for a new string; first char != CR, LF or BS
-
 	while (true) {
 		local_getChar(serialManager, &aChar, semaphore);
 
-		if ((aChar == '\n') || (aChar == '\r')) {
+// Skip leading CR/LF (avoid returning empty lines due to leftover \n after \r\n)
 
- // Special case: "\r" or "\n" -> ""
+		if ((nbChars == 0u) && ((aChar == '\r') || (aChar == '\n'))) {
+			continue;
+		}
 
-			if (nbChars > 0u) {
-				ascii[nbChars] = aChar;
-				nbChars++;
-			}
+// End-of-line
+
+		if ((aChar == '\r') || (aChar == '\n')) {
 			ascii[nbChars] = '\0';
 			return;
 		}
+
+// Backspace
 
 		if (aChar == '\b') {
 			if (nbChars > 0u) {
 				nbChars--;
 			}
-		} else if (nbChars < (size - 3)) {
+			continue;
+		}
 
-// Enough room for aChar, cr or lf, and nul
+// Store char if room (keep 1 byte for '\0')
 
-			ascii[nbChars] = aChar;
-			nbChars++;
+		if (nbChars < (size - 1u)) {
+			ascii[nbChars++] = aChar;
 		}
 	}
 }
