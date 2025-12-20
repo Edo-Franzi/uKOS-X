@@ -59,10 +59,10 @@
 
 #define	Ka	1103515245u
 #define	Kc	12345u
-#define	Km	((1u<<31u) - 1u)
+#define	Km	KRAND_MAX
 
-static	uint32_t	vSeed;
 extern	uint32_t	vCrt0_randomSeed;
+static	uint32_t	vSeed[KNB_CORES] = MCSET(0u);
 
 /*
  * \brief model_random_soft_init
@@ -71,8 +71,11 @@ extern	uint32_t	vCrt0_randomSeed;
  *
  */
 void	model_random_soft_init(void) {
+	uint32_t	core;
 
-	vSeed = vCrt0_randomSeed;
+	core = GET_RUNNING_CORE;
+
+	vSeed[core] = vCrt0_randomSeed;
 }
 
 /*
@@ -82,12 +85,15 @@ void	model_random_soft_init(void) {
  *
  */
 void	model_random_soft_read(uint32_t *number) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
 
 // X[n + 1] = (Ka * X[n] + Kc) * mod(Km)
 // With X[n] = vSeed
 
 	INTERRUPTION_OFF;
-	vSeed = ((Ka * vSeed) + Kc) % Km;
-	*number = vSeed;
+	vSeed[core] = ((Ka * vSeed[core]) + Kc) % Km;
+	*number = vSeed[core];
 	INTERRUPTION_RESTORE;
 }

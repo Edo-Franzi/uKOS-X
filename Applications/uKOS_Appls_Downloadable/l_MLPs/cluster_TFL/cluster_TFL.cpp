@@ -126,15 +126,19 @@ MODULE(
 // Suggested memory allocation
 
 constexpr	int			KTENSOR_ARENA_SIZE = (10 * 1024);
+namespace {
 			uint8_t		tensor_arena[KTENSOR_ARENA_SIZE];
+}
 
 // Operators necessary for the model
 
-void RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
+namespace {
+	void RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
 
-	resolver.AddRelu();
-	resolver.AddTanh();
-	resolver.AddFullyConnected();
+		resolver.AddRelu();
+		resolver.AddTanh();
+		resolver.AddFullyConnected();
+	}
 }
 
 #if (defined(RISCV))
@@ -147,9 +151,11 @@ extern "C"	char_t	putchar_(char_t ch) {
 #endif
 
 #if (defined(CORTEX))
-static	void	debuglog(const char *s) {
+namespace {
+	void	debuglog(const char *s) {
 
-	(void)dprintf(KSYST, "%s\n", s);
+		(void)dprintf(KSYST, "%s\n", s);
+	}
 }
 #endif
 
@@ -162,84 +168,89 @@ static	void	debuglog(const char *s) {
  *			- Display the result
  *
  */
-static	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
-			float32_t		x, y, gain = 2.0f;
-			TfLiteTensor	*input;
-			TfLiteTensor	*output;
-			uint64_t		time[2];
-			uint32_t		delta = 0;
-	const	char_t			*result;
+namespace {
+	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
+				TfLiteTensor	*input;
+				TfLiteTensor	*output;
+				uint64_t		time[2];
+				uint32_t		random[2], delta = 0;
+				float32_t		x, y;
+		const	float32_t		gain = 2.0f;
+		const	char_t			*result;
 
-	UNUSED(argument);
+		UNUSED(argument);
 
-	#if (defined(CORTEX))
-    RegisterDebugLogCallback(debuglog);
-	#endif
+		#if (defined(CORTEX))
+  		RegisterDebugLogCallback(debuglog);
+		#endif
 
-	while (true) {
-		kern_suspendProcess(1000u);
-		led_toggle(KLED_0);
+		while (true) {
+			kern_suspendProcess(1000u);
+			led_toggle(KLED_0);
 
 // Load the TFLite model
 
-		const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
-		if (model->version() != TFLITE_SCHEMA_VERSION) {
-			(void)dprintf(KSYST, "Error : Model version not compatible\n");
-			exit(EXIT_OS_FAILURE);
-   		 }
+			const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
+			if (model->version() != TFLITE_SCHEMA_VERSION) {
+				(void)dprintf(KSYST, "Error : Model version not compatible\n");
+				exit(EXIT_OS_FAILURE);
+   			}
 
 // Create the resolver operator
 // Create the micro interpreter
 
-		tflite::MicroMutableOpResolver<3> resolver;
-		RegisterOps(resolver);
-		tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, KTENSOR_ARENA_SIZE);
+			tflite::MicroMutableOpResolver<3> resolver;
+			RegisterOps(resolver);
+			tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, KTENSOR_ARENA_SIZE);
 
 // Allocate for the tensors
 
-		if (interpreter.AllocateTensors() != kTfLiteOk) {
-			(void)dprintf(KSYST, "Error: Tensor allocation!\n");
-			exit(EXIT_OS_FAILURE);
-		}
+			if (interpreter.AllocateTensors() != kTfLiteOk) {
+				(void)dprintf(KSYST, "Error: Tensor allocation!\n");
+				exit(EXIT_OS_FAILURE);
+			}
 
 // Prepare the inputs
 
-		x = (((float32_t)rand() / (float32_t)(RAND_MAX)) - 0.5f) * gain;
-		y = (((float32_t)rand() / (float32_t)(RAND_MAX)) - 0.5f) * gain;
-		input  = interpreter.input(0);
-		input->data.f[0] = x;
-		input->data.f[1] = y;
+		random_read(KRANDOM_SOFT, &random[0], 2u);
+		x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
 
-		kern_readTickCount(&time[0]);
-		if (interpreter.Invoke() != kTfLiteOk) {
-			(void)dprintf(KSYST, "Error: Excecution!\n");
-			exit(EXIT_OS_FAILURE);
-		}
+			input  = interpreter.input(0);
+			input->data.f[0] = x;
+			input->data.f[1] = y;
 
-		kern_readTickCount(&time[1]);
-		delta = (uint32_t)(time[1] - time[0]);
+			kern_readTickCount(&time[0]);
+			if (interpreter.Invoke() != kTfLiteOk) {
+				(void)dprintf(KSYST, "Error: Excecution!\n");
+				exit(EXIT_OS_FAILURE);
+			}
+
+			kern_readTickCount(&time[1]);
+			delta = (uint32_t)(time[1] - time[0]);
 
 // Display the results
 
-		output = interpreter.output(0);
-		result = "Inter-class area";
-		result = ((output->data.f[0] >  0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] < -0.2f) && (output->data.f[3] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class A         ") : (result);
-		result = ((output->data.f[1] >  0.2f) && (output->data.f[0] < -0.2f) && (output->data.f[2] < -0.2f) && (output->data.f[3] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class B         ") : (result);
-		result = ((output->data.f[2] >  0.2f) && (output->data.f[0] < -0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[3] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class C         ") : (result);
-		result = ((output->data.f[3] >  0.2f) && (output->data.f[0] < -0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class D         ") : (result);
+			output = interpreter.output(0);
+			result = "Inter-class area";
+			result = ((output->data.f[0] >  0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] < -0.2f) && (output->data.f[3] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class A         ") : (result);
+			result = ((output->data.f[1] >  0.2f) && (output->data.f[0] < -0.2f) && (output->data.f[2] < -0.2f) && (output->data.f[3] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class B         ") : (result);
+			result = ((output->data.f[2] >  0.2f) && (output->data.f[0] < -0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[3] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class C         ") : (result);
+			result = ((output->data.f[3] >  0.2f) && (output->data.f[0] < -0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] < -0.2f) && (output->data.f[4] < -0.2f)) ? ("Class D         ") : (result);
 
-		(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
-							 "result: Out-0 %6.3f, Out-1 %6.3f, Out-2 %6.3f, Out-3 %6.3f, Out-4 %6.3f "
-							 "    %s "
-							 "Exec time %" PRIu32 " [us]\n", x,
-							 								 y,
-							 								 output->data.f[0],
-							 								 output->data.f[1],
-							 								 output->data.f[2],
-							 								 output->data.f[3],
-							 								 output->data.f[4],
-							 								 result,
-							 								 delta);
+			(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
+								 "result: Out-0 %6.3f, Out-1 %6.3f, Out-2 %6.3f, Out-3 %6.3f, Out-4 %6.3f "
+								 "    %s "
+								 "Exec time %" PRIu32 " [us]\n", x,
+								 								 y,
+								 								 output->data.f[0],
+								 								 output->data.f[1],
+								 								 output->data.f[2],
+								 								 output->data.f[3],
+								 								 output->data.f[4],
+								 								 result,
+								 								 delta);
+		}
 	}
 }
 
@@ -268,6 +279,8 @@ int		main(int argc, const char *argv[]) {
 
 // Specifications for the processes
 
+// NOLINTBEGIN(misc-const-correctness)
+//
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_0,					// Specifications (just use vSpecification_x)
@@ -278,6 +291,9 @@ int		main(int argc, const char *argv[]) {
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_02				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
+
+// NOLINTEND(misc-const-correctness)
+//
 
 	if (kern_createProcess(&specification_0, NULL, &process_0) != KERR_KERN_NOERR) { exit(EXIT_OS_FAILURE); }
 

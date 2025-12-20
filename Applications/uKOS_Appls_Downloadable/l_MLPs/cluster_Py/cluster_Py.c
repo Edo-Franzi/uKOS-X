@@ -134,7 +134,7 @@ MODULE(
 static	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
 			float32_t	x, y, gain = 2.0f;
 			uint64_t	time[2];
-			uint32_t	delta = 0u;
+			uint32_t	random[2], delta = 0u;
 	const	char_t		*result;
 
 	UNUSED(argument);
@@ -146,8 +146,10 @@ static	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 // Prepare the inputs
 
-		x = (((float32_t)rand() / (float32_t)(RAND_MAX)) - 0.5f) * gain;
-		y = (((float32_t)rand() / (float32_t)(RAND_MAX)) - 0.5f) * gain;
+		random_read(KRANDOM_SOFT, &random[0], 2u);
+		x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+
 		vInput_L1[0] = x;
 		vInput_L1[1] = y;
 

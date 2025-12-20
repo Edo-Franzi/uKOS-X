@@ -196,11 +196,15 @@ LIBX_P			+= $(PATH_UKOS)/OS/Lib_serials/cdc0/cdc0.c
 # With the CDC1 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_CDC1_S
 LIBX_P			+= $(PATH_UKOS)/OS/Lib_serials/cdc1/cdc1.c
+# With the RANDOM manager
+CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
+LIBX_P			+= $(PATH_UKOS)/OS/Lib_cryptographics/random/random.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/asmp/stub_asmp_dbell.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_uart.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 
 # The Lib_xxxx components (user)
 
@@ -261,6 +265,7 @@ CLI_U			+= $(PATH_UKOS)/OS/CLI/mutex/mutex.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/object/object.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/process/process.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/restart/restart.c
+CLI_U			+= $(PATH_UKOS)/OS/CLI/rnd/rnd.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/run/run.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/semaphore/semaphore.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/sloader/sloader.c

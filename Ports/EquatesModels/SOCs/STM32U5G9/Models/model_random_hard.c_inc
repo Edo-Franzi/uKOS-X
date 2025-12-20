@@ -46,8 +46,8 @@
 ;------------------------------------------------------------------------
 */
 
-			bool		vTerminated = false;
-volatile	uint32_t	*vNumber;
+static				bool		vTerminated = false;
+static	volatile	uint32_t	*vNumber;
 
 // Prototypes
 
@@ -104,7 +104,7 @@ static	void	local_RNG_IRQHandler(void) {
 // Is data ready, no seed error, no clock error
 
 	if (((REG(RNG)->SR & RNG_SR_DRDY) != 0u) && ((REG(RNG)->SR & RNG_SR_SEIS) == 0u) && ((REG(RNG)->SR & RNG_SR_CEIS) == 0u)) {
-		*vNumber = REG(RNG)->DR;
+		*vNumber = REG(RNG)->DR & KRAND_MAX;
 		vTerminated = true;
 		REG(RNG)->CR &= ~(RNG_CR_RNGEN | RNG_CR_IE);
 		return;

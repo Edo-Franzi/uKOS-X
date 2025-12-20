@@ -1,15 +1,15 @@
 /*
-; model_random_hard.
-; ==================
+; stub_random.
+; ============
+
+; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Model for generating random numbers.
-;			This takes advantages from the available
-;			hardware.
+; Goal:		stub for the "random" manager module.
 ;
 ;   (c) 2025-20xx, Edo. Franzi
 ;   --------------------------
@@ -46,82 +46,42 @@
 ;------------------------------------------------------------------------
 */
 
-static				bool		vTerminated = false;
-static	volatile	uint32_t	*vNumber;
+#include	"uKOS.h"
 
 // Prototypes
 
-static	void	local_RNG_IRQHandler(void);
+void	model_random_soft_init(void);
+void	model_random_soft_read(uint32_t *number);
+void	model_random_hard_init(void);
+void	model_random_hard_read(uint32_t *number);
 
 /*
- * \brief model_random_hard_init
+ * \brief stub_random_init
  *
- * - Initialise the hardware
+ * - Initialise some specific CPU parts
  *
  */
-void	model_random_hard_init(void) {
+void	stub_random_init(void) {
 
-	REG(RCC)->AHB3ENR |= RCC_AHB3ENR_RNGEN;
-
-	INTERRUPT_VECTOR(RNG_IRQn, local_RNG_IRQHandler);
-	NVIC_SetPriority(RNG_C0_IRQn, KINT_LEVEL_PERIPHERALS);
-	NVIC_EnableIRQ(RNG_C0_IRQn);
+	model_random_soft_init();
+	model_random_hard_init();
 }
 
 /*
- * \brief model_random_hard_read
+ * \brief stub_rand_read
  *
- * - Get a random number
+ * - Return the random number
  *
  */
-void	model_random_hard_read(uint32_t *number) {
+int32_t	stub_rand_read(randomGenerator_t generator, uint32_t *number) {
 
-	vNumber = number;
-
-// Turn on the RNG
-// The RNG delivers a new random number every 412 x (1 / 160-MHz) = 2575-ns
-// Configuration proposed by ST to comply with NIST SP800-90B
-
-	vTerminated = false;
-	REG(RNG)->CR |= (RNG_CR_RNGEN | RNG_CR_IE);
-
-	while (vTerminated == false) {
-		kern_switchFast();
-	}
+	if (generator == KRANDOM_SOFT) { model_random_soft_read(number); return (KERR_RANDOM_NOERR); }
+	if (generator == KRANDOM_HARD) { model_random_hard_read(number); return (KERR_RANDOM_NOERR); }
+	return (KERR_RANDOM_GEERR);
 }
 
 // Local routines
 // ==============
 
-/*
- * \brief local_RNG_IRQHandler
- *
- * - Interruption new number
- *
- */
-static	void	local_RNG_IRQHandler(void) {
-
-// Is data ready, no seed error, no clock error
-
-	if (((REG(RNG)->SR & RNG_SR_DRDY) != 0u) && ((REG(RNG)->SR & RNG_SR_SEIS) == 0u) && ((REG(RNG)->SR & RNG_SR_CEIS) == 0u)) {
-		*vNumber = REG(RNG)->DR & KRAND_MAX;
-		vTerminated = true;
-		REG(RNG)->CR &= ~(RNG_CR_RNGEN | RNG_CR_IE);
-		return;
-	}
-
-// Seed error
-
-	if ((REG(RNG)->SR & RNG_SR_SEIS) == RNG_SR_SEIS) {
-		REG(RNG)->SR &= (uint32_t)~RNG_SR_SEIS;
-		REG(RNG)->CR |=  RNG_CR_CONDRST;
-		REG(RNG)->CR &= (uint32_t)~RNG_CR_CONDRST;
-	}
-
-// Clock error
-// !!! Wrong clock configurtion, please fix your code
-
-	if ((REG(RNG)->SR & RNG_SR_CEIS) == RNG_SR_CEIS) {
-		REG(RNG)->SR &= (uint32_t)~RNG_SR_CEIS;
-	}
-}
+#include	"model_random_soft.c_inc"
+#include	"model_random_hard.c_inc"

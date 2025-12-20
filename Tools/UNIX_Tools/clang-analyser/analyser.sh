@@ -85,7 +85,7 @@ mkdir -p "${OUTPUT_DIR}"
 echo "*" > "${OUTPUT_DIR}"/.gitignore
 
 printf "%bBuilding list of files to check%b\n" "${YELLOW}" "${NC}"
-if ! cmake -S . -B "${BUILD_DIR}" --preset llvm -DCMAKE_EXPORT_COMPILE_COMMANDS=ON > /dev/null 2>&1; then
+if ! cmake -S . -B "${BUILD_DIR}" -DUSE_LLVM=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON > /dev/null 2>&1; then
 	printf "%bError: CMake configuration failed%b\n" "${RED}" "${NC}" >&2
 	printf "Please check that the 'llvm' preset is defined and your CMake configuration is correct.\n" >&2
 	exit 1
@@ -102,9 +102,13 @@ printf '%b═══════════════════════�
 ═══════════════════════════════════════════════════════════════%b\n\n' "${BLUE}" "${NC}"
 
 # Total number of files
-readonly TOTAL=$(jq length "${COMPILE_DB}")
-readonly TOTAL_1=$((TOTAL - 1))
-printf 'Found %d C/C++ files to analyze\n' "${TOTAL_1}"
+readonly length_DB=$(jq length "${COMPILE_DB}")
+if grep -q "sig\.c" "${COMPILE_DB}"; then
+	readonly TOTAL=$((length_DB - 1))
+else
+	readonly TOTAL=${length_DB}
+fi
+printf 'Found %d C/C++ files to analyze\n' "${TOTAL}"
 
 # Pre-parse the entire compile_commands.json once for performance
 # This avoids calling jq multiple times per file in the loop
@@ -121,8 +125,8 @@ while IFS= read -r entry; do
     all_commands+=("$command")
 done < <(jq -cr '.[] | [.file, .command]' "${COMPILE_DB}")
 
-if [[ $TOTAL -ne ${#all_commands[@]} ]] ||
-   [[ $TOTAL -ne ${#filenames[@]} ]]; then
+if [[ $length_DB -ne ${#all_commands[@]} ]] ||
+   [[ $length_DB -ne ${#filenames[@]} ]]; then
     printf "Internal error: compile_commands.json arrays inconsistent\n" >&2
     exit 2
 fi
@@ -130,7 +134,7 @@ fi
 # Parse and analyze each file
 warnings=0
 
-for current in {1..$TOTAL}; do
+for current in {1..$length_DB}; do
     filename="${filenames[$current]}"
 
     # Skip signature files explicitly
@@ -147,7 +151,7 @@ for current in {1..$TOTAL}; do
             ;;
     esac
 
-    printf "[%3d/%3d] %-40s " "$current" "${TOTAL_1}" "$filename"
+    printf "[%3d/%3d] %-40s " "$current" "${TOTAL}" "$filename"
 
     # Rewrite the -o <...>.o part to analyzer invocation
     cmd_data="${all_commands[$current]}"
@@ -244,7 +248,7 @@ mkdir -p "${TIDY_OUTPUT}"
 tidy_warnings=0
 tidy_file_count=0
 
-for current in {1..$TOTAL}; do
+for current in {1..$length_DB}; do
 	filename="${filenames[$current]}"
 
 	# Skip signature files
@@ -264,7 +268,7 @@ for current in {1..$TOTAL}; do
 	# Get source file path
 	source_file=$(jq -r ".[$((current-1))].file" "${COMPILE_DB}")
 
-	printf "[%3d/%3d] %-40s " "$current" "${TOTAL_1}" "$filename"
+	printf "[%3d/%3d] %-40s " "$current" "${TOTAL}" "$filename"
 
 	# Run clang-tidy and capture output (filter out summary lines)
 	tidy_output_file="${TIDY_OUTPUT}/${filename}.txt"

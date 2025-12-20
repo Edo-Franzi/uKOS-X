@@ -131,7 +131,12 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 // Format the time
 
+// NOLINTBEGIN(cert-err33-c)
+//
 	strftime(formattedTime, sizeof(formattedTime), "%I %p", &localTime);
+
+// NOLINTEND(cert-err33-c)
+//
 	(void)dprintf(KSYST, "Formatted time: %s\n", formattedTime);
 
 // Measure the execution time
@@ -151,7 +156,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 	kern_suspendProcess(1234u);
 	gettimeofday(&toc2, NULL);
 
-	totalTime = (double)(toc2.tv_sec - tic2.tv_sec) + (double)(toc2.tv_usec - tic2.tv_usec) / 1e6;
+	totalTime = (double)(toc2.tv_sec - tic2.tv_sec) + ((double)(toc2.tv_usec - tic2.tv_usec) / 1e6);
 	(void)dprintf(KSYST, "Execution time: %.6f seconds\n", totalTime);
 
 // Generate the new Unix time 64-bits with 1us

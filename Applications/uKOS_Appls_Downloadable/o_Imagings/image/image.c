@@ -107,7 +107,7 @@ static	uint32_t	vW, vH;
 		void	TinyUSB_video_getImageSize(uint32_t *w, uint32_t *h);
 		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h);
 static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h);
-static	void	local_convertToYUY2(uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
+static	void	local_convertToYUY2(const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_transfer(void);
 
 /*
@@ -301,8 +301,8 @@ static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h) {
 	uint32_t	i;
 
 	for (i = 0u; i < (w * h); i += 2u) {
-		output[i * 2u + 1u] = 128u;
-		output[i * 2u + 3u] = 128u;
+		output[(i * 2u) + 1u] = 128u;
+		output[(i * 2u) + 3u] = 128u;
 	}
 }
 
@@ -316,14 +316,14 @@ static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h) {
  *		- i + 3	128
  *
  */
-static	void	local_convertToYUY2(uint8_t *input, uint8_t *output, uint32_t w, uint32_t h) {
+static	void	local_convertToYUY2(const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h) {
 	uint32_t	i;
 
 	for (i = 0u; i < (w * h); i += 2u) {
 
 // Conversion Gray scale to YUY2
 
-		output[i * 2u]		= input[i];
-		output[i * 2u + 2u] = input[i + 1];
+		output[i * 2u]		  = input[i];
+		output[(i * 2u) + 2u] = input[i + 1];
 	}
 }
