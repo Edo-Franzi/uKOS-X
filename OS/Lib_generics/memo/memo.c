@@ -308,7 +308,7 @@ void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32_t size
  * \return		KERR_MEMO_NOBKI	The block does not exist
  *
  */
-int32_t memo_readBlocInfo(void *address, memoMallocInf_t *allocInfo) {
+int32_t memo_readBlocInfo(const void *address, memoMallocInf_t *allocInfo) {
 	const	memoMab_t	*curBlock;
 
 	PRIVILEGE_ELEVATE;

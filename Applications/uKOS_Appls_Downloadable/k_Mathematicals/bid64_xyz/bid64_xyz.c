@@ -105,10 +105,10 @@ struct exception {
 		const	char_t		*oMessage;
 };
 
-static	char_t	result[128];
-static	char_t	*n1 = "0.004565e-3";
-static	char_t	*n2 = "1.747470e+4";
-static	char_t	*ze = "00000000000";
+static	char_t	vResult[128];
+static	char_t	*vN1 = "0.004565e-3";
+static	char_t	*vN2 = "1.747470e+4";
+static	char_t	*vZe = "00000000000";
 
 // Prototypes
 
@@ -124,7 +124,7 @@ static void	local_printStatus(_IDEC_flags fpsf);
  *
  */
 static void __attribute__ ((noreturn)) aProcess(const void *argument) {
-	_IDEC_flags		fpsf = 0;
+	_IDEC_flags		fpsf;
 	BID_UINT64		x, y, z;
 
 	UNUSED(argument);
@@ -134,36 +134,39 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 
 // Multiplication
 
-	x = __bid64_from_string((char *)n1, BID_ROUNDING_TO_NEAREST, &fpsf);
-	y = __bid64_from_string((char *)n2, BID_ROUNDING_TO_NEAREST, &fpsf);
-	z = __bid64_mul(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
+	fpsf = 0;
+	x = bid64_from_string((char *)vN1, BID_ROUNDING_TO_NEAREST, &fpsf);
+	y = bid64_from_string((char *)vN2, BID_ROUNDING_TO_NEAREST, &fpsf);
+	z = bid64_mul(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
 
-    __bid64_to_string(result, z, &fpsf);
+    bid64_to_string(vResult, z, &fpsf);
 	local_printStatus(fpsf);
 
-	(void)dprintf(KSYST, "%s mul %s = %s\n\n", n1, n2, result);
+	(void)dprintf(KSYST, "%s mul %s = %s\n\n", vN1, vN2, vResult);
 
 // Division (!= 0)
 
-	x = __bid64_from_string((char *)n1, BID_ROUNDING_TO_NEAREST, &fpsf);
-	y = __bid64_from_string((char *)n2, BID_ROUNDING_TO_NEAREST, &fpsf);
-	z = __bid64_div(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
+	fpsf = 0;
+	x = bid64_from_string((char *)vN1, BID_ROUNDING_TO_NEAREST, &fpsf);
+	y = bid64_from_string((char *)vN2, BID_ROUNDING_TO_NEAREST, &fpsf);
+	z = bid64_div(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
 
-    __bid64_to_string(result, z, &fpsf);
+    bid64_to_string(vResult, z, &fpsf);
 	local_printStatus(fpsf);
 
-	(void)dprintf(KSYST, "%s div %s = %s\n\n", n1, n2, result);
+	(void)dprintf(KSYST, "%s div %s = %s\n\n", vN1, vN2, vResult);
 
 // Division (= 0)
 
-	x = __bid64_from_string((char *)n1, BID_ROUNDING_TO_NEAREST, &fpsf);
-	y = __bid64_from_string((char *)ze, BID_ROUNDING_TO_NEAREST, &fpsf);
-	z = __bid64_div(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
+	fpsf = 0;
+	x = bid64_from_string((char *)vN1, BID_ROUNDING_TO_NEAREST, &fpsf);
+	y = bid64_from_string((char *)vZe, BID_ROUNDING_TO_NEAREST, &fpsf);
+	z = bid64_div(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
 
-    __bid64_to_string(result, z, &fpsf);
+    bid64_to_string(vResult, z, &fpsf);
 	local_printStatus(fpsf);
 
-	(void)dprintf(KSYST, "%s div %s = %s\n\n", n1, ze, result);
+	(void)dprintf(KSYST, "%s div %s = %s\n\n", vN1, vZe, vResult);
 
 	kern_suspendProcess(1000u);
 	exit(EXIT_OS_SUCCESS);

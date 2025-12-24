@@ -47,7 +47,7 @@
 // Prototypes
 
 static	inline	void local_init(DCACHE_TypeDef *cache);
-static	inline	void local_commandByAddress(DCACHE_TypeDef *cache, uint32_t command, void *address, int32_t size);
+static	inline	void local_commandByAddress(DCACHE_TypeDef *cache, uint32_t command, const void *address, int32_t size);
 
 #define	DCACHE_COMMAND_CLEAN				(1u * DCACHE_CR_CACHECMD_0)
 #define	DCACHE_COMMAND_INVALIDATE			(2u * DCACHE_CR_CACHECMD_0)
@@ -151,7 +151,7 @@ static	inline	void	cache_D_Invalidate(uint8_t unit) {
  * - Invalidate the data cache by address
  *
  */
-static	inline	void	cache_D_Invalidate_Add(uint8_t unit, void *address, int32_t size) {
+static	inline	void	cache_D_Invalidate_Add(uint8_t unit, const void *address, int32_t size) {
 	DCACHE_TypeDef	*cache = DCACHE1_NS;
 
 	cache = (unit == 0u) ? (DCACHE1_NS) : (DCACHE2_NS);
@@ -172,7 +172,7 @@ static	inline	void	cache_D_Invalidate_Add(uint8_t unit, void *address, int32_t s
  * - Clean the data cache by address
  *
  */
-static	inline	void	cache_D_Clean_Add(uint8_t unit, void *address, int32_t size) {
+static	inline	void	cache_D_Clean_Add(uint8_t unit, const void *address, int32_t size) {
 	DCACHE_TypeDef	*cache = DCACHE1_NS;
 
 	cache = (unit == 0u) ? (DCACHE1_NS) : (DCACHE2_NS);
@@ -288,7 +288,7 @@ static	inline	void local_init(DCACHE_TypeDef *cache) {
  * \brief local_commandByAddress
  *
  */
-static	inline	void local_commandByAddress(DCACHE_TypeDef *cache, uint32_t command, void *address, int32_t size) {
+static	inline	void local_commandByAddress(DCACHE_TypeDef *cache, uint32_t command, const void *address, int32_t size) {
 
 // Check no ongoing operation
 

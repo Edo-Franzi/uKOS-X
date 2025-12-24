@@ -277,6 +277,7 @@ int		main(int argc, const char *argv[]) {
  *   - value.32 = value.32 + (a.16 * b.16)
  *
  */
+
 // NOLINTBEGIN(readability-non-const-parameter)
 //
 __attribute__ ((always_inline)) static __inline void local_cumulate32(int32_t *value, int16_t a, int16_t b) {

@@ -134,14 +134,14 @@ export DFUUTIL_VER=1.1
 export LIBJAYLINK_VER=0.4.0
 export DOXYGEN_VER=1.15.0
 export GRAPHVIZ_VER=14.1.1
-export CPPCHECK_VER=2.18.3
+export CPPCHECK_VER=2.19.0
 
 # Goodies
 # Not used for the uKOS-X project
 
 export GCC_ARC_VER=15.2.0
 export BOOST_VER=1.90.0
-export IMAGEMAGICK_VER=7.1.2-8
+export IMAGEMAGICK_VER=7.1.2-11
 export PK2CMD_VER=1.27.01
 export SDCC_VER=4.5.0
 export SRECORD_VER=1.65

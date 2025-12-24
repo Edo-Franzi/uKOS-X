@@ -182,7 +182,7 @@ extern	void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32
  * \return		KERR_MEMO_NOBKI	The block does not exist
  *
  */
-extern	int32_t memo_readBlocInfo(void *address, memoMallocInf_t *allocInfo);
+extern	int32_t memo_readBlocInfo(const void *address, memoMallocInf_t *allocInfo);
 
 /*!
  * \brief Delayed free the memory allocation

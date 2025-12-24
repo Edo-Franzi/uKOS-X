@@ -197,7 +197,7 @@ int32_t	model_imager_acquisition(void) {
 // See the ST application note AN4839
 
 	INTERRUPTION_OFF;
-			void		*add   = (void *)vRowXX;
+	const	void		*add   = (void *)vRowXX;
 	const	uint32_t	cols   = (uint32_t)vNbCols;
 	const	uint32_t	size   = (uint32_t)vSize;
 	const	uint64_t	prod64 = (uint64_t)cols * (uint64_t)size;
@@ -604,7 +604,7 @@ static	void	local_DMA2_Stream1_IRQHandler(void) {
 // See the ST application note AN4839
 // Copy the line into the image memory
 
-			void		*add    = (void *)vRowXX;
+	const	void		*add    = (void *)vRowXX;
 	const	uint32_t	cols1   = (uint32_t)vNbCols;
 	const	uint32_t	size1   = (uint32_t)vSize;
 	const	uint64_t	prod64  = (uint64_t)cols1 * (uint64_t)size1;

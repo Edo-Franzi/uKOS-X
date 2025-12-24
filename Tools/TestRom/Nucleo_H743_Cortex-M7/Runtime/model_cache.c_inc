@@ -197,7 +197,7 @@ static	inline	void	cache_D_Invalidate(void) {
  * - Invalidate the data cache by address
  *
  */
-static	inline	void	cache_D_Invalidate_Add(void *address, int32_t size) {
+static	inline	void	cache_D_Invalidate_Add(const void *address, int32_t size) {
 	int32_t		opSize;
 	uint32_t	opAddress;
 
@@ -267,7 +267,7 @@ static	inline	void	cache_D_Clean(void) {
  * - Clean the data cache by address
  *
  */
-static	inline	void	cache_D_Clean_Add(void *address, int32_t size) {
+static	inline	void	cache_D_Clean_Add(const void *address, int32_t size) {
 	int32_t		opSize;
 	uint32_t	opAddress;
 
