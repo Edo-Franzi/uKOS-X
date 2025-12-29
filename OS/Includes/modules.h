@@ -338,7 +338,8 @@ enum {
 			KNUM_TFLITE			   = (((uint32_t)'0'<<8) + (uint32_t)'2'),									// tensorflow lite library
 			KNUM_TINYUSB		   = (((uint32_t)'0'<<8) + (uint32_t)'3'),									// tinyusb library
 			KNUM_LVGL			   = (((uint32_t)'0'<<8) + (uint32_t)'4'),									// lvgl library
-			KNUM_INTEL_RDF_MATH	   = (((uint32_t)'0'<<8) + (uint32_t)'5')									// IntelRDFMath library
+			KNUM_DEC_NUMBER		   = (((uint32_t)'0'<<8) + (uint32_t)'5'),									// decnumber library
+			KNUM_INTEL_RDF_MATH	   = (((uint32_t)'0'<<8) + (uint32_t)'6')									// IntelRDFMath library
 };
 
 #if (defined(__cplusplus))

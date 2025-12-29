@@ -73,7 +73,7 @@ PATH_INTELRDFPMATH	=  $(PATH_UKOS)/Third_Parties/IntelRDFPMath
 CORE				=  RV64IMAFDC
 INTELRDFPMATH		=  libIntelRDFPMath.a
 
-STANDARD			=  -std=c2x
+STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
 
 PREFIX				?= riscv64-unknown-elf-
@@ -85,5 +85,6 @@ FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
 # The included makefiles
 
 include	$(PATH_INTELRDFPMATH)/Library/Mkfiles/IntelRDFPMathLib.mk
--include $(wildcard *.d)
+-include $(DEP)
+DEP					:= $(OBJ:.o=.d)
 .PHONY : all clr_all clr build archive

@@ -1,17 +1,17 @@
-# CMakeLists.
-# ===========
+# makefile.
+# =========
 
 # SPDX-License-Identifier: MIT
 
 #------------------------------------------------------------------------
-# Author:	Laurent von Allmen	The 2025-01-01
+# Author:	Edo. Franzi		The 2025-01-01
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		CMake file to set up the building for uKOS-X system.
+# Goal:		makefile for the "rpn" application.
 #
-#   (c) 2025-20xx, Laurent von Allmen
-#   ---------------------------------
+#   (c) 2025-20xx, Edo. Franzi
+#   --------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 #   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -44,42 +44,23 @@
 #
 #------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.26)
+PROJECT			=  rpn
 
-# Applications CMake module setup
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../../Mkfiles/cmake")
+PATH_DECNUMBER	=  $(PATH_UKOS)/Third_Parties/decnumber
+MYLIB			=  $(PATH_DECNUMBER)/Library/$(CORE)/libdecnumber.a
 
-include(set-project-paths)
+# Target & Infrastructure
 
-include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-arm-toolchain.cmake)
+PREFIX			?=  arm-none-eabi-
+COMPILER_FAMILY	?=  gcc
 
-project(
-	bid64_xyz
-	VERSION 1.0
-	LANGUAGES C
-)
+BOARD			=  Discovery_U5G9
+V				=  Variant_Test
+SOC				=  STM32U5G9
+CORE			=  CORTEX_M33
+OPTIMISATION	=  -Os
 
-# Microcontroller description (mandatory variables)
-set(SOC rp2350)
-set(CORE CORTEX_M33)
+CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include
+CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include/libdecnumber
 
-# Target
-set(BOARD Pico2_rp2350)
-set(VARIANT Variant_Test)
-
-# Extra compilation options
-add_compile_options(
-	-g3 # include extra information for debugger
-	-Os # optimisation
-)
-
-if(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    set(CFLAGS_APPEND -Wno-c++-keyword)
-endif()
-
-set(PATH_INCLUDES
-	${PATH_UKOS}/Third_Parties/IntelRDFPMath/IntelRDFPMath-current/LIBRARY/src
-)
-find_library(MYLIB IntelRDFPMath ${PATH_UKOS}/Third_Parties/IntelRDFPMath/Library/${CORE})
-
-include(common)
+include ../../../../Mkfiles/common.mk

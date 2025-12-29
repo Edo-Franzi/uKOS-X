@@ -146,5 +146,5 @@ copy :
 build : $(TARGET)
 
 $(TARGET) : $(TARGET).c $(PATH_COMMFTDI)/d2x.c $(PATH_COMMFTDI)/vcp.c $(PATH_COMMFTDI)/spi.c
-	gcc -std=c2x -pthread -v -o $(TARGET) $(TARGET).c $(PATH_COMMFTDI)/d2x.c $(PATH_COMMFTDI)/vcp.c $(PATH_COMMFTDI)/spi.c $(PATH_INCLUDES) ${PATH_LIBRARIES} -lftd2xx -ldl
+	gcc -std=c23 -pthread -v -o $(TARGET) $(TARGET).c $(PATH_COMMFTDI)/d2x.c $(PATH_COMMFTDI)/vcp.c $(PATH_COMMFTDI)/spi.c $(PATH_INCLUDES) ${PATH_LIBRARIES} -lftd2xx -ldl
 

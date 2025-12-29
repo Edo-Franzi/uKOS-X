@@ -140,7 +140,6 @@ OBJ				+= $(addprefix $(BUILD)/, $(SRC_QSTR:.c=.o))
 OBJ				+= $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 OBJ				+= $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ				+= $(addprefix $(BUILD)/, $(SRC_MODULE:.c=.o))
-
 OBJ				:= $(patsubst $(BUILD)/../%, $(BUILD)/%, $(OBJ))
 OBJ				:= $(sort $(OBJ))
 
@@ -159,7 +158,7 @@ endif
 CFLAGS_CORTEX	+= -Wdouble-promotion -fshort-enums
 CFLAGS_CORTEX	+= $(FLAGS_UKOS)
 
-CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c2x -nostdlib $(CFLAGS_CORTEX) $(COPT) -Os -DNDEBUG
+CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c23 -nostdlib $(CFLAGS_CORTEX) $(COPT) -Os -DNDEBUG
 ifneq ($(PREFIX),llvm-)
 CFLAGS			+= -Wno-dangling-pointer
 endif

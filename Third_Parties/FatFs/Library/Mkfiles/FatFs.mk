@@ -51,18 +51,20 @@ ifndef PATH_FATFS
 $(error PATH_FATFS is not defined)
 endif
 
+LIB_SYS_DIR			=  $(PATH_FATFS)/uKOS_System
+LIB_SRC_DIR			=  $(PATH_FATFS)/FatFs-current/source
+
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_storages/storage
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_storages/sdcard
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_storages/serialFlash
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Devices
+PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
+PATH_INCLUDES		+= -I$(LIB_SYS_DIR)
 
-PATH_INCLUDES		+= -I$(PATH_FATFS)/FatFs-current/source
-PATH_INCLUDES		+= -I$(PATH_FATFS)/uKOS_System
-
-SRC					=   $(PATH_FATFS)/uKOS_System/headerFatFs.c
-SRC					+=  $(PATH_FATFS)/uKOS_System/diskio.c
-SRC					+=  $(shell find $(PATH_FATFS)/FatFs-current/source -name '*.c')
+SRC					=   $(LIB_SYS_DIR)/headerFatFs.c
+SRC					+=  $(LIB_SYS_DIR)/diskio.c
+SRC					+=  $(shell find $(LIB_SRC_DIR) -name '*.c')
 OBJ					=   $(patsubst %.c,%.o,$(SRC))
 
 CFLAGS				+= -c -g3 $(OPTIMISATION)
@@ -100,16 +102,23 @@ all :
 
 # Clean
 
+LIB_CLEAN_DIRS := . $(LIB_SYS_DIR) $(LIB_SRC_DIR)
+
 clr_all :
-	rm -f *.d *.o* *.a
+	@rm -f $(addsuffix /*.a,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
 
 clr :
-	rm -f *.d *.o*
+	@rm -f $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
 
 # Archive
 
 archive :
-	$(AR) rcs $(FATFS) *.o
+	$(AR) rcs $(FATFS) $(OBJ)
 
 # Build & remove
 
@@ -117,7 +126,7 @@ build : $(OBJ)
 
 %.o: %.c
 	@echo "Compiling $(notdir $<)"
-	@$(CC) -c $(CFLAGS) $<
+	$(CC) $(CFLAGS) -c $< -o $@
 
 remove :
 	$(ST) --strip-unneeded $(FATFS)

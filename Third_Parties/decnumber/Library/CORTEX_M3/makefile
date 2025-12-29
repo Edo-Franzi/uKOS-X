@@ -8,7 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for the "bid64_xyz" application.
+# Goal:		makefile for uKOS-X for building the libdecnumber.a module.
 #
 #   (c) 2025-20xx, Edo. Franzi
 #   --------------------------
@@ -44,22 +44,48 @@
 #
 #------------------------------------------------------------------------
 
-PROJECT				=  bid64_xyz
+SHELL			=  /bin/sh
 
-PATH_INTELRDFPMATH	=  $(PATH_UKOS)/Third_Parties/IntelRDFPMath
-MYLIB				=  $(PATH_INTELRDFPMATH)/Library/$(CORE)/libIntelRDFPMath.a
+ifndef PATH_UKOS_X_PACKAGE
+    $(error PATH_UKOS_X_PACKAGE is not defined)
+endif
+ifndef PATH_GCC_ARM
+    $(error PATH_GCC_ARM is not defined)
+endif
+
+ifeq ($(origin CC), default)
+CC					=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
+AR					=  $(PATH_COMPILER)/bin/$(PREFIX)ar
+ST					=  $(PATH_COMPILER)/bin/$(PREFIX)strip
+RANLIB				=  $(PATH_COMPILER)/bin/$(PREFIX)ranlib
+endif
+
+# Project paths
+
+# - PATH_UKOS		--> Main uKOS-X folder			--> OS_Kernel-X
+# - PATH_PORT		--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
+# - PATH_DECNUMBER	--> decnumber package
+
+PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
+PATH_DECNUMBER		=  $(PATH_UKOS)/Third_Parties/decnumber
 
 # Target & Infrastructure
 
-PREFIX			?=  arm-none-eabi-
-COMPILER_FAMILY	?=  gcc
+CORE				=  CORTEX_M3
+DECNUMBER			=  libdecnumber.a
 
-BOARD			=  Pico2_rp2350
-V				=  Variant_Test
-SOC				=  rp2350
-CORE			=  CORTEX_M33
-OPTIMISATION	=  -Os
+STANDARD			=  -std=c23
+OPTIMISATION		=  -Os
 
-CFLAGS			+= -I$(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src
+PREFIX				?= arm-none-eabi-
+PATH_COMPILER		=  $(PATH_GCC_ARM)
+FLAGS_FP			=  -mfloat-abi=soft
+CPU_SPEC			=  -mcpu=cortex-m3 -mthumb
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
 
-include ../../../../Mkfiles/common.mk
+# The included makefiles
+
+include	$(PATH_DECNUMBER)/Library/Mkfiles/decnumber.mk
+DEP					:= $(OBJ:.o=.d)
+-include $(DEP)
+.PHONY : all clr_all clr build archive

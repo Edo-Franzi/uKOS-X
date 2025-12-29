@@ -277,8 +277,6 @@ k_Mathematicals:
     - Discovery_U5G9
     - MAiXDUiNO_K210
     - Nucleo_H743
-    - Nucleo_N657
-    - Pico2_rp2350
 
   cordic:
     - Alastor_H743
@@ -312,6 +310,13 @@ k_Mathematicals:
     - Nucleo_L4R5
     - Nucleo_N657
     - Pico2_rp2350
+
+  rpn:
+    - Alastor_H743
+    - Asmodee_H747
+    - Discovery_U5G9
+    - MAiXDUiNO_K210
+    - Nucleo_H743
 
 l_MLPs:
   class_Py:

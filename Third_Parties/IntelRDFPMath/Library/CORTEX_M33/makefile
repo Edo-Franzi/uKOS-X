@@ -73,17 +73,18 @@ PATH_INTELRDFPMATH	=  $(PATH_UKOS)/Third_Parties/IntelRDFPMath
 CORE				=  CORTEX_M33
 INTELRDFPMATH		=  libIntelRDFPMath.a
 
-STANDARD			=  -std=c2x
+STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
 
 PREFIX				?= arm-none-eabi-
 PATH_COMPILER		=  $(PATH_GCC_ARM)
 FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m33
+CPU_SPEC			=  -mcpu=cortex-m33 -mthumb
 FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
 
 # The included makefiles
 
 include	$(PATH_INTELRDFPMATH)/Library/Mkfiles/IntelRDFPMathLib.mk
--include $(wildcard *.d)
+DEP					:= $(OBJ:.o=.d)
+-include $(DEP)
 .PHONY : all clr_all clr build archive

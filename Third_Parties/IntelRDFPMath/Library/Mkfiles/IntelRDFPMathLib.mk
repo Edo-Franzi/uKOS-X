@@ -1,5 +1,5 @@
-# FatFs.
-# ======
+# libIntelRDFPMath.
+# =================
 
 # SPDX-License-Identifier: MIT
 
@@ -8,7 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X systems (IntelRDFPMath part).
+# Goal:		makefile for uKOS-X for building libIntelRDFPMath.a module
 #
 #   (c) 2025-20xx, Edo. Franzi
 #   --------------------------
@@ -51,21 +51,15 @@ ifndef PATH_INTELRDFPMATH
 $(error PATH_INTELRDFPMATH is not defined)
 endif
 
+LIB_SYS_DIR			=  $(PATH_INTELRDFPMATH)/uKOS_System
+LIB_SRC_DIR			=  $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src
+
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
-
 PATH_INCLUDES		+= -I$(PATH_INTELRDFPMATH)/IntelRDFPMath-current/source
-PATH_INCLUDES		+= -I$(PATH_INTELRDFPMATH)/uKOS_System
+PATH_INCLUDES		+= -I$(LIB_SYS_DIR)
 
-SRC					=   $(PATH_INTELRDFPMATH)/uKOS_System/headerIntelRDFPMath.c
-SRC					+=  $(shell find $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src -name 'bid32_*.c')
-SRC					+=  $(shell find $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src -name 'bid64_*.c')
-SRC					+=  $(shell find $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src -name 'bid_*.c')
-SRC					+=				 $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src/bid128_2_str_tables.c
-SRC					+=				 $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src/strtod32.c
-SRC					+=				 $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src/strtod64.c
-SRC					+=				 $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src/wcstod32.c
-SRC					+=				 $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src/wcstod64.c
-
+SRC					=   $(LIB_SYS_DIR)/headerIntelRDFPMath.c
+SRC					+=  $(shell find $(LIB_SRC_DIR) -name '*.c')
 OBJ					=   $(patsubst %.c,%.o,$(SRC))
 
 CFLAGS				+= -c -g3 $(OPTIMISATION)
@@ -113,16 +107,23 @@ all :
 
 # Clean
 
+LIB_CLEAN_DIRS := $(LIB_SYS_DIR) $(LIB_SRC_DIR)
+
 clr_all :
-	rm -f *.d *.o* *.a
+	@rm -f $(addsuffix /*.a,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
 
 clr :
-	rm -f *.d *.o*
+	@rm -f $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
 
 # Archive
 
 archive :
-	$(AR) rcs $(INTELRDFPMATH) *.o
+	$(AR) rcs $(INTELRDFPMATH) $(OBJ)
 
 # Build & remove
 
@@ -130,7 +131,7 @@ build : $(OBJ)
 
 %.o: %.c
 	@echo "Compiling $(notdir $<)"
-	@$(CC) -c $(CFLAGS) $<
+	$(CC) $(CFLAGS) -c $< -o $@
 
 remove :
 	$(ST) --strip-unneeded $(INTELRDFPMATH)

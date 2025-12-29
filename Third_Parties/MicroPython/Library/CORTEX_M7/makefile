@@ -173,12 +173,12 @@ endif
 CFLAGS_CORTEX	+= -fshort-enums
 CFLAGS_CORTEX	+= $(FLAGS_UKOS)
 
-CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c2x -nostdlib $(CFLAGS_CORTEX) $(COPT) -Os -DNDEBUG
+CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c23 -nostdlib $(CFLAGS_CORTEX) $(COPT) -Os -DNDEBUG
 ifneq ($(PREFIX),llvm-)
 CFLAGS			+= -Wno-dangling-pointer
 endif
 
-CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c2x -nostdlib $(CFLAGS_CORTEX) $(COPT) -Os -DNDEBUG
+CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c23 -nostdlib $(CFLAGS_CORTEX) $(COPT) -Os -DNDEBUG
 ifneq ($(PREFIX),llvm-)
 CFLAGS			+= -Wno-dangling-pointer
 endif

@@ -84,4 +84,4 @@ copy :
 build : $(TARGET)
 
 $(TARGET) : $(TARGET).c
-	gcc -pedantic -std=c2x -o $(TARGET) $(TARGET).c $(PATH_INCLUDES)
+	gcc -pedantic -std=c23 -o $(TARGET) $(TARGET).c $(PATH_INCLUDES)

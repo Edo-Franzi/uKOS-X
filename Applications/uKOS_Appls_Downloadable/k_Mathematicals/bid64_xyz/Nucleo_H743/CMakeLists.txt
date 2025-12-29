@@ -59,6 +59,8 @@ project(
 	LANGUAGES C
 )
 
+set(PATH_DECNUMBER ${PATH_UKOS}/Third_Parties/decnumber)
+
 # Microcontroller description (mandatory variables)
 set(SOC STM32H743)
 set(CORE CORTEX_M7)
@@ -78,8 +80,9 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(PATH_INCLUDES
-	${PATH_UKOS}/Third_Parties/IntelRDFPMath/IntelRDFPMath-current/LIBRARY/src
+	${PATH_DECNUMBER}/decnumber-current/include
+	${PATH_DECNUMBER}/decnumber-current/include/libdecnumber
 )
-find_library(MYLIB IntelRDFPMath ${PATH_UKOS}/Third_Parties/IntelRDFPMath/Library/${CORE})
+find_library(MYLIB decnumber ${PATH_DECNUMBER}/Library/${CORE})
 
 include(common)

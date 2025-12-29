@@ -156,7 +156,6 @@ endif
 
 ifeq ($(PROVIDER), raspberrypi)
 SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/pio_usb -name '*.c')
-#SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040 -name '*.c')
 SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/hcd_rp2040.c
 SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/rp2040_usb.c
 SRC					+=  $(PATH_TINYUSB)/uKOS_Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
@@ -220,19 +219,30 @@ all :
 
 # Clean
 
-clr_all :
-	rm -f *.d *.o* *.a
+LIB_CLEAN_DIRS := . $(sort $(dir $(SRC)))
 
-clr :
-	rm -f *.d *.o*
+clr_all:
+	@rm -f $(addsuffix /*.a,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.fs.o,$(LIB_CLEAN_DIRS))	\
+		   $(addsuffix /*.hs.o,$(LIB_CLEAN_DIRS))	\
+		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
+
+clr:
+	@rm -f $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
+		   $(addsuffix /*.fs.o,$(LIB_CLEAN_DIRS))	\
+		   $(addsuffix /*.hs.o,$(LIB_CLEAN_DIRS))	\
+		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
 
 # Archive
 
-archive_fs :
-	$(AR) rcs $(TINYUSB_FS) *.o
+archive_fs : $(OBJ_C_FS) $(OBJ_A_FS)
+	$(AR) rcs $(TINYUSB_FS) $(OBJ_C_FS) $(OBJ_A_FS)
 
-archive_hs :
-	$(AR) rcs $(TINYUSB_HS) *.o
+archive_hs : $(OBJ_C_HS) $(OBJ_A_HS)
+	$(AR) rcs $(TINYUSB_HS) $(OBJ_C_HS) $(OBJ_A_HS)
 
 # Build & remove
 
@@ -241,7 +251,7 @@ build_hs : $(OBJ_C_HS) $(OBJ_A_HS)
 
 %.fs.o : %.c
 	@echo "Compiling $(notdir $<)"
-	@$(CC) -c -DSYSTEM_TINYUSB_FS_S $(CFLAGS) $<
+	@$(CC) -DSYSTEM_TINYUSB_FS_S $(CFLAGS) -c $< -o $@
 
 %.fs.o : %.S
 	@echo "Assembling $(notdir $<)"
@@ -249,7 +259,7 @@ build_hs : $(OBJ_C_HS) $(OBJ_A_HS)
 
 %.hs.o : %.c
 	@echo "Compiling $(notdir $<)"
-	@$(CC) -c -DSYSTEM_TINYUSB_HS_S $(CFLAGS) $<
+	@$(CC) -DSYSTEM_TINYUSB_HS_S $(CFLAGS) -c $< -o $@
 
 %.hs.o : %.S
 	@echo "Assembling $(notdir $<)"

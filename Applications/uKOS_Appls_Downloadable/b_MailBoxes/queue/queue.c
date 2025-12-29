@@ -98,7 +98,7 @@ MODULE(
  * \brief aProcess 0
  *
  * - P0: Create a mailbox "Queue 1-to-0"
- *		cRead and display the messages coming from the queue
+ *		 Read and display the messages coming from the queue
  *			- Toggle LED 0
  *
  */

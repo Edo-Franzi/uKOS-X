@@ -54,16 +54,18 @@
  *
  *			Launch 1 processes:
  *
- *			- P0: - Initialise the Intel math library
- *				  - Compute the mul & div
+ *			- P0: - Initialise the decnumber math library
+ *				  - Compute some basic operator
  *				  - Display the result
  *				  - Commit a suicide
  *
  */
 
 #include	"uKOS.h"
-#include	"bid_conf.h"
-#include	"bid_functions.h"
+#include	"decNumber.h"
+#include	"decContext.h"
+#include	"bid/decimal64.h"
+#include	<stdio.h>
 #include	<math.h>
 #include	<string.h>
 
@@ -98,73 +100,71 @@ MODULE(
 // Application specific
 // ====================
 
-typedef	struct	exception	exception_t;
+static	char_t		vResult[128];
+static	char_t		*vN1 = "0.004565e-3";
+static	char_t		*vN2 = "1.747470e+4";
+static	char_t		*vZe = "00000000000";
+static	decContext	vSet;
 
-struct exception {
-				uint8_t		oFlag;
-		const	char_t		*oMessage;
-};
-
-static	char_t	vResult[128];
-static	char_t	*vN1 = "0.004565e-3";
-static	char_t	*vN2 = "1.747470e+4";
-static	char_t	*vZe = "00000000000";
+#define	KDIGIT_PRECISION	16u			// 16 digits for decimal 64-bits
+#define	KNO_TRAP			0u			// No trap
 
 // Prototypes
 
-static void	local_printStatus(_IDEC_flags fpsf);
+static	void	local_printStatus(decContext set);
 
 /*
  * \brief aProcess
  *
- * - Initialise the Intel math library
- * - Compute the mul & div
+ * - Initialise the decnumber math library
+ * - Compute some basic operator
  * - Display the result
  * - Commit a suicide
  *
  */
 static void __attribute__ ((noreturn)) aProcess(const void *argument) {
-	_IDEC_flags		fpsf;
-	BID_UINT64		x, y, z;
+	decNumber	a, b, r;
+	decimal64	rd64;
 
 	UNUSED(argument);
 
 	kern_suspendProcess(1000u);
 	(void)dprintf(KSYST, "\n");
 
+	decContextDefault(&vSet, DEC_INIT_DECIMAL64);
+	vSet.traps  = KNO_TRAP;
+	vSet.digits = KDIGIT_PRECISION;
+
 // Multiplication
 
-	fpsf = 0;
-	x = bid64_from_string((char *)vN1, BID_ROUNDING_TO_NEAREST, &fpsf);
-	y = bid64_from_string((char *)vN2, BID_ROUNDING_TO_NEAREST, &fpsf);
-	z = bid64_mul(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
-
-    bid64_to_string(vResult, z, &fpsf);
-	local_printStatus(fpsf);
+	decNumberFromString(&a, vN1, &vSet);
+	decNumberFromString(&b, vN2, &vSet);
+	decNumberMultiply(&r, &a, &b, &vSet);
+	decimal64FromNumber(&rd64, &r, &vSet);
+	decimal64ToString(&rd64, vResult);
+	local_printStatus(vSet);
 
 	(void)dprintf(KSYST, "%s mul %s = %s\n\n", vN1, vN2, vResult);
 
 // Division (!= 0)
 
-	fpsf = 0;
-	x = bid64_from_string((char *)vN1, BID_ROUNDING_TO_NEAREST, &fpsf);
-	y = bid64_from_string((char *)vN2, BID_ROUNDING_TO_NEAREST, &fpsf);
-	z = bid64_div(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
-
-    bid64_to_string(vResult, z, &fpsf);
-	local_printStatus(fpsf);
+	decNumberFromString(&a, vN1, &vSet);
+	decNumberFromString(&b, vN2, &vSet);
+	decNumberDivide(&r, &a, &b, &vSet);
+	decimal64FromNumber(&rd64, &r, &vSet);
+	decimal64ToString(&rd64, vResult);
+	local_printStatus(vSet);
 
 	(void)dprintf(KSYST, "%s div %s = %s\n\n", vN1, vN2, vResult);
 
 // Division (= 0)
 
-	fpsf = 0;
-	x = bid64_from_string((char *)vN1, BID_ROUNDING_TO_NEAREST, &fpsf);
-	y = bid64_from_string((char *)vZe, BID_ROUNDING_TO_NEAREST, &fpsf);
-	z = bid64_div(x, y, BID_ROUNDING_TO_NEAREST, &fpsf);
-
-    bid64_to_string(vResult, z, &fpsf);
-	local_printStatus(fpsf);
+	decNumberFromString(&a, vN1, &vSet);
+	decNumberFromString(&b, vZe, &vSet);
+	decNumberDivide(&r, &a, &b, &vSet);
+	decimal64FromNumber(&rd64, &r, &vSet);
+	decimal64ToString(&rd64, vResult);
+	local_printStatus(vSet);
 
 	(void)dprintf(KSYST, "%s div %s = %s\n\n", vN1, vZe, vResult);
 
@@ -219,22 +219,11 @@ int		main(int argc, const char *argv[]) {
  * - Display the status of the operation
  *
  */
-static void	local_printStatus(_IDEC_flags fpsf) {
-	const	exception_t		aTabException[] = {
-								{ DEC_FE_INVALID,	"NaN, conversion impossible" },
-								{ DEC_FE_UNNORMAL,	"Not normal"				 },
-								{ DEC_FE_DIVBYZERO,	"Division by 0"				 },
-								{ DEC_FE_OVERFLOW,	"Overflow"					 },
-								{ DEC_FE_UNDERFLOW,	"Underflow"					 },
-								{ DEC_FE_INEXACT,	"Inexact"					 },
-								{ 0u,				NULL						 }
-							};
-	const exception_t		*table = &aTabException[0];
+static	void	local_printStatus(decContext set) {
 
-	if (fpsf == 0u) { return; }
+	if ((set.status & DEC_Errors) == 0u) { return; }
 
-	while (table->oFlag != 0u) {
-		if (fpsf & table->oFlag) { (void)dprintf(KSYST, "%s\n", table->oMessage); }
-		table++;
-	}
+	set.status &= DEC_Errors;
+
+	(void)dprintf(KSYST, "Problem: %s\n", decContextStatusToString(&set));
 }

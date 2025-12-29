@@ -78,7 +78,7 @@ TINYUSB_FS			=  libTinyUSB_FS.a
 TINYUSB_HS			=  libTinyUSB_HS.a
 PROFILE				=  cdc_msc
 
-STANDARD			=  -std=c2x
+STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
 
 PREFIX				?= arm-none-eabi-

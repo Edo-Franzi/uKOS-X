@@ -73,17 +73,18 @@ PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
 CORE				=  CORTEX_M4
 FATFS				=  libFatFs.a
 
-STANDARD			=  -std=c2x
+STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
 
 PREFIX				?= arm-none-eabi-
 PATH_COMPILER		=  $(PATH_GCC_ARM)
 FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv4-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m4
+CPU_SPEC			=  -mcpu=cortex-m4 -mthumb
 FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
 
 # The included makefiles
 
 include	$(PATH_FATFS)/Library/Mkfiles/FatFs.mk
--include $(wildcard *.d)
+DEP					:= $(OBJ:.o=.d)
+-include $(DEP)
 .PHONY : all clr_all clr build archive

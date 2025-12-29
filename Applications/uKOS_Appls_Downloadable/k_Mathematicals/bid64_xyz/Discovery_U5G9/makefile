@@ -44,10 +44,10 @@
 #
 #------------------------------------------------------------------------
 
-PROJECT				=  bid64_xyz
+PROJECT			=  bid64_xyz
 
-PATH_INTELRDFPMATH	=  $(PATH_UKOS)/Third_Parties/IntelRDFPMath
-MYLIB				=  $(PATH_INTELRDFPMATH)/Library/$(CORE)/libIntelRDFPMath.a
+PATH_DECNUMBER	=  $(PATH_UKOS)/Third_Parties/decnumber
+MYLIB			=  $(PATH_DECNUMBER)/Library/$(CORE)/libdecnumber.a
 
 # Target & Infrastructure
 
@@ -60,6 +60,7 @@ SOC				=  STM32U5G9
 CORE			=  CORTEX_M33
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -I$(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src
+CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include
+CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include/libdecnumber
 
 include ../../../../Mkfiles/common.mk

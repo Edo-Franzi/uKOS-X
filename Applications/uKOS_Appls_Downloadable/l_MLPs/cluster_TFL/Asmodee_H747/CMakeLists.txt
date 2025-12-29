@@ -73,7 +73,7 @@ add_compile_options(-g3 # includes extra information for debugger
 	$<$<COMPILE_LANGUAGE:CXX>:-std=c++23>
 	$<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
 	$<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
-	$<$<COMPILE_LANGUAGE:C>:-std=c2x> # STANDARD
+	$<$<COMPILE_LANGUAGE:C>:-std=c23> # STANDARD
 	-Os # optimisation
 )
 add_compile_definitions(
