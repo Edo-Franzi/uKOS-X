@@ -174,6 +174,12 @@ LIBX_P			+= $(PATH_UKOS)/OS/Lib_peripherals/i2c0/i2c0.c
 # With the I2C1 manager
 CONF_SYSTEM		+= -DCONFIG_MAN_I2C1_S
 LIBX_P			+= $(PATH_UKOS)/OS/Lib_peripherals/i2c1/i2c1.c
+# With the SPI manager
+CONF_SYSTEM		+= -DCONFIG_MAN_SPI_S
+LIBX_P			+= $(PATH_UKOS)/OS/Lib_peripherals/spi/spi.c
+# With the SPI0 manager
+CONF_SYSTEM		+= -DCONFIG_MAN_SPI0_S
+LIBX_P			+= $(PATH_UKOS)/OS/Lib_peripherals/spi0/spi0.c
 # With the RECORD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_RECORD_S
 LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/record/record.c
@@ -208,6 +214,7 @@ LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/i2c1/stub_i2c1_si2c1.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/spi0/stub_spi0_sspi4.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart1.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
@@ -289,8 +296,9 @@ CLI_U			+= $(PATH_UKOS)/OS/CLI/test_malloc/test_malloc.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/uKOS/uKOS.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/viewer/viewer.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/viewer/viewer_uvc0_simule.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/wkserial/wkserial.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/wki2c/wki2c.c
+CLI_U			+= $(PATH_UKOS)/OS/CLI/wkserial/wkserial.c
+CLI_U			+= $(PATH_UKOS)/OS/CLI/wkspi/wkspi.c
 
 # All the uKOS-X library components
 

@@ -1,15 +1,15 @@
 /*
-; uKOS.
-; =====
+; stub_spi0_sspi4.
+; ================
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the connection of the "spi0" manager to the sspi4 device.
 ;
 ;   (c) 2025-20xx, Edo. Franzi
 ;   --------------------------
@@ -46,48 +46,33 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+// Connect the physical device to the logical manager
+// --------------------------------------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#define	UNIT							"SPI4"
+#define	SPI								REG(SPI4)
+#define	SPI_VECTOR_NUMBER				SPI4_IRQn
+#define	SPI_FREQUENCY					KFREQUENCY_APB2
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#define	model_spi_init					stub_spi0_init
+#define	model_spi_configure				stub_spi0_configure
+#define	model_spi_multipleWriteRead		stub_spi0_multipleWriteRead
 
-// IWYU pragma: end_exports
+// Model callbacks
+// ---------------
 
-// uKOS-X main constants
-// -----------------------
+/*
+ * \brief cb_enable
+ *
+ * - Enable the device (clock)
+ *
+ */
+static	void	cb_enable(void) {
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.1.217"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		1
-#define	uKOS_VERSION_PATCH		217
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+	REG(RCC)->APB2ENR	|= RCC_APB2ENR_SPI4EN;
+	REG(RCC)->APB2LPENR	|= RCC_APB2LPENR_SPI4LPEN;
+}
+
+#include	"model_spi.c_inc"

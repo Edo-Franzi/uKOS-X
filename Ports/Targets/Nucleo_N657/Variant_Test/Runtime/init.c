@@ -354,7 +354,7 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PB00u,IN,  50-MHz, Pull-down	--------	AF15
+// PB00, IN,  50-MHz, Pull-down	--------	AF15
 // PB01, IN,  50-MHz, Pull-down	--------	AF15
 // PB02, IN,  50-MHz, Pull-down	--------	AF15
 // PB03, IN,  50-MHz, Pull-down	--------	AF15
@@ -414,20 +414,20 @@ static	void	local_GPIO_Configuration(void) {
 // PE07, IN,  50-MHz, Pull-down	--------	AF15
 // PE08, IN,  50-MHz, Pull-down	--------	AF15
 // PE09, IN,  50-MHz, Pull-down	--------	AF15
-// PE10, IN,  50-MHz, Pull-down	--------	AF15
-// PE11, IN,  50-MHz, Pull-down	--------	AF15
-// PE12, IN,  50-MHz, Pull-down	--------	AF15
-// PE13, IN,  50-MHz, Pull-down	--------	AF15
-// PE14, IN,  50-MHz, Pull-down	--------	AF15
+// PE10, OU,  50-MHz, Push_pull	GPIO_0		AF15		CN15	27
+// PE11, OU,  50-MHz, Push_pull	GPIO_1		AF15		CN15	23
+// PE12, AL,  50-MHz, Push_pull	SPI4_SCK	AF15		CN15	1
+// PE13, AL,  50-MHz, Pull-up	SPI4_MISO	AF15		CN15	28
+// PE14, AL,  50-MHz, Push_pull	SPI4_MOSI	AF15		CN15	26
 // PE15, IN,  50-MHz, Pull-down	--------	AF15
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
-	CNFGPIO(E,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KAL,KAL,KIN,KIN,KIN,KIN,KIN,
+	CNFGPIO(E,KIN,KAL,KAL,KAL,KOU,KOU,KIN,KIN,KIN,KAL,KAL,KIN,KIN,KIN,KIN,KIN,
 			  K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,
-			  KPD,KPD,KPD,KPD,KPD,KPD,KPD,KPD,KPD,KPU,KNO,KPD,KPD,KPD,KPD,KPD,
-			  A15,A15,A15,A15,A15,A15,A15,A15,A15,A07,A07,A15,A15,A15,A15,A15,
+			  KPD,KNO,KPU,KNO,KNO,KNO,KPD,KPD,KPD,KPU,KNO,KPD,KPD,KPD,KPD,KPD,
+			  A15,A05,A05,A05,A15,A15,A15,A15,A15,A07,A07,A15,A15,A15,A15,A15,
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
-			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
+			  0u, 0u, 0u, 0u, 1u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
 // PG00, OU,  50-MHz, Open-D	GPIO		AF15	Led 3
 // PG01, OU,  50-MHz, Push-pull	--------	AF15	(Test analyser)

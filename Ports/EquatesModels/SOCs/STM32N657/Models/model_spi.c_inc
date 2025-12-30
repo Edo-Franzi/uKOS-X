@@ -1,0 +1,277 @@
+/*
+; model_spi.
+; ==========
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for controlling the "spi" device.
+;
+;   (c) 2025-20xx, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+static	const	volatile	uint8_t		*vWkBuffer;
+static			volatile	uint8_t		*vRkBuffer;
+static			volatile	uint16_t	vWSize;
+static			volatile	uint16_t	vRSize;
+static			volatile	bool		vStart;
+static			volatile	bool		vBusy = false;
+static			volatile	enum		{ KSPI_READ, KSPI_WRITE, KSPI_EEPROM, KSPI_ERROR } vMode;
+static						sema_t		*vSemaphore_TR;
+
+STRG_LOC_CONST(aStrSemaphore_TR[]) = UNIT " Transaction";
+
+// Prototypes
+
+static	void	local_SPI_IRQHandler(void);
+
+/*
+ * \brief model_spi_init
+ *
+ * - Initialise the manager
+ *
+ */
+void	model_spi_init(void) {
+
+	cb_enable();
+
+// Create the semaphore
+
+	kern_createSemaphore(aStrSemaphore_TR, 0, 1, &vSemaphore_TR);
+
+	SPI->CR1 &= (uint32_t)~SPI_CR1_SPE;
+
+// Initialise the SPI Master, POL = PHA = 1, Fclk divided by 32
+
+	SPI->CFG1 = (4u * SPI_CFG1_MBR_0)
+			  | ((8u - 1u) * SPI_CFG1_DSIZE_0);
+
+	SPI->CFG2 = SPI_CFG2_SSOE
+			  | SPI_CFG2_CPHA
+			  | SPI_CFG2_CPOL
+			  | SPI_CFG2_MASTER;
+
+	SPI->CR1  = SPI_CR1_SPE;
+	SPI->CR1 |= SPI_CR1_CSTART;
+
+	INTERRUPT_VECTOR(SPI_VECTOR_NUMBER, local_SPI_IRQHandler);
+	NVIC_SetPriority(SPI_VECTOR_NUMBER, KHW_PRIORITY_MODERATE);
+	NVIC_EnableIRQ(SPI_VECTOR_NUMBER);
+}
+
+/*
+ * \brief model_spi_configure
+ *
+ * - Configure the manager
+ *
+ */
+int32_t	model_spi_configure(const spiCnf_t *configure) {
+	uint32_t	ratio, mbr;
+
+	INTERRUPTION_OFF;
+	SPI->CR1 &= (uint32_t)~SPI_CR1_SPE;
+
+	SPI->CFG2 = SPI_CFG2_SSOE;
+	SPI->CFG1 = ((8u - 1u) * SPI_CFG1_DSIZE_0);
+
+// The mode
+// The polariry
+
+	if (configure->oMode == (uint8_t)KSPI_MASTER)			 { SPI->CFG2 |= SPI_CFG2_MASTER; }
+	if ((configure->oClock & (1u<<(uint8_t)BSPI_POL)) != 0u) { SPI->CFG2 |= SPI_CFG2_CPOL;   }
+	if ((configure->oClock & (1u<<(uint8_t)BSPI_PHA)) != 0u) { SPI->CFG2 |= SPI_CFG2_CPHA;   }
+
+// The speed factor
+
+	ratio = SPI_FREQUENCY / configure->oSpeed;
+
+	mbr = 0u * SPI_CFG1_MBR_0;
+	mbr = ((ratio <= 2u))					   ? (0u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio >  2u)   && (ratio <= 4u))   ? (1u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio >  4u)   && (ratio <= 8u))   ? (2u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio >  8u)   && (ratio <= 16u))  ? (3u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio > 16u)   && (ratio <= 32u))  ? (4u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio > 32u)   && (ratio <= 64u))  ? (5u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio > 64u)   && (ratio <= 128u)) ? (6u * SPI_CFG1_MBR_0) : (mbr);
+	mbr = ((ratio > 128u))					   ? (7u * SPI_CFG1_MBR_0) : (mbr);
+
+	SPI->CFG1 |= mbr;
+
+	SPI->CR1  = SPI_CR1_SPE;
+	SPI->CR1 |= SPI_CR1_CSTART;
+	RETURN_INT_RESTORE(KERR_SPI_NOERR);
+}
+
+/*
+ * \brief model_spi_multipleWriteRead
+ *
+ * - Write read bytes with different configuration
+ *
+ */
+int32_t	model_spi_multipleWriteRead(const uint8_t *wData, uint16_t wSize, uint8_t *rData, uint16_t rSize, uint32_t timeout) {
+	int32_t		status;
+
+	INTERRUPTION_OFF;
+	if (vBusy == true) { RETURN_INT_RESTORE(KERR_SPI_CHBSY); }
+	vBusy = true;
+	INTERRUPTION_RESTORE;
+
+	vMode = KSPI_ERROR;
+	vMode = ((wSize != 0u) && (rSize == 0u))					? (KSPI_WRITE)  : (vMode);	// Mode only write
+	vMode = ((wSize == 0u) && (rSize != 0u))					? (KSPI_READ)   : (vMode);	// Mode only read
+	vMode = ((wSize == rSize) && (rSize != 0u))					? (KSPI_READ)	: (vMode);	// Mode write-read
+	vMode = ((wSize < rSize) && (wSize != 0u) && (rSize != 0u)) ? (KSPI_EEPROM) : (vMode);	// Mode EEPROM
+
+	vWkBuffer = wData;
+	vRkBuffer = rData;
+	vWSize	  = wSize;
+	vRSize	  = rSize;
+	vStart	  = true;
+
+	SPI->IFCR = SPI_IFCR_EOTC;
+	SPI->IER |= SPI_IER_RXPIE;
+
+	NVIC_SetPendingIRQ(SPI_VECTOR_NUMBER);
+
+	status = (kern_waitSemaphore(vSemaphore_TR, timeout) != KERR_SPI_NOERR) ? (KERR_SPI_TIMEO) : (KERR_SPI_NOERR);
+	return (status);
+}
+
+/*
+ * \brief local_SPI_IRQHandler
+ *
+ * - SPI interruption
+ *
+ */
+static	void	local_SPI_IRQHandler(void) {
+			uint8_t		data;
+	static	uint16_t	vNbBytes = 0u;
+	static	bool		vWrite = false;
+	static	bool		vFirst = true;
+
+	SPI->IFCR = SPI_IFCR_EOTC;
+	data = *((volatile uint8_t *)&SPI->RXDR);
+
+	switch (vMode) {
+
+// Case 1: Simple write transfer
+// -----------------------------
+
+// model_spi_multipleWriteRead(wBufferW, 10, xyz (or NULL), 0)
+
+		case KSPI_WRITE: {
+			if (vNbBytes < vWSize) {
+				*((volatile uint8_t *)&SPI->TXDR) = vWkBuffer[vNbBytes];
+				vNbBytes++;
+				return;
+			}
+
+			break;
+		}
+
+// Case 2: Simple read transfer or read-write
+// ------------------------------------------
+
+// model_spi_multipleWriteRead(xyz (or NULL), 0, rBuffer, 24)
+// model_spi_multipleWriteRead(wBuffer, 33, rBuffer, 33)
+
+		case KSPI_READ: {
+
+// Skip the first read due to the NVIC_SetPendingIRQ
+
+			if (vFirst == true) { vFirst = false;				  }
+			else                { vRkBuffer[vNbBytes - 1u] = data; }
+
+			if (vNbBytes < vRSize) {
+				*((volatile uint8_t *)&SPI->TXDR) = (vWkBuffer == NULL) ? (0u) : (vWkBuffer[vNbBytes]);
+				vNbBytes++;
+				return;
+			}
+
+			break;
+		}
+
+// Case 3: Mix transfer (EEPROM mode)
+// ----------------------------------
+
+// model_spi_multipleWriteRead(wBuffer, 5, rBuffer, 1024)
+
+// First full write, then full read
+
+		case KSPI_EEPROM: {
+			if (vWrite == false) {
+				if (vNbBytes < vWSize) {
+					*((volatile uint8_t *)&SPI->TXDR) = vWkBuffer[vNbBytes];
+					vNbBytes++;
+					return;
+				}
+
+				vFirst	 = true;
+				vWrite	 = true;
+				vNbBytes = 0u;
+			}
+
+// Skip the first read due to the NVIC_SetPendingIRQ
+
+			if (vFirst == true) { vFirst = false;				   }
+			else                { vRkBuffer[vNbBytes - 1u] = data; }
+
+			if (vNbBytes < vRSize) {
+				*((volatile uint8_t *)&SPI->TXDR) = 0u;
+				vNbBytes++;
+				return;
+			}
+
+			break;
+		}
+
+		default: {
+			break;
+		}
+	}
+
+// End of the transfer
+
+	SPI->IER &= ~SPI_IER_RXPIE;
+
+	vFirst	 = true;
+	vWrite	 = false;
+	vNbBytes = 0u;
+	vBusy	 = false;
+
+	kern_signalSemaphore(vSemaphore_TR);
+}

@@ -150,6 +150,8 @@ add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/i2c/i2c.c CONFIG_M
 add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/i2c0/i2c0.c CONFIG_MAN_I2C0_S)
 add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/i2c1/i2c1.c CONFIG_MAN_I2C1_S)
 add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/led/led.c CONFIG_MAN_LED_S)
+add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/spi/spi.c CONFIG_MAN_SPI_S)
+add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/spi0/spi0.c CONFIG_MAN_SPI0_S)
 add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/switch/switch.c CONFIG_MAN_SWITCH_S)
 add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/watchdog/watchdog.c CONFIG_MAN_WATCHDOG_S)
 add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_serials/cdc0/cdc0.c CONFIG_MAN_CDC0_S)
@@ -161,6 +163,7 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
 	${PATH_BASE}/Lib_peripherals/i2c1/stub_i2c1_si2c1.c
 	${PATH_BASE}/Lib_peripherals/led/stub_led.c
+	${PATH_BASE}/Lib_peripherals/spi0/stub_spi0_sspi4.c
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart1.c
@@ -236,6 +239,7 @@ list(APPEND CLI_U
 	${PATH_UKOS}/OS/CLI/viewer/viewer.c
 	${PATH_UKOS}/OS/CLI/wki2c/wki2c.c
 	${PATH_UKOS}/OS/CLI/wkserial/wkserial.c
+	${PATH_UKOS}/OS/CLI/wkspi/wkspi.c
 )
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
