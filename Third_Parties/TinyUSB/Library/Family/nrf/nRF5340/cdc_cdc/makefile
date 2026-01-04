@@ -85,7 +85,7 @@ OPTIMISATION		=  -Os
 PREFIX				?= arm-none-eabi-
 PATH_COMPILER		=  $(PATH_GCC_ARM)
 FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m33
+CPU_SPEC			=  -mcpu=cortex-m33 -mthumb
 FLAGS_UKOS			=  -DTHIRD_PARTY_S -D$(SOC)_S -D$(CORE)_S -DLITTLE_ENDIAN_S
 
 CFLAGS				+= -DNRF5340_XXAA -DNRF5340_XXAA_APPLICATION -DCPU_APPLICATION_S

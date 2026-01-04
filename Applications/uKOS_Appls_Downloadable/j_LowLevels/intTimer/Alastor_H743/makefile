@@ -57,4 +57,6 @@ SOC				=  STM32H743
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os
 
+OBJ				+= stubb.o
+
 include ../../../../Mkfiles/common.mk

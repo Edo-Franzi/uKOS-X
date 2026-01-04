@@ -174,4 +174,3 @@ enum {
 	GPIO_CTL0_CTL_OUTPUT_AFIO_PP	= (2u<<2u),
 	GPIO_CTL0_CTL_OUTPUT_AFIO_OD	= (3u<<2u)
 };
-

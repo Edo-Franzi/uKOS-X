@@ -104,7 +104,7 @@ FLAGS_USER		+= -DONLY_ONE_NVIC_S
 
 CFLAGS			+= -DNOFPU_S
 FLAGS_FP		=
-CPU_SPEC		=  -mcpu=cortex-m33+nodsp+nofp
+CPU_SPEC		=  -mcpu=cortex-m33+nodsp+nofp -mthumb
 
 BURN			?= jlinkexe
 

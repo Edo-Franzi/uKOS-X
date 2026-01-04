@@ -80,9 +80,9 @@ INCLUDE		STM32N657xD.ld
 /* RAM2:	stPrgmData			0x34100000					*/
 /*			256K											*/
 /*			stUMemo				0x34140000					*/
-/*			256K											*/
-/*			stHeap				0x34180000					*/
-/*			512K +											*/
+/*			512K											*/
+/*			stHeap				0x341C0000					*/
+/*			256K +											*/
 /* RAM3-6:	(4 * 448K)										*/
 
 stm_lnAXISRAM3_6			= (stm_lnAXISRAM3 + stm_lnAXISRAM4 + stm_lnAXISRAM5 + stm_lnAXISRAM6);	/* Length of internal memory SRAM3 to SRAM6					*/
@@ -101,14 +101,14 @@ linker_stEXRAM				= 0;																	/* 0x00000000: EXRAM, start of the extern
 linker_lnEXRAM				= (0);																	/* Length of the external memory	  						*/
 
 linker_stUMemo				= (linker_stPrgmData + linker_lnPrgmData);								/* 0x34140000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (256K);																/* Length of the user memory	  							*/
+linker_lnUMemo				= (512K);																/* Length of the user memory	  							*/
 
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
-linker_stHeap				= (linker_stUMemo + linker_lnUMemo);									/* 0x34180000: start of the heap							*/
-linker_lnHeap				= (512K + stm_lnAXISRAM3_6);											/* Length of the heap										*/
+linker_stHeap				= (linker_stUMemo + linker_lnUMemo);									/* 0x341C0000: start of the heap							*/
+linker_lnHeap				= (256K + stm_lnAXISRAM3_6);											/* Length of the heap										*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/

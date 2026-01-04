@@ -45,7 +45,7 @@
 #------------------------------------------------------------------------
 
 # Apply project settings
-include(${PATH_UKOS}/Ports/Mkfiles/cmake/proj_config.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/proj_config.cmake)
 
 # Project path configuration
 # - PATH_UKOS	--> Main uKOS-X folder					--> kernel_os

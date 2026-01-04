@@ -449,3 +449,7 @@ p_Specials:
     - Nucleo_L4R5
     - Nucleo_N657
     - Pico2_rp2350
+
+q_LVGL:
+  basic:
+    - Nucleo_N657

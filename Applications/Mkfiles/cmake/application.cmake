@@ -65,7 +65,7 @@ target_compile_definitions(system_compiler_flags INTERFACE
 	UKOS_S
 	${SOC}_S
 	${CORE}_S
-	${CORE_ENDIANNESS}_S
+	LITTLE_ENDIAN_S
 	_POSIX_C_SOURCE=200809L
 )
 

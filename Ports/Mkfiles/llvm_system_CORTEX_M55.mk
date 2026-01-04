@@ -83,7 +83,7 @@ endif
 SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
 
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -mcpu=cortex-m55
+CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)

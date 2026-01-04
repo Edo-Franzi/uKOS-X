@@ -78,7 +78,7 @@ OBJCOPY			=  $(PATH_COMPILER)/bin/$(PREFIX)objcopy
 OBJDUMP			=  $(PATH_COMPILER)/bin/$(PREFIX)objdump
 
 FLAGS_FP		?= -mfloat-abi=soft
-CPU_SPEC		?= -mcpu=cortex-m33+nodsp
+CPU_SPEC		?= -mcpu=cortex-m33+nodsp -mthumb
 
 CFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS			+= -c -g -Os
