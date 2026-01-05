@@ -84,6 +84,7 @@ set(PATH_INCLUDES
 find_library(MYLIB LVGL ${PATH_LVGL}/Library/${CORE}/${DISPLAY})
 
 set(OBJ
+    ${PROJECT_SOURCE_DIR}/../ui.c
     ${PROJECT_SOURCE_DIR}/stub.c
 )
 

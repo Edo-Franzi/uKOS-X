@@ -1,15 +1,16 @@
 /*
-; uKOS.
-; =====
+; ui.
+; ===
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		Demo of a C application.
+;			Simple UI for the basic demo.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,46 +49,34 @@
 
 #pragma	once
 
-// IWYU pragma: begin_exports
+// Display size
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#define	KBUF_LINES			10u											// Limited buffer (10 * KLCD_WIDTH * 2) to force partial rendering
+#define	KLCD_WIDTH			320u										// LCD width
+#define	KLCD_HEIGHT			240u										// LCD height
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+// Used colors
 
-// IWYU pragma: end_exports
+#define	KMASK_24BITS		0x00FFFFFFu									// Mask
+#define	KRED				0x00FF0000u									// Red
+#define	KGREEN				0x0000FF00u									// Green
+#define	KBLUE				0x000000FFu									// Blue
 
-// uKOS-X main constants
-// -----------------------
+// Text position (relative to the middle of the display 0, 0)
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.1.223"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		1
-#define	uKOS_VERSION_PATCH		223
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#define	KX_POS_ALL_TEXTS	0u											// X = 0 for all the textes
+#define	KY_POS_TEXT_1		20u											// Y = 20 for all the text 1
+#define	KY_POS_TEXT_2		50u											// Y = 50 for all the text 2
+#define	KY_POS_TEXT_3		70u											// Y = 70 for all the text 2
+
+// Arc diameter & positions
+
+#define	KARC_DIAMETER		80u											// Arc diameter
+#define	KARC_MARGIN			20u											// Arc margin
+#define	KX_POS_ARC			(KLCD_WIDTH - KARC_DIAMETER - KARC_MARGIN)	// X Arc
+#define	KY_POS_ARC			KARC_MARGIN									// Y Arc
+
+// Square dimension & positions
+
+#define	KNB_MAX_SQUARES		20											// 20 square
+#define	KSQUARE_SIZE		30u											// Square size

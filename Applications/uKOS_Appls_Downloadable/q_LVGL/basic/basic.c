@@ -1,6 +1,6 @@
 /*
-; readIMU.
-; ========
+; basic.
+; ======
 
 ; SPDX-License-Identifier: MIT
 
@@ -57,12 +57,17 @@
  *			- P0: Every 1-ms
  *					- Tick for LVGL
  *
- *			- P1: Write some texts
- *					- Every 300-ms change randomly the text 3 position
+ *			- P1: Draw some objects
+ *					- Draw the text 1 "uKOS-X"; every 200-ms change its color
+ *					- Draw the text 2 "LVGL under uKOS-X control"
+ *					- Draw the text 3 "(c) 2025-2026, Edo. Franzi"
+ *					- Draw the arc circle (continuously)
+ *					- Draw up to 20 squares (continuously)
  *
  */
 
 #include	"uKOS.h"
+#include	"ui.h"
 #include	"lvgl.h"
 
 // uKOS-X specific (see the module.h)
@@ -93,18 +98,14 @@ MODULE(
 	0									// Execution cores
 );
 
-#define	LCD_WIDTH		320u			// LCD width
-#define	LCD_HEIGHT		240u			// LCD height
-
 static	lv_display_t	*display;
 static	bool			vLVGLReady = false;
-static	lv_obj_t		*vL1, *vL2, *vL3;
 
 // Prototypes
 
 extern	void	stub_LCD_On(void);
 extern	void	stub_LCD_flush_cb(lv_display_t *lv_display, const lv_area_t *area, uint8_t *pixelMapping);
-static	void	local_moveL1_cb(lv_timer_t *t);
+extern	void	ui_draw(void);
 
 /*
  * \brief aProcess 0
@@ -119,28 +120,25 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 	while (true) {
 		if (vLVGLReady == true) {
-			lv_tick_inc(1);
+			lv_tick_inc(1u);
 			lv_timer_handler();
 		}
-		kern_suspendProcess(1);
+		kern_suspendProcess(1u);
 	}
 }
 
 /*
  * \brief aProcess 1
  *
- * - P1: Write some texts
- *		 Every 300-ms change randomly the text 3 position
- *
+ * - P1: Draw the text 1 "uKOS-X"; every 200-ms change its color
+ *		 Draw the text 2 "LVGL under uKOS-X control"
+ *		 Draw the text 3 "(c) 2025-2026, Edo. Franzi"
+ *		 Draw the arc circle (continuously)
+ *		 Draw up to 20 squares (continuously)
+ *		 The process remains active with the LVGL context
  */
-
-// Limited buffer to force partial rendering
-
-#define	BUF_LINES	10
-
 static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 	uint32_t	LCDBufferSize;
-	lv_obj_t	*activeScreen;
 	lv_color_t	*LCDBuffer;
 
 	UNUSED(argument);
@@ -151,79 +149,28 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 	stub_LCD_On();
 	lv_init();
 
-	LCDBufferSize = (uint32_t)LCD_WIDTH * (uint32_t)BUF_LINES * sizeof(lv_color_t);
+	LCDBufferSize = (uint32_t)KLCD_WIDTH * (uint32_t)KBUF_LINES * sizeof(lv_color_t);
 	LCDBuffer	  = (lv_color_t *)memo_malloc(KMEMO_ALIGN_16, LCDBufferSize, "lcd_buffer");
 
 // Create a display
 // Activate it
 
-	display = lv_display_create(LCD_WIDTH, LCD_HEIGHT);
+	display = lv_display_create(KLCD_WIDTH, KLCD_HEIGHT);
 	lv_display_set_default(display);
 
 	lv_display_set_buffers(display, LCDBuffer, NULL, LCDBufferSize, LV_DISPLAY_RENDER_MODE_PARTIAL);
 	lv_display_set_flush_cb(display, stub_LCD_flush_cb);
 
-	activeScreen = lv_screen_active();
+// Draw the different objects
+// Activate the lvgl tick
 
-// Read line
-
-	vL1 = lv_label_create(activeScreen);
-	lv_label_set_text(vL1, "uKOS-X");
-	lv_obj_set_style_text_color(vL1, lv_color_hex(0xFF0000), 0);
-	lv_obj_set_style_text_font(vL1, &lv_font_montserrat_26, 0);
-
-// Green line
-
-	vL2 = lv_label_create(activeScreen);
-	lv_label_set_text(vL2, "LVGL under uKOS-X control");
-	lv_obj_set_style_text_color(vL2, lv_color_hex(0x00FF00), 0);
-	lv_obj_align(vL2, LV_ALIGN_CENTER, 0, 20);
-
-// Blue line
-
-	vL3 = lv_label_create(activeScreen);
-	lv_label_set_text(vL3, "(c) 2025-2026, Edo. Franzi");
-	lv_obj_set_style_text_color(vL3, lv_color_hex(0x0000FF), 0);
-	lv_obj_align(vL3, LV_ALIGN_CENTER, 0, 50);
-
-// Install a timer callback (every 300-ms)
-
-	lv_timer_create(local_moveL1_cb, 300, NULL);
+	ui_draw();
 
 	vLVGLReady = true;
-	while (true) { kern_suspendProcess(100); }
-}
 
-/*
- * \brief local_moveL1_cb
- *
- * - LVGL timer callback for drawing the text 1
- *
- */
-static	void	local_moveL1_cb(lv_timer_t *t) {
-	uint32_t	random;
-	int32_t		w, h, x, y, max_x, max_y;
+// Remain in the lvgl process space
 
-	UNUSED(t);
-
-	random_read(KRANDOM_SOFT, &random, 1u);
-
-	lv_obj_update_layout(vL1);
-	w = (int32_t)lv_obj_get_width(vL1);
-	h = (int32_t)lv_obj_get_height(vL1);
-
-// Max range
-
-	max_x = (int32_t)LCD_WIDTH - w;
-	max_y = (int32_t)(LCD_HEIGHT / 2) - h;
-
-	x = (int32_t)(random	   % (uint32_t)(max_x + 1));
-	y = (int32_t)((random>>16) % (uint32_t)(max_y + 1));
-
-	x = (x > max_x) ? (max_x) : (x);
-	y = (y > max_y) ? (max_y) : (y);
-
-	lv_obj_set_pos(vL1, (lv_coord_t)x, (lv_coord_t)y);
+	while (true) { kern_suspendProcess(100u); }
 }
 
 /*

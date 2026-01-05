@@ -78,6 +78,11 @@
  *  Simple applications using using additional possibilities
  */
 
+/** @defgroup app_LVGL Using LVGL possibilities
+ *  @ingroup apps
+ *  Simple applications using using LVGL possibilities
+ */
+
 /** @defgroup TROM Test ROM
  *  This is the group for all test ROM
  */
