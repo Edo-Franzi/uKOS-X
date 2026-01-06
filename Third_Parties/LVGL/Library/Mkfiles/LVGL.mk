@@ -52,8 +52,7 @@ $(error PATH_LVGL is not defined)
 endif
 
 LIB_SYS_DIR			=  $(PATH_LVGL)/uKOS_System
-LIB_SRC_DIR			=  $(PATH_LVGL)/LVGL-current
-LIB_SRC_DIR			+= $(PATH_LVGL)/LVGL-current/src
+LIB_SRC_DIR			= $(PATH_LVGL)/LVGL-current/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
 PATH_INCLUDES		+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)
@@ -61,6 +60,7 @@ PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
 
 SRC					=  $(LIB_SYS_DIR)/headerLVGL.c
 SRC					+= $(shell find $(LIB_SRC_DIR) -name '*.c')
+
 OBJ					=  $(patsubst %.c,%.o,$(SRC))
 
 CFLAGS				+= -DLV_CONF_INCLUDE_SIMPLE
@@ -102,15 +102,15 @@ all :
 LIB_CLEAN_DIRS := . $(LIB_SYS_DIR) $(LIB_SRC_DIR)
 
 clr_all :
-	@rm -f $(addsuffix /*.a,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
+	@rm -f $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.a')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.d')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o.*')
 
 clr :
-	@rm -f $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
+	@rm -f $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.d')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o.*')
 
 # Archive
 

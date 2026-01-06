@@ -211,6 +211,7 @@ while IFS= read -r CURRENT_TARGET; do
 		printf "%bFAIL%b\n" "${RED}" "${NC}"
 		process_option "${LOG_FILE}"
 	fi
+	rm -fr build
 done < <(parse_apps_yaml)
 
 # Display the target list that with warnings

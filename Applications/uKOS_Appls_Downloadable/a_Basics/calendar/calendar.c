@@ -56,7 +56,7 @@
  *
  *			- P0: Every 1000-ms
  *					- Display some time manipulations on the KSYST manager
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  *			Note: KSYST is the default I/O channel defined by the PROCESS MACROS.
  *				  In this case, it is used the channel defined by the father
@@ -183,7 +183,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 		now = time(NULL);
 		localtime_r(&now, &localTime);
 		(void)dprintf(KSYST, "Local time: %s", asctime(&localTime));
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 

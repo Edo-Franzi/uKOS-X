@@ -55,8 +55,8 @@
  *			Launch 3 processes:
  *
  *			- P0: Every 1000-ms
- *					- Toggle LED 0
- *					- Measure (tac - tic) time of the Toggle LED 0 function
+ *					- Toggle LED 1
+ *					- Measure (tac - tic) time of the Toggle LED 1 function
  *
  *			- P1: Every 200-ms
  *					- Measure (tac - tic) time of the printf function
@@ -102,8 +102,8 @@ MODULE(
  * \brief aProcess 0
  *
  * - P0: Every 1000-ms
- *			- Toggle LED 0
- *			- Measure (tac - tic) time of the Toggle LED 0 function
+ *			- Toggle LED 1
+ *			- Measure (tac - tic) time of the Toggle LED 1 function
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
@@ -115,7 +115,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 	while (true) {
 		kern_suspendProcess(1000u);
 		kern_readTickCount(&time[0]);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 		kern_readTickCount(&time[1]);
 
 		delta = (uint32_t)(time[1] - time[0]);

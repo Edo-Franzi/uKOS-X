@@ -205,7 +205,7 @@ static void __attribute__ ((noreturn)) aProcess_send(const void *argument) {
 			kern_unlockMutex(mutex);
 
 			TinyUSB_video_sendImage(imageYUY2, vW, vH);
-			led_toggle(KLED_0);
+			led_toggle(KLED_1);
 		}
 		else {
 			kern_suspendProcess(1u);

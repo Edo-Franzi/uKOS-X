@@ -58,12 +58,12 @@
  *					- Spigot algorithm:
  *					- Pi = Sum 1/16^^n * (4/(8n + 1) - 2/(8n + 4) - 1/(8n + 5) - 1/(8n + 6))
  *					- Print Pi (with the newlib dprintf) on the stdout
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  *			- P1: Every 100-ms
  *					- Read 4 integers on the stdin
  *					- Print the read values (with the newlib dprintf) on the uart1
- *					- Toggle LED 1
+ *					- Toggle LED 2
  *
  *			- P2: Every 100-ms
  *					- Print a string (with the newlib printf) on the stdout
@@ -110,7 +110,7 @@ MODULE(
  *			- Spigot algorithm:
  *			- Pi = Sum 1/16^^n * (4/(8n + 1) - 2/(8n + 4) - 1/(8n + 5) - 1/(8n + 6))
  *			- Print Pi (with the newlib dprintf) on the stdout
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
@@ -122,7 +122,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(100u);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 
 		kern_readTickCount(&time[0]);
 		Pi = Pi + ((1.0 / pow(16, n)) * ((4.0 / ((8.0 * n) + 1.0)))
@@ -155,7 +155,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(100u);
-		led_toggle(KLED_1);
+		led_toggle(KLED_2);
 
 // Waiting for 4 integers
 // If we enter garbage, the length will be 0 and we need to empty the buffer

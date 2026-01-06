@@ -82,11 +82,11 @@ INCLUDE		STM32N657xD.ld
 /* RAM2:	stPrgmCode	(Boot)	0x34100400 (400 signature)	*/
 /*			64K												*/
 /* RAM1:	stPrgmCode	(Appl)	0x34000400 (400 signature)	*/
-/*			(256K - 1K)										*/
+/*			(1024K - 1K)									*/
 /* RAM2:	stPrgmData_p		0x34100000					*/
-/*			128K											*/
-/*			stPrgmData_u		0x34120000					*/
-/*			128K											*/
+/*			96K												*/
+/*			stPrgmData_u		0x34118000					*/
+/*			160K											*/
 /*			stUMemo				0x34140000					*/
 /*			512K											*/
 /*			stHeap				0x341C0000					*/
@@ -122,13 +122,13 @@ linker_lnHeap				= (256K + stm_lnAXISRAM3_6);											/* Length of the heap			
 /* uKOS OS Flash + memory									*/
 
 linker_stPrgmCode			= (stm_stAXISRAM1 + 1K);												/* 0x34000400: PrgmCode, start of the Flash					*/
-linker_lnPrgmCode			= (512K - 1K);															/* Length of the the Flash									*/
+linker_lnPrgmCode			= (1024K - 1K);															/* Length of the the Flash									*/
 
 linker_stPrgmData_p			= stm_stAXISRAM2;														/* 0x34100000: PrgmData, start of the RAM					*/
-linker_lnPrgmData_p			= (128K);																/* Length of the RAM										*/
+linker_lnPrgmData_p			= (96K);																/* Length of the RAM										*/
 
-linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);							/* 0x34120000: PrgmData, start of the RAM					*/
-linker_lnPrgmData_u			= (128K);																/* Length of the RAM										*/
+linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);							/* 0x34118000: PrgmData, start of the RAM					*/
+linker_lnPrgmData_u			= (160K);																/* Length of the RAM										*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
@@ -138,10 +138,10 @@ linker_ST_RAM_INT_1			= (stm_stAXISRAM1);														/* 0x34000000: Privileged
 linker_EN_RAM_INT_1			= (stm_stAXISRAM1 + stm_lnAXISRAM1 - 1);								/* 0x340FFFFF: 1-M											*/
 
 linker_ST_RAM_INT_2_OS		= stm_stAXISRAM2;														/* 0x34100000: Privileged/User RAM							*/
-linker_EN_RAM_INT_2_OS		= (stm_stAXISRAM2 + 128K - 1);											/* 0x3411FFFF: 128-K										*/
+linker_EN_RAM_INT_2_OS		= (stm_stAXISRAM2 + 96K - 1);											/* 0x34117FFF: 96-K										*/
 
-linker_ST_RAM_INT_2			= linker_stPrgmData_u;													/* 0x34120000: Privileged/User RAM							*/
-linker_EN_RAM_INT_2			= (linker_stPrgmData_u + 128K + 512K + 256K + stm_lnAXISRAM3_6 - 1);	/* 0x342BFFFF: 2688-K										*/
+linker_ST_RAM_INT_2			= linker_stPrgmData_u;													/* 0x34118000: Privileged/User RAM							*/
+linker_EN_RAM_INT_2			= (linker_stPrgmData_u + 160K + 512K + 256K + stm_lnAXISRAM3_6 - 1);	/* 0x343BFFFF: 2720-K										*/
 
 linker_ST_PERIPH_SOC		= stm_stPERIPH_NS;														/* 0x40000000: Privileged PERIPHERALS						*/
 linker_EN_PERIPH_SOC		= (stm_stPERIPH_NS + 524288K - 1);										/* 0x5FFFFFFF: 2 x 256-M (_S & _NS)							*/

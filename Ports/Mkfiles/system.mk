@@ -314,6 +314,11 @@ $(FATFS).a :
 	cp -f $(PATH_LIB_FATFS)/$(FATFS).a $(FATFS).a
 endif
 
+ifneq ($(LVGL),)
+$(LVGL).a :
+	cp -f $(PATH_LIB_LVGL)/$(LVGL).a $(LVGL).a
+endif
+
 # Build the additional useful file rules
 # --------------------------------------
 

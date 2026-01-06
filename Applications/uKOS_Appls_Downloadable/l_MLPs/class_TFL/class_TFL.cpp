@@ -186,7 +186,7 @@ namespace {
 
 		while (true) {
 			kern_suspendProcess(1000u);
-			led_toggle(KLED_0);
+			led_toggle(KLED_1);
 
 // Load the TFLite model
 

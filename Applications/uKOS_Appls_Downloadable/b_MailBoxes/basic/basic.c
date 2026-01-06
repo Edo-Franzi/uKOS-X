@@ -57,7 +57,7 @@
  *			- P0: Create a mailbox "Mailbox Receive text"
  *				  Read and display the messages coming from the mailbox
  *				  Release the associated memory buffer
- *				  Toggle LED 0
+ *				  Toggle LED 1
  *
  *			- P1: Get the mailbox "Mailbox receive text" handle
  *				  Every 100-ms
@@ -109,7 +109,7 @@ MODULE(
  * - P0: - Create a mailbox "Mailbox Receive text"
  *			- Read and display the messages coming from the mailbox
  *			- Release the associated memory buffer
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
@@ -148,7 +148,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 		strcpy((char_t *)bufPtr, (char_t *)bufRec);
 		memo_free(bufRec);
 		(void)dprintf(KSYST, "Message size = %"PRIu32"; 0x%016"PRIXPTR" message -> %s\n", sizeRec, (uintptr_t)bufRec, bufPtr);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 

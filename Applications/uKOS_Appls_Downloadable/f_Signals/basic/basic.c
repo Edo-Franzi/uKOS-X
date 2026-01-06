@@ -57,12 +57,12 @@
  *			- P0: Create the signal group 0
  *				  Every 1000-ms
  *					- Generate a broadcast signal KPROCESS_0 (group 0)
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  *			- P1: Create the signal group 1
  *				  Every 1234-ms
  *					- Generate a broadcast signal KPROCESS_1 (group 1)
- *					- Toggle LED 1
+ *					- Toggle LED 2
  *
  *			- P2: Get the signal group 0 handle
  *				   Waiting for a broadcast signal KPROCESS_0 (group 0)
@@ -116,7 +116,7 @@ MODULE(
  * - P0: Create the signal group 0
  *		 Every 1000-ms
  *			- Generate a broadcast signal KPROCESS_0 (group 0)
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
@@ -129,7 +129,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 	while (true) {
 		kern_suspendProcess(1000u);
 		kern_signalSignal(group, KPROCESS_0, KKERN_HANDLE_BROADCAST, KSIGN_SIGNALE_WITH_CONTEXT_SWITCH);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 
@@ -139,7 +139,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  * - P1: Create the signal group 1
  *		 Every 1234-ms
  *			- Generate a broadcast signal KPROCESS_1 (group 1)
- *			- Toggle LED 1
+ *			- Toggle LED 2
  *
  */
 static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
@@ -152,7 +152,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 	while (true) {
 		kern_suspendProcess(1234u);
 		kern_signalSignal(group, KPROCESS_1, KKERN_HANDLE_BROADCAST, KSIGN_SIGNALE_WITH_CONTEXT_SWITCH);
-		led_toggle(KLED_1);
+		led_toggle(KLED_2);
 	}
 }
 

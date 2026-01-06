@@ -154,7 +154,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 		for (i = 0u; i < nbElements; i++) { array_0[i] = (uint16_t)i + 0u; }
 		for (i = 0u; i < nbElements; i++) { array_1[i] = (uint16_t)i + 1u; }
 		for (i = 0u; i < nbElements; i++) { array_2[i] = (uint16_t)i + 2u; }
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 

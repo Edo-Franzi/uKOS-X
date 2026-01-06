@@ -108,6 +108,9 @@ find_package(TinyUSB REQUIRED
 # This automatically adds include paths and compile definitions
 set(TINYUSB TinyUSB::${SPEED})
 
+# Graphical display
+set(DISPLAY WaveShare_2_Inches)
+
 # Sources
 # -------
 
@@ -271,8 +274,13 @@ add_compile_definitions(CONFIG_MAN_MICROPYTHON_S)
 find_library(MICROPYTHON MicroPython ${PATH_UKOS}/Third_Parties/MicroPython/Library/${CORE})
 file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_MICROPYTHON_S ")
 
+# Graphic library integration (LVGL)
+add_compile_definitions(SYSTEM_LVGL_S)
+find_library(LVGL LVGL ${PATH_UKOS}/Third_Parties/LVGL/Library/${CORE}/${DISPLAY})
+file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DSYSTEM_LVGL_S ")
+
 # All library components
-set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${MICROPYTHON} ${TINYUSB})
+set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${MICROPYTHON} ${TINYUSB} ${LVGL})
 
 # System configuration flags
 

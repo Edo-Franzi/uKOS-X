@@ -56,19 +56,19 @@
  *
  *			- P0: Get the semaphore "Critical" handle
  *				  Every 10-ms
- *					- Toggle LED 0
- *					- lock a mutex
- *					- Generate a data structure and print it
- *					- Release a mutex
- *
- *			- P1: Every 100-ms
  *					- Toggle LED 1
  *					- lock a mutex
  *					- Generate a data structure and print it
  *					- Release a mutex
  *
- *			- P2: Every 10-ms
+ *			- P1: Every 100-ms
  *					- Toggle LED 2
+ *					- lock a mutex
+ *					- Generate a data structure and print it
+ *					- Release a mutex
+ *
+ *			- P2: Every 10-ms
+ *					- Toggle LED 3
  *					- lock a mutex
  *					- Generate a data structure and print it
  *					- Release a mutex
@@ -128,7 +128,7 @@ static	void	local_printStruct(mutx_t *mutex, strt_t data);
  *
  * - P0: Get the mutex "Critical" handle
  *		 Every 10-ms
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *			- lock a mutex
  *			- Generate a data structure and print it
  *			- Release a mutex
@@ -147,7 +147,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 	while (true) {
 		kern_suspendProcess(10);
 
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 		status = kern_lockMutex(mutex, 10000u);
 		if (status != KERR_KERN_NOERR) {
 			exit(EXIT_OS_PANIC);
@@ -173,7 +173,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *
  * - P1: Get the mutex "Critical" handle
  *		 Every 100-ms
- *			- Toggle LED 1
+ *			- Toggle LED 2
  *			- lock a mutex
  *			- Generate a data structure and print it
  *			- Release a mutex
@@ -192,7 +192,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 	while (true) {
 		kern_suspendProcess(100u);
 
-		led_toggle(KLED_1);
+		led_toggle(KLED_2);
 		status = kern_lockMutex(mutex, 10000u);
 		if (status != KERR_KERN_NOERR) {
 			exit(EXIT_OS_PANIC);
@@ -218,7 +218,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
  *
  * - P2: Get the mutex "Critical" handle
  *		 Every 1000-ms
- *			- Toggle LED 2
+ *			- Toggle LED 3
  *			- lock a mutex
  *			- Generate a data structure and print it
  *			- Release a mutex
@@ -237,7 +237,7 @@ static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
 	while (true) {
 		kern_suspendProcess(1000u);
 
-		led_toggle(KLED_2);
+		led_toggle(KLED_3);
 		status = kern_lockMutex(mutex, 10000u);
 		if (status != KERR_KERN_NOERR) {
 			exit(EXIT_OS_PANIC);

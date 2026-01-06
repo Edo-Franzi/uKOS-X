@@ -55,7 +55,7 @@
  *			Launch 2 processes:
  *
  *			- P0: Every 1000-ms
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *					- Capture the stop time
  *					- time = stop - start
  *					- Display the speed of the test (time)
@@ -124,7 +124,7 @@ static	volatile	bool		vEnd = false;
  * \brief aProcess 0
  *
  * - P0: Every 1000-ms
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *			- Capture the stop time
  *			- time = stop - start
  *			- Display the speed of the test (time)
@@ -143,7 +143,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(1000u);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 
 // Prepare to synchronize the process 1
 

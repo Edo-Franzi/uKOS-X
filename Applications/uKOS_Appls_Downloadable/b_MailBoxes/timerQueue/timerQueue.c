@@ -60,7 +60,7 @@
  *			- P0: Get the mailbox "Queue tim" handle
  *				  Waiting for a counter in the Queue "Queue tim" under timeout
  *					- Display & verify the received counter
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  */
 
@@ -110,7 +110,7 @@ extern	void	stub_intr_timer_init(void);
  * - P0: Get the semaphore "Queue tim" handle
  *		 Waiting for a counter in the mailbox "Queue tim" under timeout
  *			- Display & verify the received counter
- *			- Toggle the LED 0
+ *			- Toggle the LED 1
  *
  */
 static void __attribute__ ((noreturn)) aProcess(const void *argument) {

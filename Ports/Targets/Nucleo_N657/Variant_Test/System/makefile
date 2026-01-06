@@ -92,6 +92,10 @@ PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Library/Family/$(FAMILY)
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/uKOS_Interface/OSAL
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
 
+DISPLAY					=  WaveShare_2_Inches
+PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+LVGL					=  libLVGL
+
 # Target & Infrastructure
 
 # - VERSIONING	--> SVN
@@ -311,6 +315,9 @@ UKOS_COMPONENTS	+= $(MICROPYTHON).a
 # With the TinyUSB library
 CONF_SYSTEM		+= -DSYSTEM_TINYUSB_$(SPEED)_S
 UKOS_COMPONENTS	+= $(TINYUSB).a
+# With the LVGL library
+CONF_SYSTEM		+= -DSYSTEM_LVGL_S
+UKOS_COMPONENTS	+= $(LVGL).a
 
 # The included makefiles
 

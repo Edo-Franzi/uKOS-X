@@ -136,7 +136,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 		n = n + 1.0;
 		(void)dprintf(KSYST, "n = %"PRIu32", Pi = %10.7f Time = %"PRIu32"\n", (uint32_t)n, pi, delta);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 
@@ -165,7 +165,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 		(void)dprintf(KSYST, "n = %"PRIu32", Pi = %10.7f\n", (uint32_t)n, pi);
 
 		n = n + 1.0;
-		led_toggle(KLED_1);
+		led_toggle(KLED_2);
 	}
 }
 

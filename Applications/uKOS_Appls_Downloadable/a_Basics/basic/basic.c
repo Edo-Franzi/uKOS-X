@@ -59,7 +59,7 @@
  *
  *			- P0: Every P0_PERIOD ms
  *					- Display a message on the KSYST manager
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  *			- P1: Every P1_PERIOD ms
  *					- Display a message on the KSYST manager
@@ -115,7 +115,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 		kern_suspendProcess(P0_PERIOD);
 
 		(void)dprintf(KSYST, "output on the KSYST Serial Communication Manager (defined in the PROCESS macros) %"PRId32"\n", cpt++);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 

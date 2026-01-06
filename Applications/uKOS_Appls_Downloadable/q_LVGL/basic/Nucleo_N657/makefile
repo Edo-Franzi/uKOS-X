@@ -8,7 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for the "lvgl_basic" application.
+# Goal:		makefile for the "basic" application.
 #
 #   (c) 2025-20xx, Edo. Franzi
 #   --------------------------
@@ -44,11 +44,10 @@
 #
 #------------------------------------------------------------------------
 
-PROJECT			=  lvgl_basic
+PROJECT			=  basic
 
 DISPLAY			=  WaveShare_2_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
-MYLIB			=  $(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)/libLVGL.a
 
 # Target & Infrastructure
 
@@ -61,9 +60,7 @@ SOC				=  STM32N657
 CORE			=  CORTEX_M55
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -DLV_CONF_INCLUDE_SIMPLE
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)
 CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
-CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current/src
 
 include ../../../../Mkfiles/common.mk

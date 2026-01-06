@@ -74,6 +74,7 @@ set(VARIANT Variant_Test)
 add_compile_options(
 	-g3 # include extra information for debugger
 	-Os # optimisation
+	-Wno-sign-conversion
 )
 
 set(PATH_INCLUDES
@@ -81,7 +82,6 @@ set(PATH_INCLUDES
 	${PATH_LVGL}/LVGL-current
 	${PATH_LVGL}/LVGL-current/src
 )
-find_library(MYLIB LVGL ${PATH_LVGL}/Library/${CORE}/${DISPLAY})
 
 set(OBJ
     ${PROJECT_SOURCE_DIR}/../ui.c

@@ -56,7 +56,7 @@
  *
  *			- P0: Create a mailbox "Queue 1-to-0"
  *				  Read and display the messages coming from the queue
- *				  Toggle LED 0
+ *				  Toggle LED 1
  *
  *			- P1: Get the mailbox "Queue 1-to-0" handle
  *				  Every 10-ms
@@ -99,7 +99,7 @@ MODULE(
  *
  * - P0: Create a mailbox "Queue 1-to-0"
  *		 Read and display the messages coming from the queue
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
@@ -132,7 +132,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 		expected_1_to_0++;
 		(void)dprintf(KSYST, "Message = %"PRIu32"\n", (uint32_t)message_1_to_0);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 

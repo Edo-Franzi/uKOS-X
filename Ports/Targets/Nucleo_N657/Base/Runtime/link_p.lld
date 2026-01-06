@@ -76,7 +76,7 @@ INCLUDE		STM32N657xD.ld
 /* RAM2:	stPrgmCode	(Boot)	0x34100400 (400 signature)	*/
 /*			64K												*/
 /* RAM1:	stPrgmCode	(Appl)	0x34000400 (400 signature)	*/
-/*			(256K - 1K)										*/
+/*			(1024K - 1K)									*/
 /* RAM2:	stPrgmData			0x34100000					*/
 /*			256K											*/
 /*			stUMemo				0x34140000					*/
@@ -114,7 +114,7 @@ linker_lnHeap				= (256K + stm_lnAXISRAM3_6);											/* Length of the heap			
 /* uKOS OS Flash + memory									*/
 
 linker_stPrgmCode			= (stm_stAXISRAM1 + 1K);												/* 0x34000400: PrgmCode, start of the Flash					*/
-linker_lnPrgmCode			= (512K - 1K);															/* Length of the the Flash									*/
+linker_lnPrgmCode			= (1024K - 1K);															/* Length of the the Flash									*/
 
 linker_stPrgmData			= stm_stAXISRAM2;														/* 0x34100000: PrgmData, start of the RAM					*/
 linker_lnPrgmData			= (256K);																/* Length of the RAM										*/

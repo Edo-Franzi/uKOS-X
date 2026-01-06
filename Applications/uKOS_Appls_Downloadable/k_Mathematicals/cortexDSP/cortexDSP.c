@@ -55,7 +55,7 @@
  *			Launch 3 processes:
  *
  *			- P0: Every 1000-ms
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  *			- P1: Every 1000-ms
  *					- Compute the vertical-horizontal sums of a matrix
@@ -107,7 +107,7 @@ __attribute__ ((always_inline)) static __inline void local_cumulate64(int64_t *v
  * \brief aProcess 0
  *
  * - P0: Every 1000-ms
- *  		- Toggle LED 0
+ *  		- Toggle LED 1
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
@@ -116,7 +116,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(1000u);
-		led_toggle(KLED_0);
+		led_toggle(KLED_1);
 	}
 }
 

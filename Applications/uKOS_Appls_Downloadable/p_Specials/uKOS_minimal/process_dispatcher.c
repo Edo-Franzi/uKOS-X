@@ -108,7 +108,7 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 
 		switch (message & 0xFF000000u) {
 			case KID_SENSOR: {
-				((message & 1u) == 1u) ? (led_on(KLED_0)) : (led_off(KLED_0));
+				((message & 1u) == 1u) ? (led_on(KLED_1)) : (led_off(KLED_1));
 				break;
 			}
 			case KID_ACTUATOR: {

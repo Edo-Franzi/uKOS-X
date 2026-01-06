@@ -16,7 +16,7 @@
 ;
 ;			- P0: Display a classe
 ;				  Every 100-ms
-;				  Toggle LED 0
+;				  Toggle LED 1
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -61,7 +61,7 @@
  *			Launch 1 processes:
  *
  *			- P0: Every 100-ms
- *					- Toggle LED 0
+ *					- Toggle LED 1
  *
  */
 
@@ -108,7 +108,7 @@ private:
  *
  * - P0: - Display the class
  *		 - Every 100-ms
- *			- Toggle LED 0
+ *			- Toggle LED 1
  *
  */
 namespace {
@@ -128,7 +128,7 @@ namespace {
 
 		while (true) {
 			kern_suspendProcess(100u);
-			led_toggle(KLED_0);
+			led_toggle(KLED_1);
 		}
 	}
 }
