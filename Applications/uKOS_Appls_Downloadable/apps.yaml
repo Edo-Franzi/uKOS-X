@@ -452,4 +452,5 @@ p_Specials:
 
 q_LVGL:
   basic:
+    - MAiXDUiNO_K210
     - Nucleo_N657

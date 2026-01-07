@@ -77,6 +77,10 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 PATH_MKFILE		:= $(abspath $(lastword $(MAKEFILE_LIST)))
 PATH_PORT		=  $(PATH_UKOS)/Ports
 
+DISPLAY			=  TFT_2_4_Inches
+PATH_LIB_LVGL	=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+LVGL			=  libLVGL
+
 # Target & Infrastructure
 
 # - VERSIONING	--> SVN
@@ -264,6 +268,10 @@ CLI_U			+= $(PATH_UKOS)/OS/CLI/test_mcore/test_mcore.c
 
 UKOS_FIRST_P	=  vectors.c first.c
 UKOS_COMPONENTS	=  librtcb_p.a libkern_p.a libkern_u.a liblibx_p.a liblibx_u.a libshar_p.a libproc_p.a libproc_u.a libtool_u.a
+
+# With the LVGL library
+CONF_SYSTEM		+= -DSYSTEM_LVGL_S
+UKOS_COMPONENTS	+= $(LVGL).a
 
 # The included makefiles
 

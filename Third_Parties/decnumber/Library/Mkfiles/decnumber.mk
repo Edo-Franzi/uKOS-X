@@ -103,15 +103,15 @@ all :
 LIB_CLEAN_DIRS := . $(LIB_SYS_DIR) $(LIB_SRC_DIR) $(LIB_BID_DIR)
 
 clr_all :
-	@rm -f $(addsuffix /*.a,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
+	@rm -f $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.a')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.d')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o.*')
 
 clr :
-	@rm -f $(addsuffix /*.d,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o,$(LIB_CLEAN_DIRS))		\
-		   $(addsuffix /*.o.*,$(LIB_CLEAN_DIRS))
+	@rm -f $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.d')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o')		\
+		   $(shell find $(LIB_CLEAN_DIRS) -type f -name '*.o.*')
 
 # Archive
 
