@@ -51,23 +51,23 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../../Mkfiles/cmake")
 
 include(set-project-paths)
 
-include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-riscv-toolchain.cmake)
+include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-arm-toolchain.cmake)
 
 project(
-	basic
+	team
 	VERSION 1.0
 	LANGUAGES C
 )
 
-set(DISPLAY TFT_2_4_Inches)
+set(DISPLAY WaveShare_2_Inches)
 set(PATH_LVGL ${PATH_UKOS}/Third_Parties/LVGL)
 
 # Microcontroller description (mandatory variables)
-set(SOC K210)
-set(CORE RV64IMAFDC)
+set(SOC STM32N657)
+set(CORE CORTEX_M55)
 
 # Target
-set(BOARD MAiXDUiNO_K210)
+set(BOARD Nucleo_N657)
 set(VARIANT Variant_Test)
 
 # Extra compilation options

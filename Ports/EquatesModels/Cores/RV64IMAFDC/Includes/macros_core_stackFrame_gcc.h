@@ -90,10 +90,10 @@
 // Stack sizes (in machine words of 32-bit)
 
 #if (!defined(KKERN_SZ_STACK_SS))
-#define	KKERN_SZ_STACK_SS			200u
+#define	KKERN_SZ_STACK_SS			400u
 #endif
 #if (!defined(KKERN_SZ_STACK_MM))
-#define	KKERN_SZ_STACK_MM			400u
+#define	KKERN_SZ_STACK_MM			500u
 #endif
 #if (!defined(KKERN_SZ_STACK_LL))
 #define	KKERN_SZ_STACK_LL			600u
@@ -102,7 +102,7 @@
 #define	KKERN_SZ_STACK_XL			1000u
 #endif
 #if (!defined(KKERN_SZ_STACK_MIN))
-#define	KKERN_SZ_STACK_MIN			300u
+#define	KKERN_SZ_STACK_MIN			400u
 #endif
 #if (!defined(KKERN_SZ_STACK_XLIB))
 #define	KKERN_SZ_STACK_XLIB			(400u + 1000u)

@@ -10,7 +10,7 @@
 ;
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
-;			Simple UI for the basic demo.
+;			Simple UI for the team demo.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -51,32 +51,19 @@
 
 // Display size
 
-#define	KBUF_LINES			10u											// Limited buffer (10 * KLCD_WIDTH * 2) to force partial rendering
-#define	KLCD_WIDTH			320u										// LCD width
-#define	KLCD_HEIGHT			240u										// LCD height
+#define	KLCD_BUF_LINES		10u																	// Limited buffer (10 * KLCD_WIDTH * 2) to force partial rendering
+#define	KLCD_WIDTH			320u																// LCD width
+#define	KLCD_HEIGHT			240u																// LCD height
 
-// Used colors
+// Bars
 
-#define	KMASK_24_BITS		0x00FFFFFFu									// Mask
-#define	KRED				0x00FF0000u									// Red
-#define	KGREEN				0x0000FF00u									// Green
-#define	KBLUE				0x000000FFu									// Blue
-
-// Text position (relative to the middle of the display 0, 0)
-
-#define	KTEXT_POS_X			0u											// X = 0 for all the textes
-#define	KTEXT_POS_Y_1		20u											// Y = 20 for all the text 1
-#define	KTEXT_POS_Y_2		50u											// Y = 50 for all the text 2
-#define	KTEXT_POS_Y_3		70u											// Y = 70 for all the text 2
-
-// Arc diameter & positions
-
-#define	KARC_DIAMETER		80u											// Arc diameter
-#define	KARC_MARGIN			20u											// Arc margin
-#define	KARC_POS_X			(KLCD_WIDTH - KARC_DIAMETER - KARC_MARGIN)	// X Arc
-#define	KARC_POS_Y			KARC_MARGIN									// Y Arc
-
-// Square dimension & positions
-
-#define	KSQUARES_NB_MAX		20											// 20 square
-#define	KSQUARE_SIZE		30u											// Square size
+#define KBAR_MAX_VALUE		2000u																// Max value
+#define KBAR_MIN_VALUE		0u																	// Min value
+#define	KBAR_POS_Y			15u																	// Y = 15 for all the bars
+#define	KBAR_POS_X_1		140u																// X = 140 for all the bars 1
+#define	KBAR_POS_X_2		170u																// X = 170 for all the bars 2
+#define	KBAR_POS_X_3		200u																// X = 200 for all the bars 3
+#define	KBAR_GAP_Y			6u																	// Bar gap
+#define	KBAR_LABEL_WIDTH	80u																	// Bar label max width
+#define	KBAR_HEIGHT			20u																	// Bar height
+#define	KBAR_WIDTH			(KLCD_WIDTH - (2 * KBAR_POS_Y) - KBAR_LABEL_WIDTH - KBAR_GAP_Y)		// Bar width

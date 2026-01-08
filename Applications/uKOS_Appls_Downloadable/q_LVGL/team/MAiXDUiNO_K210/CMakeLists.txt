@@ -54,7 +54,7 @@ include(set-project-paths)
 include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-riscv-toolchain.cmake)
 
 project(
-	basic
+	team
 	VERSION 1.0
 	LANGUAGES C
 )

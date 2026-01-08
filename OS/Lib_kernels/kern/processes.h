@@ -232,7 +232,7 @@ struct work {
 			void			*oLocal;												// Ptr on a general local structure
 };
 
-#define	KSTATE_EOT_MASK	((1u<<BPROC_SUSP_TIME) | (1u<<BPROC_SUSP_SIGN) | (1u<<BPROC_SUSP_SEMA) | (1u<<BPROC_SUSP_MBOX_E) | (1u<<BPROC_SUSP_MBOX_F))
+#define	KSTATE_EOT_MASK		((1u<<BPROC_SUSP_TIME) | (1u<<BPROC_SUSP_SIGN) | (1u<<BPROC_SUSP_SEMA) | (1u<<BPROC_SUSP_MBOX_E) | (1u<<BPROC_SUSP_MBOX_F))
 
 // Structure for the statistics
 // ----------------------------

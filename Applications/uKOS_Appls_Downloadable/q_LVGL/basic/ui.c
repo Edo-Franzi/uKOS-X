@@ -51,7 +51,7 @@
 #include	"ui.h"
 #include	"lvgl.h"
 
-static	lv_obj_t	*vL1, *vL2, *vL3, *vArc, *vSquare[KNB_MAX_SQUARES] = { NULL };
+static	lv_obj_t	*vL1, *vL2, *vL3, *vArc, *vSquare[KSQUARES_NB_MAX] = { NULL };
 
 // Prototypes
 
@@ -75,6 +75,7 @@ static	void	local_square_cb(lv_timer_t *time);
  * - Draw the text 3 "(c) 2025-2026, Edo. Franzi"
  * - Draw the arc circle (continuously)
  * - Draw up to 20 squares (continuously)
+ *
  */
 void	ui_draw(void) {
 
@@ -99,7 +100,7 @@ static	void	local_DrawText_1(void) {
 	lv_label_set_text(vL1, "uKOS-X");
 	lv_obj_set_style_text_color(vL1, lv_color_hex(KRED), 0);
 	lv_obj_set_style_text_font(vL1, &lv_font_montserrat_26, 0);
-	lv_obj_align(vL1, LV_ALIGN_CENTER, KX_POS_ALL_TEXTS, KY_POS_TEXT_1);
+	lv_obj_align(vL1, LV_ALIGN_CENTER, KTEXT_POS_X, KTEXT_POS_Y_1);
 
 // Install a timer callback (every 200-ms)
 
@@ -113,7 +114,7 @@ static	void	local_colorL1_cb(lv_timer_t *time) {
 
 	random_read(KRANDOM_SOFT, &color, 1u);
 
-	lv_obj_set_style_text_color(vL1, lv_color_hex(color & KMASK_24BITS), 0);
+	lv_obj_set_style_text_color(vL1, lv_color_hex(color & KMASK_24_BITS), 0);
 }
 
 /*
@@ -129,7 +130,7 @@ static	void	local_DrawText_2(void) {
 	vL2 = lv_label_create(lv_screen_active());
 	lv_label_set_text(vL2, "LVGL under uKOS-X control");
 	lv_obj_set_style_text_color(vL2, lv_color_hex(KGREEN), 0);
-	lv_obj_align(vL2, LV_ALIGN_CENTER, KX_POS_ALL_TEXTS, KY_POS_TEXT_2);
+	lv_obj_align(vL2, LV_ALIGN_CENTER, KTEXT_POS_X, KTEXT_POS_Y_2);
 }
 
 /*
@@ -145,7 +146,7 @@ static	void	local_DrawText_3(void) {
 	vL3 = lv_label_create(lv_screen_active());
 	lv_label_set_text(vL3, "(c) 2025-2026, Edo. Franzi");
 	lv_obj_set_style_text_color(vL3, lv_color_hex(KBLUE), 0);
-	lv_obj_align(vL3, LV_ALIGN_CENTER, KX_POS_ALL_TEXTS, KY_POS_TEXT_3);
+	lv_obj_align(vL3, LV_ALIGN_CENTER, KTEXT_POS_X, KTEXT_POS_Y_3);
 }
 
 /*
@@ -163,7 +164,7 @@ static	void	local_DrawArc(void) {
 	lv_arc_set_bg_angles(vArc, 0, 360);
 	lv_obj_remove_style(vArc, NULL, LV_PART_KNOB);
 	lv_obj_remove_flag(vArc, LV_OBJ_FLAG_CLICKABLE);
-	lv_obj_set_pos(vArc, KX_POS_ARC, KY_POS_ARC);
+	lv_obj_set_pos(vArc, KARC_POS_X, KARC_POS_Y);
 
 	lv_anim_init(&animation);
 	lv_anim_set_var(&animation, vArc);
@@ -194,10 +195,10 @@ static	void	local_DrawRandomSquares(void) {
 }
 
 static	void	local_square_cb(lv_timer_t *time) {
-		uint32_t	position, color;
-		int32_t		x, y, max_x, max_y;
-		lv_obj_t	*localSquare;
-static	uint32_t	index = 0;
+			uint32_t	position, color;
+			int32_t		x, y, max_x, max_y;
+			lv_obj_t	*localSquare;
+	static	uint32_t	index = 0;
 
 	UNUSED(time);
 
@@ -206,7 +207,7 @@ static	uint32_t	index = 0;
 
 // Max range
 
-	max_x = (int32_t)(KLCD_WIDTH - KARC_DIAMETER - KSQUARE_SIZE - (2 * KARC_MARGIN));
+	max_x = (int32_t)(KLCD_WIDTH - KARC_DIAMETER - KSQUARE_SIZE - (2u * KARC_MARGIN));
 	max_y = (int32_t)((KLCD_HEIGHT / 2u) - KSQUARE_SIZE);
 
 	x = (int32_t)(position		  % (uint32_t)(max_x + 1));
@@ -223,8 +224,8 @@ static	uint32_t	index = 0;
 	lv_obj_set_size(localSquare, KSQUARE_SIZE, KSQUARE_SIZE);
 	lv_obj_set_pos(localSquare, x, y);
 
-	lv_obj_set_style_bg_color(localSquare, lv_color_hex(color & KMASK_24BITS), 0);
+	lv_obj_set_style_bg_color(localSquare, lv_color_hex(color & KMASK_24_BITS), 0);
 	lv_obj_set_style_bg_opa(localSquare, LV_OPA_COVER, 0);
 
-    index = (index + 1) % KNB_MAX_SQUARES;
+    index = (index + 1u) % KSQUARES_NB_MAX;
 }
