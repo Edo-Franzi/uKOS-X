@@ -116,7 +116,7 @@ static	testMallocPack_t	vParameter[KNB_PROC];
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	char_t		*dummy;
-	int32_t		status = EXIT_OS_SUCCESS_CLI;;
+	int32_t		status = EXIT_OS_SUCCESS_CLI;
 	uint32_t	i, nbSamples = 100u;
 	enum		{ KERR_NOT, KERR_INA, KERR_NME } error = KERR_NOT;
 

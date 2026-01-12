@@ -108,7 +108,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	if (status != KERR_BATTERY_NOERR) { (void)dprintf(KSYST, "Battery manager problem!\n\n"); return (EXIT_OS_FAILURE); }
 
-	(void)dprintf(KSYST, "Batery voltage:        %7.2f [V]\n",      batteryInfo.oVoltage);
+	(void)dprintf(KSYST, "Battery voltage:       %7.2f [V]\n",      batteryInfo.oVoltage);
 	(void)dprintf(KSYST, "Battery current:       %7.2f [mA]\n",     batteryInfo.oCurrent);
 	(void)dprintf(KSYST, "Battery temperature:   %7.2f [K]\n",      batteryInfo.oTemperature);
 	(void)dprintf(KSYST, "Full charged capacity: %7.2f [mAh]\n",    batteryInfo.oFullChargedCapacity);

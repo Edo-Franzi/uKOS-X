@@ -44,11 +44,14 @@
 ;------------------------------------------------------------------------
 */
 
+#define	KCLEAN_ICR	(I2C_ICR_STOPCF | I2C_ICR_NACKCF | I2C_ICR_BERRCF | I2C_ICR_ARLOCF | I2C_ICR_OVRCF | I2C_ICR_TIMOUTCF)
+
 static	const	volatile	uint8_t		*vSndBuffer;
 static			volatile	uint16_t	vNbSnd;
 static			volatile	uint8_t		*vRecBuffer;
 static			volatile	uint16_t	vNbRec;
 static						uint32_t	vTimeout = 100u;
+static			volatile	int32_t		vError;
 static						sema_t		*vSemaphore_TR;
 
 STRG_LOC_CONST(aStrSemaphore_TR[]) = UNIT " Transaction";
@@ -56,9 +59,9 @@ STRG_LOC_CONST(aStrSemaphore_TR[]) = UNIT " Transaction";
 // Prototypes
 // ==========
 
-static	bool	local_writeByte(const uint8_t *sndBuffer, uint16_t nbSnd);
-static	bool	local_readByte(uint8_t *recBuffer, uint16_t nbRec);
-static	bool	local_checkNotBerr(void);
+static	int32_t	local_writeByte(const uint8_t *sndBuffer, uint16_t nbSnd);
+static	int32_t	local_readByte(uint8_t *recBuffer, uint16_t nbRec);
+static	int32_t	local_checkNotBerr(void);
 static	void	local_setTiming(uint32_t speed);
 static	void	local_I2C_EV_IRQHandler(void);
 
@@ -80,8 +83,8 @@ void	model_i2c_init(void) {
 
 	local_setTiming(KI2C_100KBPS);
 
-	I2C->CR1 = (1u * I2C_CR1_NOSTRETCH)								// Clock stretching disabled
-			 | (1u * I2C_CR1_ANFOFF)								// Analog noise filter disabled
+	I2C->CR1 = (0u * I2C_CR1_NOSTRETCH)								// Clock stretching enable
+			 | (1u * I2C_CR1_ANFOFF)								// Analog noise filter disable
 			 | (1u * I2C_CR1_PE);									// Peripheral enable
 
 	INTERRUPT_VECTOR(I2C_VECTOR_NUMBER, local_I2C_EV_IRQHandler);
@@ -115,8 +118,10 @@ int32_t	model_i2c_configure(const i2cCnf_t *configure) {
  *
  */
 int32_t	model_i2c_write(uint8_t address, const uint8_t *buffer, uint16_t size) {
+	int32_t		status;
 
-	if (local_checkNotBerr() == false)							{ return (KERR_I2C_TIMEO); }
+	status = local_checkNotBerr();
+	if (status != KERR_I2C_NOERR)								{ return (status); }
 
 	I2C->CR2 = (0u * I2C_CR2_PECBYTE)								// No packet error
 			 | (1u * I2C_CR2_AUTOEND)								// Automatic end mode
@@ -129,9 +134,15 @@ int32_t	model_i2c_write(uint8_t address, const uint8_t *buffer, uint16_t size) {
 			 | (0u * I2C_CR2_RD_WRN)								// Write transfer
 			 | ((uint32_t)(address<<1u) * I2C_CR2_SADD_0);			// The slave address
 
+	vError	  = KERR_I2C_NOERR;
+	I2C->ICR  = KCLEAN_ICR;
+	kern_restartSemaphore(vSemaphore_TR);
+	I2C->CR1 |= I2C_CR1_TXIE | I2C_CR1_NACKIE;
+
 	I2C->CR2 |= (1u * I2C_CR2_START);								// START
 
-	if (local_writeByte(buffer, size) == false)					{ return (KERR_I2C_TIMEO); }
+	status = local_writeByte(buffer, size);
+	if (status != KERR_I2C_NOERR)								{ return (status); }
 	return (KERR_I2C_NOERR);
 }
 
@@ -144,6 +155,7 @@ int32_t	model_i2c_write(uint8_t address, const uint8_t *buffer, uint16_t size) {
  *
  */
 int32_t	model_i2c_read(uint8_t address, uint8_t *buffer, uint16_t size) {
+	int32_t		status;
 
 // Check if we need to transfer the optional register number
 // If yes, first send it to the peripheral,
@@ -153,7 +165,8 @@ int32_t	model_i2c_read(uint8_t address, uint8_t *buffer, uint16_t size) {
 
 // Send the register number
 
-		if (local_checkNotBerr() == false)						{ return (KERR_I2C_TIMEO); }
+		status = local_checkNotBerr();
+		if (status != KERR_I2C_NOERR)							{ return (status); }
 
 		I2C->CR2 = (0u * I2C_CR2_PECBYTE)							// No packet error
 				 | (0u * I2C_CR2_AUTOEND)							// No automatic end mode
@@ -166,14 +179,21 @@ int32_t	model_i2c_read(uint8_t address, uint8_t *buffer, uint16_t size) {
 				 | (0u * I2C_CR2_RD_WRN)							// Write transfer
 				 | ((uint32_t)(address<<1u) * I2C_CR2_SADD_0);		// The slave address
 
+		vError	  = KERR_I2C_NOERR;
+		I2C->ICR  = KCLEAN_ICR;
+		kern_restartSemaphore(vSemaphore_TR);
+		I2C->CR1 |= I2C_CR1_TXIE | I2C_CR1_NACKIE;
+
 		I2C->CR2 |= (1u * I2C_CR2_START);							// START
 
-		if (local_writeByte(buffer, 1) == false)				{ return (KERR_I2C_TIMEO); }
+		status = local_writeByte(buffer, 1);
+		if (status != KERR_I2C_NOERR)							{ return (status); }
 	}
 
 // Read the register number content
 
-	if (local_checkNotBerr() == false)							{ return (KERR_I2C_TIMEO); }
+	status = local_checkNotBerr();
+	if (status != KERR_I2C_NOERR)								{ return (status); }
 
 	I2C->CR2 = (0u * I2C_CR2_PECBYTE)								// No packet error
 			 | (1u * I2C_CR2_AUTOEND)								// Automatic end mode
@@ -186,9 +206,15 @@ int32_t	model_i2c_read(uint8_t address, uint8_t *buffer, uint16_t size) {
 			 | (1u * I2C_CR2_RD_WRN)								// Read transfer
 			 | ((uint32_t)(address<<1u) * I2C_CR2_SADD_0);			// The slave address
 
+	vError	  = KERR_I2C_NOERR;
+	I2C->ICR  = KCLEAN_ICR;
+	kern_restartSemaphore(vSemaphore_TR);
+	I2C->CR1 |= I2C_CR1_RXIE | I2C_CR1_NACKIE;
+
 	I2C->CR2 |= (1u * I2C_CR2_START);								// START
 
-	if (local_readByte(buffer, size) == false)					{ return (KERR_I2C_TIMEO); }
+	status = local_readByte(buffer, size);
+	if (status != KERR_I2C_NOERR)								{ return (status); }
 	return (KERR_I2C_NOERR);
 }
 
@@ -223,62 +249,66 @@ static	void	local_setTiming(uint32_t speed) {
  * \brief local_writeByte
  *
  */
-static	bool	local_writeByte(const uint8_t *sndBuffer, uint16_t nbSnd) {
+static	int32_t	local_writeByte(const uint8_t *sndBuffer, uint16_t nbSnd) {
+	int32_t		status = KERR_I2C_NOERR;
 
 	vSndBuffer = sndBuffer;
 	vNbSnd	   = nbSnd;
 
-	I2C->CR1 |= I2C_CR1_TXIE;
-
 // Waiting for the transaction semaphore or for the timeout
 
 	if (kern_waitSemaphore(vSemaphore_TR, vTimeout) == KERR_KERN_TIMEO) {
+
+		status = (vError != KERR_I2C_NOERR) ? (KERR_I2C_GEERR) : (KERR_I2C_TIMEO);
 
 // Problem, restart the i2c hardware
 
 		I2C->CR1 &= (uint32_t)~I2C_CR1_PE;
 		kern_switchFast();
 		I2C->CR1 |= I2C_CR1_PE;
-		return (false);
+		return (status);
 	}
 
-	return (true);
+	status = (vError != KERR_I2C_NOERR) ? (KERR_I2C_GEERR) : (KERR_I2C_NOERR);
+	return (status);
 }
 
 /*
  * \brief local_readByte
  *
  */
-static	bool	local_readByte(uint8_t *recBuffer, uint16_t nbRec) {
+static	int32_t	local_readByte(uint8_t *recBuffer, uint16_t nbRec) {
+	int32_t		status = KERR_I2C_NOERR;
 
 	vRecBuffer = recBuffer;
 	vNbRec	   = nbRec;
 
-	I2C->CR1 |= I2C_CR1_RXIE;
-
 // Waiting for the transaction semaphore or for the timeout
 
 	if (kern_waitSemaphore(vSemaphore_TR, vTimeout) == KERR_KERN_TIMEO) {
+
+		status = (vError != KERR_I2C_NOERR) ? (KERR_I2C_GEERR) : (KERR_I2C_TIMEO);
 
 // Problem, restart the i2c hardware
 
 		I2C->CR1 &= (uint32_t)~I2C_CR1_PE;
 		kern_switchFast();
 		I2C->CR1 |= I2C_CR1_PE;
-		return (false);
+		return (status);
 	}
 
-	return (true);
+	status = (vError != KERR_I2C_NOERR) ? (KERR_I2C_GEERR) : (KERR_I2C_NOERR);
+	return (status);
 }
 
 /*
  * \brief local_checkNotBerr
  *
  */
-static	bool	local_checkNotBerr(void) {
+static	int32_t	local_checkNotBerr(void) {
 
 	if ((I2C->ISR & I2C_ISR_BERR) == 0u) {
-		return (true);
+		return (KERR_I2C_NOERR);
 	}
 
 // Problem, restart the i2c hardware
@@ -286,7 +316,7 @@ static	bool	local_checkNotBerr(void) {
 	I2C->CR1 &= (uint32_t)~I2C_CR1_PE;
 	kern_switchFast();
 	I2C->CR1 |= I2C_CR1_PE;
-	return (false);
+	return (KERR_I2C_TIMEO);
 }
 
 /*
@@ -296,10 +326,24 @@ static	bool	local_checkNotBerr(void) {
  *
  */
 static	void	local_I2C_EV_IRQHandler(void) {
+	uint32_t	isr;
+
+	isr	   = I2C->ISR;
+
+// NACK
+
+	if ((isr & I2C_ISR_NACKF) != 0u) {
+		vError	  = KERR_I2C_GEERR;
+		I2C->ICR  = I2C_ICR_NACKCF;
+		I2C->CR1 &= (uint32_t)~(I2C_CR1_TXIE | I2C_CR1_RXIE | I2C_CR1_NACKIE);
+		I2C->CR2 |= I2C_CR2_STOP;
+		kern_signalSemaphore(vSemaphore_TR);
+		return;
+	}
 
 // Read 1 or more bytes
 
-	if ((I2C->ISR & I2C_ISR_RXNE) != 0u) {
+	if ((isr & I2C_ISR_RXNE) != 0u) {
 		*vRecBuffer = (volatile uint8_t)I2C->RXDR;
 		vRecBuffer++;
 		vNbRec--;
@@ -312,7 +356,7 @@ static	void	local_I2C_EV_IRQHandler(void) {
 
 // Write 1 or more bytes
 
-	if ((I2C->ISR & I2C_CR1_TXIE) != 0u) {
+	if ((isr & I2C_ISR_TXIS) != 0u) {
 		I2C->TXDR = (uint32_t)*vSndBuffer;
 		vSndBuffer++;
 		vNbSnd--;

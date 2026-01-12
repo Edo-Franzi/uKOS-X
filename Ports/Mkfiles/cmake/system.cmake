@@ -215,19 +215,20 @@ target_link_libraries(first_object PUBLIC system_compiler_flags)
 add_executable(${TARGET_NOSIG_ELF})
 add_executable(${TARGET_ELF})
 
-# Common link libraries
-set(TARGET_COMMON_LIBS
+# Link libraries (without signature)
+target_link_libraries(${TARGET_NOSIG_ELF} PRIVATE
+	system_compiler_flags
 	first_object
 	"-Wl,-whole-archive" ${UKOS_COMPONENTS} "-Wl,-no-whole-archive"
 	"-lm"
 )
-target_link_libraries(${TARGET_NOSIG_ELF} PRIVATE
-	system_compiler_flags
-	${TARGET_COMMON_LIBS}
-)
+
+# Link libraries for final ELF (with signature inside whole-archive)
 target_link_libraries(${TARGET_ELF} PRIVATE
 	system_compiler_flags
-	${TARGET_COMMON_LIBS}
+	first_object
+	"-Wl,-whole-archive" ${UKOS_COMPONENTS} sig_object "-Wl,-no-whole-archive"
+	"-lm"
 )
 
 # Linker Script Selection
@@ -283,7 +284,9 @@ add_custom_command(
 	COMMENT "Generating signature C source file (SHA-256)"
 	VERBATIM
 )
-target_sources(${TARGET_ELF} PRIVATE ${LOCAL_TARGET}.sig.c)
+
+add_library(sig_object OBJECT ${LOCAL_TARGET}.sig.c)
+target_link_libraries(sig_object PRIVATE system_compiler_flags)
 
 # Add map file, and ck file in the list of files removed by make clean
 # Clean files
@@ -321,11 +324,9 @@ set(ARTEFACTS_DIR "$ENV{PWD}/System" CACHE PATH "Directory for build artifacts")
 add_custom_command(
 	TARGET ${TARGET_ELF}
 	POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_ELF} ${TARGET_ELF}.backup
-	COMMAND ${CMAKE_STRIP} --strip-debug ${TARGET_ELF}
-	COMMAND ${CMAKE_SIZE} -A --radix=16 ${TARGET_ELF} | grep -F -v -e .debug -e .ARM.attributes -e .comment
-	COMMAND ${CMAKE_COMMAND} -E remove ${TARGET_ELF}
-	COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_ELF}.backup ${TARGET_ELF}
+	COMMAND ${CMAKE_STRIP} --strip-debug ${TARGET_ELF} -o stripped${TARGET_ELF}
+	COMMAND ${CMAKE_SIZE} -A --radix=16 stripped${TARGET_ELF} | grep -F -v -e .debug -e .ARM.attributes -e .comment
+	COMMAND ${CMAKE_COMMAND} -E remove stripped${TARGET_ELF}
 	VERBATIM
 )
 

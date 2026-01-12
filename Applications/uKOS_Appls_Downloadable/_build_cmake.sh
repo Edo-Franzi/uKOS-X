@@ -13,8 +13,8 @@
 #			cd ${PATH_UKOS_X_PACKAGE}/Applications/uKOS_Appls_Downloadable
 #			./_build_cmake.sh [-L] [-U] [-Y] [-v|-w]
 #
-#   (c) 2025-2026, Edo. Franzi
-#   --------------------------
+#   (c) 2025-2026, Laurent von Allmen
+#   ---------------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 #   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -47,8 +47,8 @@
 #
 #------------------------------------------------------------------------
 
-set -euo pipefail
-setopt KSH_ARRAYS  # Use 0-indexed arrays like bash
+emulate -L zsh
+setopt ERR_EXIT NO_UNSET PIPE_FAIL EXTENDED_GLOB
 
 # Determine script directory (works if executed via ./script.sh or bash script.sh)
 
@@ -155,15 +155,15 @@ cmake_version=$(cmake --version | awk 'NR==1{print $3; exit}')
 printf "%bUsing cmake (%s) and %s (%s)%b\n" "${YELLOW}" "${cmake_version}" "${COMPILER_TOOL}" "${COMPILER_VERSIONS}" "${NC}"
 
 process_option() {
+	local log_file="$1"
 	case "${VERBOSITY}" in
 		"-v")
-			cat "${1}"
-			rm -f "${1}"
+			cat "${log_file}"
 			;;
 		"-w")
+			mv "${log_file}" .
 			;;
 		*)
-			rm -f "${1}"
 			;;
 	esac
 }
@@ -188,10 +188,10 @@ while IFS= read -r CURRENT_TARGET; do
 	cd "${PATH_PRG}/${CURRENT_TARGET}"
 	rm -fr build >/dev/null
 
-# Normal output on the stdout, error/warnings on comp.log
-# If comp.log empty		-> "PASS"
-# If comp.log not empty -> "WARNING"
-# If make error			-> "FAIL"
+	# Normal output on the stdout, error/warnings on comp.log
+	# If comp.log empty		-> "PASS"
+	# If comp.log not empty -> "WARNING"
+	# If make error			-> "FAIL"
 
 	was_error=0
 	cmake -S . -B build ${TOOLCHAIN_VAR} ${CMAKE_CANARY_MODE} ${CMAKE_USER_MODE} >/dev/null && \
@@ -200,7 +200,6 @@ while IFS= read -r CURRENT_TARGET; do
 		if [[ ! -s "${LOG_FILE}" ]]; then
 			build_success+=$'\n'"${CURRENT_TARGET}"
 			printf "%bPASS%b\n" "${GREEN}" "${NC}"
-			rm -f "${LOG_FILE}"
 		else
 			build_warning+=$'\n'"${CURRENT_TARGET}"
 			printf "%bWARNING%b\n" "${YELLOW}" "${NC}"

@@ -196,11 +196,9 @@ target_link_libraries(${TARGET_ELF} PRIVATE ${MYLIB})
 add_custom_command(
 	TARGET ${TARGET_ELF}
 	POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_ELF} ${TARGET_ELF}.backup
-	COMMAND ${CMAKE_STRIP} --strip-debug ${TARGET_ELF}
-	COMMAND ${CMAKE_SIZE} -A --radix=16 ${TARGET_ELF} | grep -F -v -e .debug -e .ARM.attributes -e .comment
-	COMMAND ${CMAKE_COMMAND} -E remove ${TARGET_ELF}
-	COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_ELF}.backup ${TARGET_ELF}
+	COMMAND ${CMAKE_STRIP} --strip-debug ${TARGET_ELF} -o stripped${TARGET_ELF}
+	COMMAND ${CMAKE_SIZE} -A --radix=16 stripped${TARGET_ELF} | grep -F -v -e .debug -e .ARM.attributes -e .comment
+	COMMAND ${CMAKE_COMMAND} -E remove stripped${TARGET_ELF}
 	VERBATIM
 )
 
