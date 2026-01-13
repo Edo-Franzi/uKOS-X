@@ -94,8 +94,10 @@ MODULE(
  *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
-	batteryInfo_t	batteryInfo;
-	int32_t			status;
+			batteryInfo_t	batteryInfo;
+			int32_t			status;
+			uint16_t		i2cTries = 0;
+	static	uint16_t		maxI2cTries = 0;
 
 	UNUSED(argc);
 	UNUSED(argv);
@@ -103,20 +105,23 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	(void)dprintf(KSYST, "Battery information.\n");
 
 	RESERVE(BATTERY, KMODE_READ_WRITE);
-	status = battery_read(&batteryInfo);
+	do { status = battery_read(&batteryInfo); i2cTries++; } while (status != KERR_BATTERY_NOERR);
 	RELEASE(BATTERY, KMODE_READ_WRITE);
+
+	maxI2cTries = (i2cTries > maxI2cTries) ? (i2cTries) : (maxI2cTries);
 
 	if (status != KERR_BATTERY_NOERR) { (void)dprintf(KSYST, "Battery manager problem!\n\n"); return (EXIT_OS_FAILURE); }
 
-	(void)dprintf(KSYST, "Battery voltage:       %7.2f [V]\n",      batteryInfo.oVoltage);
-	(void)dprintf(KSYST, "Battery current:       %7.2f [mA]\n",     batteryInfo.oCurrent);
-	(void)dprintf(KSYST, "Battery temperature:   %7.2f [K]\n",      batteryInfo.oTemperature);
-	(void)dprintf(KSYST, "Full charged capacity: %7.2f [mAh]\n",    batteryInfo.oFullChargedCapacity);
-	(void)dprintf(KSYST, "Remaining capacity:    %7.2f [mAh]\n",    batteryInfo.oRemainingCapacity);
+	(void)dprintf(KSYST, "Battery voltage:       %7.2f [V]\n",		batteryInfo.oVoltage);
+	(void)dprintf(KSYST, "Battery current:       %7.2f [mA]\n",		batteryInfo.oCurrent);
+	(void)dprintf(KSYST, "Battery temperature:   %7.2f [K]\n",		batteryInfo.oTemperature);
+	(void)dprintf(KSYST, "Full charged capacity: %7.2f [mAh]\n",	batteryInfo.oFullChargedCapacity);
+	(void)dprintf(KSYST, "Remaining capacity:    %7.2f [mAh]\n",	batteryInfo.oRemainingCapacity);
 
 	if (batteryInfo.oTimeToEmpty < 65535u) {
-		(void)dprintf(KSYST, "Time to empty:          %6d [m]\n",   batteryInfo.oTimeToEmpty);
+		(void)dprintf(KSYST, "Time to empty:          %6d [m]\n",	batteryInfo.oTimeToEmpty);
 	}
-		(void)dprintf(KSYST, "Cycles:                 %6d [-]\n\n", batteryInfo.oCycles);
+		(void)dprintf(KSYST, "Cycles:                 %6d [-]\n",	batteryInfo.oCycles);
+		(void)dprintf(KSYST, "Max i2c nb tries:       %6d [-]\n\n",	maxI2cTries);
 	return (EXIT_OS_SUCCESS_CLI);
 }

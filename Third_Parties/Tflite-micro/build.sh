@@ -80,7 +80,8 @@ fi
 # Packages
 # --------
 
-readonly hash=f5c36ef
+#readonly hash=f5c36ef
+readonly hash=1ed47b1
 
 # Clone the right package
 
