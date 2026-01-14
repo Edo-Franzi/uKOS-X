@@ -116,6 +116,8 @@ FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 FLAGS_UKOS		+= -DSECURE_S
 FLAGS_UKOS		+= -D__DYNAMIC_REENT__
 
+FLAGS_FP		= -mfloat-abi=hard
+
 BURN			?= secure
 
 # The really first pcs of code (privileged)
@@ -236,6 +238,7 @@ CONF_SYSTEM		+= -DCONFIG_MAN_NEWLIB_S
 LIBX_U			+= $(PATH_UKOS)/OS/Lib_generics/newlib/newlib.c
 # With the MLPN manager
 CONF_SYSTEM		+= -DCONFIG_MAN_MLPN_S
+CONF_SYSTEM		+= -DMLPN_HAVE_HELIUM_FP_S
 LIBX_U			+= $(PATH_UKOS)/OS/Lib_neurals/mlpn/mlpn.c
 
 # The shared components (privileged)

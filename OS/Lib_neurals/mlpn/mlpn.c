@@ -48,6 +48,11 @@
 
 #include	"uKOS.h"
 #include	<math.h>
+#include	<stdint.h>
+
+#if (defined(MLPN_HAVE_HELIUM_FP_S))
+#include	<arm_mve.h>
+#endif
 
 #if (defined(CONFIG_MAN_MLPN_S))
 
@@ -365,13 +370,87 @@ static	int32_t	local_initialiseLayer(mlpnLayer_t *layer) {
  *   y = f(W . x)
  *
  */
+
+// Dot product: Helium FP (MVE) if available (with unroll x2 (8 floats per iteration))
+
+#if (defined(MLPN_HAVE_HELIUM_FP_S))
+static	inline	float32_t	local_hadd_f32x4(float32x4_t v) {
+	float32_t	tmp[4];
+
+	vstrwq_f32(tmp, v);
+	return (tmp[0] + tmp[1] + tmp[2] + tmp[3]);
+}
+#endif
+
+static	inline	float32_t	local_dot_f32(const float32_t * __restrict w, const float32_t * __restrict x, uint16_t n) {
+
+	#if (defined(MLPN_HAVE_HELIUM_FP_S))
+    float32x4_t		acc0 = vdupq_n_f32(0.0f);
+    float32x4_t		acc1 = vdupq_n_f32(0.0f);
+    uint16_t		i = 0u, rem;
+
+	w = (const float32_t *)__builtin_assume_aligned(w, 16);
+	x = (const float32_t *)__builtin_assume_aligned(x, 16);
+
+// 8 floats per iteration
+
+	for (i = 0u; (uint16_t)(i + 8u) <= n; i = (uint16_t)(i + 8u)) {
+		float32x4_t		w0 = vldrwq_f32(&w[i + 0u]);
+		float32x4_t		x0 = vldrwq_f32(&x[i + 0u]);
+		acc0 = vfmaq_f32(acc0, w0, x0);
+
+		float32x4_t		w1 = vldrwq_f32(&w[i + 4u]);
+		float32x4_t		x1 = vldrwq_f32(&x[i + 4u]);
+		acc1 = vfmaq_f32(acc1, w1, x1);
+    }
+
+// Remaining: 0..7 floats, managed in 2 predictive blocs of 4
+
+	rem = (uint16_t)(n - i);
+    if (rem != 0u) {
+
+// bloc 0..3
+
+		mve_pred16_t	p0 = vctp32q((uint32_t)rem);
+		float32x4_t		wR0 = vldrwq_z_f32(&w[i], p0);
+		float32x4_t		xR0 = vldrwq_z_f32(&x[i], p0);
+
+		acc0 = vfmaq_m_f32(acc0, wR0, xR0, p0);
+
+// bloc 4..7 (if rem > 4)
+
+		if (rem > 4u) {
+			mve_pred16_t	p1 = vctp32q((uint32_t)(rem - 4u));
+			float32x4_t		wR1 = vldrwq_z_f32(&w[i + 4u], p1);
+			float32x4_t		xR1 = vldrwq_z_f32(&x[i + 4u], p1);
+
+			acc1 = vfmaq_m_f32(acc1, wR1, xR1, p1);
+		}
+	}
+
+// Reduction
+
+	return (local_hadd_f32x4(vaddq_f32(acc0, acc1)));
+
+	#else
+	float32_t	p = 0.0f;
+	uint16_t	i;
+
+	for (i = 0u; i < n; i++) {
+		p += w[i] * x[i];
+	}
+    return (p);
+	#endif
+
+}
+
 #if (defined(__clang__))
 static int32_t local_computeLayer(mlpnLayer_t *layer) {
 
 #else
 static __attribute__ ((optimize("O3,inline,aggressive-loop-optimizations,unroll-loops"))) int32_t local_computeLayer(mlpnLayer_t *layer) {
 #endif
-			uint16_t	i, j, nbInput, nbOutput;
+			uint16_t	j, nbInput, nbOutput;
 			float32_t	p, *y;
 			float32_t	(*nonLinear)(float32_t p);
 	const	float32_t	*x, *w;
@@ -407,10 +486,7 @@ static __attribute__ ((optimize("O3,inline,aggressive-loop-optimizations,unroll-
 // Activation = Matrix - vector multiplication (Wi . xi)
 // Output = non-linear f(Activation)
 
-		p = 0.0f;
-		for (i = 0; i < nbInput; i++) {
-			p += w[i] * x[i];
-		}
+		p = local_dot_f32(w, x, nbInput);
 		y[j] = nonLinear(p);
 
 // Next neuron, next weight set
