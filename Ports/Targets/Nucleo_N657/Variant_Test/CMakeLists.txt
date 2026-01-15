@@ -79,6 +79,7 @@ add_compile_definitions(
 # Flash programming script selection
 set(BURN secure)
 
+set(NOFPU ON)
 # Apply project settings
 include(proj_config)
 
@@ -197,7 +198,7 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
 # Lib_xxxx components (user) -> liblibx_u.a
 add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
 add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
-add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
+add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S MLPN_HAVE_HELIUM_FP_S)
 add_library(libx_u ${LIBX_U})
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
 

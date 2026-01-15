@@ -82,10 +82,9 @@ fi
 
 readonly hash=e028871
 
-# Clone the right package
-
 printf '\n%bDownload the Tflite-micro package ...%b\n\n' "${BOLD}" "${NC}"
 
+# Clone the right package
 cd "${PATH_UKOS_X_PACKAGE}"/Third_Parties/Tflite-micro
 rm -rf "${PATH_UKOS_X_PACKAGE}"/Third_Parties/Tflite-micro/Tflite-micro
 git clone https://github.com/tensorflow/tflite-micro Tflite-micro
@@ -93,7 +92,6 @@ cd Tflite-micro
 git checkout ${hash}
 
 # Update path links
-
 cd ..
 rm -f Tflite-micro-current
 ln -s Tflite-micro Tflite-micro-current
@@ -108,7 +106,6 @@ parse_core_yaml() {
 
 # Generate the `.h` interface files for all the cortex-M (generic, -m3, m4, -m7, -m33, -m55)
 # Generate the `.h` interface files for all the risc-v (generic, rv64imafdc)
-
 cd ./Tflite-micro-current/
 
 python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py \
@@ -120,12 +117,12 @@ python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py \
 	../uKOS_Interface/RISCV64_generic
 
 printf '\n%bBuilding all the Tflite-micro libraries ...%b\n' "${BOLD}" "${NC}"
+
 # Parse YAML and iterate through all build targets
 while IFS=$'\t' read -r model core target_arch fpu
 do
 
 	# Build a specific core library
-
 	printf '\n%bBuild for the core %s ...%b\n' "$BOLD" "${core}" "$NC"
 
 	if [[ ${model} == cortex_m_generic ]]; then
@@ -154,4 +151,3 @@ do
 done < <(parse_core_yaml)
 
 printf '\n🎉 %bBuild Complete%b\n\n' "${GREEN}" "${NC}"
-
