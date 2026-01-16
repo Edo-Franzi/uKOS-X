@@ -53,6 +53,14 @@
 
 #if (defined(CONFIG_MAN_CALENDAR_S))
 
+#ifndef	TZ_UTC_SHIFT
+#define	TZ_UTC_SHIFT		"CET-1"
+#endif
+
+#ifndef	TZ_DST_SPEC
+#define	TZ_DST_SPEC			"CEST,M3.5.0/2,M10.5.0/2"
+#endif
+
 #define	KSZ_TZ_UTC_SHIFT	(16u + 1u)
 #define	KSZ_TZ_DST_SPEC		(32u + 1u)
 #define	KSZ_TZ_TIME_ZONE	(KSZ_TZ_UTC_SHIFT + KSZ_TZ_DST_SPEC)
