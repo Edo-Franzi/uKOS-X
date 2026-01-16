@@ -135,6 +135,8 @@ export LIBJAYLINK_VER=0.4.0
 export DOXYGEN_VER=1.16.1
 export GRAPHVIZ_VER=14.1.1
 export CPPCHECK_VER=2.19.0
+export PICO_SDK_VER=2.2.0
+export PICOTOOL_VER=2.2.0-a4
 
 # Goodies
 # Not used for the uKOS-X project
@@ -146,8 +148,6 @@ export PK2CMD_VER=1.27.01
 export SDCC_VER=4.5.0
 export SRECORD_VER=1.65
 export GPUTILS_VER=1.5.2
-export PICO_SDK_VER=2.2.0
-export PICOTOOL_VER=2.2.0-a4
 
 # Installation shall inherit group rights
 

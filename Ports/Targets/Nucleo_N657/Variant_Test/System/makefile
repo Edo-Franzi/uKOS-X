@@ -238,7 +238,6 @@ CONF_SYSTEM		+= -DCONFIG_MAN_NEWLIB_S
 LIBX_U			+= $(PATH_UKOS)/OS/Lib_generics/newlib/newlib.c
 # With the MLPN manager
 CONF_SYSTEM		+= -DCONFIG_MAN_MLPN_S
-CONF_SYSTEM		+= -DMLPN_HAVE_HELIUM_FP_S
 LIBX_U			+= $(PATH_UKOS)/OS/Lib_neurals/mlpn/mlpn.c
 
 # The shared components (privileged)

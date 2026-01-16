@@ -83,7 +83,7 @@ static	bool	local_readSubRegister(uint16_t command, uint16_t subCommand, uint16_
 static	void	cb_configure(void) {
 					uint16_t	value;
 	static	const	i2cCnf_t	configureI2C0 = {
-									.oTimeout  = 100000u,
+									.oTimeout  = 1000u,
 									.oSpeed    = KI2C_100KBPS,
 								};
 

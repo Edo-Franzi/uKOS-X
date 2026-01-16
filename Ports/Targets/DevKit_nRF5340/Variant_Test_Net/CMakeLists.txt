@@ -79,7 +79,7 @@ add_compile_definitions(
 
 # Core without fpu nor dsp
 add_compile_definitions( "NOFPU_S" )
-set(CPU_SPEC -mcpu=cortex-m33+nodsp+nofp)
+set(CPU_FEATURES "nodsp;nofp")
 
 # Flash programming script selection
 set(BURN jlinkexe)

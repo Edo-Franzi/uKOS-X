@@ -134,7 +134,7 @@ extern	int32_t	i2c0_release(reserveMode_t reserveMode);
  * \code{.c}
  *          int32_t       status;
  * const    i2cCnf_t    configure = {
- *                            .oTimeout  = 100000;
+ *                            .oTimeout  = 1000u;
  *                            .oSpeed    = KI2C_100KBPS;
  *                        };
  *
