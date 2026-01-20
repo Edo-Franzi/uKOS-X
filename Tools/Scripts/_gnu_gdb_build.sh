@@ -52,16 +52,19 @@
 #
 #------------------------------------------------------------------------
 
-readonly build_machine="${BUILD}"/"${MACHINE}"
-readonly log_file="${build_machine}"/gnu_gdb_temp.txt
+readonly build_machine="${BUILD}/${MACHINE}"
+readonly log_file="${build_machine}/gnu_gdb_temp.txt"
 
 echo "Start building gdb: $(date)" > "${log_file}"
 
-readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
+readonly DIRLOCAL="${PATH_TOOLS_ROOT}/local"
 
-mkdir -p "${build_machine}"/gdb-"${GDB_VER}"
-cd "${build_machine}"/gdb-"${GDB_VER}"
-"${PACKS_GDB}"/configure CFLAGS="-I${DIRLOCAL}/include -L${DIRLOCAL}/lib" CXXFLAGS="-I${DIRLOCAL}/include -L${DIRLOCAL}/lib" \
+mkdir -p "${build_machine}/gdb-${GDB_VER}"
+cd "${build_machine}/gdb-${GDB_VER}"
+
+"${PACKS_GDB}/configure" \
+	CFLAGS="-I${DIRLOCAL}/include -L${DIRLOCAL}/lib" \
+	CXXFLAGS="-I${DIRLOCAL}/include -L${DIRLOCAL}/lib" \
 	--target="${TARGET}" \
 	--prefix="${prefix}" \
 	--enable-multilib \
@@ -69,10 +72,10 @@ cd "${build_machine}"/gdb-"${GDB_VER}"
 	--disable-werror \
 	--disable-nls \
 	--disable-libssp \
-	${=GDB_CONFIG}			|| { echo "Error configuring gdb"; exit 1; }
-make -j "${PARALLEL_JOBS}"	|| { echo "Error building gdb";	   exit 1; }
-make install				|| { echo "Error installing gdb";  exit 1; }
-make clean					|| { echo "Error cleaning gdb";	   exit 1; }
+	${=GDB_CONFIG}			|| { echo "Error configuring gdb";	exit 1; }
+make -j "${PARALLEL_JOBS}"	|| { echo "Error building gdb";		exit 1; }
+make install				|| { echo "Error installing gdb";	exit 1; }
+make clean					|| { echo "Error cleaning gdb";		exit 1; }
 
 echo "End building gdb:	  $(date)" >> "${log_file}"
-mv "${log_file}" "${build_machine}"/gnu_gdb_ready.txt
+mv "${log_file}" "${build_machine}/gnu_gdb_ready.txt"

@@ -1,7 +1,5 @@
-#!/usr/bin/env zsh
-
-# burn.
-# =====
+# makefile.
+# =========
 
 # SPDX-License-Identifier: MIT
 
@@ -10,11 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		script for burning the arm flash via the stm32programmer.
-#			script mainly generated with chatgpt
-#
-#			- Usage:
-#			  ./secure.sh
+# Goal:		makefile for uKOS-X for building the libFatFs.a module.
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -50,21 +44,48 @@
 #
 #------------------------------------------------------------------------
 
-set -euo pipefail
+SHELL			=  /bin/sh
 
-SCRIPT_PATH="${0:A:h}"
+ifndef PATH_UKOS_X_PACKAGE
+    $(error PATH_UKOS_X_PACKAGE is not defined)
+endif
+ifndef PATH_GCC_ARM
+    $(error PATH_GCC_ARM is not defined)
+endif
 
-BOOT="FSBL"
-APPL="FLASH"
+ifeq ($(origin CC), default)
+CC					=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
+AR					=  $(PATH_COMPILER)/bin/$(PREFIX)ar
+ST					=  $(PATH_COMPILER)/bin/$(PREFIX)strip
+RANLIB				=  $(PATH_COMPILER)/bin/$(PREFIX)ranlib
+endif
 
-cp -f "${SCRIPT_PATH}/${BOOT}.doNotErase" "${BOOT}.bin"
+# Project paths
 
-STM32_PROGRAMMER_BIN="${STM32_PROGRAMMER_BIN:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin}"
-STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_BIN}/STM32_Programmer_CLI"
-STM32_PROGRAMMER_SIG="${STM32_PROGRAMMER_BIN}/STM32_SigningTool_CLI"
+# - PATH_UKOS		--> Main uKOS-X folder			--> OS_Kernel-X
+# - PATH_PORT		--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
+# - PATH_FATFS		--> FatFs package
 
-"${STM32_PROGRAMMER_SIG}" -s -bin "${BOOT}.bin" -nk -of 0x80000000 -t fsbl -o "${BOOT}-trusted.bin" -hv 2.3 -dump "${BOOT}-trusted.bin" -align
-"${STM32_PROGRAMMER_SIG}" -s -bin "${APPL}.bin" -nk -of 0x80000000 -t fsbl -o "${APPL}-trusted.bin" -hv 2.3 -dump "${APPL}-trusted.bin" -align
+PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
+PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
 
-"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -d "${BOOT}-trusted.bin" 0x70000000
-"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -d "${APPL}-trusted.bin" 0x70100000
+# Target & Infrastructure
+
+CORE				=  CORTEX_M85
+FATFS				=  libFatFs.a
+
+STANDARD			=  -std=c23
+OPTIMISATION		=  -Os
+
+PREFIX				?= arm-none-eabi-
+PATH_COMPILER		=  $(PATH_GCC_ARM)
+FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
+CPU_SPEC			=  -mcpu=cortex-m85 -mthumb
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
+
+# The included makefiles
+
+include	$(PATH_FATFS)/Library/Mkfiles/FatFs.mk
+DEP					:= $(OBJ:.o=.d)
+-include $(DEP)
+.PHONY : all clr_all clr build archive

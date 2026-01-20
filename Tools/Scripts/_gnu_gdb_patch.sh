@@ -50,12 +50,12 @@
 #
 #------------------------------------------------------------------------
 
-readonly log_file="${BUILD}"/"${MACHINE}"/gnu_gdb_patch_temp.txt
+readonly log_file="${BUILD}/${MACHINE}/gnu_gdb_patch_temp.txt"
 
 echo "Start patch gdb: $(date)" > "${log_file}"
 
-patch -p1 < "${PATH_SCRIPTS}"/Patches/gdb/acinclude.patch
-patch -p1 < "${PATH_SCRIPTS}"/Patches/gdb/configure.patch
+patch -p1 < "${PATH_SCRIPTS}/Patches/gdb/acinclude.patch"
+patch -p1 < "${PATH_SCRIPTS}/Patches/gdb/configure.patch"
 
 echo "End patch gdb:   $(date)" >> "${log_file}"
-mv "${log_file}" "${BUILD}"/"${MACHINE}"/gnu_gdb_patch_ready.txt
+mv "${log_file}" "${BUILD}/${MACHINE}/gnu_gdb_patch_ready.txt"

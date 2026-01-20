@@ -90,7 +90,7 @@ git clone https://github.com/micropython/micropython.git MicroPython-"${package}
 rm -f MicroPython-current
 ln -s MicroPython-"${package}" MicroPython-current
 
-# Building for CORTEX_M4, _M7, _M33, _M55
+# Building for CORTEX_M4, _M7, _M33, _M55, _M85
 
 export PATH_MICROPYTHON_LIBRARY="${PATH_UKOS_X_PACKAGE}"/Third_Parties/MicroPython/Library
 
@@ -113,5 +113,8 @@ build_core CORTEX_M33
 
 printf '\n%bBuilding for cortex M55! ...%b\n' "${BOLD}" "${NC}"
 build_core CORTEX_M55
+
+printf '\n%bBuilding for cortex M85! ...%b\n' "${BOLD}" "${NC}"
+build_core CORTEX_M85
 
 printf '\n🎉 %bBuild Complete%b\n\n' "${GREEN}" "${NC}"

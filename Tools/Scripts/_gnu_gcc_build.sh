@@ -50,14 +50,15 @@
 #
 #------------------------------------------------------------------------
 
-readonly build_machine="${BUILD}"/"${MACHINE}"
-readonly log_file="${build_machine}"/gnu_gcc_temp.txt
+readonly build_machine="${BUILD}/${MACHINE}"
+readonly log_file="${build_machine}/gnu_gcc_temp.txt"
 
 echo "Start building gcc: $(date)" > "${log_file}"
 
-mkdir -p "${BUILD}"/"${MACHINE}"/gcc-${GCC_VER}
-cd "${BUILD}"/"${MACHINE}"/gcc-${GCC_VER}
-"${PACKS_GCC}"/configure \
+mkdir -p "${BUILD}/${MACHINE}/gcc-${GCC_VER}"
+cd "${BUILD}/${MACHINE}/gcc-${GCC_VER}"
+
+"${PACKS_GCC}/configure" \
 	--target="${TARGET}" \
 	--prefix="${prefix}" \
 	--enable-shared \
@@ -67,10 +68,10 @@ cd "${BUILD}"/"${MACHINE}"/gcc-${GCC_VER}
 	--disable-libssp \
 	--with-gnu-as \
 	--with-gnu-ld \
-	"${GCC_CONFIG}"			|| { echo "Error configuring gcc"; exit 1; }
-make -j "${PARALLEL_JOBS}"	|| { echo "Error building gcc";	   exit 1; }
-make install-strip			|| { echo "Error installing gcc";  exit 1; }
-make clean					|| { echo "Error cleaning gcc";	   exit 1; }
+	"${GCC_CONFIG}"			|| { echo "Error configuring gcc";	exit 1; }
+make -j "${PARALLEL_JOBS}"	|| { echo "Error building gcc";		exit 1; }
+make install-strip			|| { echo "Error installing gcc";	exit 1; }
+make clean					|| { echo "Error cleaning gcc";		exit 1; }
 
 echo "End building gcc:   $(date)" >> "${log_file}"
-mv "${log_file}" "${build_machine}"/gnu_gcc_ready.txt
+mv "${log_file}" "${build_machine}/gnu_gcc_ready.txt"

@@ -50,14 +50,14 @@
 #
 #------------------------------------------------------------------------
 
-readonly log_file="${BUILD}"/"${MACHINE}"/gnu_gcc_riscv_patch_temp.txt
+readonly log_file="${BUILD}/${MACHINE}/gnu_gcc_riscv_patch_temp.txt"
 
 echo "Start patch riscv: $(date)" > "${log_file}"
 
-cd "${PACKS_GCC}"/gcc/config/riscv
-rm -f t-elf-multilib
+cd "${PACKS_GCC}/gcc/config/riscv"
+rm -f "t-elf-multilib"
 
-cp "${PATCH}"/riscv/t-elf-multilib .
+cp "${PATCH}/riscv/t-elf-multilib" "."
 
 echo "End patch riscv:	 $(date)" >> "${log_file}"
-mv "${log_file}" "${BUILD}"/"${MACHINE}"/gnu_gcc_riscv_patch_ready.txt
+mv "${log_file}" "${BUILD}/${MACHINE}/gnu_gcc_riscv_patch_ready.txt"

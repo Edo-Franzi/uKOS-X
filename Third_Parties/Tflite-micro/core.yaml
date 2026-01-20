@@ -14,6 +14,9 @@ cortex_m_generic:
   - core: CORTEX_M55
     target_arch: cortex-m55
     fpu: hard
+  - core: CORTEX_M85
+    target_arch: cortex-m85
+    fpu: hard
 riscv32_generic:
   - core: RV64IMAFDC
     target_arch: rv64imafdc

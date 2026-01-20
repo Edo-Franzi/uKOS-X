@@ -128,6 +128,9 @@ build_core CORTEX_M33
 printf '\n%bBuilding for cortex M55! ...%b\n' "${BOLD}" "${NC}"
 build_core CORTEX_M55
 
+printf '\n%bBuilding for cortex M85! ...%b\n' "${BOLD}" "${NC}"
+build_core CORTEX_M85
+
 printf '\n%bBuilding for RV32IMAC! ...%b\n' "${BOLD}" "${NC}"
 build_core RV32IMAC
 

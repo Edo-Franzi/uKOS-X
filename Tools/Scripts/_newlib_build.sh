@@ -50,24 +50,25 @@
 #
 #------------------------------------------------------------------------
 
-readonly build_machine="${BUILD}"/"${MACHINE}"
-readonly log_file="${build_machine}"/newlib_temp.txt
+readonly build_machine="${BUILD}/${MACHINE}"
+readonly log_file="${build_machine}/newlib_temp.txt"
 
 echo "Start building newlib: $(date)" > "${log_file}"
 
-mkdir -p "${build_machine}"/newlib-"${NLB_VER}"
-cd "${build_machine}"/newlib-"${NLB_VER}"
-"${PACKS_NBL}"/configure \
+mkdir -p "${build_machine}/newlib-${NLB_VER}"
+cd "${build_machine}/newlib-${NLB_VER}"
+
+"${PACKS_NBL}/configure" \
 	--target="${TARGET}" \
 	--prefix="${prefix}" \
 	--enable-multilib \
 	--disable-werror \
 	--disable-nls \
 	--disable-libssp \
-	${=NLB_CONFIG}			|| { echo "Error configuring newlib"; exit 1; }
-make -j ${PARALLEL_JOBS}	|| { echo "Error building newlib";	  exit 1; }
-make install				|| { echo "Error installing newlib";  exit 1; }
-make clean					|| { echo "Error cleaning newlib";	  exit 1; }
+	${=NLB_CONFIG}			|| { echo "Error configuring newlib";	exit 1; }
+make -j "${PARALLEL_JOBS}"	|| { echo "Error building newlib";		exit 1; }
+make install				|| { echo "Error installing newlib";	exit 1; }
+make clean					|| { echo "Error cleaning newlib";		exit 1; }
 
 echo "End building newlib:	 $(date)" >> "${log_file}"
-mv "${log_file}" "${build_machine}"/newlib_ready.txt
+mv "${log_file}" "${build_machine}/newlib_ready.txt"

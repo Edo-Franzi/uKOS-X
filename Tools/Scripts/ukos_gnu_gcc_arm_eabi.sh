@@ -13,7 +13,7 @@
 # Goal:		Toolchain for generating generic gcc cross compilers
 #			for Unix like machines (for the uKOS-X project)
 #
-#			ARM (cortex M3-M4-M7-M23-M33-A7) family
+#			ARM (cortex M3-M4-M7-M23-M33-M55-M85-A7) family
 #
 #			Usage:
 #			./ukos_gnu_gcc_arm_eabi.sh
@@ -57,7 +57,7 @@
 #------------------------------------------------------------------------
 
 # Source the configuration file from the same directory
-source "$(dirname "$0")"/config_install.sh
+source "$(dirname "$0")/config_install.sh"
 
 set -euo pipefail
 
@@ -70,87 +70,87 @@ set -euo pipefail
 case "$(uname)" in
 	"Darwin")
 		echo "Target OSX clang"
-		export CC=clang
-		export CXX=clang++
-		export PARALLEL_JOBS=$(( $(sysctl -n hw.ncpu) - 1 ))
+		export CC="clang"
+		export CXX="clang++"
+		export PARALLEL_JOBS="$(( $(sysctl -n hw.ncpu) - 1 ))"
 		;;
 	"Linux")
 		echo "Target Linux"
-		export PARALLEL_JOBS=4
+		export PARALLEL_JOBS="4"
 		;;
 esac
 
 # Target
 # ------
 
-export TARGET=arm-none-eabi
-export MACHINE=arm
+export TARGET="arm-none-eabi"
+export MACHINE="arm"
 export GCC_VER="${GCC_ARM_VER}"
 
 # Environment
 # -----------
 
-export PACKS_GCC="${PATH_TOOLS_GCC}"/Packages/gcc-"${GCC_VER}"
-export PACKS_BIN="${PATH_TOOLS_GCC}"/Packages/binutils-"${BIN_VER}"
-export PACKS_NBL="${PATH_TOOLS_GCC}"/Packages/newlib-"${NLB_VER}"
-export PACKS_GDB="${PATH_TOOLS_GCC}"/Packages/gdb-"${GDB_VER}"
+export PACKS_GCC="${PATH_TOOLS_GCC}/Packages/gcc-${GCC_VER}"
+export PACKS_BIN="${PATH_TOOLS_GCC}/Packages/binutils-${BIN_VER}"
+export PACKS_NBL="${PATH_TOOLS_GCC}/Packages/newlib-${NLB_VER}"
+export PACKS_GDB="${PATH_TOOLS_GCC}/Packages/gdb-${GDB_VER}"
 
-export PATCH="${PATH_SCRIPTS}"/Patches
-export BUILD="${PATH_TOOLS_GCC}"/builds/gcc-"${GCC_VER}"
-export CROSS="${PATH_TOOLS_GCC}"/cross/gcc-"${GCC_VER}"
+export PATCH="${PATH_SCRIPTS}/Patches"
+export BUILD="${PATH_TOOLS_GCC}/builds/gcc-${GCC_VER}"
+export CROSS="${PATH_TOOLS_GCC}/cross/gcc-${GCC_VER}"
 
-export prefix="${CROSS}"/"${MACHINE}"
-export executables="${prefix}"/bin
+export prefix="${CROSS}/${MACHINE}"
+export executables="${prefix}/bin"
 
-build_machine="${BUILD}"/"${MACHINE}"
-readonly LOG_FILE="${build_machine}"/gnu_gcc_arm_temp.txt
+build_machine="${BUILD}/${MACHINE}"
+readonly LOG_FILE="${build_machine}/gnu_gcc_arm_temp.txt"
 
-PATH="${executables}":"${PATH}"
+export PATH="${executables}:${PATH}"
 
 # Downloading sources
 # -------------------
 
-cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
+cd "${PATH_TOOLS_ROOT}/Packages/,Sources"
 
 if [[ ! -f "binutils-${BIN_VER}.tar.bz2" ]]; then
-	echo Downloading binutils-${BIN_VER}
-	move_to_archive 'binutils-*'
-	"${WGET[@]}" http://gnu.mirror.constant.com/binutils/binutils-"${BIN_VER}".tar.bz2
+	echo "Downloading binutils-${BIN_VER}"
+	move_to_archive "binutils-*"
+	"${WGET[@]}" "http://gnu.mirror.constant.com/binutils/binutils-${BIN_VER}.tar.bz2"
 fi
 
 if [[ ! -f "gdb-${GDB_VER}.tar.gz" ]]; then
-	echo Downloading gdb-${GDB_VER}
-	move_to_archive 'gdb-*'
-	"${WGET[@]}" ftp://ftp.gnu.org/pub/gnu/gdb/gdb-"${GDB_VER}".tar.gz
+	echo "Downloading gdb-${GDB_VER}"
+	move_to_archive "gdb-*"
+	"${WGET[@]}" "ftp://ftp.gnu.org/pub/gnu/gdb/gdb-${GDB_VER}.tar.gz"
 fi
 
 cd ..
-echo Extracting binutils sources
-tar xjf ,Sources/binutils-${BIN_VER}.tar.bz2
+echo "Extracting binutils sources"
+tar xjf ",Sources/binutils-${BIN_VER}.tar.bz2"
 
-echo Extracting gdb sources
-tar xzf ,Sources/gdb-${GDB_VER}.tar.gz
+echo "Extracting gdb sources"
+tar xzf ",Sources/gdb-${GDB_VER}.tar.gz"
 
-if [[ ! -d gcc-${GCC_VER} ]]; then
-	echo Downloading gcc-${GCC_VER}
-	git clone git://gcc.gnu.org/git/gcc.git "gcc-${GCC_VER}"
-	git -C gcc-"${GCC_VER}" fetch --tags
-	git -C gcc-"${GCC_VER}" checkout tags/releases/gcc-${GCC_VER}
+if [[ ! -d "gcc-${GCC_VER}" ]]; then
+	echo "Downloading gcc-${GCC_VER}"
+	git clone "git://gcc.gnu.org/git/gcc.git" "gcc-${GCC_VER}"
+	git -C "gcc-${GCC_VER}" fetch --tags
+	git -C "gcc-${GCC_VER}" checkout "tags/releases/gcc-${GCC_VER}"
 	cd "gcc-${GCC_VER}"
 	./contrib/download_prerequisites
-	if [[ -d "Patches/gcc/${GCC_VER}" ]]; then
-		for file in Patches/gcc/${GCC_VER}; do
-			patch -p1 < "$file"
-		done
-	fi
+	for file in "${PATH_SCRIPTS}/Patches/gcc/${GCC_VER}"/*; do
+		if [[ -f "$file" ]]; then
+			patch -p1 -t < "$file"
+		fi
+	done
 	cd ..
 fi
 
-if [[ ! -d newlib-"${NLB_VER}" ]]; then
-	echo Downloading newlib-${NLB_VER}
-	git clone https://sourceware.org/git/newlib-cygwin.git "newlib-${NLB_VER}"
-	git -C newlib-"${NLB_VER}" fetch --tags
-	git -C newlib-"${NLB_VER}" checkout tags/newlib-${NLB_VER}
+if [[ ! -d "newlib-${NLB_VER}" ]]; then
+	echo "Downloading newlib-${NLB_VER}"
+	git clone "https://sourceware.org/git/newlib-cygwin.git" "newlib-${NLB_VER}"
+	git -C "newlib-${NLB_VER}" fetch --tags
+	git -C "newlib-${NLB_VER}" checkout "tags/newlib-${NLB_VER}"
 fi
 
 # Configurations
@@ -199,64 +199,69 @@ export GDB_CONFIG=" \
 # ----------------------
 
 rm -rf "${build_machine}"
-rm -rf "${CROSS}"/"${MACHINE}"
+rm -rf "${CROSS}/${MACHINE}"
 mkdir -p "${build_machine}"
 
 echo "Start of build: $(date)" > "${LOG_FILE}"
 
 cd "${PACKS_GCC}"
 
-# Uncomment the following 2 lines if the script is used as a stand-alone script
-# (without using download_essential)
-#
-./contrib/download_prerequisites
-"${PATH_SCRIPTS}"/_gnu_gcc_patch.sh
+${PATH_SCRIPTS}/_gnu_gcc_cortex_patch.sh
+if [[ ! -f "${build_machine}"/gnu_gcc_cortex_patch_ready.txt ]]; then
+	echo "Failed to pass patches"
+	exit 1
+fi
+cat "${build_machine}"/gnu_gcc_cortex_patch_ready.txt >> "${LOG_FILE}"
 
-"${PATH_SCRIPTS}"/_gnu_binutils_build.sh
-if [[ ! -f "${build_machine}"/gnu_binutils_ready.txt ]]; then
+"${PATH_SCRIPTS}/_gnu_binutils_build.sh"
+if [[ ! -f "${build_machine}/gnu_binutils_ready.txt" ]]; then
 	echo "Failed to build binutils"
 	exit 1
 fi
-cat "${build_machine}"/gnu_binutils_ready.txt >> "${LOG_FILE}"
-"${PATH_SCRIPTS}"/_gnu_gcc_pass1_build.sh
-if [[ ! -f "${build_machine}"/gnu_gcc_pass1_ready.txt ]]; then
+cat "${build_machine}/gnu_binutils_ready.txt" >> "${LOG_FILE}"
+
+"${PATH_SCRIPTS}/_gnu_gcc_pass1_build.sh"
+if [[ ! -f "${build_machine}/gnu_gcc_pass1_ready.txt" ]]; then
 	echo "Failed to complete pass 1 for gcc"
 	exit 1
 fi
-cat "${build_machine}"/gnu_gcc_pass1_ready.txt >> "${LOG_FILE}"
-"${PATH_SCRIPTS}"/_newlib_build.sh
-if [[ ! -f "${build_machine}"/newlib_ready.txt ]]; then
+cat "${build_machine}/gnu_gcc_pass1_ready.txt" >> "${LOG_FILE}"
+
+"${PATH_SCRIPTS}/_newlib_build.sh"
+if [[ ! -f "${build_machine}/newlib_ready.txt" ]]; then
 	echo "Failed to build newlib"
 	exit 1
 fi
-cat "${build_machine}"/newlib_ready.txt >> "${LOG_FILE}"
-"${PATH_SCRIPTS}"/_gnu_gcc_pass2_build.sh
-if [[ ! -f "${build_machine}"/gnu_gcc_pass2_ready.txt ]]; then
+cat "${build_machine}/newlib_ready.txt" >> "${LOG_FILE}"
+
+"${PATH_SCRIPTS}/_gnu_gcc_pass2_build.sh"
+if [[ ! -f "${build_machine}/gnu_gcc_pass2_ready.txt" ]]; then
 	echo "Failed to complete pass 2 for gcc"
 	exit 1
 fi
-cat "${build_machine}"/gnu_gcc_pass2_ready.txt >> "${LOG_FILE}"
-"${PATH_SCRIPTS}"/_gnu_gdb_build.sh
-if [[ ! -f "${build_machine}"/gnu_gdb_ready.txt ]]; then
+cat "${build_machine}/gnu_gcc_pass2_ready.txt" >> "${LOG_FILE}"
+
+"${PATH_SCRIPTS}/_gnu_gdb_build.sh"
+if [[ ! -f "${build_machine}/gnu_gdb_ready.txt" ]]; then
 	echo "Failed to build gdb"
 	exit 1
 fi
-cat "${build_machine}"/gnu_gdb_ready.txt >> "${LOG_FILE}"
+cat "${build_machine}/gnu_gdb_ready.txt" >> "${LOG_FILE}"
 
 # Strip the binaries
 
-find "${CROSS}"/${MACHINE}/arm-none-eabi -name "lib*.a" \
-	-exec "${CROSS}"/${MACHINE}/bin/arm-none-eabi-strip --strip-unneeded {} \;
+find "${CROSS}/${MACHINE}/arm-none-eabi" -name "lib*.a" \
+	-exec "${CROSS}/${MACHINE}/bin/arm-none-eabi-strip" --strip-unneeded {} \;
 
 # Update path links
 
-current_dir="${PATH_TOOLS_ROOT}"/cross/gcc-current
+current_dir="${PATH_TOOLS_ROOT}/cross/gcc-current"
 if [[ ! -d "${current_dir}" ]]; then
 	mkdir "${current_dir}"
 fi
 cd "${current_dir}"
 rm -f "${MACHINE}"
-ln -s ../gcc-"${GCC_VER}"/"${MACHINE}" "${MACHINE}"
+ln -s "../gcc-${GCC_VER}/${MACHINE}" "${MACHINE}"
 
 echo "End of build:	  $(date)" >> "${LOG_FILE}"
-mv "${LOG_FILE}" "${build_machine}"/gnu_gcc_arm_ready.txt
+mv "${LOG_FILE}" "${build_machine}/gnu_gcc_arm_ready.txt"

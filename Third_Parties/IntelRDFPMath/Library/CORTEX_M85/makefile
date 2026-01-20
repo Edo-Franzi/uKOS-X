@@ -1,5 +1,5 @@
-# fragment for cortex a7
-# ======================
+# makefile.
+# =========
 
 # SPDX-License-Identifier: MIT
 
@@ -8,16 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		Fragment code for gcc-x.y.z (cortex cpus).
-#			This fragment allows to generate multilib version of gcc
-#			for the following cpus
-#
-#			Not tested yet:
-#
-#			Tested:
-#			cortex-a7
-#
-#			From Launchpad readme.txt
+# Goal:		makefile for uKOS-X for building the libIntelRDFPMath.a module.
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -53,49 +44,48 @@
 #
 #------------------------------------------------------------------------
 
-MULTILIB_OPTIONS    =
-MULTILIB_DIRNAMES   =
-MULTILIB_REQUIRED   =
-MULTILIB_REUSE      =
-MULTILIB_MATCHES    =
+SHELL			=  /bin/sh
 
-# We have the following hierachy:
-#   T16/T32 (thumb)
-#   Architecture: Aarmv7-m, armv7e-m, armv7-a, armv7ve, armv7ve+simd
-#   FPU:          fpv4-sp-d16, fpv5-sp-d16, vfpv4, vfpv4-d16, neon-vfpv4
-#   Float-abi:    soft, softfp, hard
+ifndef PATH_UKOS_X_PACKAGE
+    $(error PATH_UKOS_X_PACKAGE is not defined)
+endif
+ifndef PATH_GCC_ARM
+    $(error PATH_GCC_ARM is not defined)
+endif
 
-MULTILIB_OPTIONS    += mthumb/marm
-MULTILIB_DIRNAMES   += thumb arm
+ifeq ($(origin CC), default)
+CC					=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
+AR					=  $(PATH_COMPILER)/bin/$(PREFIX)ar
+ST					=  $(PATH_COMPILER)/bin/$(PREFIX)strip
+RANLIB				=  $(PATH_COMPILER)/bin/$(PREFIX)ranlib
+endif
 
-MULTILIB_OPTIONS    += /march=armv7ve/march=armv7ve+simd
-MULTILIB_DIRNAMES   += armv7ve        armv7ve+simd
+# Project paths
 
-MULTILIB_OPTIONS    += mfloat-abi=soft mfloat-abi=softfp mfloat-abi=hard mfpu=vfpv4 mfpu=vfpv4-d16 mfpu=neon-vfpv4
-MULTILIB_DIRNAMES   += soft            softfp            hard            vfpv4      vfpv4-d16      neon-vfpv4
+# - PATH_UKOS			--> Main uKOS-X folder			--> OS_Kernel-X
+# - PATH_PORT			--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
+# - PATH_INTELRDFPMATH	--> IntelRDFPMath package
 
-# Generic
-# -------
+PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
+PATH_INTELRDFPMATH	=  $(PATH_UKOS)/Third_Parties/IntelRDFPMath
 
-MULTILIB_REQUIRED   += mthumb
-MULTILIB_REQUIRED   += marm
+# Target & Infrastructure
 
-# cortex-A7
-# ---------
-#
-#   fpu soft
-#   fpu hard mfpu=vfpv4
-#   fpu hard mfpu=vfpv4-d16
-#   fpu hard mfpu=neon-vfpv4
+CORE				=  CORTEX_M85
+INTELRDFPMATH		=  libIntelRDFPMath.a
 
-MULTILIB_REQUIRED   += mthumb/march=armv7ve/mfloat-abi=soft
-MULTILIB_REQUIRED   += mthumb/march=armv7ve/mfloat-abi=softfp/mfpu=vfpv4
-MULTILIB_REQUIRED   += mthumb/march=armv7ve/mfloat-abi=hard/mfpu=vfpv4
-MULTILIB_REQUIRED   += mthumb/march=armv7ve/mfloat-abi=softfp/mfpu=vfpv4-d16
-MULTILIB_REQUIRED   += mthumb/march=armv7ve/mfloat-abi=hard/mfpu=vfpv4-d16
+STANDARD			=  -std=c23
+OPTIMISATION		=  -Os
 
-MULTILIB_REQUIRED   += mthumb/march=armv7ve+simd/mfloat-abi=soft
-MULTILIB_REQUIRED   += mthumb/march=armv7ve+simd/mfloat-abi=softfp/mfpu=neon-vfpv4
-MULTILIB_REQUIRED   += mthumb/march=armv7ve+simd/mfloat-abi=hard/mfpu=neon-vfpv4
+PREFIX				?= arm-none-eabi-
+PATH_COMPILER		=  $(PATH_GCC_ARM)
+FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
+CPU_SPEC			=  -mcpu=cortex-m85 -mthumb
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
 
-MULTILIB_MATCHES    += march?armv7ve=mcpu?cortex-a7
+# The included makefiles
+
+include	$(PATH_INTELRDFPMATH)/Library/Mkfiles/IntelRDFPMathLib.mk
+DEP					:= $(OBJ:.o=.d)
+-include $(DEP)
+.PHONY : all clr_all clr build archive

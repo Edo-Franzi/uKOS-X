@@ -51,15 +51,15 @@
 #
 #------------------------------------------------------------------------
 
-readonly log_file="${BUILD}"/"${MACHINE}"/gnu_gcc_patch_temp.txt
+readonly log_file="${BUILD}/${MACHINE}/gnu_gcc_patch_temp.txt"
 
 echo "Start patch gcc: $(date)" > "${log_file}"
 
-if	[[ -d "${PATH_SCRIPTS}"/Patches/gcc/"${GCC_VER}" ]]; then
-	for file in "${PATH_SCRIPTS}"/Patches/gcc/"${GCC_VER}"/*; do
+if [[ -d "${PATH_SCRIPTS}/Patches/gcc/${GCC_VER}" ]]; then
+	for file in "${PATH_SCRIPTS}/Patches/gcc/${GCC_VER}"/*; do
 		patch -Np1 < "$file"
 	done
 fi
 
 echo "End patch gcc:   $(date)" >> "${log_file}"
-mv "${log_file}" "${BUILD}"/"${MACHINE}"/gnu_gcc_patch_ready.txt
+mv "${log_file}" "${BUILD}/${MACHINE}/gnu_gcc_patch_ready.txt"

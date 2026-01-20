@@ -161,12 +161,12 @@ static	void	local_GPIO_Configuration(void) {
 			{ 8u,     FUNC_GPIOHS0,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 9u,     FUNC_GPIOHS1,			FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 10u,    FUNC_UART1_RX,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
-			{ 11u,    FUNC_UART1_TX,		FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    0u,     0u,       0u,       0u,   0u,       0u,        0u,      0u },
+			{ 11u,    FUNC_GPIOHS5,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 
 			{ 12u,    FUNC_GPIOHS8,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 13u,    FUNC_GPIOHS9,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 14u,    FUNC_GPIOHS10,		FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
-			{ 15u,    FUNC_GPIOHS5,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
+			{ 15u,    FUNC_UART1_TX,		FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    0u,     0u,       0u,       0u,   0u,       0u,        0u,      0u },
 			{ 16u,    FUNC_GPIOHS6,			FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 17u,    FUNC_GPIOHS7,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 
