@@ -55,14 +55,14 @@ readonly PATH_PRG="${0:a:h}"
 
 # Colours for messages
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[0;33m'
-readonly BLUE='\033[0;34m'
-readonly BOLD='\033[1m'
-readonly FAINT='\033[2m'
-readonly ITALIC='\033[3m'
-readonly NC='\033[0m' # No Color
+readonly RED=$'\033[0;31m'
+readonly GREEN=$'\033[0;32m'
+readonly YELLOW=$'\033[0;33m'
+readonly BLUE=$'\033[0;34m'
+readonly BOLD=$'\033[1m'
+readonly FAINT=$'\033[2m'
+readonly ITALIC=$'\033[3m'
+readonly NC=$'\033[0m' # No Color
 
 # Parse apps.yaml file using yq
 parse_apps_yaml() {
@@ -72,15 +72,15 @@ parse_apps_yaml() {
 	yq eval 'to_entries[] | .key as $family | .value | to_entries[] | .key as $project | .value[] | "\($family)/\($project)/\(.)"' "${yaml_file}"
 }
 
-readonly LOG_FILE="compilation.log"
+readonly LOG_FILE='compilation.log'
 
-printf "%bCleaning all the downloadable applications ...%b\n" "${BOLD}" "${NC}"
+printf '%bCleaning all the downloadable applications ...%b\n' "${BOLD}" "${NC}"
 while IFS= read -r CURRENT_TARGET
 do
-	printf "."
+	printf '.'
 	cd "${PATH_PRG}/${CURRENT_TARGET}"
 	make --silent clean_all
 	rm -f "${LOG_FILE}"
 	rm -fr build
 done < <(parse_apps_yaml)
-printf "\n%bTerminated!%b\n" "${BOLD}" "${NC}"
+printf '\n%bTerminated!%b\n' "${BOLD}" "${NC}"

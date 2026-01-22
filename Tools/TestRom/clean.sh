@@ -49,12 +49,12 @@
 set -euo pipefail
 setopt KSH_ARRAYS  # Use 0-indexed arrays like bash
 
-if [[ -z ${PATH_UKOS_X_PACKAGE:-} ]]; then
+if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
 	echo "Variable PATH_UKOS_X_PACKAGE is not set!"
 	exit 1
 fi
 
-PATH_PRG=${PATH_UKOS_X_PACKAGE}/Tools/TestRom
+PATH_PRG="${PATH_UKOS_X_PACKAGE}/Tools/TestRom"
 
 # Parse apps.yaml file using yq
 parse_apps_yaml() {

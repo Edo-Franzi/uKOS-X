@@ -161,17 +161,21 @@ static	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
 // Display the results
 
 		result = "Undetermined           ";
-		result = ( (vOutput_L3[0] >  0.2f) && (vOutput_L3[1] < -0.2f))														   ? ("Class C1 (ring)        ") : (result);
-		result = ( (vOutput_L3[0] < -0.2f) && (vOutput_L3[1] >  0.2f))														   ? ("Class C2 (inner-outer) ") : (result);
-		result = (((vOutput_L3[0] > -0.2f) && (vOutput_L3[0] <  0.2f)) || ((vOutput_L3[1] > -0.2f) && (vOutput_L3[1] < 0.2f))) ? ("Not well classified    ") : (result);
+		result = ( (vOutput_L3[0] >  0.2f) && (vOutput_L3[1] < -0.2f) && (vOutput_L3[2] < -0.2f)) ? ("Class C1 (ring)        ") : (result);
+		result = ( (vOutput_L3[0] < -0.2f) && (vOutput_L3[1] >  0.2f) && (vOutput_L3[2] < -0.2f)) ? ("Class C2 (inner-outer) ") : (result);
+		result = ( (vOutput_L3[0] < -0.2f) && (vOutput_L3[1] < -0.2f) && (vOutput_L3[2] >  0.2f)) ? ("Class C3 (square)      ") : (result);
+		result = (((vOutput_L3[0] > -0.2f) && (vOutput_L3[0] <  0.2f)) ||
+				  ((vOutput_L3[1] > -0.2f) && (vOutput_L3[1] <  0.2f)) ||
+				  ((vOutput_L3[2] > -0.2f) && (vOutput_L3[2] <  0.2f)))							  ? ("Not well classified    ") : (result);
 
 		(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
-							 "result: Out-0 %6.3f, Out-1 %6.3f "
+							 "result: Out-0 %6.3f, Out-1 %6.3f, Out-2 %6.3f "
 							 "    %s "
 							 "Exec time %"PRIu32" [us]\n", x,
 							 							   y,
 							 							   vOutput_L3[0],
 							 							   vOutput_L3[1],
+							 							   vOutput_L3[2],
 							 							   result,
 							 							   delta);
 	}

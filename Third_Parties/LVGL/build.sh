@@ -49,28 +49,28 @@
 set -euo pipefail
 
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
-	echo "Variable PATH_UKOS_X_PACKAGE is not set!"
+	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
 	exit 1
 fi
 
 # Colours for messages
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[0;33m'
-readonly BLUE='\033[0;34m'
-readonly BOLD='\033[1m'
-readonly FAINT='\033[2m'
-readonly ITALIC='\033[3m'
-readonly NC='\033[0m' # No Color
+readonly RED=$'\033[0;31m'
+readonly GREEN=$'\033[0;32m'
+readonly YELLOW=$'\033[0;33m'
+readonly BLUE=$'\033[0;34m'
+readonly BOLD=$'\033[1m'
+readonly FAINT=$'\033[2m'
+readonly ITALIC=$'\033[3m'
+readonly NC=$'\033[0m' # No Color
 
-readonly splash="
+readonly splash='
 ╔════════════════════════════════════════════════════════════╗
 ║               Lvgl Package Build System                    ║
 ║      Fetching upstream + Building all architectures        ║
 ╚════════════════════════════════════════════════════════════╝
-"
-printf '%b%s%b' "${GREEN}" "$splash" "${NC}"
+'
+printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 
 # Packages
 # --------
@@ -81,17 +81,17 @@ readonly package=9.4.0
 
 printf '\n%bDownload the LVGL package ...%b\n\n' "${BOLD}" "${NC}"
 
-cd "${PATH_UKOS_X_PACKAGE}"/Third_Parties/LVGL
-rm -rf "${PATH_UKOS_X_PACKAGE}"/Third_Parties/LVGL/LVGL-"${package}"
-git clone https://github.com/lvgl/lvgl.git LVGL-"${package}" -b v"${package}"
+cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/LVGL"
+rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/LVGL/LVGL-${package}"
+git clone https://github.com/lvgl/lvgl.git "LVGL-${package}" -b "v${package}"
 
 # Update path links
 
 rm -f LVGL-current
-ln -s LVGL-"${package}" LVGL-current
+ln -s "LVGL-${package}" LVGL-current
 
 build_core() {
-	cd "${PATH_UKOS_X_PACKAGE}"/Third_Parties/LVGL/Library/"${1}"/"${2}"
+	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/LVGL/Library/${1}/${2}"
 	echo "Start of building: $(date)" > libLVGL_temp.log
 	make -j all
 	echo "End of building: $(date)" >> libLVGL_temp.log

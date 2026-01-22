@@ -55,5 +55,5 @@ fi
 
 export	PYTHONPATH="$PYTHONPATH:$(pwd)"
 
-python3	"${PATH_UKOS_X_PACKAGE}"/OS/Lib_neurals/mlpn/backprop.py
+python3	"${PATH_UKOS_X_PACKAGE}/OS/Lib_neurals/mlpn/backprop.py"
 rm -rf __pycache__

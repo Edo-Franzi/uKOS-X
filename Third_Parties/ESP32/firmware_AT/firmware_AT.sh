@@ -76,12 +76,12 @@
 set -euo pipefail
 
 if [[ -z "${IDF_PATH:-}" ]]; then
-	echo "Variable IDF_PATH is not set!"
+	echo 'Variable IDF_PATH is not set!'
 	exit 1
 fi
 
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
-	echo "Variable PATH_UKOS_X_PACKAGE is not set!"
+	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
 	exit 1
 fi
 
@@ -96,27 +96,27 @@ export FIRMWARE=V3.4.0.0
 export COMMAND="${1:-}"
 
 cd "${PATH_UKOS_X_PACKAGE}/Ports/Third_Parties/ESP32/ESP32-WROOM-32-AT-${FIRMWARE}"
-echo "Start of burning:" > esp32_temp.txt
+echo 'Start of burning:' > esp32_temp.txt
 date >> esp32_temp.txt
 
 # To fully erase/burn the flash
 
-if [[ "${COMMAND}" = "-erase" ]]; then
+if [[ "${COMMAND}" = '-erase' ]]; then
 	python "${IDF_PATH}/components/esptool_py/esptool/esptool.py" \
 		--chip "${CHIP}" \
 		--port "${SERIAL}" \
 		--baud "${BAUDRATE}" \
-		--before "default_reset" \
-		--after "hard_reset" \
+		--before 'default_reset' \
+		--after 'hard_reset' \
 		erase_flash
 
-elif [[ "${COMMAND}" = "-burn" ]]; then
+elif [[ "${COMMAND}" = '-burn' ]]; then
 	python "${IDF_PATH}/components/esptool_py/esptool/esptool.py" \
 		--chip "${CHIP}" \
 		--port "${SERIAL}" \
 		--baud "${BAUDRATE}" \
-		--before "default_reset" \
-		--after "hard_reset" \
+		--before 'default_reset' \
+		--after 'hard_reset' \
 		write_flash -z --flash_mode dio --flash_freq 40m --flash_size 4MB \
 			0x1000 bootloader/bootloader.bin \
 			0x100000 esp-at.bin \
@@ -126,9 +126,9 @@ elif [[ "${COMMAND}" = "-burn" ]]; then
 			0x21000 customized_partitions/mfg_nvs.bin
 
 else
-	echo "firmware_AT_burn {erase | burn}."
+	echo 'firmware_AT_burn {erase | burn}.'
 fi
 
-echo "End of burning:" >> esp32_temp.txt
+echo 'End of burning:' >> esp32_temp.txt
 date >> esp32_temp.txt
 mv esp32_temp.txt esp32_ready.txt

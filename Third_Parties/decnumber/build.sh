@@ -49,34 +49,34 @@
 set -euo pipefail
 
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
-	echo "Variable PATH_UKOS_X_PACKAGE is not set!"
+	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
 	exit 1
 fi
 
 # Colours for messages
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[0;33m'
-readonly BLUE='\033[0;34m'
-readonly BOLD='\033[1m'
-readonly FAINT='\033[2m'
-readonly ITALIC='\033[3m'
-readonly NC='\033[0m' # No Color
+readonly RED=$'\033[0;31m'
+readonly GREEN=$'\033[0;32m'
+readonly YELLOW=$'\033[0;33m'
+readonly BLUE=$'\033[0;34m'
+readonly BOLD=$'\033[1m'
+readonly FAINT=$'\033[2m'
+readonly ITALIC=$'\033[3m'
+readonly NC=$'\033[0m' # No Color
 
-readonly splash="
+readonly splash='
 ╔════════════════════════════════════════════════════════════╗
 ║              decnumber Package Build System                ║
 ║      Fetching upstream + Building all architectures        ║
 ╚════════════════════════════════════════════════════════════╝
-"
-printf '%b%s%b' "${GREEN}" "$splash" "${NC}"
+'
+printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 
 # Packages
 # --------
 
-readonly  package=3.68
-readonly  hash=ace3fa6
+readonly package=3.68
+readonly hash=ace3fa6
 
 export PATH="${PATH_GCC_ARM}/bin":"${PATH}"
 printf '%b%s%b\n' "${YELLOW}" "$(arm-none-eabi-gcc --version)" "${NC}"
@@ -87,20 +87,20 @@ arm-none-eabi-gcc --version
 
 printf '\n%bDownload the decnumber package ...%b\n\n' "${BOLD}" "${NC}"
 
-cd "${PATH_UKOS_X_PACKAGE}"/Third_Parties/decnumber
-rm -rf "${PATH_UKOS_X_PACKAGE}"/Third_Parties/decnumber/decnumber-"${package}"
-git clone https://github.com/raitechnology/libdecnumber.git decnumber-"${package}"
-cd decnumber-"${package}"
-git checkout ${hash}
+cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/decnumber"
+rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/decnumber/decnumber-${package}"
+git clone https://github.com/raitechnology/libdecnumber.git "decnumber-${package}"
+cd "decnumber-${package}"
+git checkout "${hash}"
 
 # Update path links
 
 cd ..
 rm -f decnumber-current
-ln -s decnumber-"${package}" decnumber-current
+ln -s "decnumber-${package}" decnumber-current
 
 build_core() {
-	cd "${PATH_UKOS_X_PACKAGE}"/Third_Parties/decnumber/Library/"${1}"
+	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/decnumber/Library/${1}"
 	echo "Start of building: $(date)" > libdecnumber_temp.log
 	make -j all
 	echo "End of building: $(date)" >> libdecnumber_temp.log

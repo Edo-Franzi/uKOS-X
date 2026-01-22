@@ -52,7 +52,7 @@
 set -euo pipefail
 
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
-	echo "Variable PATH_UKOS_X_PACKAGE is not set!"
+	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
 	exit 1
 fi
 
@@ -68,7 +68,7 @@ if [[ $# -gt 3 ]]; then
 fi
 
 # Create a list of all folders in uKOS_Appls_Downloadable
-root_dir="${PATH_UKOS_X_PACKAGE}"/Applications/uKOS_Appls_Downloadable
+root_dir="${PATH_UKOS_X_PACKAGE}/Applications/uKOS_Appls_Downloadable"
 cd "${root_dir}"
 
 # Family application list (a_Basics, b_MailBoxes, ...)

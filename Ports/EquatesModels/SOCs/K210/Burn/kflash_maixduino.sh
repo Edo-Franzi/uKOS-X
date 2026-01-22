@@ -51,7 +51,7 @@ set -e
 case "$(uname)" in
 	"Darwin")
 		usbsn=`ioreg -p IOUSB -n Sipeed-Debug | grep "kUSBSerialNumberString" | sed 's/\(.*\)= "\(.*\)"/\2/'`"0"
-		kflash -B maixduino -p /dev/tty.usbserial-"${usbsn}" FLASH.bin
+		kflash -B maixduino -p "/dev/tty.usbserial-${usbsn}" FLASH.bin
 		;;
 	"Linux")
 		kflash -B maixduino -p /dev/ttyUSB0 FLASH.bin

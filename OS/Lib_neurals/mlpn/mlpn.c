@@ -50,7 +50,14 @@
 #include	<math.h>
 #include	<stdint.h>
 
-#if	(defined(__ARM_FEATURE_MVE))
+// __ARM_FEATURE_MVE Bit 0 indicates whether Helium integer instructions are available
+// __ARM_FEATURE_MVE Bit 1 indicates whether Helium floating-point instructions are available
+//
+// 0 indicates that Helium is not available
+// 1 indicates that only the Helium integer intrinsics are available
+// 3 indicates that both the Helium integer and floating-point intrinsics are available
+
+#if	((defined(__ARM_FEATURE_MVE)) && (__ARM_FEATURE_MVE == 2))
 #include	<arm_mve.h>
 #endif
 
@@ -373,7 +380,7 @@ static	int32_t	local_initialiseLayer(mlpnLayer_t *layer) {
 
 // Dot product: Helium FP (MVE) if available (with unroll x2 (8 floats per iteration))
 
-#if (defined(__ARM_FEATURE_MVE))
+#if	((defined(__ARM_FEATURE_MVE)) && (__ARM_FEATURE_MVE == 2))
 static	inline	float32_t	local_hadd_f32x4(float32x4_t v) {
 	float32_t	tmp[4];
 
@@ -384,7 +391,7 @@ static	inline	float32_t	local_hadd_f32x4(float32x4_t v) {
 
 static	inline	float32_t	local_dot_f32(const float32_t * __restrict w, const float32_t * __restrict x, uint16_t n) {
 
-	#if (defined(__ARM_FEATURE_MVE))
+	#if	((defined(__ARM_FEATURE_MVE)) && (__ARM_FEATURE_MVE == 2))
     float32x4_t		acc0 = vdupq_n_f32(0.0f);
     float32x4_t		acc1 = vdupq_n_f32(0.0f);
     uint16_t		i = 0u, rem;

@@ -50,7 +50,7 @@
 set -euo pipefail
 
 declare -a cli_args=()
-llvm_option=""
+llvm_option=''
 build_with_cmake=0
 
 usage() {
@@ -68,7 +68,7 @@ Options:
 EOF
 }
 
-readonly OPTSTRING=":LCUYvwh"
+readonly OPTSTRING=':LCUYvwh'
 
 while getopts "${OPTSTRING}" option; do
 	case "${option}" in
@@ -80,20 +80,20 @@ while getopts "${OPTSTRING}" option; do
 			build_with_cmake=1
 			;;
 		L)
-			llvm_option="-L"
+			llvm_option='-L'
 			;;
 		U|Y|v|w)
 			cli_args+=("-${option}")
 			;;
 		?)
-			printf "Invalid option: -%s\n" "${OPTARG}" >&2
+			printf 'Invalid option: -%s\n' "${OPTARG}" >&2
 			exit 1
 			;;
 	esac
 done
 
 if [[ "${build_with_cmake}" == 0 ]]; then
-	if [[ "${llvm_option}" == "-L" ]]; then
+	if [[ "${llvm_option}" == '-L' ]]; then
 		./_build_llvm.sh "${cli_args[@]:-}"
 	else
 		./_build_gcc.sh "${cli_args[@]:-}"

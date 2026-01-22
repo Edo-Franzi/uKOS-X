@@ -49,53 +49,53 @@
 set -euo pipefail
 
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
-	echo "Variable PATH_UKOS_X_PACKAGE is not set!"
+	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
 	exit 1
 fi
 
 # Colours for messages
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[0;33m'
-readonly BLUE='\033[0;34m'
-readonly BOLD='\033[1m'
-readonly FAINT='\033[2m'
-readonly ITALIC='\033[3m'
-readonly NC='\033[0m' # No Color
+readonly RED=$'\033[0;31m'
+readonly GREEN=$'\033[0;32m'
+readonly YELLOW=$'\033[0;33m'
+readonly BLUE=$'\033[0;34m'
+readonly BOLD=$'\033[1m'
+readonly FAINT=$'\033[2m'
+readonly ITALIC=$'\033[3m'
+readonly NC=$'\033[0m' # No Color
 
-readonly splash="
+readonly splash='
 ╔════════════════════════════════════════════════════════════╗
 ║            Micropython Package Build System                ║
 ║      Fetching upstream + Building all architectures        ║
 ╚════════════════════════════════════════════════════════════╝
-"
-printf '%b%s%b' "${GREEN}" "$splash" "${NC}"
+'
+printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 
 # Packages
 # --------
 
-readonly  package=1.27.0
+readonly package=1.27.0
 
 # Clone the right package
 
 printf '\n%bDownload the MicroPython package ...%b\n\n' "${BOLD}" "${NC}"
 
-cd "${PATH_UKOS_X_PACKAGE}"/Third_Parties/MicroPython
-rm -rf "${PATH_UKOS_X_PACKAGE}"/Third_Parties/MicroPython/MicroPython-"${package}"
-git clone https://github.com/micropython/micropython.git MicroPython-"${package}" -b v"${package}"
+cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/MicroPython"
+rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/MicroPython/MicroPython-${package}"
+git clone https://github.com/micropython/micropython.git "MicroPython-${package}" -b "v${package}"
 
 # Update path links
 
 rm -f MicroPython-current
-ln -s MicroPython-"${package}" MicroPython-current
+ln -s "MicroPython-${package}" MicroPython-current
 
 # Building for CORTEX_M4, _M7, _M33, _M55, _M85
 
-export PATH_MICROPYTHON_LIBRARY="${PATH_UKOS_X_PACKAGE}"/Third_Parties/MicroPython/Library
+export PATH_MICROPYTHON_LIBRARY="${PATH_UKOS_X_PACKAGE}/Third_Parties/MicroPython/Library"
 
 build_core() {
-	cd "${PATH_MICROPYTHON_LIBRARY}"/"${1}"
+	cd "${PATH_MICROPYTHON_LIBRARY}/${1}"
 	echo "Start of building: $(date)" > libMicroPython_temp.log
 	make -j all
 	echo "End of building: $(date)" >> libMicroPython_temp.log

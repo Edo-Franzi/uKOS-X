@@ -70,4 +70,4 @@ if [[ -z "$OPENOCD" ]]; then
 	fi
 fi
 
-"${OPENOCD}" -f "${SCRIPT_PATH}"/jtag_FT4232_b.cfg
+"${OPENOCD}" -f "${SCRIPT_PATH}/jtag_FT4232_b.cfg"

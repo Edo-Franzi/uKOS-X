@@ -63,13 +63,17 @@
 import	numpy as np
 import	matplotlib.pyplot as plt
 
-KNB_SAMPLES_C1		= 2000				# Number of samples C1 (ring)
-KNB_SAMPLES_C2a	 	= 1000				# Number of samples C2a (outer)
-KNB_SAMPLES_C2b		= 1000				# Number of samples C2b (inner)
-KABS_MAX_FUNCTION	= 40				# Max of the function
-KABS_MAX_OUTPUT		= 0.98				# Abs max of the expected output
-KGOOD				= KABS_MAX_OUTPUT	# Max value for "good" answers
-KBAD				= -KABS_MAX_OUTPUT	# Max value for "bad" answers
+KNB_SAMPLES_C1			= 1000								# Number of samples C1 (ring)
+KNB_SAMPLES_C2a	 		= 1000								# Number of samples C2a (outer)
+KNB_SAMPLES_C2b			= 1000								# Number of samples C2b (inner)
+KNB_SAMPLES_C3			= 1000								# Number of samples C3 (square)
+KABS_MAX_FUNCTION		= 40								# Max of the function (+/- 40 in x-y)
+KRING_LIMITS_MIN		= (0.4 * KABS_MAX_FUNCTION)**2		# Min value for the ring
+KRING_LIMITS_MAX		= (0.7 * KABS_MAX_FUNCTION)**2		# Max value for the ring
+KSQUARE_LIMITS			= (0.6 * KABS_MAX_FUNCTION)			# Corner size (top-right)
+KABS_MAX_OUTPUT			= 0.98								# Abs max of the expected output
+KGOOD					= KABS_MAX_OUTPUT					# Max value for "good" answers
+KBAD					= -KABS_MAX_OUTPUT					# Max value for "bad" answers
 
 # Return an x-Y random value
 # --------------------------
@@ -91,34 +95,48 @@ def generate_dataSet(fd, ax, colors, title):
 	ax.set_aspect("equal")
 	ax.grid(True)
 
-	# Class 1: 300 < data < 900 (ring)
+	# Class 1: KRING_LIMITS_MIN < data < KRING_LIMITS_MAX (ring)
 	count = 0
 	while count < KNB_SAMPLES_C1:
 		x, y = generate_randomValues()
 		r2 = norm_squared(x, y)
-		if 300 < r2 < 900:
-			ax.plot(x / KABS_MAX_FUNCTION, y / KABS_MAX_FUNCTION, colors[0])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
+		if (KRING_LIMITS_MIN < r2 < KRING_LIMITS_MAX):
+			ax.plot(x, y, colors[0])
+			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KGOOD:.2f}\t{KBAD:.2f}\t{KBAD:.2f}\n")
 			count += 1
 
-	# Class 2a: data > 900 (outer)
+	# Class 2a: data > KRING_LIMITS_MAX (outer) & exclude the square corner Top-Right
 	count = 0
 	while count < KNB_SAMPLES_C2a:
 		x, y = generate_randomValues()
 		r2 = norm_squared(x, y)
-		if r2 > 900:
-			ax.plot(x / KABS_MAX_FUNCTION, y / KABS_MAX_FUNCTION, colors[1])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\n")
+
+		in_outer = (r2 > KRING_LIMITS_MAX)
+		in_top_right_corner = (x > KSQUARE_LIMITS) and (y > KSQUARE_LIMITS)
+
+		if in_outer and (not in_top_right_corner):
+			ax.plot(x, y, colors[1])
+			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
 			count += 1
 
-	# Class 3: data < 300 (inner)
+	# Class 2b: data < KRING_LIMITS_MIN (inner)
 	count = 0
 	while count < KNB_SAMPLES_C2b:
 		x, y = generate_randomValues()
 		r2 = norm_squared(x, y)
-		if r2 < 300:
-			ax.plot(x / KABS_MAX_FUNCTION, y / KABS_MAX_FUNCTION, colors[2])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\n")
+		if (r2 < KRING_LIMITS_MIN):
+			ax.plot(x, y, colors[2])
+			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
+			count += 1
+
+	# Class 3: x > KSQUARE_LIMITS & y > KSQUARE_LIMITS
+	count = 0
+	while count < KNB_SAMPLES_C3:
+		x, y = generate_randomValues()
+		in_top_right_corner = (x > KSQUARE_LIMITS) and (y > KSQUARE_LIMITS)
+		if in_top_right_corner:
+			ax.plot(x, y, colors[3])
+			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KBAD:.2f}\t{KGOOD:.2f}\n")
 			count += 1
 
 # Main
@@ -132,8 +150,8 @@ def main():
 	# Generate the dataset DB_V_file file
 	with open("DB_L_file.txt", "w") as fd_l, open("DB_V_file.txt", "w") as fd_v:
 
-		generate_dataSet(fd_l, ax1, colors = ["r+", "go", "g."], title = "Learning data")
-		generate_dataSet(fd_v, ax2, colors = ["ro", "gx", "g+"], title = "Validation data")
+		generate_dataSet(fd_l, ax1, colors = ["r+", "go", "g.", "bx"], title = "Learning data")
+		generate_dataSet(fd_v, ax2, colors = ["ro", "gx", "g+", "b."], title = "Validation data")
 
 	plt.tight_layout()
 	plt.show()

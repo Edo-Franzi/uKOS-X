@@ -69,7 +69,7 @@ if [[ -z "${PATH_GCC_RVXX:-}" ]]; then
 	sleep 4
 fi
 
-PATH_PRG=${PATH_UKOS_X_PACKAGE}/Tools/TestRom
+PATH_PRG="${PATH_UKOS_X_PACKAGE}/Tools/TestRom"
 
 THE_OPTION=""
 if [ $# = 1 ]; then

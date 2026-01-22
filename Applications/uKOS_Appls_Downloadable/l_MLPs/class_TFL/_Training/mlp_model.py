@@ -74,12 +74,12 @@ def load_data(file_path):
 
 		# Use genfromtxt (more flexible than loadtxt)
 		data = np.genfromtxt(file_path, delimiter = '\t')
-		if data.shape[1] != 4:
-			raise ValueError("The file needs exactly 4 columns (x1, x2, y1, y2) per line.")
+		if data.shape[1] != 5:
+			raise ValueError("The file needs exactly 4 columns (x1, x2, y1, y2, y3) per line.")
 
 		# Get the inputs (X) and the output (Y)
 		# (x1, x2) are the inputs
-		# (y1, y2) are the output
+		# (y1, y3) are the output
 		X = data[:, :2]
 		Y = data[:, 2:]
 		return X, Y
@@ -95,8 +95,8 @@ def build_model():
 	model = tf.keras.Sequential([
 		tf.keras.layers.InputLayer(shape = (2,), dtype = tf.float32),	# Layer 1,  2 - 52
 		tf.keras.layers.Dense(52, activation = 'tanh'),					# Layer 2, 52 - 73
-		tf.keras.layers.Dense(73, activation = 'tanh'),					# Layer 4, 73 - 2
-		tf.keras.layers.Dense(2,  activation = 'tanh') 					# Layer 5, 2
+		tf.keras.layers.Dense(73, activation = 'tanh'),					# Layer 3, 73 - 3
+		tf.keras.layers.Dense(3,  activation = 'tanh') 					# Layer 4, 3
 	])
 
 	# Compile the model
@@ -146,7 +146,7 @@ def main():
 	input_details = interpreter.get_input_details()
 	output_details = interpreter.get_output_details()
 
-	for input_data in [[0.5, -0.8], [0, 0], [0, 0.4]]:
+	for input_data in [[0.5, -0.8], [0, 0], [0, 0.4], [0.8, 0.8]]:
 		interpreter.set_tensor(input_details[0]['index'], np.array([input_data], dtype = np.float32))
 		interpreter.invoke()
 		output = interpreter.get_tensor(output_details[0]['index'])

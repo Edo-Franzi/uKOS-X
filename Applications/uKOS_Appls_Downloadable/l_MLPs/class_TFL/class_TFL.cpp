@@ -233,17 +233,21 @@ namespace {
 
 			output = interpreter.output(0);
 			result = "Undetermined           ";
-			result = ( (output->data.f[0] >  0.2f) && (output->data.f[1] < -0.2f))																   ? ("Class C1 (ring)        ") : (result);
-			result = ( (output->data.f[0] < -0.2f) && (output->data.f[1] >  0.2f))																   ? ("Class C2 (inner-outer) ") : (result);
-			result = (((output->data.f[0] > -0.2f) && (output->data.f[0] <  0.2f)) || ((output->data.f[1] > -0.2f) && (output->data.f[1] < 0.2f))) ? ("Not well classified    ") : (result);
+			result = ( (output->data.f[0] >  0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] < -0.2f)) ? ("Class C1 (ring)        ") : (result);
+			result = ( (output->data.f[0] < -0.2f) && (output->data.f[1] >  0.2f) && (output->data.f[2] < -0.2f)) ? ("Class C2 (inner-outer) ") : (result);
+			result = ( (output->data.f[0] < -0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] >  0.2f)) ? ("Class C3 (square)      ") : (result);
+			result = (((output->data.f[0] > -0.2f) && (output->data.f[0] <  0.2f)) ||
+					  ((output->data.f[1] > -0.2f) && (output->data.f[1] <  0.2f)) ||
+					  ((output->data.f[2] > -0.2f) && (output->data.f[2] <  0.2f)))								  ? ("Not well classified    ") : (result);
 
 			(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
-								 "result: Out-0 %6.3f, Out-1 %6.3f "
+								 "result: Out-0 %6.3f, Out-1 %6.3f, Out-2 %6.3f "
 								 "    %s "
 								 "Exec time %" PRIu32 " [us]\n", x,
 								 								 y,
 								 								 output->data.f[0],
 								 								 output->data.f[1],
+								 								 output->data.f[2],
 								 								 result,
 								 								 delta);
 		}
