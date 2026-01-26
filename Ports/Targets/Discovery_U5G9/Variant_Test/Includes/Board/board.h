@@ -69,4 +69,5 @@
 #define	BSW_0				13u									// PORT C 13, SW1
 
 #define	BDSI_PWRON			5u									// PORT I 5, DSI Power ON
+#define	BDSI_BL				6u									// PORT I 6, DSI Back light
 #define	BDSI_RESET			5u									// PORT D 5, DSI Reset

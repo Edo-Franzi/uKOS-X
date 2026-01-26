@@ -73,8 +73,8 @@ INCLUDE		STM32H743xI.ld
 
 /* Mapping:													*/
 /*															*/
-/* RAM4:	stPrgmData			0x38000000					*/
-/*			64K												*/
+/* RAM1:	stPrgmData			0x30000000					*/
+/*			(128 + 128 + 32)K								*/
 /* EXT:		stHeap				0x70000000					*/
 /*			2048K											*/
 /*			stUMemo				0x70200000					*/
@@ -110,7 +110,7 @@ linker_stPrgmCode			= stm_stINTFLASH;										/* 0x08000000: PrgmCode, start of
 linker_lnPrgmCode			= stm_lnINTFLASH;										/* Length of the the Flash									*/
 
 linker_stPrgmData			= stm_stSRAM1;											/* 0x30000000: PrgmData, start of the RAM					*/
-linker_lnPrgmData			= (128K);												/* Length of the RAM										*/
+linker_lnPrgmData			= stm_lnSRAM123;										/* Length of the RAM										*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v7 MPU regions				*/
