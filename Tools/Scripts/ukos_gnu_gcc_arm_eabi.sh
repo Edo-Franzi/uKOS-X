@@ -138,11 +138,11 @@ if [[ ! -d "gcc-${GCC_VER}" ]]; then
 	git -C "gcc-${GCC_VER}" checkout "tags/releases/gcc-${GCC_VER}"
 	cd "gcc-${GCC_VER}"
 	./contrib/download_prerequisites
+	setopt NULL_GLOB
 	for file in "${PATH_SCRIPTS}/Patches/gcc/${GCC_VER}"/*; do
-		if [[ -f "$file" ]]; then
-			patch -p1 -t < "$file"
-		fi
+		[[ -f "$file" ]] && patch -p1 -t < "$file"
 	done
+	unsetopt NULL_GLOB
 	cd ..
 fi
 

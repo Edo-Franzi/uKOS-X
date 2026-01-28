@@ -46,8 +46,8 @@
 #
 #------------------------------------------------------------------------
 
-set -euo pipefail
-setopt KSH_ARRAYS  # Use 0-indexed arrays like bash
+emulate -L zsh
+setopt ERR_EXIT NO_UNSET PIPE_FAIL
 
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
 	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
@@ -80,7 +80,7 @@ fi
 # Packages
 # --------
 
-readonly hash=070751f
+readonly hash=b46e68e
 
 printf '\n%bDownload the Tflite-micro package ...%b\n\n' "${BOLD}" "${NC}"
 
@@ -117,6 +117,13 @@ python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py \
 	../uKOS_Interface/RISCV64_generic
 
 printf '\n%bBuilding all the Tflite-micro libraries ...%b\n' "${BOLD}" "${NC}"
+
+cd "tensorflow/lite/micro/tools/make/downloads"
+rm -fr gcc_embedded
+ln -s "${PATH_GCC_ARM}" gcc_embedded
+rm -fr riscv_toolchain
+ln -s "${PATH_GCC_RVXX}" riscv_toolchain
+cd ../../../../../..
 
 # Parse YAML and iterate through all build targets
 while IFS=$'\t' read -r model core target_arch fpu
