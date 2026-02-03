@@ -49,16 +49,6 @@
 #include	"uKOS.h"
 
 /*
- * \brief stub_machine_init
- *
- * - Initialise some specific CPU parts
- *
- */
-void	stub_machine_init(void) {
-
-}
-
-/*
  * \brief stub_machine_restart
  *
  * - Disable all the system interruption

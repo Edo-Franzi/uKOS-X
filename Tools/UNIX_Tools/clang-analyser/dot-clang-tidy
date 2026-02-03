@@ -13,6 +13,9 @@
 # Goal:		Clang tidy rules for the uKOS project.
 #
 #			add "-" to suppress a specific rule.
+#			This rule misc-use-internal-linkage, should be activated
+#			for verifying the nedd of static or not, and then, it
+#			should be disabled.
 #
 #   (c) 2025-2026, Laurent von Allmen
 #   ---------------------------------
@@ -76,6 +79,7 @@ Checks: >
   -misc-no-recursion,
   -misc-include-cleaner,
   -misc-redundant-expression,
+  -misc-use-internal-linkage,
 
   readability-*,
   -readability-uppercase-literal-suffix,
@@ -89,6 +93,7 @@ Checks: >
   -readability-magic-numbers,
   -readability-inconsistent-declaration-parameter-name,
   -readability-redundant-declaration,
+  -readability-redundant-parentheses,
 
   clang-analyzer-*,
   -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,

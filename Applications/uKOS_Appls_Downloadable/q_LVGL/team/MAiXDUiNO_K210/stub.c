@@ -48,7 +48,7 @@
 */
 
 #include	"uKOS.h"
-#include	"lvgl.h"
+#include	"../../ulvgl.h"
 
 // TFT controller commands
 

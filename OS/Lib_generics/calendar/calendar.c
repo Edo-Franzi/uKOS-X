@@ -69,9 +69,9 @@
 // DST summer time sec
 // Time zone string for newlib (UTC + DST)
 
-		char_t		calendar_tzUTCShift[KNB_CORES][KSZ_TZ_UTC_SHIFT];
-		char_t		calendar_tzDSTSpec[KNB_CORES][KSZ_TZ_DST_SPEC];
-		char_t		calendar_tzTimeZone[KNB_CORES][KSZ_TZ_TIME_ZONE];
+static	char_t		calendar_tzUTCShift[KNB_CORES][KSZ_TZ_UTC_SHIFT];
+static	char_t		calendar_tzDSTSpec[KNB_CORES][KSZ_TZ_DST_SPEC];
+static	char_t		calendar_tzTimeZone[KNB_CORES][KSZ_TZ_TIME_ZONE];
 
 static	uint64_t	vUnixTime[KNB_CORES]	 =  MCSET(0u);						// Absolute Unix time
 static	uint64_t	vOldTickCount[KNB_CORES] =  MCSET(0u);						// Old tickCount

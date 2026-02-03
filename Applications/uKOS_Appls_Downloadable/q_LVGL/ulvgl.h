@@ -1,18 +1,19 @@
 /*
-; stub_machine.
-; =============
+; ulvgl.
+; ======
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Laurent von Allmen		The 2026-02-01
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		stub for the "machine" manager module.
+; Goal:		Wrapper for LVGL header file
+;			Suppress clang warnings.
 ;
-;   (c) 2025-2026, Edo. Franzi
-;   --------------------------
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -46,59 +47,14 @@
 ;------------------------------------------------------------------------
 */
 
-#include	"uKOS.h"
+#ifdef	__clang__
+#pragma	clang diagnostic push
+#pragma	clang diagnostic ignored "-Wsign-conversion"
+#pragma	clang diagnostic ignored "-Wimplicit-int-conversion"
+#endif
 
-/*
- * \brief stub_machine_restart
- *
- * - Disable all the system interruption
- * - Restart
- *
- */
-int32_t	stub_machine_restart(void) {
+#include	"lvgl.h"
 
-// Stop all the interruptions and restart
-
-	INTERRUPTION_OFF;
-	while (true) { ; }
-
-	return (KERR_MACHINE_NOERR);
-}
-
-/*
- * \brief stub_machine_readPC
- *
- * - Return the PC of the selected process
- *
- */
-void	stub_machine_readPC(const uintptr_t *stackProcess, uintptr_t *pc) {
-	uint8_t		pcOffset = 0u;
-
-// uKOS-X stack frame:
-//
-//  ....
-//	mepc							-> pcOffset += 1
-//	mcause							-> pcOffset += 1
-//	mstatus							-> pcOffset += 1
-//	core							-> pcOffset += 1
-//	PLIC-mth						-> pcOffset  = 0
-
-//               PLIC   core  mstatus   mcause    mepc
-//               ----   ----  -------   ------    ----
-	pcOffset +=  +0u    +1u    +1u       +1u      +1u;
-
-	*pc = (stackProcess[pcOffset]);
-}
-
-/*
- * \brief stub_machine_readFunctionName
- *
- * - Return the function name that belong to a given PC
- *
- */
-void	stub_machine_readFunctionName(const uintptr_t pc, const char_t **function) {
-
-	UNUSED(pc);
-
-	*function = NULL;
-}
+#ifdef	__clang__
+#pragma	clang diagnostic pop
+#endif

@@ -48,8 +48,8 @@
 */
 
 #include	"uKOS.h"
+#include	"../ulvgl.h"
 #include	"ui.h"
-#include	"lvgl.h"
 #include	"team.h"
 
 typedef	struct	labeledBar	labeledBar_t;
@@ -66,7 +66,7 @@ static	lv_obj_t		*vImage, *vBar;
 
 static	void	local_DrawImage(void);
 static	void	local_DrawBars(void);
-static	void	local_InitBars(labeledBar_t *bar, lv_obj_t *parent, lv_coord_t x, lv_coord_t y, const char *text, int32_t initialValue);
+static	void	local_InitBars(labeledBar_t *bar, lv_obj_t *parent, int32_t x, int32_t y, const char *text, int32_t initialValue);
 static	void	local_BarEvent_cb(lv_event_t *event);
 static	void	local_setBars(labeledBar_t *bar, uint32_t position);
 
@@ -93,10 +93,10 @@ void	ui_draw(void) {
  */
 static	void	local_DrawImage(void) {
 
-	vImage = lv_img_create(lv_screen_active());
-	lv_img_set_src(vImage, &Team);
+	vImage = lv_image_create(lv_screen_active());
+	lv_image_set_src(vImage, &Team);
 	lv_obj_align(vImage, LV_ALIGN_TOP_MID, 0, 15);
-    lv_obj_clear_flag(vImage, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_flag(vImage, LV_OBJ_FLAG_HIDDEN);
 }
 
 /*
@@ -119,14 +119,14 @@ static	void	local_DrawBars(void) {
  * - Draw a process time usage bar
  *
  */
-static	void	local_InitBars(labeledBar_t *bar, lv_obj_t *parent, lv_coord_t x, lv_coord_t y, const char *text, int32_t initialValue) {
+static	void	local_InitBars(labeledBar_t *bar, lv_obj_t *parent, int32_t x, int32_t y, const char *text, int32_t initialValue) {
 
 // Create a bar
 
 	bar->oBar = lv_bar_create(parent);
 	lv_bar_set_range(bar->oBar, KBAR_MIN_VALUE, KBAR_MAX_VALUE);
 	lv_obj_set_size(bar->oBar, KBAR_WIDTH, KBAR_HEIGHT);
-	lv_obj_set_pos(bar->oBar, (x + (lv_coord_t)KBAR_LABEL_WIDTH + (lv_coord_t)KBAR_GAP_Y), y);
+	lv_obj_set_pos(bar->oBar, (x + (int32_t)KBAR_LABEL_WIDTH + (int32_t)KBAR_GAP_Y), y);
 
 // Set the values & prepare the callback
 
@@ -136,7 +136,7 @@ static	void	local_InitBars(labeledBar_t *bar, lv_obj_t *parent, lv_coord_t x, lv
 	bar->oLabel = lv_label_create(parent);
 	lv_label_set_text(bar->oLabel, text);
 	lv_obj_set_width(bar->oLabel, KBAR_LABEL_WIDTH);
-	lv_label_set_long_mode(bar->oLabel, LV_LABEL_LONG_DOT);
+	lv_label_set_long_mode(bar->oLabel, LV_LABEL_LONG_MODE_DOTS);
 
 	lv_obj_align_to(bar->oLabel, bar->oBar, LV_ALIGN_OUT_LEFT_MID, -(int32_t)KBAR_GAP_Y, 0);
 }

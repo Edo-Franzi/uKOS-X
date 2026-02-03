@@ -315,6 +315,7 @@
 // BUILD OPTIONS
 // =============
 
+#define	LV_DISABLE_API_MAPPING							1
 #define	LV_BUILD_EXAMPLES								0
 #define	LV_BUILD_DEMOS									0
 

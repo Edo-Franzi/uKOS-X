@@ -49,7 +49,7 @@
 
 #include	"uKOS.h"
 #include	"ui.h"
-#include	"lvgl.h"
+#include	"../ulvgl.h"
 
 static	lv_obj_t	*vL1, *vL2, *vL3, *vArc, *vSquare[KSQUARES_NB_MAX] = { NULL };
 
@@ -216,7 +216,7 @@ static	void	local_square_cb(lv_timer_t *time) {
 // Delete the oldest handle
 // Create a new one
 
-	if (vSquare[index] != NULL) { lv_obj_del(vSquare[index]); }
+	if (vSquare[index] != NULL) { lv_obj_delete(vSquare[index]); }
 
 	localSquare	   = lv_obj_create(lv_screen_active());
     vSquare[index] = localSquare;

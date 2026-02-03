@@ -67,8 +67,8 @@
  */
 
 #include	"uKOS.h"
+#include	"../ulvgl.h"
 #include	"ui.h"
-#include	"lvgl.h"
 
 // uKOS-X specific (see the module.h)
 // ==================================
