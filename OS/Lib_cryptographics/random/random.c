@@ -85,7 +85,7 @@ static	mutx_t		*vMutex_Reserve_Random[KNB_CORES];
 
 static	void		local_init(void);
 extern	void		stub_random_init(void);
-extern	int32_t		stub_rand_read(randomGenerator_t generator, uint32_t *number);
+extern	int32_t		stub_random_read(randomGenerator_t generator, uint32_t *number);
 
 /*
  * \brief Read a pool of random numbers
@@ -124,7 +124,7 @@ int32_t random_read(randomGenerator_t generator, uint32_t *number, uint32_t nbNu
 
 	kern_lockMutex(vMutex_Reserve_Random[core], KWAIT_INFINITY);
 	for (i = 0u; i < nbNumbers; i++) {
-		stub_rand_read(generator, wkNumber);
+		stub_random_read(generator, wkNumber);
 		wkNumber++;
 	}
 	kern_unlockMutex(vMutex_Reserve_Random[core]);

@@ -84,7 +84,7 @@ MODULE(
 static	void		local_init(void);
 extern	int32_t		stub_machine_restart(void);
 extern	int32_t		stub_machine_readPC(const uintptr_t *stackProcess, uintptr_t *pc);
-extern	void		stub_machine_readFunctionName(const uintptr_t pc, const char_t **function);
+extern	int32_t		stub_machine_readFunctionName(const uintptr_t pc, const char_t **function);
 
 /*
  * \brief Read the PC of a process
@@ -107,13 +107,14 @@ extern	void		stub_machine_readFunctionName(const uintptr_t pc, const char_t **fu
  *
  */
 int32_t	machine_readPC(const proc_t *handle, uintptr_t *pc) {
+	int32_t	status;
 
 	PRIVILEGE_ELEVATE;
 	local_init();
 
-	stub_machine_readPC(handle->oSpecification.oStack, pc);
+	status = stub_machine_readPC(handle->oSpecification.oStack, pc);
 	PRIVILEGE_RESTORE;
-	return (KERR_SYSTEM_NOERR);
+	return (status);
 }
 
 /*
@@ -137,13 +138,14 @@ int32_t	machine_readPC(const proc_t *handle, uintptr_t *pc) {
  *
  */
 int32_t	machine_readFunctionName(const uintptr_t pc, const char_t **function) {
+	int32_t	status;
 
 	PRIVILEGE_ELEVATE;
 	local_init();
 
-	stub_machine_readFunctionName(pc, function);
+	status = stub_machine_readFunctionName(pc, function);
 	PRIVILEGE_RESTORE;
-	return (KERR_SYSTEM_NOERR);
+	return (status);
 }
 
 /*

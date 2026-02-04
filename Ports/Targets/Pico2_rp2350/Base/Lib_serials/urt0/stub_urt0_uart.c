@@ -133,38 +133,46 @@ void	stub_urt0_init(void) {
 	else				 { model_uart_init_C1(); }
 }
 
-void	stub_urt0_configure(const urtxCnf_t *configure) {
+int32_t	stub_urt0_configure(const urtxCnf_t *configure) {
 	uint32_t	core;
+	int32_t		status;
 
 	core = GET_RUNNING_CORE;
 
-	if (core == KCORE_0) { model_uart_configure_C0(configure); }
-	else				 { model_uart_configure_C1(configure); }
+	if (core == KCORE_0) { status = model_uart_configure_C0(configure); }
+	else				 { status = model_uart_configure_C1(configure); }
+	return (status);
 }
 
-void	stub_urt0_write(const uint8_t *buffer, uint32_t size) {
+int32_t	stub_urt0_write(const uint8_t *buffer, uint32_t size) {
 	uint32_t	core;
+	int32_t		status;
 
 	core = GET_RUNNING_CORE;
 
-	if (core == KCORE_0) { model_uart_write_C0(buffer, size); }
-	else				 { model_uart_write_C1(buffer, size); }
+	if (core == KCORE_0) { status = model_uart_write_C0(buffer, size); }
+	else				 { status = model_uart_write_C1(buffer, size); }
+	return (status);
 }
 
-void	stub_urt0_read(uint8_t *buffer, uint32_t *size) {
+int32_t	stub_urt0_read(uint8_t *buffer, uint32_t *size) {
 	uint32_t	core;
+	int32_t		status;
 
 	core = GET_RUNNING_CORE;
 
-	if (core == KCORE_0) { model_uart_read_C0(buffer, size); }
-	else				 { model_uart_read_C1(buffer, size); }
+	if (core == KCORE_0) { status = model_uart_read_C0(buffer, size); }
+	else				 { status = model_uart_read_C1(buffer, size); }
+	return (status);
 }
 
-void	stub_urt0_flush(void) {
+int32_t	stub_urt0_flush(void) {
 	uint32_t	core;
+	int32_t		status;
 
 	core = GET_RUNNING_CORE;
 
-	if (core == KCORE_0) { model_uart_flush_C0(); }
-	else				 { model_uart_flush_C1(); }
+	if (core == KCORE_0) { status = model_uart_flush_C0(); }
+	else				 { status = model_uart_flush_C1(); }
+	return (status);
 }
