@@ -120,8 +120,8 @@ void	scheduler_changeContext(bool force, list_t *list, uint8_t bitNb) {
 	codeCurrent  = vKern_runProc[core]->oSpecification.oScheduleHook;
 
 	if (vKern_backwardProc[core] != vKern_runProc[core]) {
-		if (codebackward != NULL) { (codebackward)(vKern_backwardProc[core], false); }
-		if (codeCurrent  != NULL) { (codeCurrent)(vKern_runProc[core],		 true);  }
+		if (codebackward != nullptr) { (codebackward)(vKern_backwardProc[core], false); }
+		if (codeCurrent  != nullptr) { (codeCurrent)(vKern_runProc[core],		true);  }
 	}
 }
 
@@ -355,7 +355,7 @@ static	void	local_callIdleOut(void) {
 	code = vKern_codeRoutine[core];
 
 	if (vKern_backwardProc[core] == &vKern_proc[core][0]) {
-		if (code != NULL) {
+		if (code != nullptr) {
 			vKern_runProc[core]->oInternal.oState |= (1u<<BPROC_LIKE_ISR);
 			code(KKERN_IDLE_OUT);
 			vKern_runProc[core]->oInternal.oState &= (uint16_t)~(1u<<BPROC_LIKE_ISR);
@@ -407,7 +407,7 @@ void	scheduler_callBackFast(uint32_t time) {
  */
 void	scheduler_callBackSlow(void) {
 
-	scheduler_changeContext(true, NULL, 0u);
+	scheduler_changeContext(true, nullptr, 0u);
 }
 
 /*
@@ -445,7 +445,7 @@ void	scheduler_callBackTrap(uint32_t message) {
 		case KKERN_MSG_NO_PARAM: {
 			switch (message) {
 				case KKERN_MSG_JUMP_KERN: {
-					scheduler_changeContext(true, NULL, 0u);
+					scheduler_changeContext(true, nullptr, 0u);
 					break;
 				}
 				case KKERN_MSG_WAIT_TIME: {

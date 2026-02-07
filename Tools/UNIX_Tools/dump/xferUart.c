@@ -172,7 +172,7 @@ static	int32_t	local_app_d2x(char_t *driverID, uint32_t type, uint32_t display, 
 
 	handle = d2x_open(driverID, baudrate);
 	error = local_open(type, fileName, &fpFile, &fpPipe);
-	if ((handle == NULL) || (error == false)) {
+	if ((handle == nullptr) || (error == false)) {
 		d2x_close(handle); local_close(type, fileName, fpFile, fpPipe);
 		return (KERRAPP);
 	}

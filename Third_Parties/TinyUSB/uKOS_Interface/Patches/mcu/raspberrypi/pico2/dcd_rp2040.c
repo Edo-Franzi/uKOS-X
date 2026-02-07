@@ -113,7 +113,7 @@ static void hw_endpoint_init(hw_endpoint_t *ep, uint8_t ep_addr, uint16_t wMaxPa
 static void hw_endpoint_enable(hw_endpoint_t *ep, uint8_t transfer_type) {
   io_rw_32 *ctrl_reg = hwep_ctrl_reg_device(ep);
   // Set endpoint control register to enable (EP0 has no endpoint control register)
-  if (ctrl_reg != NULL) {
+  if (ctrl_reg != nullptr) {
     const uint32_t ctrl_value =
       EP_CTRL_ENABLE_BITS | ((uint32_t)transfer_type << EP_CTRL_BUFFER_TYPE_LSB) | hw_data_offset(ep->hw_data_buf);
     *ctrl_reg = ctrl_value;
@@ -421,7 +421,7 @@ void dcd_set_address(uint8_t rhport, uint8_t dev_addr) {
   (void)dev_addr;
   // Can't set device address in hardware until status xfer has complete
   // Send 0len complete response on EP0 IN
-  dcd_edpt_xfer(rhport, 0x80, NULL, 0, false);
+  dcd_edpt_xfer(rhport, 0x80, nullptr, 0, false);
 }
 
 void dcd_remote_wakeup(__unused uint8_t rhport) {
@@ -498,7 +498,7 @@ bool dcd_edpt_iso_activate(uint8_t rhport, const tusb_desc_endpoint_t *ep_desc) 
   const uint8_t       epnum = tu_edpt_number(ep_desc->bEndpointAddress);
   const tusb_dir_t    dir   = tu_edpt_dir(ep_desc->bEndpointAddress);
   struct hw_endpoint *ep    = hw_endpoint_get(epnum, dir);
-  TU_ASSERT(ep->hw_data_buf != NULL); // must be inited and allocated previously
+  TU_ASSERT(ep->hw_data_buf != nullptr); // must be inited and allocated previously
 
   if (ep->active) {
     hw_endpoint_abort_xfer(ep); // abort any pending transfer
@@ -519,7 +519,7 @@ bool dcd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t *buffer, uint16_t to
   (void)rhport;
   (void)is_isr;
   hw_endpoint_t *ep = hw_endpoint_get_by_addr(ep_addr);
-  hw_endpoint_xfer_start(ep, buffer, NULL, total_bytes);
+  hw_endpoint_xfer_start(ep, buffer, nullptr, total_bytes);
   return true;
 }
 
@@ -527,7 +527,7 @@ bool dcd_edpt_xfer_fifo(uint8_t rhport, uint8_t ep_addr, tu_fifo_t *ff, uint16_t
   (void)rhport;
   (void)is_isr;
   hw_endpoint_t *ep = hw_endpoint_get_by_addr(ep_addr);
-  hw_endpoint_xfer_start(ep, NULL, ff, total_bytes);
+  hw_endpoint_xfer_start(ep, nullptr, ff, total_bytes);
   return true;
 }
 

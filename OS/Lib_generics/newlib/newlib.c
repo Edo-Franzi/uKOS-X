@@ -126,9 +126,9 @@ MODULE(
 	Newlib,									// Module name (the first letter has to be upper case)
 	KID_FAM_GENERICS,						// Family (defined in the module.h)
 	KNUM_NEWLIB,							// Module identifier (defined in the module.h)
-	NULL,									// Address of the initialisation code (early pre-init)
-	NULL,									// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,									// Address of the clean code (clean the module)
+	nullptr,								// Address of the initialisation code (early pre-init)
+	nullptr,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,								// Address of the clean code (clean the module)
 	" 1.0",									// Revision string (major . minor)
 	(1u<<BSHOW),							// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0										// Execution cores
@@ -345,7 +345,7 @@ clock_t		_times_r(reent_t *reent, struct tms *buf) {
 	*buf = (struct tms){ 0 };
 	#endif
 
-	_gettimeofday_r(reent, &tv, NULL);
+	_gettimeofday_r(reent, &tv, nullptr);
 	return ((clock_t)tv.tv_usec);
 }
 
@@ -566,9 +566,9 @@ void	*__wrap__malloc_r(reent_t *reent, size_t size) {
 	UNUSED(reent);
 
 	address = memo_malloc(KMEMO_ALIGN_8, ((uint32_t)size * sizeof(uint8_t)), "__wrap__malloc_r");
-	if (address == NULL) {
+	if (address == nullptr) {
 		reent->_errno = ENOMEM;
-		return (NULL);
+		return (nullptr);
 	}
 
 	return (address);
@@ -599,9 +599,9 @@ void	*__wrap__realloc_r(reent_t *reent, void *address, size_t size) {
 	UNUSED(reent);
 
 	newAddress = memo_realloc(KMEMO_ALIGN_8, address, (uint32_t)size, "__wrap__realloc_r");
-	if (newAddress == NULL) {
+	if (newAddress == nullptr) {
 		reent->_errno = ENOMEM;
-		return (NULL);
+		return (nullptr);
 	}
 
 	return (newAddress);
@@ -619,9 +619,9 @@ void	*__wrap__calloc_r(reent_t *reent, size_t num, size_t size) {
 	UNUSED(reent);
 
 	address = memo_malloc(KMEMO_ALIGN_8, ((uint32_t)((num * size) * sizeof(uint8_t))), "__wrap__calloc_r");
-	if (address == NULL) {
+	if (address == nullptr) {
 		reent->_errno = ENOMEM;
-		return (NULL);
+		return (nullptr);
 	}
 
 	memset(address, 0u, (num * size));
@@ -632,7 +632,7 @@ void	*__wrap__calloc_r(reent_t *reent, size_t num, size_t size) {
 // However, some standard library C++ functions related to construction and
 // destruction seem to require it
 
-const void	*const	__dso_handle = NULL;
+const void	*const	__dso_handle = nullptr;
 
 // Called in relation to global C++ destructors.
 // This will never be used, as the system will never exit properly.

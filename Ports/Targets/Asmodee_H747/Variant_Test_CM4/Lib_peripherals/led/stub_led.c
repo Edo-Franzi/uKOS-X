@@ -57,8 +57,9 @@ static	bool	vMute;
  *   - The LEDs state
  *
  */
-void	stub_led_init(void) {
+int32_t	stub_led_init(void) {
 
+	return (KERR_LED_NOERR);
 }
 
 /*

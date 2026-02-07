@@ -159,7 +159,7 @@ static	int32_t	local_app_d2x(char_t *driverID, uint32_t baudrate, uint32_t szIma
 	char		fileName[100];
 
 	handle = d2x_open(driverID, baudrate);
-	if (handle == NULL) {
+	if (handle == nullptr) {
 		d2x_close(handle);
 		return (KERRAPP);
 	}

@@ -113,10 +113,10 @@ int32_t	viewer_uvc0(uint32_t argc, const char_t *argv[]) {
 	PROCESS(
 		0,									// Index
 		specification_acquisition,			// Specifications (just use specification_x)
-		aStrText_acquisition,				// Info string (NULL if anonymous)
+		aStrText_acquisition,				// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_acquisition,				// Code of the process
-		aStrIden_acquisition,				// Identifier (NULL if anonymous)
+		aStrIden_acquisition,				// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -163,7 +163,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 				uint8_t			*imageYUY2;
 				imagerCnf_t		configureIMAGER;
 	const		bool			*killRequest;
-	volatile	void			*imageOld, *imageXX = NULL;
+	volatile	void			*imageOld, *imageXX = nullptr;
 
 	core = GET_RUNNING_CORE;
 	killRequest	= (const bool *)argument;
@@ -174,7 +174,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 	TinyUSB_video_getImageSize(&w, &h);
 
 	imageYUY2 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "viewer_uvc0_imager");
-	if (imageYUY2 == NULL) {
+	if (imageYUY2 == nullptr) {
 		LOG(KFATAL_USER, "viewer: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -184,17 +184,17 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 // Configurations for an imager APTINA
 
 	configureIMAGER.oAcqMode  = KIMAGER_SNAP;
-	configureIMAGER.oImgCnf   = NULL;
+	configureIMAGER.oImgCnf   = nullptr;
 	configureIMAGER.oPixMode  = KIMAGER_PIX_8_BITS;
 	configureIMAGER.oStRows   = 0u;
 	configureIMAGER.oStCols   = 0u;
 	configureIMAGER.oNbRows	  = (uint16_t)h;
 	configureIMAGER.oNbCols   = (uint16_t)w;
 	configureIMAGER.oKernSync = 0u;
-	configureIMAGER.oHSync    = NULL;
-	configureIMAGER.oFrame    = NULL;
+	configureIMAGER.oHSync    = nullptr;
+	configureIMAGER.oFrame    = nullptr;
 	configureIMAGER.oVSync    = local_transfer;
-	configureIMAGER.oDMAEc    = NULL;
+	configureIMAGER.oDMAEc    = nullptr;
 
 	if (imager_configure(&configureIMAGER) != KERR_IMAGER_NOERR) {
 		(void)dprintf(KSYST, "img0 manager problem\n");

@@ -54,8 +54,9 @@
  * - Initialise some specific hardware parts
  *
  */
-void	stub_switch_init(void) {
+int32_t	stub_switch_init(void) {
 
+	return (KERR_SWITCH_NOERR);
 }
 
 /*

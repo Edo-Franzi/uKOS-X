@@ -98,9 +98,9 @@ MODULE(
 	Wkspi,										// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_WK_SPI,								// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -126,7 +126,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				uint32_t		speed = 0u;
 				enum			{ KCS_LOW, KCS_HIGH } mode = KCS_LOW;
 				enum			{ KERR_NOT, KERR_OKX, KERR_OCS, KERR_SET, KERR_BSY, KERR_INA, KERR_GEN } error = KERR_INA;
-	volatile	uint32_t		*port = NULL;
+	volatile	uint32_t		*port = nullptr;
 	static		spiCnf_t		configure = {
 									.oSpeed    = 5000000u,
 									.oMode     = (uint8_t)KSPI_MASTER,
@@ -287,7 +287,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				#endif
 
 				m = (uint8_t)mode;
-				if ((port != NULL) && ((m == (uint8_t)KCS_LOW) || (m == (uint8_t)KCS_HIGH))) {
+				if ((port != nullptr) && ((m == (uint8_t)KCS_LOW) || (m == (uint8_t)KCS_HIGH))) {
 
 					PRIVILEGE_ELEVATE;
 					pin = (uint8_t)strtol(argv[4], &dummy, 10u);

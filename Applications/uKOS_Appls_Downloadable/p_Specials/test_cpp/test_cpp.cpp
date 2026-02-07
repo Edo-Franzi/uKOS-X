@@ -85,9 +85,9 @@ MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
 	KNUM_APPLICATION,					// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	aStart,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	aStart,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -163,10 +163,10 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_0,					// Specifications (just use vSpecification_x)
-		aStrText_0,							// Info string (NULL if anonymous)
+		aStrText_0,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KSZSTACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_0,							// Code of the process
-		aStrIden_0,							// Identifier (NULL if anonymous)
+		aStrIden_0,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_02				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -174,6 +174,6 @@ int		main(int argc, const char *argv[]) {
 // NOLINTEND(misc-const-correctness)
 //
 
-	if (kern_createProcess(&specification_0, NULL, &process_0) != KERR_KERN_NOERR) { exit(EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_0, nullptr, &process_0) != KERR_KERN_NOERR) { exit(EXIT_OS_FAILURE); }
 	return (EXIT_OS_SUCCESS_CLI);
 }

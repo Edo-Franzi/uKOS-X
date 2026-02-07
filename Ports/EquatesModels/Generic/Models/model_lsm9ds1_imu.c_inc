@@ -81,12 +81,13 @@ static	void	local_caliImu(void);
  * - Initialise the manager
  *
  */
-void	model_lsM9ds1imu_init(void) {
+int32_t	model_lsM9ds1imu_init(void) {
 
 	cb_control(KIMU_RESERVE);
 	local_initImu();
 	local_caliImu();
 	cb_control(KIMU_RELEASE);
+	return (KERR_IMU_NOERR);
 }
 
 /*

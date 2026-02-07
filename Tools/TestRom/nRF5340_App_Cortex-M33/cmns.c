@@ -82,7 +82,7 @@ void	cmns_init(void) {
 void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 	size_t	length;
 
-	if (ascii == NULL) { return; }
+	if (ascii == nullptr) { return; }
 
 	switch (serialManager) {
 

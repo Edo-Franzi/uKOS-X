@@ -76,7 +76,7 @@
  */
 int32_t	ftdiSPI_getNbDevices(uint32_t *nbDevices) {
 
-	if (FT_ListDevices(nbDevices, NULL, FT_LIST_NUMBER_ONLY) != FT_OK) { return (KFTDIGEERR); }
+	if (FT_ListDevices(nbDevices, nullptr, FT_LIST_NUMBER_ONLY) != FT_OK) { return (KFTDIGEERR); }
 
 	return (KFTDINOERR);
 }

@@ -343,7 +343,7 @@ uint16_t	const	*tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
 
 		default: {
 			if ((index < (sizeof(string_desc_arr) / sizeof(string_desc_arr[0]))) == false) {
-				return (NULL);
+				return (nullptr);
 			}
 
 // Cap at max char (-1 for string type)

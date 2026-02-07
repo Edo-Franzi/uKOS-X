@@ -63,9 +63,9 @@ static int32_t prgm(uint32_t argc, const char_t *argv[]);
 MODULE(UserAppl,
     KID_FAM_TOOL,
     ((‘_'<<8)+'C'),
-    NULL,
+    nullptr,
     prgm,
-    NULL,
+    nullptr,
     “ 1.0",
     ((1<<BSHOW) | (1<<BEXE_CONSOLE)),
     0
@@ -75,9 +75,9 @@ MODULE(UserAppl,
 MODULE(UserAppl
     KID_FAM_APPLICATION,
     KNUM_APPLICATION,
-    NULL,
+    nullptr,
     aStart,
-    NULL,
+    nullptr,
     “ 1.0",
     ((1<<BSHOW) | (1<<BEXE_CONSOLE))
     0

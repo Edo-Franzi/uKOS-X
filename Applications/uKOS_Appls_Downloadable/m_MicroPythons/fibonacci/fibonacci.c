@@ -96,9 +96,9 @@ MODULE(
 	FibonacciMPY,						// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,						// Family (defined in the module.h)
 	KNUM_ROMABLE_0,						// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	prgm,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	prgm,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -109,9 +109,9 @@ MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
 	KNUM_APPLICATION,					// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	aStart,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	aStart,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -164,7 +164,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 
 	size   = 90000u;
 	memory = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (size * sizeof(uint8_t)), "fibonacciMPY");
-	if (memory == NULL) {
+	if (memory == nullptr) {
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -210,10 +210,10 @@ MAIN_ENTRY(argc, argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_0,					// Specifications (just use specification_x)
-		aStrText_0,							// Info string (NULL if anonymous)
+		aStrText_0,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_XLIB,				// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_0,							// Code of the process
-		aStrIden_0,							// Identifier (NULL if anonymous)
+		aStrIden_0,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_LOW_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -221,16 +221,16 @@ MAIN_ENTRY(argc, argv[]) {
 	PROCESS_STACKMALLOC(
 		1,									// Index
 		specification_1,					// Specifications (just use specification_x)
-		aStrText_1,							// Info string (NULL if anonymous)
+		aStrText_1,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MPY,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_1,							// Code of the process
-		aStrIden_1,							// Identifier (NULL if anonymous)
+		aStrIden_1,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_MEDIUM_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-	if (kern_createProcess(&specification_0, NULL, &process_0) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
-	if (kern_createProcess(&specification_1, NULL, &process_1) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_0, nullptr, &process_0) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_1, nullptr, &process_1) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS_CLI);

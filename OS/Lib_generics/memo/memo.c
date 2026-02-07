@@ -75,9 +75,9 @@ MODULE(
 	Memo,							// Module name (the first letter has to be upper case)
 	KID_FAM_GENERICS,				// Family (defined in the module.h)
 	KNUM_MEMO,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -89,7 +89,7 @@ MODULE(
 STRG_LOC_CONST(aStrIdSe[]) = "Critical_malloc";
 
 static	mutx_t				*vMutex[KNB_CORES];									// Ptr on the memo_malloc mutex
-static	void				*vAddressFreeDelayed[KNB_CORES] = MCSET(NULL);		//
+static	void				*vAddressFreeDelayed[KNB_CORES] = MCSET(nullptr);		//
 static	bool				vFreeDelayed[KNB_CORES] = MCSET(false);				//
 
 // vMemo_heapInfo has not to be indexed with core information!!!
@@ -127,7 +127,7 @@ static	void	local_init(void);
  * \param[in]	-				KMEMO_ALIGN_32
  * \param[in]	size			Size of the memory to allocate
  * \param[in]	*identifier		Ptr on the identifier
- * \return		NULL			Memory block not allocated
+ * \return		nullptr			Memory block not allocated
  * \return		address			Memory address of the allocated block
  *
  */
@@ -142,7 +142,7 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 // memo_malloc not allowed inside exceptions
 
 	PRIVILEGE_ELEVATE;
-	if (IS_EXCEPTION) { PRIVILEGE_RESTORE; return (NULL); }
+	if (IS_EXCEPTION) { PRIVILEGE_RESTORE; return (nullptr); }
 
 	local_init();
 
@@ -205,8 +205,8 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 			newBlock->oMabSignature =  (uint32_t)KMAB_SIGNATURE;
 			newBlock->oIdentifier   =  identifier;
 
-			if (nexBlock != NULL) { nexBlock->oPtrPreBlock = newBlock; newBlock->oPtrNexBlock = nexBlock; }
-			else                  {                                    newBlock->oPtrNexBlock = NULL;     }
+			if (nexBlock != nullptr) { nexBlock->oPtrPreBlock = newBlock; newBlock->oPtrNexBlock = nexBlock; }
+			else					 {                                    newBlock->oPtrNexBlock = nullptr;	 }
 
 			heapInfo->oNbBlocks++;
 			heapInfo->oNbMaxBlocks  =  (heapInfo->oNbBlocks > heapInfo->oNbMaxBlocks) ? (heapInfo->oNbBlocks) : (heapInfo->oNbMaxBlocks);
@@ -227,7 +227,7 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 	SPIN_UNLOCK(vMemo);
 
 	PRIVILEGE_RESTORE;
-	return (NULL);
+	return (nullptr);
 }
 
 /*
@@ -249,7 +249,7 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
  * \param[in]	*address		Ptr on the address
  * \param[in]	size			Size of the memory to allocate
  * \param[in]	*identifier		Ptr on the identifier
- * \return		NULL			Memory block not allocated
+ * \return		nullptr			Memory block not allocated
  * \return		address			Memory address of the allocated block
  *
  */
@@ -258,17 +258,17 @@ void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32_t size
 			void		*newAddress;
 	const	memoMab_t	*curBlock;
 
-// First case, address == NULL, same behaviour as for the memo_malloc
+// First case, address == nullptr, same behaviour as for the memo_malloc
 // Second case, size == 0, same behaviour as for the memo_free
 
-	if (address == NULL) {
+	if (address == nullptr) {
 		newAddress = memo_malloc(memoAlignement, size, identifier);
 		return (newAddress);
 	}
 
 	if (size == 0u) {
 		memo_free(address);
-		return (NULL);
+		return (nullptr);
 	}
 
 // Third case, try to allocate a new block
@@ -276,8 +276,8 @@ void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32_t size
 // Free the old block
 
 	newAddress = memo_malloc(memoAlignement, size, identifier);
-	if (newAddress == NULL) {
-		return (NULL);
+	if (newAddress == nullptr) {
+		return (nullptr);
 	}
 
 	curBlock = (const memoMab_t *)((uintptr_t)address - (uintptr_t)sizeof(memoMab_t));
@@ -315,7 +315,7 @@ int32_t memo_readBlocInfo(const void *address, memoMallocInf_t *allocInfo) {
 	local_init();
 
 	SPIN_LOCK(vMemo);
-	if (address == NULL) {
+	if (address == nullptr) {
 		SPIN_UNLOCK(vMemo);
 
 		PRIVILEGE_RESTORE;
@@ -364,7 +364,7 @@ void	memo_free(void *address) {
 // memo_free not allowed inside exceptions
 
 	PRIVILEGE_ELEVATE;
-	if ((IS_EXCEPTION) || (address == NULL)) { PRIVILEGE_RESTORE; return; }
+	if ((IS_EXCEPTION) || (address == nullptr)) { PRIVILEGE_RESTORE; return; }
 
 	SPIN_LOCK(vMemo);
 
@@ -389,7 +389,7 @@ void	memo_free(void *address) {
 // Release the memory block
 
 	curBlock->oMabSignature = 0u;
-	curBlock->oIdentifier   = NULL;
+	curBlock->oIdentifier   = nullptr;
 
 	released = (curBlock->oSzAllocated + curBlock->oPadBlock + sizeof(memoMab_t));
 	if (curBlock != (memoMab_t *)stHeap) {
@@ -397,7 +397,7 @@ void	memo_free(void *address) {
 		preBlock			   =  curBlock->oPtrPreBlock;
 		preBlock->oSzAvailable += (uint32_t)(curBlock->oSzAllocated + curBlock->oSzAvailable + sizeof(memoMab_t));
 		preBlock->oPtrNexBlock =  nexBlock;
-		if (nexBlock != NULL) {
+		if (nexBlock != nullptr) {
 			nexBlock->oPtrPreBlock = preBlock;
 		}
 
@@ -478,13 +478,13 @@ static	void	local_init(void) {
 			lnHeap   = (uintptr_t)linker_lnHeap;
 			curBlock = ALIGNED_PTR(memoMab_t, linker_stHeap);
 
-			curBlock->oIdentifier	=  NULL;
-			curBlock->oProcess		=  NULL;
+			curBlock->oIdentifier	=  nullptr;
+			curBlock->oProcess		=  nullptr;
 			curBlock->oMabSignature	=  (uint32_t)KMAB_SIGNATURE;
 			curBlock->oSzAllocated	=  0u;
 			curBlock->oSzAvailable	=  (uint32_t)(lnHeap - sizeof(memoMab_t));
-			curBlock->oPtrPreBlock	=  NULL;
-			curBlock->oPtrNexBlock	=  NULL;
+			curBlock->oPtrPreBlock	=  nullptr;
+			curBlock->oPtrNexBlock	=  nullptr;
 			curBlock->oPadBlock		=  0u;
 
 			vMemo_heapInfo.oNbBlocks	 = 1u;
@@ -499,7 +499,7 @@ static	void	local_init(void) {
 
 	if (vFreeDelayed[core] == true) {
 		address = vAddressFreeDelayed[core];
-		vAddressFreeDelayed[core] = NULL;
+		vAddressFreeDelayed[core] = nullptr;
 		vFreeDelayed[core] = false;
 		INTERRUPTION_RESTORE;
 

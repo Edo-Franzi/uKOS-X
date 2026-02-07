@@ -86,9 +86,9 @@ MODULE(
 	System,							// Module name (the first letter has to be upper case)
 	KID_FAM_GENERICS,				// Family (defined in the module.h)
 	KNUM_SYSTEM,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -101,12 +101,12 @@ STRG_LOC_CONST(aStrApp[]) = uKOS_KBOARD", V."uKOS_VERSION", "__DATE__"  "__TIME_
 STRG_LOC_CONST(aStrRev[]) = uKOS_VERSION_NUMBER;
 STRG_LOC_CONST(KFAMILY[]) = KTARGET;
 
-static	void	*vDoLoCode[KNB_CORES]	= MCSET(NULL);		// Ptr on the execution code after the download
+static	void	*vDoLoCode[KNB_CORES]	= MCSET(nullptr);		// Ptr on the execution code after the download
 static	bool	vUserRamBusy[KNB_CORES] = MCSET(false);		// Availability of the User Ram
 
 // Prototypes
 
-static	void	local_init(void);
+static	int32_t	local_init(void);
 
 /*
  * \brief Reserve the system manager (only for the User RAM)
@@ -133,8 +133,8 @@ static	void	local_init(void);
  *
  */
 int32_t	system_reserve(reserveMode_t reserveMode, uint32_t timeout) {
-	uint32_t	core;
 	int32_t		status;
+	uint32_t	core;
 
 	UNUSED(reserveMode);
 	UNUSED(timeout);
@@ -142,7 +142,8 @@ int32_t	system_reserve(reserveMode_t reserveMode, uint32_t timeout) {
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 // The User RAM is available, so, reserve it
 // The User RAM is busy, so, indicate busy
@@ -177,6 +178,7 @@ int32_t	system_reserve(reserveMode_t reserveMode, uint32_t timeout) {
  *
  */
 int32_t	system_release(reserveMode_t reserveMode) {
+	int32_t		status;
 	uint32_t	core;
 
 	UNUSED(reserveMode);
@@ -184,7 +186,8 @@ int32_t	system_release(reserveMode_t reserveMode) {
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	vUserRamBusy[core] = false;
 	PRIVILEGE_RESTORE;
@@ -230,14 +233,16 @@ int32_t	system_release(reserveMode_t reserveMode) {
  *
  */
 int32_t	system_getModuleId(uint32_t idModule, uint16_t *index, const uKOS_module_t **module) {
-	const	uKOS_directory_t	*aDirectory;
+	int32_t		status;
+	const		uKOS_directory_t	*aDirectory;
 
 	aDirectory = ALIGNED_PTR(uKOS_directory_t, linker_stDirectory);
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
-	*module	= NULL;
+	*module	= nullptr;
 	*index	= 0u;
 	while (aDirectory[*index].oModuleLocation != KNO_MODULE) {
 		if (aDirectory[*index].oModule->oIdModule == idModule) {
@@ -269,9 +274,11 @@ int32_t	system_getModuleId(uint32_t idModule, uint16_t *index, const uKOS_module
  *
  */
 int32_t	system_getFamilyId(const char_t **family) {
+	int32_t		status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	*family = KFAMILY;
 	PRIVILEGE_RESTORE;
@@ -314,15 +321,17 @@ int32_t	system_getFamilyId(const char_t **family) {
  *
  */
 int32_t	system_getModuleName(const char_t *name, uint16_t *index, const uKOS_module_t **module) {
+			int32_t				status;
 			bool				equals;
 	const	uKOS_directory_t	*aDirectory;
 
 	aDirectory = ALIGNED_PTR(uKOS_directory_t, linker_stDirectory);
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
-	*module	= NULL;
+	*module	= nullptr;
 	*index	= 0u;
 	while (aDirectory[*index].oModuleLocation != KNO_MODULE) {
 		text_checkAsciiBuffer(aDirectory[*index].oModule->oStrApplication, name, &equals);
@@ -384,14 +393,16 @@ int32_t	system_getModuleName(const char_t *name, uint16_t *index, const uKOS_mod
  *
  */
 int32_t	system_getModuleFamily(uint8_t family, uint32_t *idModule, uint16_t *index, const uKOS_module_t **module) {
-	const	uKOS_directory_t	*aDirectory;
+	int32_t		status;
+	const		uKOS_directory_t	*aDirectory;
 
 	aDirectory = ALIGNED_PTR(uKOS_directory_t, linker_stDirectory);
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
-	*module	= NULL;
+	*module	= nullptr;
 	while (aDirectory[*index].oModuleLocation != KNO_MODULE) {
 		if (((aDirectory[*index].oModule->oIdModule>>24u) == family) || (family == KID_FAM_ALL_FAMILIES)) {
 			*idModule = aDirectory[*index].oModule->oIdModule;
@@ -425,9 +436,11 @@ int32_t	system_getModuleFamily(uint8_t family, uint32_t *idModule, uint16_t *ind
  *
  */
 int32_t	system_getSystemId(const char_t **identifier) {
+	int32_t		status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	*identifier = aStrApp;
 	PRIVILEGE_RESTORE;
@@ -453,9 +466,11 @@ int32_t	system_getSystemId(const char_t **identifier) {
  *
  */
 int32_t	system_getSystemSignature(const char_t **signature) {
+	int32_t		status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	*signature = ALIGNED_PTR(const char_t, linker_stSignature);
 
@@ -480,9 +495,11 @@ int32_t	system_getSystemSignature(const char_t **signature) {
  *
  */
 int32_t	system_getSystemVersion(const char_t **version) {
+	int32_t		status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	*version = aStrRev;
 	PRIVILEGE_RESTORE;
@@ -506,12 +523,14 @@ int32_t	system_getSystemVersion(const char_t **version) {
  *
  */
 int32_t	system_setDownloadCodeAddress(void *address) {
+	int32_t		status;
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	vDoLoCode[core] = address;
 	PRIVILEGE_RESTORE;
@@ -534,12 +553,14 @@ int32_t	system_setDownloadCodeAddress(void *address) {
  *
  */
 int32_t	system_getDownloadCodeAddress(void **address) {
+	int32_t		status;
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	*address = vDoLoCode[core];
 	PRIVILEGE_RESTORE;
@@ -556,7 +577,8 @@ int32_t	system_getDownloadCodeAddress(void **address) {
  *   has to be called at least once
  *
  */
-static	void	local_init(void) {
+static	int32_t	local_init(void) {
+			int32_t		status = KERR_SYSTEM_NOERR;
 			uint32_t	core;
 	static	bool		vInit[KNB_CORES] = MCSET(false);
 
@@ -566,7 +588,7 @@ static	void	local_init(void) {
 	if (vInit[core] == false) {
 		vInit[core] = true;
 	}
-	INTERRUPTION_RESTORE;
+	RETURN_INT_RESTORE(status);
 }
 
 #endif

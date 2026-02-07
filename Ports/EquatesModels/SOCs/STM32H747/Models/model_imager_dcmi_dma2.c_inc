@@ -53,16 +53,16 @@
 
 #include	"model_cache.c_inc"
 
-static				void		(*vHSyncCodeRoutine)(void) = NULL;
-static				void		(*vFrameCodeRoutine)(void) = NULL;
-static				void		(*vVSyncCodeRoutine)(void) = NULL;
-static				void		(*vDMAEcCodeRoutine)(void) = NULL;
+static				void		(*vHSyncCodeRoutine)(void) = nullptr;
+static				void		(*vFrameCodeRoutine)(void) = nullptr;
+static				void		(*vVSyncCodeRoutine)(void) = nullptr;
+static				void		(*vDMAEcCodeRoutine)(void) = nullptr;
 static	volatile	bool		vWithSemaphore_IM = false;
 static	volatile	bool		vWithSemaphore_VS = false;
 static	volatile	bool		vSingleBuffer     = false;
 static	volatile	uint8_t		vPage      		  = 0u;
-static				uint8_t		*vImageE0  		  = NULL;
-static				uint8_t		*vImageE1  		  = NULL;
+static				uint8_t		*vImageE0  		  = nullptr;
+static				uint8_t		*vImageE1  		  = nullptr;
 static	volatile	uint32_t	vNDTR      		  = 0u;
 static	volatile	uint32_t	vSize      		  = 1u;
 static	volatile	uint32_t	vNbRows    		  = 0u;
@@ -452,8 +452,8 @@ static	int32_t	local_confMemo(const imagerCnf_t *configure) {
 
 	UNUSED(configure);
 
-	if (vImageE0 != NULL) { memo_free(vImageE0); }
-	if (vImageE1 != NULL) { memo_free(vImageE1); }
+	if (vImageE0 != nullptr) { memo_free(vImageE0); }
+	if (vImageE1 != nullptr) { memo_free(vImageE1); }
 
 	if (vSingleBuffer == true) {
 
@@ -461,7 +461,7 @@ static	int32_t	local_confMemo(const imagerCnf_t *configure) {
 
 		vPage	 = 0u;
 		vImageE0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (uint32_t)nbBytes, "dcmi");
-		if (vImageE0 == NULL) { status = KERR_IMAGER_NOMEM; }
+		if (vImageE0 == nullptr) { status = KERR_IMAGER_NOMEM; }
 	}
 	else {
 
@@ -470,8 +470,8 @@ static	int32_t	local_confMemo(const imagerCnf_t *configure) {
 		vPage	 = 1u;
 		vImageE0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (uint32_t)nbBytes, "dcmi");
 		vImageE1 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (uint32_t)nbBytes, "dcmi");
-		if (vImageE0 == NULL) { status = KERR_IMAGER_NOMEM; }
-		if (vImageE1 == NULL) { status = KERR_IMAGER_NOMEM; }
+		if (vImageE0 == nullptr) { status = KERR_IMAGER_NOMEM; }
+		if (vImageE1 == nullptr) { status = KERR_IMAGER_NOMEM; }
 	}
 	DMA2->S1M0AR = (uint32_t)vRowXX;
 	return (status);
@@ -510,9 +510,9 @@ static	int32_t	local_confImag(const imagerCnf_t *configure) {
 	vVSyncCodeRoutine = configure->oVSync;
 	vDMAEcCodeRoutine = configure->oDMAEc;
 
-	if (vHSyncCodeRoutine != NULL) { DCMI->IER |= DCMI_IER_LINE_IE;  }
-	if (vFrameCodeRoutine != NULL) { DCMI->IER |= DCMI_IER_FRAME_IE; }
-	if (vVSyncCodeRoutine != NULL) { DCMI->IER |= DCMI_IER_VSYNC_IE; }
+	if (vHSyncCodeRoutine != nullptr) { DCMI->IER |= DCMI_IER_LINE_IE;  }
+	if (vFrameCodeRoutine != nullptr) { DCMI->IER |= DCMI_IER_FRAME_IE; }
+	if (vVSyncCodeRoutine != nullptr) { DCMI->IER |= DCMI_IER_VSYNC_IE; }
 	return (status);
 }
 
@@ -530,7 +530,7 @@ static	void	local_DCMI_IRQHandler(void) {
 
 	if ((DCMI->RIS & DCMI_RIS_LINE_RIS) != 0u) {
 		DCMI->ICR = DCMI_ICR_LINE_ISC;
-		if (vHSyncCodeRoutine != NULL) {
+		if (vHSyncCodeRoutine != nullptr) {
 			go = vHSyncCodeRoutine;
 			go();
 		}
@@ -540,7 +540,7 @@ static	void	local_DCMI_IRQHandler(void) {
 
 	if ((DCMI->RIS & DCMI_RIS_FRAME_RIS) != 0u) {
 		DCMI->ICR = DCMI_ICR_FRAME_ISC;
-		if (vFrameCodeRoutine != NULL) {
+		if (vFrameCodeRoutine != nullptr) {
 			go = vFrameCodeRoutine;
 			go();
 		}
@@ -550,7 +550,7 @@ static	void	local_DCMI_IRQHandler(void) {
 
 	if ((DCMI->RIS & DCMI_RIS_VSYNC_RIS) != 0u) {
 		DCMI->ICR = DCMI_ICR_VSYNC_ISC;
-		if (vVSyncCodeRoutine != NULL) {
+		if (vVSyncCodeRoutine != nullptr) {
 			go = vVSyncCodeRoutine;
 			go();
 
@@ -626,7 +626,7 @@ static	void	local_DMA2_Stream1_IRQHandler(void) {
 		if (vSingleBuffer == false) {
 			vPage = (vPage == 0u) ? (1u) : (0u);
 		}
-		if (vDMAEcCodeRoutine != NULL) {
+		if (vDMAEcCodeRoutine != nullptr) {
 			go = vDMAEcCodeRoutine;
 			go();
 		}

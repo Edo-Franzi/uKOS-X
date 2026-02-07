@@ -65,9 +65,9 @@ MODULE(
 	Adc,							// Module name (the first letter has to be upper case)
 	KID_FAM_PERIPHERALS,			// Family (defined in the module.h)
 	KNUM_ADC,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -81,7 +81,7 @@ static	mutx_t		*vMutex_Reserve[KNB_CORES];
 // Prototypes
 
 static	int32_t		local_init(void);
-extern	void		stub_adc_init(void);
+extern	int32_t		stub_adc_init(void);
 extern	int32_t		stub_adc_read(uint8_t channel, float64_t *reference, float64_t *data);
 
 /*
@@ -109,8 +109,8 @@ extern	int32_t		stub_adc_read(uint8_t channel, float64_t *reference, float64_t *
  *
  */
 int32_t	adc_reserve(reserveMode_t reserveMode, uint32_t timeout) {
-	uint32_t	core;
 	int32_t		status;
+	uint32_t	core;
 
 	UNUSED(reserveMode);
 
@@ -148,8 +148,8 @@ int32_t	adc_reserve(reserveMode_t reserveMode, uint32_t timeout) {
  *
  */
 int32_t	adc_release(reserveMode_t reserveMode) {
-	uint32_t	core;
 	int32_t		status;
+	uint32_t	core;
 
 	UNUSED(reserveMode);
 
@@ -218,6 +218,7 @@ int32_t	adc_read(uint8_t channel, float64_t *reference, float64_t *data) {
  *
  */
 static	int32_t	local_init(void) {
+			int32_t		status = KERR_ADC_NOERR;
 			uint32_t	core;
 	static	bool		vInit[KNB_CORES] = MCSET(false);
 
@@ -229,7 +230,7 @@ static	int32_t	local_init(void) {
 
 		if (kern_createMutex(KADC_MUTEX_RESERVE, &vMutex_Reserve) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "adc: create mutx"); exit(EXIT_OS_PANIC); }
 
-		stub_adc_init();
+		status = stub_adc_init();
 	}
-	RETURN_INT_RESTORE(KERR_ADC_NOERR);
+	RETURN_INT_RESTORE(status);
 }

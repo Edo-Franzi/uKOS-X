@@ -82,7 +82,7 @@ bool	bench_03(void) {
 	uint64_t	time, sumTime = 0u;
 	uint32_t	i, j, *array, value, min, max;
 
-	array = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, (KNB_ELEMENTS * sizeof(uint32_t)), "bench"); if (array == NULL) { return (false); }
+	array = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, (KNB_ELEMENTS * sizeof(uint32_t)), "bench"); if (array == nullptr) { return (false); }
 
 // Initialise the array with a random value
 

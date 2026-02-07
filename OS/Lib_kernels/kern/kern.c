@@ -208,9 +208,9 @@ MODULE(
 	Kern,							// Module name (the first letter has to be upper case)
 	KID_FAM_KERNELS,				// Family (defined in the module.h)
 	KNUM_KERN,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	KKERN_VERSION,					// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -427,7 +427,7 @@ int32_t	kern_setSerialForProcess(proc_t *handle, serialManager_t serialManager) 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == NULL)	{ DEBUG_KERN_TRACE("exit: KO"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
+	if (handle == nullptr)	{ DEBUG_KERN_TRACE("exit: KO"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
 
 	handle->oSpecification.oSerialManager = serialManager;
 	DEBUG_KERN_TRACE("exit: OK");
@@ -466,7 +466,7 @@ int32_t	kern_getSerialForProcess(proc_t *handle, serialManager_t *serialManager)
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == NULL)	{ DEBUG_KERN_TRACE("exit: KO"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
+	if (handle == nullptr) { DEBUG_KERN_TRACE("exit: KO"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
 
 	*serialManager = handle->oSpecification.oSerialManager;
 	DEBUG_KERN_TRACE("exit: OK");

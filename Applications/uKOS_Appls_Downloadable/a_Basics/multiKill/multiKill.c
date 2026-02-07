@@ -84,9 +84,9 @@ MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
 	KNUM_APPLICATION,					// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	aStart,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	aStart,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -180,10 +180,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			0,									// Index
 			specification_0,					// Specifications (just use specification_x)
-			aStrText_0,							// Info string (NULL if anonymous)
+			aStrText_0,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_0,							// Identifier (NULL if anonymous)
+			aStrIden_0,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -191,10 +191,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			1,									// Index
 			specification_1,					// Specifications (just use specification_x)
-			aStrText_1,							// Info string (NULL if anonymous)
+			aStrText_1,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_1,							// Identifier (NULL if anonymous)
+			aStrIden_1,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -202,10 +202,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			2,									// Index
 			specification_2,					// Specifications (just use specification_x)
-			aStrText_2,							// Info string (NULL if anonymous)
+			aStrText_2,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_2,							// Identifier (NULL if anonymous)
+			aStrIden_2,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -213,10 +213,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			3,									// Index
 			specification_3,					// Specifications (just use specification_x)
-			aStrText_3,							// Info string (NULL if anonymous)
+			aStrText_3,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_3,							// Identifier (NULL if anonymous)
+			aStrIden_3,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -224,10 +224,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			4,									// Index
 			specification_4,					// Specifications (just use specification_x)
-			aStrText_4,							// Info string (NULL if anonymous)
+			aStrText_4,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_4,							// Identifier (NULL if anonymous)
+			aStrIden_4,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -235,10 +235,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			5,									// Index
 			specification_5,					// Specifications (just use specification_x)
-			aStrText_5,							// Info string (NULL if anonymous)
+			aStrText_5,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_5,							// Identifier (NULL if anonymous)
+			aStrIden_5,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -246,10 +246,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			6,									// Index
 			specification_6,					// Specifications (just use specification_x)
-			aStrText_6,							// Info string (NULL if anonymous)
+			aStrText_6,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_6,							// Identifier (NULL if anonymous)
+			aStrIden_6,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -257,10 +257,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			7,									// Index
 			specification_7,					// Specifications (just use specification_x)
-			aStrText_7,							// Info string (NULL if anonymous)
+			aStrText_7,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_7,							// Identifier (NULL if anonymous)
+			aStrIden_7,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -268,10 +268,10 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			8,									// Index
 			specification_8,					// Specifications (just use specification_x)
-			aStrText_8,							// Info string (NULL if anonymous)
+			aStrText_8,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_8,							// Identifier (NULL if anonymous)
+			aStrIden_8,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -279,16 +279,16 @@ static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
 		PROCESS_STACKMALLOC(
 			9,									// Index
 			specification_9,					// Specifications (just use specification_x)
-			aStrText_9,							// Info string (NULL if anonymous)
+			aStrText_9,							// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			aThread_Px,							// Code of the process
-			aStrIden_9,							// Identifier (NULL if anonymous)
+			aStrIden_9,							// Identifier (nullptr if anonymous)
 			KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KPRIORITY							// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
 
-		if ((vStack_0 == NULL) || (vStack_1 == NULL) || (vStack_2 == NULL) || (vStack_3 == NULL) || (vStack_4 == NULL) ||
-			(vStack_5 == NULL) || (vStack_6 == NULL) || (vStack_7 == NULL) || (vStack_8 == NULL) || (vStack_9 == NULL)) {
+		if ((vStack_0 == nullptr) || (vStack_1 == nullptr) || (vStack_2 == nullptr) || (vStack_3 == nullptr) || (vStack_4 == nullptr) ||
+			(vStack_5 == nullptr) || (vStack_6 == nullptr) || (vStack_7 == nullptr) || (vStack_8 == nullptr) || (vStack_9 == nullptr)) {
 			LOG(KFATAL_USER, "Out of memory");
 			exit(EXIT_OS_FAILURE);
 		}
@@ -378,15 +378,15 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		a,									// Index
 		specification_a,					// Specifications (just use specification_x)
-		aStrText_a,							// Info string (NULL if anonymous)
+		aStrText_a,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_LL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_a,							// Code of the process
-		aStrIden_a,							// Identifier (NULL if anonymous)
+		aStrIden_a,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_LOW_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-	if (kern_createProcess(&specification_a, NULL, &process_a) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_a, nullptr, &process_a) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS_CLI);

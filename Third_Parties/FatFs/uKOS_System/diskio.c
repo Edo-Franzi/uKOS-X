@@ -123,7 +123,7 @@ DSTATUS		disk_initialize(BYTE pdrv) {
 
 		case DEV_FLASH: {
 			RESERVE(SERIAL_FLASH, KMODE_READ_WRITE);
-			status = storage_initialise(KSERIAL_FLASH, NULL);
+			status = storage_initialise(KSERIAL_FLASH, nullptr);
 			RELEASE(SERIAL_FLASH, KMODE_READ_WRITE);
 
 			fatFsStatus = (status == KERR_STORAGE_NOERR) ? (0) : (STA_NOINIT);
@@ -261,7 +261,7 @@ DWORD	get_fattime (void) {
 	time_t		now;
 	tm_t		localTime;
 
-	now = time(NULL);
+	now = time(nullptr);
 	localtime_r(&now, &localTime);
 
 	return ( ((DWORD)localTime.tm_mday<<16u) | ((DWORD)(localTime.tm_mon + 1)<<21u) | ((DWORD)(localTime.tm_year - 80)<<25u)

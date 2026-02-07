@@ -177,7 +177,7 @@ static	int32_t	local_app_spi(char_t *driverID, uint32_t type, uint32_t display, 
 
 	handle = spi_open(driverID);
 	error  = local_open(type, fileName, &fpFile, &fpPipe);
-	if ((handle == NULL) || (error == false)) {
+	if ((handle == nullptr) || (error == false)) {
 		spi_close(handle);
 		local_close(type, fileName, fpFile, fpPipe);
 		return (KERRAPP);

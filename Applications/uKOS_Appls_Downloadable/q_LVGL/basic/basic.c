@@ -90,9 +90,9 @@ MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
 	KNUM_APPLICATION,					// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	aStart,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	aStart,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -158,7 +158,7 @@ static void __attribute__ ((noreturn)) aProcess_lvgl(const void *argument) {
 	display = lv_display_create(KLCD_WIDTH, KLCD_HEIGHT);
 	lv_display_set_default(display);
 
-	lv_display_set_buffers(display, LCDBuffer, NULL, LCDBufferSize, LV_DISPLAY_RENDER_MODE_PARTIAL);
+	lv_display_set_buffers(display, LCDBuffer, nullptr, LCDBufferSize, LV_DISPLAY_RENDER_MODE_PARTIAL);
 	lv_display_set_flush_cb(display, stub_LCD_flush_cb);
 
 // Draw the different objects
@@ -199,10 +199,10 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_tick,					// Specifications (just use specification_x)
-		aStrText_tick,						// Info string (NULL if anonymous)
+		aStrText_tick,						// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_tick,						// Code of the process
-		aStrIden_tick,						// Identifier (NULL if anonymous)
+		aStrIden_tick,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_MEDIUM_00			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -210,16 +210,16 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		1,									// Index
 		specification_lvgl,					// Specifications (just use specification_x)
-		aStrText_lvgl,						// Info string (NULL if anonymous)
+		aStrText_lvgl,						// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_lvgl,						// Code of the process
-		aStrIden_lvgl,						// Identifier (NULL if anonymous)
+		aStrIden_lvgl,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_MEDIUM_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-	if (kern_createProcess(&specification_tick, NULL, &process_tick) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
-	if (kern_createProcess(&specification_lvgl, NULL, &process_lvgl) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_tick, nullptr, &process_tick) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_lvgl, nullptr, &process_lvgl) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS_CLI);

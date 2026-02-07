@@ -180,9 +180,9 @@ def mlp_exportNetwork(weights, layers, filename = "network.c_inc"):
 			f.write(f"\t\t\t\t\t\t\t\t\t&aLayer_L{index},\n")
 		for index in range(len(weights), KMLPN_NB_MAX_LAYERS):
 			if index < (KMLPN_NB_MAX_LAYERS - 1):
-				f.write("\t\t\t\t\t\t\t\t\tNULL,\n")
+				f.write("\t\t\t\t\t\t\t\t\tnullptr,\n")
 			else:
-				f.write("\t\t\t\t\t\t\t\t\tNULL\n")
+				f.write("\t\t\t\t\t\t\t\t\tnullptr\n")
 		f.write("\t\t\t\t\t\t\t\t};\n")
 
 # Some sample validation

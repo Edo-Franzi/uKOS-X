@@ -61,10 +61,11 @@ void	model_random_hard_read(uint32_t *number);
  * - Initialise some specific CPU parts
  *
  */
-void	stub_random_init(void) {
+int32_t	stub_random_init(void) {
 
 	model_random_soft_init();
 	model_random_hard_init();
+	return (KERR_RANDOM_NOERR);
 }
 
 /*

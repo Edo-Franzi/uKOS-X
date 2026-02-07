@@ -72,9 +72,9 @@ MODULE(
 	Kill,										// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_KILL,									// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -107,8 +107,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	}
 	else {
 		if (system_getModuleName(argv[1], &index, &module) == KERR_SYSTEM_NOERR) {
-			if (module->oClean != NULL) {
-				module->oClean(0u, NULL);
+			if (module->oClean != nullptr) {
+				module->oClean(0u, nullptr);
 			}
 			else {
 				error = KERR_PNK;

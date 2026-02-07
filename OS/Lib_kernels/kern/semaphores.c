@@ -96,11 +96,11 @@ void	semaphores_init(void) {
 	core = GET_RUNNING_CORE;
 
 	for (i = 0u; i < KKERN_NB_SEMAPHORES; i++) {
-		vKern_sema[core][i].oIdentifier = NULL;
+		vKern_sema[core][i].oIdentifier = nullptr;
 		vKern_sema[core][i].oState      = 0u;
 		vKern_sema[core][i].oCounter    = 0;
 		vKern_sema[core][i].oMaxCounter = 0;
-		vKern_sema[core][i].oOwner		= NULL;
+		vKern_sema[core][i].oOwner		= nullptr;
 		lists_initialise(&vKern_sema[core][i].oList);
 	}
 
@@ -124,7 +124,7 @@ void	semaphores_init(void) {
  *    status = kern_createSemaphore(identifier, iniCounter, maxCounter, &semaphore);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the semaphore identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the semaphore identifier (nullptr = anonymous)
  * \param[in]	iniCounter		Initial counter value
  * \param[in]	maxCounter		Max counter value
  * \param[out]	**handle		Ptr on the handle
@@ -263,7 +263,7 @@ int32_t	kern_killSemaphore(sema_t *handle) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == NULL)								    { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSEM); }
+	if (handle == nullptr)							 	{ DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSEM); }
 	if ((handle->oState & (1u<<BSEMA_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 2"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSEM); }
 
 // Disconnect the waiting processes from the semaphore list
@@ -279,11 +279,11 @@ int32_t	kern_killSemaphore(sema_t *handle) {
 		preemption = (process->oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) ? (true) : (false);
 	}
 
-	handle->oIdentifier = NULL;
+	handle->oIdentifier = nullptr;
 	handle->oState      = 0u;
 	handle->oCounter    = 0;
 	handle->oMaxCounter = 0;
-	handle->oOwner	    = NULL;
+	handle->oOwner	    = nullptr;
 
 	if (vKern_nbSema[core] != 0u) { vKern_nbSema[core] = (uint16_t)(vKern_nbSema[core] - 1u); }
 	DEBUG_KERN_TRACE("exit: OK");
@@ -322,7 +322,7 @@ int32_t	kern_restartSemaphore(sema_t *handle) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == NULL)								    { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSEM); }
+	if (handle == nullptr)								{ DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSEM); }
 	if ((handle->oState & (1u<<BSEMA_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 2"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSEM); }
 
 	while (handle->oList.oNbElements > 0u) {
@@ -337,7 +337,7 @@ int32_t	kern_restartSemaphore(sema_t *handle) {
 	}
 	handle->oCounter    = 0;
 	handle->oMaxCounter = KSEMA_MAX_CPT;
-	handle->oOwner	    = NULL;
+	handle->oOwner	    = nullptr;
 	DEBUG_KERN_TRACE("exit: OK");
 	INTERRUPTION_RESTORE;
 
@@ -377,7 +377,7 @@ int32_t	kern_getSemaphoreById(const char_t *identifier, sema_t **handle) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	*handle = NULL;
+	*handle = nullptr;
 
 	for (i = 0u; i < KKERN_NB_SEMAPHORES; i++) {
 		if (identifiers_cmpStrings(vKern_sema[core][i].oIdentifier, identifier) == true) {
@@ -401,7 +401,7 @@ int32_t	kern_getSemaphoreById(const char_t *identifier, sema_t **handle) {
 /*
  * \brief local_createSemaphore
  *
- * \param[in]	*identifier		Ptr on the semaphore identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the semaphore identifier (nullptr = anonymous)
  * \param[in]	iniCounter		Initial counter value
  * \param[in]	maxCounter		Max counter value
  * \param[out]	**handle		Ptr on the handle
@@ -416,13 +416,13 @@ static	int32_t	local_createSemaphore(const char_t *identifier, int32_t iniCounte
 
 	core = GET_RUNNING_CORE;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	*handle = NULL;
+	*handle = nullptr;
 
-// Check if the identifier is already used (NULL = anonymous)
+// Check if the identifier is already used (nullptr = anonymous)
 // If the identifier is already used, then, return an error but
 // with the handle of the previously created object
 
-	if (identifier != NULL) {
+	if (identifier != nullptr) {
 		for (i = 0u; i < KKERN_NB_SEMAPHORES; i++) {
 			if (identifiers_cmpStrings(vKern_sema[core][i].oIdentifier, identifier) == true) {
 				*handle = &vKern_sema[core][i];
@@ -434,12 +434,12 @@ static	int32_t	local_createSemaphore(const char_t *identifier, int32_t iniCounte
 	}
 
 	for (i = 0u; i < KKERN_NB_SEMAPHORES; i++) {
-		if (vKern_sema[core][i].oIdentifier == NULL) {
-			vKern_sema[core][i].oIdentifier  = (identifier == NULL) ? (KSEMA_ANONYMOUS_ID) : (identifier);
+		if (vKern_sema[core][i].oIdentifier == nullptr) {
+			vKern_sema[core][i].oIdentifier  = (identifier == nullptr) ? (KSEMA_ANONYMOUS_ID) : (identifier);
 			vKern_sema[core][i].oState       = (1u<<BSEMA_INSTALLED);
 			vKern_sema[core][i].oCounter     = iniCounter;
 			vKern_sema[core][i].oMaxCounter  = maxCounter;
-			vKern_sema[core][i].oOwner		 = NULL;
+			vKern_sema[core][i].oOwner		 = nullptr;
 			*handle = &vKern_sema[core][i];
 
 			vKern_nbSema[core]    = (uint16_t)(vKern_nbSema[core] + 1u);
@@ -474,7 +474,7 @@ static	int32_t	local_waitSync(uint32_t core, sema_t *handle, uint32_t timeout) {
 
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
 	if ((IS_EXCEPTION) && (timeout != 0u))			    { DEBUG_KERN_TRACE("exit: KO 1"); return (KERR_KERN_FRISR); }
-	if (handle == NULL) 				   			    { DEBUG_KERN_TRACE("exit: KO 2"); return (KERR_KERN_NOSEM); }
+	if (handle == nullptr) 				   			    { DEBUG_KERN_TRACE("exit: KO 2"); return (KERR_KERN_NOSEM); }
 	if ((handle->oState & (1u<<BSEMA_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 3"); return (KERR_KERN_NOSEM); }
 	if (handle->oCounter == KSEMA_MIN_CPT) 			    { DEBUG_KERN_TRACE("exit: KO 4"); return (KERR_KERN_SETME); }
 
@@ -527,7 +527,7 @@ static	int32_t	local_signalSync(uint32_t core, sema_t *handle,  bool *preemption
 	proc_t	*process;
 
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == NULL)                				    { DEBUG_KERN_TRACE("exit: KO 1"); return (KERR_KERN_NOSEM); }
+	if (handle == nullptr)                			 	{ DEBUG_KERN_TRACE("exit: KO 1"); return (KERR_KERN_NOSEM); }
 	if ((handle->oState & (1u<<BSEMA_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 2"); return (KERR_KERN_NOSEM); }
 	if (handle->oCounter == handle->oMaxCounter)	    { DEBUG_KERN_TRACE("exit: KO 4"); return (KERR_KERN_SETME); }
 

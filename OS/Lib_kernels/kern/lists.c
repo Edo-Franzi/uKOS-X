@@ -153,8 +153,8 @@ static	void	local_nextAction(uint8_t action, list_t *list, proc_t *handle);
  */
 void	lists_initialise(list_t *list) {
 
-	list->oFirst	  = NULL;
-	list->oLast		  = NULL;
+	list->oFirst	  = nullptr;
+	list->oLast		  = nullptr;
 	list->oNbElements = 0u;
 }
 
@@ -178,8 +178,8 @@ void	lists_initialise(list_t *list) {
  */
 void	lists_connect(list_t *list, proc_t *handle) {
 
-	if ((list == NULL) || (handle == NULL)) {
-		LOG(KFATAL_SYSTEM, "list: NULL pointers");
+	if ((list == nullptr) || (handle == nullptr)) {
+		LOG(KFATAL_SYSTEM, "list: nullptr pointers");
 		exit(EXIT_OS_PANIC);
 	}
 
@@ -187,10 +187,10 @@ void	lists_connect(list_t *list, proc_t *handle) {
 
 // Connect the process to the list_c
 
-	(list->oFirst == NULL) ? (local_nextAction(KLIST_EMPTY, list, handle)) : (local_nextAction(KLIST_NORMAL, list, handle));
+	(list->oFirst == nullptr) ? (local_nextAction(KLIST_EMPTY, list, handle)) : (local_nextAction(KLIST_NORMAL, list, handle));
 
 	handle->oObject.oList    = list;
-	handle->oObject.oForward = NULL;
+	handle->oObject.oForward = nullptr;
 	list->oNbElements++;
 	INTERRUPTION_RESTORE;
 }
@@ -238,8 +238,8 @@ void	lists_connect(list_t *list, proc_t *handle) {
  */
 void	lists_disconnectConnect(list_t *list_d, list_t *list_c, proc_t *handle) {
 
-	if ((list_c == NULL) || (list_d == NULL) || (handle == NULL)) {
-		LOG(KFATAL_SYSTEM, "list: NULL pointers");
+	if ((list_c == nullptr) || (list_d == nullptr) || (handle == nullptr)) {
+		LOG(KFATAL_SYSTEM, "list: nullptr pointers");
 		exit(EXIT_OS_PANIC);
 	}
 
@@ -247,24 +247,24 @@ void	lists_disconnectConnect(list_t *list_d, list_t *list_c, proc_t *handle) {
 
 // Disconnect the process from the list_d
 
-	if (handle->oObject.oBack == NULL) {
-		(handle->oObject.oForward == NULL) ? (local_nextAction(KLIST_ALONE, list_d, handle)) : (local_nextAction(KLIST_FIRST,  list_d, handle));
+	if (handle->oObject.oBack == nullptr) {
+		(handle->oObject.oForward == nullptr) ? (local_nextAction(KLIST_ALONE, list_d, handle)) : (local_nextAction(KLIST_FIRST,  list_d, handle));
 	}
 	else {
-		(handle->oObject.oForward == NULL) ? (local_nextAction(KLIST_LAST,  list_d, handle)) : (local_nextAction(KLIST_MIDDLE, list_d, handle));
+		(handle->oObject.oForward == nullptr) ? (local_nextAction(KLIST_LAST,  list_d, handle)) : (local_nextAction(KLIST_MIDDLE, list_d, handle));
 	}
 
-	handle->oObject.oBack    = NULL;
-	handle->oObject.oForward = NULL;
-	handle->oObject.oList    = NULL;
+	handle->oObject.oBack    = nullptr;
+	handle->oObject.oForward = nullptr;
+	handle->oObject.oList    = nullptr;
 	list_d->oNbElements--;
 
 // Connect the process to the list_c
 
-	(list_c->oFirst == NULL) ? (local_nextAction(KLIST_EMPTY, list_c, handle)) : (local_nextAction(KLIST_NORMAL, list_c, handle));
+	(list_c->oFirst == nullptr) ? (local_nextAction(KLIST_EMPTY, list_c, handle)) : (local_nextAction(KLIST_NORMAL, list_c, handle));
 
 	handle->oObject.oList    = list_c;
-	handle->oObject.oForward = NULL;
+	handle->oObject.oForward = nullptr;
 	list_c->oNbElements++;
 	INTERRUPTION_RESTORE;
 }
@@ -293,7 +293,7 @@ static	void	local_nextAction(uint8_t action, list_t *list, proc_t *handle) {
 		case KLIST_EMPTY: {
 			list->oFirst = handle;
 			list->oLast	 = handle;
-			handle->oObject.oBack = NULL;
+			handle->oObject.oBack = nullptr;
 			break;
 		}
 
@@ -311,8 +311,8 @@ static	void	local_nextAction(uint8_t action, list_t *list, proc_t *handle) {
 // - Only one process connected
 
 		case KLIST_ALONE: {
-			list->oFirst = NULL;
-			list->oLast  = NULL;
+			list->oFirst = nullptr;
+			list->oLast  = nullptr;
 			break;
 		}
 
@@ -321,7 +321,7 @@ static	void	local_nextAction(uint8_t action, list_t *list, proc_t *handle) {
 
 		case KLIST_FIRST: {
 			list->oFirst = handle->oObject.oForward;
-			handle->oObject.oForward->oObject.oBack = NULL;
+			handle->oObject.oForward->oObject.oBack = nullptr;
 			break;
 		}
 
@@ -339,7 +339,7 @@ static	void	local_nextAction(uint8_t action, list_t *list, proc_t *handle) {
 
 		case KLIST_LAST: {
 			list->oLast = handle->oObject.oBack;
-			handle->oObject.oBack->oObject.oForward = NULL;
+			handle->oObject.oBack->oObject.oForward = nullptr;
 			break;
 		}
 		default: {

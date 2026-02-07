@@ -81,7 +81,7 @@ extern	volatile	bool		vReadyToSend;
 extern	volatile	bool		vSendAck;
 extern	volatile	bool		vConnected;
 static				bool		vEndInitSeq = false;
-static				void		(*vState)(uint8_t data) = NULL;
+static				void		(*vState)(uint8_t data) = nullptr;
 
 // Prototypes
 
@@ -190,7 +190,7 @@ static	void	cb_read(void) {
 // During the initialization sequence, do not run the state-machine
 
 	if (vEndInitSeq == true) {
-		if (vState != NULL) {
+		if (vState != nullptr) {
 			(*vState)(vData);
 			return;
 		}
@@ -241,7 +241,7 @@ static	void	local_state_CX(uint8_t data) {
 
 	if (aWaitingFor[vI] == data) {
 		if (++vI == (sizeof(aWaitingFor) - 1u)) {
-			vI = 0u; vState = NULL;
+			vI = 0u; vState = nullptr;
 		}
 	}
 	else {
@@ -272,7 +272,7 @@ static	void	local_state_CO(uint8_t data) {
 
 	if (aWaitingFor[vI] == data) {
 		if (++vI == (sizeof(aWaitingFor) - 1u)) {
-			vI = 4u; vState = NULL;
+			vI = 4u; vState = nullptr;
 			vConnected = true;
 		}
 	}
@@ -295,7 +295,7 @@ static	void	local_state_CL(uint8_t data) {
 
 	if (aWaitingFor[vI] == data) {
 		if (++vI == (sizeof(aWaitingFor) - 1u)) {
-			vI = 4u; vState = NULL;
+			vI = 4u; vState = nullptr;
 			vConnected = false;
 		}
 	}
@@ -368,7 +368,7 @@ static	void	local_state_PD(uint8_t data) {
 
 		if (--vSize == 0) {
 			vRead = false;
-			vI = 0u; vState = NULL;
+			vI = 0u; vState = nullptr;
 		}
 	}
 }
@@ -385,7 +385,7 @@ static	void	local_state_SN(uint8_t data) {
 
 	if (aWaitingFor[vI] == data) {
 		if (++vI == (sizeof(aWaitingFor) - 1u)) {
-			vI = 0; vState = NULL;
+			vI = 0; vState = nullptr;
 			vSendAck = true;
 		}
 	}
@@ -406,7 +406,7 @@ static	void	local_state_EM(uint8_t data) {
 
 	if (aWaitingFor[i] == data) {
 		if (++i == (sizeof(aWaitingFor) - 1u)) {
-			i = 0u; vState = NULL;
+			i = 0u; vState = nullptr;
 		}
 	}
 	else {
@@ -425,7 +425,7 @@ static	void	local_state_BG(uint8_t data) {
 	UNUSED(data);
 
 	vReadyToSend = true;
-	vState = NULL;
+	vState = nullptr;
 }
 
 // Local routines

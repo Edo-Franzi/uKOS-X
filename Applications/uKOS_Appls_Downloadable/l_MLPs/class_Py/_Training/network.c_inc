@@ -199,6 +199,6 @@ static	const	mlpnNetwork_t	aNetwork = {
 									&aLayer_L1,
 									&aLayer_L2,
 									&aLayer_L3,
-									NULL,
-									NULL
+									nullptr,
+									nullptr
 								};

@@ -68,9 +68,9 @@ MODULE(
 	Machine,						// Module name (the first letter has to be upper case)
 	KID_FAM_GENERICS,				// Family (defined in the module.h)
 	KNUM_MACHINE,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -81,7 +81,7 @@ MODULE(
 
 // Prototypes
 
-static	void		local_init(void);
+static	int32_t		local_init(void);
 extern	int32_t		stub_machine_restart(void);
 extern	int32_t		stub_machine_readPC(const uintptr_t *stackProcess, uintptr_t *pc);
 extern	int32_t		stub_machine_readFunctionName(const uintptr_t pc, const char_t **function);
@@ -110,7 +110,8 @@ int32_t	machine_readPC(const proc_t *handle, uintptr_t *pc) {
 	int32_t	status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	status = stub_machine_readPC(handle->oSpecification.oStack, pc);
 	PRIVILEGE_RESTORE;
@@ -141,7 +142,8 @@ int32_t	machine_readFunctionName(const uintptr_t pc, const char_t **function) {
 	int32_t	status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	status = stub_machine_readFunctionName(pc, function);
 	PRIVILEGE_RESTORE;
@@ -167,7 +169,8 @@ int32_t	machine_restart(void) {
 	int32_t		status;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_SYSTEM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	status = stub_machine_restart();
 	PRIVILEGE_RESTORE;
@@ -184,7 +187,8 @@ int32_t	machine_restart(void) {
  *   has to be called at least once
  *
  */
-static	void	local_init(void) {
+static	int32_t	local_init(void) {
+			int32_t		status = KERR_SYSTEM_NOERR;
 			uint32_t	core;
 	static	bool		vInit[KNB_CORES] = MCSET(false);
 
@@ -194,7 +198,7 @@ static	void	local_init(void) {
 	if (vInit[core] == false) {
 		vInit[core] = true;
 	}
-	INTERRUPTION_RESTORE;
+	RETURN_INT_RESTORE(status);
 }
 
 #endif

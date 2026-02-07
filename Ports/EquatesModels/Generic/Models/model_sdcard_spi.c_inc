@@ -112,9 +112,10 @@ static	sdcard_specification_t	vSdCard;
  * - Initialise some specific parts
  *
  */
-void	model_sdcard_init(void) {
+int32_t	model_sdcard_init(void) {
 
 	cb_control(KSDCARD_INIT);
+	return (KERR_STORAGE_NOERR);
 }
 
 /*

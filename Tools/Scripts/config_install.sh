@@ -117,6 +117,7 @@ export BIN_VER=2.45.1
 export GCC_ARM_VER=15.2.0
 export GCC_RVXX_VER=15.2.0
 export NLB_VER=4.6.0
+export NLB_RVXX_VER=4.5.0
 export GDB_VER=17.1
 export LLVM_ARM_VER=21.1.8
 export LLVM_ARM_COMMIT=fc180f47

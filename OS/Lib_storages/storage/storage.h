@@ -138,7 +138,7 @@ extern	int32_t	storage_release(storage_manager_t manager, reserveMode_t reserveM
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_initialise(KSERIAL_FLASH, NULL);
+ *    status = storage_initialise(KSERIAL_FLASH, nullptr);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }

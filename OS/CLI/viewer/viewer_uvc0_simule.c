@@ -102,10 +102,10 @@ int32_t	viewer_uvc0(uint32_t argc, const char_t *argv[]) {
 	PROCESS(
 		0,									// Index
 		specification,						// Specifications (just use specification_x)
-		aStrText,							// Info string (NULL if anonymous)
+		aStrText,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess,							// Code of the process
-		aStrIden,							// Identifier (NULL if anonymous)
+		aStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_05				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -162,7 +162,7 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 
 	image_0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "video");
 	image_1 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "video");
-	if ((image_0 == NULL) || (image_1 == NULL)) {
+	if ((image_0 == nullptr) || (image_1 == nullptr)) {
 		LOG(KFATAL_USER, "viewer: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}

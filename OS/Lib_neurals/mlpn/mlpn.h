@@ -166,9 +166,9 @@ extern	"C" {
  *                                               KNB_LAYERS,
  *                                               &aLayer_L1,
  *                                               &aLayer_L2,
- *                                               NULL,
- *                                               NULL,
- *                                               NULL
+ *                                               nullptr,
+ *                                               nullptr,
+ *                                               nullptr
  *                                           };
  *
  *    status = mlpn_configure(&aNetwork);

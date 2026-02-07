@@ -550,7 +550,7 @@ extern "C" {
 		char *Manufacturer;			// "FTDI"
 		char *ManufacturerId;		// "FT"
 		char *Description;			// "USB HS Serial Converter"
-		char *SerialNumber;			// "FT000001" if fixed, or NULL
+		char *SerialNumber;			// "FT000001" if fixed, or nullptr
 		WORD MaxPower;				// 0 < MaxPower <= 500
 		WORD PnP;					// 0 = disabled, 1 = enabled
 		WORD SelfPowered;			// 0 = bus powered, 1 = self powered

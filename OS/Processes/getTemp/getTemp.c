@@ -85,8 +85,8 @@ MODULE(
 	GetTemp,						// Module name (the first letter has to be upper case)
 	KID_FAM_PROCESSES,				// Family (defined in the module.h)
 	KNUM_GET_TEMP,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	prgm,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	prgm,							// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
 	temperature_clean,				// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
@@ -123,10 +123,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification,						// Specifications (just use specification_x)
-		aStrText,							// Info string (NULL if anonymous)
+		aStrText,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process,						// Code of the process
-		aStrIden,							// Identifier (NULL if anonymous)
+		aStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_LOW_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -169,7 +169,7 @@ static	int32_t	temperature_clean(uint32_t argc, const char_t *argv[]) {
  */
 static void __attribute__ ((noreturn)) local_process(const void *argument) {
 					mbox_t		*mailBox;
-					int16_t		*temperature = NULL;
+					int16_t		*temperature = nullptr;
 					uint16_t	i;
 					int32_t		value;
 					uint32_t	sizeSnd;
@@ -219,7 +219,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 // It will be free by the tool X
 
 		temperature = (int16_t *)memo_malloc(KMEMO_ALIGN_8, (KNB_SAMPLES * sizeof(int16_t)), "temperature");
-		if (temperature == NULL) {
+		if (temperature == nullptr) {
 			LOG(KFATAL_SYSTEM, "temperature: out of memory");
 			exit(EXIT_OS_FAILURE);
 		}

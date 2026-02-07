@@ -65,7 +65,7 @@ static	void	local_SPI_IRQHandler(void);
  * - Initialise the manager
  *
  */
-void	model_spi_init(void) {
+int32_t	model_spi_init(void) {
 
 	cb_enable();
 
@@ -91,6 +91,7 @@ void	model_spi_init(void) {
 	INTERRUPT_VECTOR(SPI_VECTOR_NUMBER, local_SPI_IRQHandler);
 	NVIC_SetPriority(SPI_VECTOR_NUMBER, KHW_PRIORITY_MODERATE);
 	NVIC_EnableIRQ(SPI_VECTOR_NUMBER);
+	return (KERR_SPI_NOERR);
 }
 
 /*
@@ -191,7 +192,7 @@ static	void	local_SPI_IRQHandler(void) {
 // Case 1: Simple write transfer
 // -----------------------------
 
-// model_spi_multipleWriteRead(wBufferW, 10, xyz (or NULL), 0)
+// model_spi_multipleWriteRead(wBufferW, 10, xyz (or nullptr), 0)
 
 		case KSPI_WRITE: {
 			if (vNbBytes < vWSize) {
@@ -206,7 +207,7 @@ static	void	local_SPI_IRQHandler(void) {
 // Case 2: Simple read transfer or read-write
 // ------------------------------------------
 
-// model_spi_multipleWriteRead(xyz (or NULL), 0, rBuffer, 24)
+// model_spi_multipleWriteRead(xyz (or nullptr), 0, rBuffer, 24)
 // model_spi_multipleWriteRead(wBuffer, 33, rBuffer, 33)
 
 		case KSPI_READ: {
@@ -217,7 +218,7 @@ static	void	local_SPI_IRQHandler(void) {
 			else                { vRkBuffer[vNbBytes - 1u] = data; }
 
 			if (vNbBytes < vRSize) {
-				*((volatile uint8_t *)&SPI->TXDR) = (vWkBuffer == NULL) ? (0u) : (vWkBuffer[vNbBytes]);
+				*((volatile uint8_t *)&SPI->TXDR) = (vWkBuffer == nullptr) ? (0u) : (vWkBuffer[vNbBytes]);
 				vNbBytes++;
 				return;
 			}

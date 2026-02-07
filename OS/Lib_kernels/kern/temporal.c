@@ -156,7 +156,7 @@ int32_t	kern_suspendProcess(uint32_t time) {
  *
  * int32_t    status;
  *
- *    status = kern_setNewTimeout(NULL, KWAIT312MS);
+ *    status = kern_setNewTimeout(nullptr, KWAIT312MS);
  * \endcode
  *
  * - Just change the internal timeout counter
@@ -181,7 +181,7 @@ int32_t	kern_setNewTimeout(proc_t *handle, uint32_t timeout) {
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
 
-	wkHandle = (wkHandle == NULL) ? (vKern_runProc[core]) : (wkHandle);
+	wkHandle = (wkHandle == nullptr) ? (vKern_runProc[core]) : (wkHandle);
 
 	if ((wkHandle->oInternal.oState & (1u<<BPROC_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
 
@@ -236,7 +236,7 @@ int32_t	kern_resumeProcessWithTimeout(proc_t *handle) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == NULL)											  { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
+	if (handle == nullptr)										  { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
 	if ((handle->oInternal.oState & (1u<<BPROC_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 2"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOPRO); }
 
 	if ((handle->oInternal.oState & KSTATE_EOT_MASK) != 0u) {

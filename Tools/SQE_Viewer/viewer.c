@@ -170,7 +170,7 @@ static lme_err viewer_openDevice(lme_ref lme, lme_int nargin, lme_int nargout) {
 	if (ftdiSPI_openDevice(&vFtHandle, deviceNb) == KFTDIGEERR)		 { LMECB_DbgWriteStr("ftdi problem! ftdiSPI_openDevice"); return (k_lme_err_failure); }
 
 	vImage = (uint8_t *)malloc(sizeof(uint8_t) * 2000 * 2000 * 2);
-	if (vImage == NULL)												 { LMECB_DbgWriteStr("malloc problem!");				  return (k_lme_err_failure); }
+	if (vImage == nullptr)											 { LMECB_DbgWriteStr("malloc problem!");				  return (k_lme_err_failure); }
 
 	return (k_lme_err_success);
 }

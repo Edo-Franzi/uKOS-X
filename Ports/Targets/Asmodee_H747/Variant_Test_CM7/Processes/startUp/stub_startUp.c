@@ -141,7 +141,7 @@ void	stub_startUp_launch(void) {
 	(void)dprintf(KSYST, "Signature:\n%s\n\n", signature);
 	(void)dprintf(KSYST, "%ssw = %"PRIX32"\n", identifier, mode);
 
-	now = time(NULL);
+	now = time(nullptr);
 	localtime_r(&now, &localTime);
 
 	calendar_readUnixTime(KFROM_TIMER, &unixTime);

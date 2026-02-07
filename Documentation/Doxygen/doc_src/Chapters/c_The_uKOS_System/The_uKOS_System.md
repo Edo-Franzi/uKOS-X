@@ -303,9 +303,9 @@ MODULE(
     Man,                              // Module name
     KID_FAM_CLI,                      // Family (defined in the module.h)
     KNUM_MAN,                         // Module id (defined in the module.h)
-    NULL,                             // Address of the early pre-init
+    nullptr,                          // Address of the early pre-init
     prgm,                             // Address of the code
-    NULL,                             // Address of the clean the module
+    nullptr,                          // Address of the clean the module
     " 1.0",                           // Revision string (major . minor)
     ((1<<BSHOW) | (1<<BEXE_CONSOLE)), // Flags
     0                                 // Execution cores
@@ -532,7 +532,7 @@ int32_t aStart(uint32_t argc, const char_t *argv[]) {
         ((void (*)(void))*ptrStInitArray)();
     ptrStInitArray++;
     }
-  
+
     __stack_chk_guard = KSTACK_GARD_VALUE;
     PRIVILEGE_RESTORE;
 
@@ -550,7 +550,7 @@ int32_t aStart(uint32_t argc, const char_t *argv[]) {
         ptrEnFiniArray++;
     }
     #endif
-  
+
     if (gdb == true) {
         exit(EXIT_OS_SUCCESS);
     }
@@ -633,9 +633,9 @@ MODULE(
     UserAppl,                         // Module name
     KID_FAM_APPLICATIONS,             // Family (defined in the module.h)
     KNUM_APPLICATION,                 // Module id (defined in the module.h)
-    NULL,                             // Address of the early pre-init
+    nullptr,                          // Address of the early pre-init
     a_start,                          // Address of the code
-    NULL,                             // Address of the clean the module
+    nullptr,                          // Address of the clean the module
     " 1.0",                           // Revision string (major . minor)
     ((1<<BSHOW) | (1<<BEXE_CONSOLE))  // Flags
     0                                 // Execution cores
@@ -699,10 +699,10 @@ int main(uint32_t argc, const char_t *argv[]) {
     PROC_SUPV(
         0,                         // Index
         vSpecification_0,          // Specifications (just use vSpecification_x)
-        aStrText_0,                // Info string (NULL if anonymous)
+        aStrText_0,                // Info string (nullptr if anonymous)
         KKERN_SZ_STACK_MM,         // KSZSTACK_xx Stack size (number of words)
         process_0,                 // Code of the process
-        aStrIden_0,                // Identifier (NULL if anonymous)
+        aStrIden_0,                // Identifier (nullptr if anonymous)
         KDEF0,                     // Default Serial Communication Manager
         KKERN_PRIORITY_NORMAL_00   // KHIGHPRIORITY < Priority < KLOWPRIORITY+15
     );
@@ -710,10 +710,10 @@ int main(uint32_t argc, const char_t *argv[]) {
     PROC_SUPV(
         1,                         // Index
         vSpecification_1,          // Specifications (just use vSpecification_x)
-        aStrText_1,                // Info string (NULL if anonymous)
+        aStrText_1,                // Info string (nullptr if anonymous)
         KKERN_SZ_STACK_MM,         // KSZSTACK_xx Stack size (number of words)
         process_1,                 // Code of the process
-        aStrIden_1,                // Identifier (NULL if anonymous)
+        aStrIden_1,                // Identifier (nullptr if anonymous)
         KDEF0,                     // Default Serial Communication Manager
         KKERN_PRIORITY_NORMAL_00   // KHIGHPRIORITY < Priority < KLOWPRIORITY+15
     );

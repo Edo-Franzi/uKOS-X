@@ -70,7 +70,7 @@ void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter);
  * - Initialise the manager
  *
  */
-void	model_usart_init_C1(void) {
+int32_t	model_usart_init_C1(void) {
 	uint32_t	current;
 
 	cb_enable_C1();
@@ -113,6 +113,7 @@ void	model_usart_init_C1(void) {
 	USART_C1->IER |= UART_IER_ERBFI;
 
 	cb_init_C1();
+	return (KERR_SERIAL_NOERR);
 }
 
 /*

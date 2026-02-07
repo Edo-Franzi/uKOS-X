@@ -54,9 +54,10 @@ static	void	local_flash_1w_erase(uint32_t size, uint32_t sector);
  * - Initialise some specific parts
  *
  */
-void	model_flash_1w_init(void) {
+int32_t	model_flash_1w_init(void) {
 
 	cb_control(KFLASH_INIT);
+	return (KERR_STORAGE_NOERR);
 }
 
 /*

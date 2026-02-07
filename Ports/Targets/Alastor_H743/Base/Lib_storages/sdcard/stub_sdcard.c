@@ -165,7 +165,7 @@ static	uint8_t	cb_writeRead(uint8_t data) {
  */
 static	void	cb_write(const uint8_t *source, uint16_t size) {
 
-	spi_multipleWriteRead(KSPI1, source, size, NULL, 0u, KWAIT_INFINITY);
+	spi_multipleWriteRead(KSPI1, source, size, nullptr, 0u, KWAIT_INFINITY);
 }
 
 /*
@@ -176,7 +176,7 @@ static	void	cb_write(const uint8_t *source, uint16_t size) {
  */
 static	void	cb_readSPI(uint8_t *destination, uint16_t size) {
 
-	spi_multipleWriteRead(KSPI1, NULL, 0u, destination, size, KWAIT_INFINITY);
+	spi_multipleWriteRead(KSPI1, nullptr, 0u, destination, size, KWAIT_INFINITY);
 }
 
 #include	"model_sdcard_spi.c_inc"

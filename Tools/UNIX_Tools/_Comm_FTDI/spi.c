@@ -69,7 +69,7 @@ void	spi_list(void) {
 	uint32_t	device;
 	char_t		buffer[64];
 
-	status = FT_ListDevices(&nbDevices, NULL, FT_LIST_NUMBER_ONLY);
+	status = FT_ListDevices(&nbDevices, nullptr, FT_LIST_NUMBER_ONLY);
 	if (status == FT_OK) { fprintf(stdout, "Number of device: %0d\n", nbDevices);           }
 	else				 { fprintf(stdout, "Error: FT_ListDevices status = %0d\n", status); }
 
@@ -120,7 +120,7 @@ FT_HANDLE	spi_open(const char_t *driverID) {
 	status = FT_SetBitMode(handle, 0x00, 0x02);
 	time.tv_sec  = 0;
 	time.tv_nsec = (50*1000000);
-	nanosleep(&time, NULL);
+	nanosleep(&time, nullptr);
 
 // Use 60-MHz master clock (disable divide by 5)
 // Turn off adaptive clocking (may be needed for ARM)
@@ -131,7 +131,7 @@ FT_HANDLE	spi_open(const char_t *driverID) {
 	status = FT_Write(handle, param_2, sizeof(param_2), &nbTransferred);
 	time.tv_sec  = 0;
 	time.tv_nsec = (20*1000000);
-	nanosleep(&time, NULL);
+	nanosleep(&time, nullptr);
 
 // Set initial states of the MPSSE interface
 // - low byte, both pin directions and output values

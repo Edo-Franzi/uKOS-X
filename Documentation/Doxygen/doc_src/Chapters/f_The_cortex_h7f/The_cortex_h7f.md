@@ -374,9 +374,9 @@ MODULE(
     Init,                    // Module name
     KID_FAM_STARTUPS,        // Family (defined in the module.h)
     KNUM_INIT,               // Module id (defined in the module.h)
-    NULL,                    // Address of the initialisation code
-    NULL,                    // Address of the code
-    NULL,                    // Address of the clean code
+    nullptr,                 // Address of the initialisation code
+    nullptr,                 // Address of the code
+    nullptr,                 // Address of the clean code
     " 1.0",                  // Revision string (major . minor)
     (1<<BSHOW)               // Flags
     0

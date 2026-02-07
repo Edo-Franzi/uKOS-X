@@ -71,9 +71,9 @@ MODULE(
 	Record,							// Module name (the first letter has to be upper case)
 	KID_FAM_GENERICS,				// Family (defined in the module.h)
 	KNUM_RECORD,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -93,7 +93,7 @@ uint32_t			vRecord_NbLogWrites[KNB_CORES]   = MCSET(0u);					// Number of writes
 
 // Prototypes
 
-static	void	local_init(void);
+static	int32_t	local_init(void);
 
 // Library specific
 // ================
@@ -117,6 +117,7 @@ static	void	local_init(void);
  *
  */
 int32_t	record_trace(const char_t *message, uintptr_t parameter) {
+			int32_t		status;
 			uint32_t	core;
 			uint64_t	timeStamp;
 	static	bool		vRollOver[KNB_CORES] = MCSET(false);
@@ -124,7 +125,8 @@ int32_t	record_trace(const char_t *message, uintptr_t parameter) {
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_RECORD_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	INTERRUPTION_OFF;
 	kern_readTickCount(&timeStamp);
@@ -132,7 +134,7 @@ int32_t	record_trace(const char_t *message, uintptr_t parameter) {
 	vRecord_WTraceFifo[core]->oMessage   = message;
 	vRecord_WTraceFifo[core]->oParameter = parameter;
 	vRecord_WTraceFifo[core]->oTimeStamp = timeStamp;
-	vRecord_WTraceFifo[core]->oProcess   = (IS_EXCEPTION) ? (NULL) : (vKern_runProc[core]);
+	vRecord_WTraceFifo[core]->oProcess   = (IS_EXCEPTION) ? (nullptr) : (vKern_runProc[core]);
 	vRecord_WTraceFifo[core]++;
 
 	vRecord_NbTraceWrites[core] = (vRecord_NbTraceWrites[core] == KRECORD_SZ_TRACE_FIFO) ? (KRECORD_SZ_TRACE_FIFO) : (vRecord_NbTraceWrites[core] + 1);
@@ -168,6 +170,7 @@ int32_t	record_trace(const char_t *message, uintptr_t parameter) {
  *
  */
 int32_t	record_log(recordLogCategory_t logCategory, uint32_t lineNumber, const char_t *function, const char_t *message) {
+			int32_t		status;
 			recordLogCategory_t	lessPrioCategory;
 			uint32_t		core, i, index;
 			uint64_t		timeStamp, olderTime;
@@ -177,7 +180,8 @@ int32_t	record_log(recordLogCategory_t logCategory, uint32_t lineNumber, const c
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_RECORD_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	INTERRUPTION_OFF;
 	kern_readTickCount(&timeStamp);
@@ -249,7 +253,8 @@ int32_t	record_log(recordLogCategory_t logCategory, uint32_t lineNumber, const c
  *   has to be called at least once
  *
  */
-static	void	local_init(void) {
+static	int32_t	local_init(void) {
+			int32_t		status = KERR_RECORD_NOERR;
 			uint32_t	core, i;
 	static	bool		vInit[KNB_CORES] = MCSET(false);
 
@@ -266,14 +271,13 @@ static	void	local_init(void) {
 			vRecord_logBuffer[core][i].oLogCategory	= KINFO_USER;
 			vRecord_logBuffer[core][i].oMark		= false;
 			vRecord_logBuffer[core][i].oTimeStamp	= 0u;
-			vRecord_logBuffer[core][i].oFunction	= NULL;
-			vRecord_logBuffer[core][i].oMessage		= NULL;
+			vRecord_logBuffer[core][i].oFunction	= nullptr;
+			vRecord_logBuffer[core][i].oMessage		= nullptr;
 			vRecord_logBuffer[core][i].oLineNumber	= 0u;
-			vRecord_logBuffer[core][i].oIdentifier	= NULL;
+			vRecord_logBuffer[core][i].oIdentifier	= nullptr;
 		}
-
 	}
-	INTERRUPTION_RESTORE;
+	RETURN_INT_RESTORE(status);
 }
 
 #endif

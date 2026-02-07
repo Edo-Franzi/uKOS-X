@@ -110,7 +110,7 @@ extern	void	mailboxes_init(void);
  *    status = kern_createMailbox(identifier, &mailBox);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the mailbox identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the mailbox identifier (nullptr = anonymous)
  * \param[out]	**handle		Ptr on the handle
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_MBFUL	No more mailbox
@@ -225,7 +225,7 @@ extern	int32_t	kern_writeQueue(mbox_t *handle, uintptr_t message, uint32_t timeo
  * \endcode
  *
  * \param[in]	*handle			Ptr on the handle
- * \param[out]	**message		Ptr on the message (return NULL in case of error)
+ * \param[out]	**message		Ptr on the message (return nullptr in case of error)
  * \param[out]	*size			Ptr on the	size of the message
  * \param[in]	timeout			Timeout (1-ms of resolution)
  * \param[in]	-				KWAIT_INFINITY, waiting forever

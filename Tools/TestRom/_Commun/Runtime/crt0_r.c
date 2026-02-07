@@ -129,5 +129,5 @@ void	crt0(void) {
 // Go to the main
 
 	exce_init();
-	main(0u, NULL);
+	main(0u, nullptr);
 }

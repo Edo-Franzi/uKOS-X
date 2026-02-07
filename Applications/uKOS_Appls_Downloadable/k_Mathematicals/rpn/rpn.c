@@ -98,9 +98,9 @@ MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
 	KNUM_APPLICATION,					// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	aStart,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	aStart,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -169,9 +169,9 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 		  char_t **parameters = (char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "parameters");
 	const char_t **argv		  = (const char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "argv");
 
-	if (commandLine == NULL) { LOG(KFATAL_USER, "memo_malloc commandLine"); exit(EXIT_OS_FAILURE); }
-	if (parameters == NULL)	 { LOG(KFATAL_USER, "memo_malloc parameters");	exit(EXIT_OS_FAILURE); }
-	if (argv == NULL)		 { LOG(KFATAL_USER, "memo_malloc argv");		exit(EXIT_OS_FAILURE); }
+	if (commandLine == nullptr) { LOG(KFATAL_USER, "memo_malloc commandLine"); exit(EXIT_OS_FAILURE); }
+	if (parameters == nullptr)	 { LOG(KFATAL_USER, "memo_malloc parameters");	exit(EXIT_OS_FAILURE); }
+	if (argv == nullptr)		 { LOG(KFATAL_USER, "memo_malloc argv");		exit(EXIT_OS_FAILURE); }
 
 	UNUSED(argument);
 
@@ -240,15 +240,15 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification,						// Specifications (just use specification_x)
-		aStrText,							// Info string (NULL if anonymous)
+		aStrText,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess,							// Code of the process
-		aStrIden,							// Identifier (NULL if anonymous)
+		aStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_MEDIUM_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-	if (kern_createProcess(&specification, NULL, &process) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification, nullptr, &process) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS);
@@ -314,11 +314,11 @@ static	void	local_getCommand(uint32_t argc, const char_t *argv[]) {
 							{ (const char_t *)"/",		local_div	},
 							{ (const char_t *)"POW",	local_pow	},
 							{ (const char_t *)"quit",	local_quit	},
-							{  NULL,					NULL		}
+							{  nullptr,					nullptr		}
 						};
 	const command_t		*table = &aTabCommand[0];
 
-	while (table->oCommand != NULL) {
+	while (table->oCommand != nullptr) {
 		text_checkAsciiBuffer(argv[0], table->oCommand, &equal);
 		if (equal == true) {
 			table->oOrder(argc, argv);

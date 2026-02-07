@@ -107,7 +107,7 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 
 	core = GET_RUNNING_CORE;
 
-	if (ascii == NULL) { return; }
+	if (ascii == nullptr) { return; }
 
 	switch (core) {
 

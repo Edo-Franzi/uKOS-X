@@ -52,7 +52,7 @@
  * - Initialise some specific parts
  *
  */
-void	model_stts22h_init(void) {
+int32_t	model_stts22h_init(void) {
 	uint8_t		buffer[2];
 
 	cb_configure();
@@ -61,6 +61,7 @@ void	model_stts22h_init(void) {
 	buffer[0] = STTS22H_CNTRL;
 	buffer[1] = (1u<<LOW_ODR_START) | (AVG25HZ<<AVG) | (1u<<FREERUN);
 	cb_writeI2C(KI2C_ADD_STTS22H, &buffer[0], 2u);
+	return (KERR_TEMPERATURE_NOERR);
 }
 
 /*

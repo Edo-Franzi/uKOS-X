@@ -104,7 +104,7 @@ extern	void	signals_init(void);
  *    status = kern_createSignalGroup(identifier, &signalGroup);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the signal group identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the signal group identifier (nullptr = anonymous)
  * \param[out]	**handle		Ptr on the handle
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_SIFUL	No more signal group

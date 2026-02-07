@@ -120,7 +120,7 @@ extern	void	softwareTimers_init(void);
  *    status = kern_createSoftwareTimer(identifier, &softwareTimer);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the software timer identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the software timer identifier (nullptr = anonymous)
  * \param[out]	**handle		Ptr on the handle
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_STFUL	No more software timer
@@ -144,7 +144,7 @@ extern	int32_t	kern_createSoftwareTimer(const char_t *identifier, stim_t **handl
  *    configure.oMode        = KSTIM_CONTINUOUS;
  *    configure.oInitialTime = 10000;
  *    configure.oTime        = 1000;
- *    configure.oArgument    = NULL;
+ *    configure.oArgument    = nullptr;
  *    configure.oCode        = _changeStateLed;
  *
  *    status = kern_setSoftwareTimer(softwareTimer, &configure);

@@ -67,9 +67,9 @@ MODULE(
 	Storage,						// Module name (the first letter has to be upper case)
 	KID_FAM_STORAGE,				// Family (defined in the module.h)
 	KNUM_STORAGE,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -156,7 +156,7 @@ int32_t	storage_release(storage_manager_t manager, reserveMode_t reserveMode) {
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_initialise(KSERIAL_FLASH, NULL);
+ *    status = storage_initialise(KSERIAL_FLASH, nullptr);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }

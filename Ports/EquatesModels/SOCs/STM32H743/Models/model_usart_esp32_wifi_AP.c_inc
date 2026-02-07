@@ -87,7 +87,7 @@ static	void	local_USART_IRQHandler(void);
  * - Initialise the manager
  *
  */
-void	model_usart_init(void) {
+int32_t	model_usart_init(void) {
 
 	cb_enable();
 
@@ -116,6 +116,7 @@ void	model_usart_init(void) {
 	USART->CR1 |= USART_CR1_UE;
 
 	cb_init();
+	return (KERR_SERIAL_NOERR);
 }
 
 /*

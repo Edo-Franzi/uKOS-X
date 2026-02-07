@@ -90,11 +90,11 @@ void	test_11(void) {
 // Initialise the stack-frame for the process P1
 
 	stackP0 = &vStackP0[800 - 8];
-	KERN_PREPARE_FRAME(stackP0, process_0, core, NULL, KINT_IMASK_ALL)
+	KERN_PREPARE_FRAME(stackP0, process_0, core, nullptr, KINT_IMASK_ALL)
 	vStackCurP0 = (uintptr_t)stackP0;
 
 	stackP1 = &vStackP1[800 - 8];
-	KERN_PREPARE_FRAME(stackP1, process_1, core, NULL, KINT_IMASK_ALL)
+	KERN_PREPARE_FRAME(stackP1, process_1, core, nullptr, KINT_IMASK_ALL)
 	vStackCurP1 = (uintptr_t)stackP1;
 
 // Turn on the TIM0

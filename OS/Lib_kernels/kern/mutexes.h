@@ -97,7 +97,7 @@ extern	void	mutexes_init(void);
  *    status = kern_createMutex(identifier, &mutex);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the mutex identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the mutex identifier (nullptr = anonymous)
  * \param[out]	**handle		Ptr on the handle
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_MUFUL	No more mutex

@@ -99,7 +99,7 @@ extern	void	semaphores_init(void);
  *    status = kern_createSemaphore(identifier, iniCounter, maxCounter, &semaphore);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the semaphore identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the semaphore identifier (nullptr = anonymous)
  * \param[in]	iniCounter		Initial counter value
  * \param[in]	maxCounter		Max counter value
  * \param[out]	**handle		Ptr on the handle

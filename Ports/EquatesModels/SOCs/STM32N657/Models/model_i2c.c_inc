@@ -71,7 +71,7 @@ static	void	local_I2C_EV_IRQHandler(void);
  * - Initialise the manager
  *
  */
-void	model_i2c_init(void) {
+int32_t	model_i2c_init(void) {
 
 	cb_enable();
 
@@ -90,6 +90,7 @@ void	model_i2c_init(void) {
 	INTERRUPT_VECTOR(I2C_VECTOR_NUMBER, local_I2C_EV_IRQHandler);
 	NVIC_SetPriority(I2C_VECTOR_NUMBER, KHW_PRIORITY_MODERATE);
 	NVIC_EnableIRQ(I2C_VECTOR_NUMBER);
+	return (KERR_I2C_NOERR);
 }
 
 /*

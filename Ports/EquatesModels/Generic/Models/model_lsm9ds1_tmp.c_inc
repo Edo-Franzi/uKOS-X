@@ -52,11 +52,12 @@
  * - Initialise the manager
  *
  */
-void	model_lsM9ds1tmp_init(void) {
+int32_t	model_lsM9ds1tmp_init(void) {
 
 	cb_control(KTEMPERATURE_RESERVE);
 	cb_control(KTEMPERATURE_INIT);
 	cb_control(KTEMPERATURE_RELEASE);
+	return (KERR_TEMPERATURE_NOERR);
 }
 
 /*

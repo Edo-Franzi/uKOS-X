@@ -86,8 +86,8 @@ enum {
 
 // uKOS-X misc
 
-#if (!defined(NULL))
-#define	NULL				((void *)0)
+#if (!defined(nullptr))
+#define	nullptr				((void *)0)
 #endif
 
 #if (!defined(tm_t))
@@ -110,13 +110,13 @@ typedef	enum {
 // Types defined by gcc (version > than 4.8)
 
 #if (!defined(char_t))
-typedef	char						char_t;
+typedef	char				char_t;
 #endif
 
 #if (!defined(float32_t))
-typedef float						float32_t;
+typedef float				float32_t;
 #endif
 
 #if (!defined(float64_t))
-typedef double						float64_t;
+typedef double				float64_t;
 #endif

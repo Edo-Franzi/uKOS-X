@@ -133,13 +133,13 @@ int		main(int32_t argc, const char_t *argv[]) {
 	fpin  = fopen(inputFileName, "rb");
 	fpout = fopen(outputFileName, "w");
 
-	if (fpin == NULL) {
+	if (fpin == nullptr) {
 		fclose(fpin);
 		fprintf(stderr, "### Error: input file not found\n");
 		return (EXIT_OS_FAILURE);
 	}
 
-	if (fpout == NULL) {
+	if (fpout == nullptr) {
 		fclose(fpout);
 		fprintf(stderr, "### Error: output file not found\n");
 		return (EXIT_OS_FAILURE);

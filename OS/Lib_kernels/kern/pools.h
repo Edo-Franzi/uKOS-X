@@ -109,7 +109,7 @@ extern	void	pools_init(void);
  *    status = kern_createPool(identifier, &memoryPool);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the memory pool identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the memory pool identifier (nullptr = anonymous)
  * \param[out]	**handle		Ptr on the handle
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_POFUL	No more memory pool

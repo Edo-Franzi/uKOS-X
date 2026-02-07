@@ -300,7 +300,7 @@ char_t	const	*string_desc_arr [] = {
 	(const char_t[]) { 0x09, 0x04 },	// 0: Is supported language is English (0x0409)
 	"TinyUSB",							// 1: Manufacturer
 	"uKOS-X Device",					// 2: Product
-	NULL,								// 3: Serials will use unique ID if possible
+	nullptr,								// 3: Serials will use unique ID if possible
 	"TinyUSB CDC",						// 4: CDC Interface
 };
 
@@ -330,7 +330,7 @@ uint16_t	const	*tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
 
 		default: {
 			if ((index < (sizeof(string_desc_arr) / sizeof(string_desc_arr[0]))) == false) {
-				return (NULL);
+				return (nullptr);
 			}
 
 // Cap at max char (-1 for string type)

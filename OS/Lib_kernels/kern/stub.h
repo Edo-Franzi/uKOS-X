@@ -157,7 +157,7 @@ extern	void	stub_kern_setLowPower(uint8_t mode);
  *        uint32_t     signal;
  *        prcs_t       *preciseSignal;
  *        proc_t       *process23;
- *        sign_t       *oSignalGroup = NULL;
+ *        sign_t       *oSignalGroup = nullptr;
  *
  *        // In this example the "signal" is hard-coded. The user can also use the
  *        // system call kern_createBitSignal to automatically obtain a signal.

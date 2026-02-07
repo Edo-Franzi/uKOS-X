@@ -98,7 +98,7 @@
 							.oMode			= KPROC_USER,																											\
 							.oPriority		= priority,																												\
 							.oSerialManager	= serialManager,																										\
-							.oScheduleHook	= NULL																													\
+							.oScheduleHook	= nullptr																													\
 						};
 
 #define	SPECIFICATIONS_DAEMON(core, specification, infoStr, stack, lenStackNbWords, code, identifier, serialManager, priority, kind, stackMode)						\
@@ -114,7 +114,7 @@
 							.oMode			= KPROC_PRIVILEGED,																										\
 							.oPriority		= priority,																												\
 							.oSerialManager	= serialManager,																										\
-							.oScheduleHook	= NULL																													\
+							.oScheduleHook	= nullptr																													\
 						};
 
 // Support of the user/privileged modes
@@ -208,7 +208,7 @@ enum {
 
 struct work {
 			list_t			*oListDebg;												// Ptr on the list where the process was connected (before the kern_stopProcess)
-			proc_t			*oProcFather;											// Ptr on the father process (NULL = orphan)
+			proc_t			*oProcFather;											// Ptr on the father process (nullptr = orphan)
 			uint16_t		oStateDebg;												// Process state (before the kern_stopProcess)
 			uint16_t		oState;													// Process state
 			#define			BPROC_FIRST					0u							// Process first
@@ -307,7 +307,7 @@ extern	void	processes_init(void);
  *                             .oSerialManager = KDEF0,
  *                             .oKind          = KPROC_NORMAL,
  *                             .oMode          = KPROC_USER,
- *                             .oScheduleHook  = NULL
+ *                             .oScheduleHook  = nullptr
  *                         };
  *
  *            uintptr_t    *vStack_1 = (uintptr_t *)memo_malloc(KMEMO_ALIGN_16, (KSZSTACK32 * sizeof(uintptr_t)), "stack");
@@ -323,11 +323,11 @@ extern	void	processes_init(void);
  *                             .oSerialManager = KDEF0,
  *                             .oKind          = KPROC_NORMAL,
  *                             .oMode          = KPROC_USER,
- *                             .oScheduleHook  = NULL
+ *                             .oScheduleHook  = nullptr
  *                         };
  *
- * status = kern_createProcess(&vSpecs_0, NULL, &vProcess_0);
- * status = kern_createProcess(&vSpecs_1, NULL, &vProcess_1);
+ * status = kern_createProcess(&vSpecs_0, nullptr, &vProcess_0);
+ * status = kern_createProcess(&vSpecs_1, nullptr, &vProcess_1);
  *
  * To simplify the way to write this initialization, a couple of macros are available;
  * so, the previous example can be written in this way:
@@ -343,8 +343,8 @@ extern	void	processes_init(void);
  * PROCESS(0, vSpecs_0, aStrProcess_0, KSZSTACK32, process_0, "User Process 0", KDEF0, 5, 0)
  * PROCESS(1, vSpecs_1, aStrProcess_1, KSZSTACK32, process_1, "User Process 1", KCDC0, 5, 0)
  *
- * status = kern_createProcess(&vSpecs_0, NULL, &vProcess_0);
- * status = kern_createProcess(&vSpecs_1, NULL, &vProcess_1);
+ * status = kern_createProcess(&vSpecs_0, nullptr, &vProcess_0);
+ * status = kern_createProcess(&vSpecs_1, nullptr, &vProcess_1);
  * \endcode
  *
  * - Disconnect a process from the empty list
@@ -352,8 +352,8 @@ extern	void	processes_init(void);
  * - Connect the process to the execution list
  *
  * \par Fields of \c specification (struct ::spec_t):
- * - \c oIdentifier     : Ptr on the process identifier (NULL = anonymous)
- * - \c oText           : Ptr on the process text (NULL = anonymous)
+ * - \c oIdentifier     : Ptr on the process identifier (nullptr = anonymous)
+ * - \c oText           : Ptr on the process text (nullptr = anonymous)
  * - \c oCode           : Ptr on the process code
  * - \c oStackMode      : Stack mode
  * - \c oStackStart     : Begin of the process stack

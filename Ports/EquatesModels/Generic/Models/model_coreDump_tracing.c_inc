@@ -108,7 +108,7 @@ static	void	__attribute__ ((noinline)) local_printLog(void) {
 				while (terminate == false) {
 					rLogBuffer    = &vRecord_logBuffer[core][0];
 					olderTime     = 0xFFFFFFFFFFFFFFFFu;
-					rOldLogBuffer = NULL;
+					rOldLogBuffer = nullptr;
 
 					for (i = 0; i < KRECORD_SZ_LOG_BUF; i++) {
 
@@ -130,7 +130,7 @@ static	void	__attribute__ ((noinline)) local_printLog(void) {
 // Verify if there is an entry to print
 // Or terminate
 
-					if (rOldLogBuffer != NULL) {
+					if (rOldLogBuffer != nullptr) {
 						logCategory = "Unknown         ";
 						logCategory = (rOldLogBuffer->oLogCategory == KFATAL_SYSTEM)    ? ("Fatal system    ") : (logCategory);
 						logCategory = (rOldLogBuffer->oLogCategory == KFATAL_KERNEL)    ? ("Fatal kernel    ") : (logCategory);

@@ -245,7 +245,7 @@ static	int32_t	cb_configure(const imagerCnf_t *configure) {
 	if (configure->oAcqMode == KIMAGER_SNAP) {
 		status = cb_putRegister(KMT9V03x_CTRL_REG, 0x0398u);		if (status != KERR_IMAGER_NOERR) { return (status); }
 	}
-	if (configure->oImgCnf != NULL) {
+	if (configure->oImgCnf != nullptr) {
 		status = local_setAptina((mt9v03x_t *)configure->oImgCnf);	if (status != KERR_IMAGER_NOERR) { return (status); }
 	}
 	return (status);

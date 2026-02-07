@@ -313,7 +313,7 @@ MODULE(
     Get_temp,                // Module name
     KID_FAM_PROCESS,         // Family (defined in the module.h)
     KNUM_GET_TEMP,           // Module id (defined in the module.h)
-    NULL,                    // Address of pre init
+    nullptr,                 // Address of pre init
     prgm,                    // Address of the code
     temperature_clean,       // Address of post clean
     " 1.0",                  // Revision string (major . minor)
@@ -353,10 +353,10 @@ static int32_t prgm(uint32_t argc, char_t *argv[]) {
     PROCESS_STACKMALLOC(
         0,                           // Index
         vSpecification,              // Specifications
-        aStrText,                    // Info string (NULL if anonymous)
+        aStrText,                    // Info string (nullptr if anonymous)
         KKERN_SZ_STACK_MM,           // Stack size (number of words)
         local_process,               // Code of the process
-        aStrIden,                    // Identifier (NULL if anonymous)
+        aStrIden,                    // Identifier (nullptr if anonymous)
         KSYST,                       // Default Serial Communication Manager
         KKERN_PRIORITY_NORMAL_00,    // Priority normal
     );
@@ -399,7 +399,7 @@ static int32_t    temperature_clean(uint32_t argc, const char_t *argv[]) {
  */
 static void __attribute__ ((noreturn)) local_process(const void *argument) {
                     mbox_t     *mailBox;
-                    int16_t    *temperature = NULL;
+                    int16_t    *temperature = nullptr;
                     uint16_t   i;
                     uint32_t   sizeSnd;
                     mcnf_t     configure = {
@@ -451,7 +451,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 
         temperature = (int16_t *)memo_malloc(KMEMO_ALIGN_8, \
                       (KNB_SAMPLES * sizeof(int16_t)), "temperature");
-        if (temperature == NULL) {
+        if (temperature == nullptr) {
             LOG(KFATAL_SYSTEM, "temperature: out of memory");
             exit(EXIT_OS_FAILURE);
         }
@@ -558,9 +558,9 @@ MODULE(
     X,                                   // Module name
     KID_FAM_CLI,                         // Family (defined in the module.h)
     KNUM_X,                              // Module id
-    NULL,                                // Address of pre init
+    nullptr,                             // Address of pre init
     prgm,                                // Address of the code
-    NULL,                                // Address of post clean
+    nullptr,                             // Address of post clean
     " 1.0",                              // Revision string (major . minor)
     ((1<<BSHOW) | (1<<BEXE_CONSOLE)),    // Flags
     0                                    // Execution cores

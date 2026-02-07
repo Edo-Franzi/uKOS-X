@@ -542,8 +542,8 @@ static const    mlpnNetwork_t     aNetwork = {
                                       &aLayer_L1,
                                       &aLayer_L2,
                                       &aLayer_L3,
-                                      NULL,
-                                      NULL
+                                      nullptr,
+                                      nullptr
                                   };
 ```
 
@@ -609,9 +609,9 @@ MODULE(
     UserAppl,                           // Module name
     KID_FAM_APPLICATION,                // Family (defined in the module.h)
     KNUM_APPLICATION,                   // Module id (defined in the module.h)
-    NULL,                               // Address of the early pre-init
+    nullptr,                            // Address of the early pre-init
     aStart,                             // Address of the code
-    NULL,                               // Address of the clean the module
+    nullptr,                            // Address of the clean the module
     " 1.0",                             // Revision string (major . minor)
     ((1<<BSHOW) | (1<<BEXE_CONSOLE))    // Flags
     0                                   // Execution cores
@@ -692,15 +692,15 @@ int main(uint32_t argc, const char_t *argv[]) {
     PROCESS_STACKMALLOC(
         0,                           // Index
         vSpecification_0,            // Specifications (just use vSpecification_x)
-        aStrText_0,                  // Info string (NULL if anonymous)
+        aStrText_0,                  // Info string (nullptr if anonymous)
         KKERN_SZ_STACK_MM,           // Stack size (number of words)
         process_0,                   // Code of the process
-        aStrIden_0,                  // Identifier (NULL if anonymous)
+        aStrIden_0,                  // Identifier (nullptr if anonymous)
         KSYST,                       // Default Serial Communication Manager
         KKERN_PRIORITY_NORMAL_00,    // HIGH PRIORITY < Priority < LOW PRIORITY+15
     );
 
-    if (kern_createProcess(&vSpecification_0, NULL, &vProcess_0) != \
+    if (kern_createProcess(&vSpecification_0, nullptr, &vProcess_0) != \
         KERR_KERN_NOERR) { exit(EXIT_OS_FAILURE); }
 
     LOG(KINFO_USER, "Application launched");

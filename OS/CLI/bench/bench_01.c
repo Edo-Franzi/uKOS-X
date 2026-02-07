@@ -86,10 +86,10 @@ bool	bench_01(void) {
 	uint8_t		*array;
 	uint32_t	*x, *y, *h;
 
-	array = (uint8_t  *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_X * (size_t)KNB_Y * sizeof(uint8_t)),  "bench"); if (array == NULL) {												return (false); }
-	x     = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_X *					sizeof(uint32_t)), "bench"); if (x == NULL)     { memo_free(array);								return (false); }
-	y     = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_Y *					sizeof(uint32_t)), "bench"); if (y == NULL)     { memo_free(array); memo_free(x);				return (false); }
-	h     = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KMAX_BIT *				sizeof(uint32_t)), "bench"); if (h == NULL)     { memo_free(array); memo_free(x); memo_free(y); return (false); }
+	array = (uint8_t  *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_X * (size_t)KNB_Y * sizeof(uint8_t)),  "bench"); if (array == nullptr) {											   return (false); }
+	x     = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_X *					sizeof(uint32_t)), "bench"); if (x == nullptr)     { memo_free(array);							   return (false); }
+	y     = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_Y *					sizeof(uint32_t)), "bench"); if (y == nullptr)     { memo_free(array); memo_free(x);			   return (false); }
+	h     = (uint32_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KMAX_BIT *				sizeof(uint32_t)), "bench"); if (h == nullptr)     { memo_free(array); memo_free(x); memo_free(y); return (false); }
 
 	local_fill(array, &time[0]);
 	local_prjX(array, &time[1], x);

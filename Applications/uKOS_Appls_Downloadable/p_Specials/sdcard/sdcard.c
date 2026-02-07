@@ -95,9 +95,9 @@ MODULE(
 	UserAppl,									// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,						// Family (defined in the module.h)
 	KNUM_APPLICATION,							// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	aStart,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	aStart,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -213,7 +213,7 @@ static	void	aTest_0(void) {
 	uint8_t		*buffer;
 
 	buffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "sdcard");
-	if (buffer == NULL) {
+	if (buffer == nullptr) {
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -260,7 +260,7 @@ static	void	aTest_1(void) {
 	uint8_t		*buffer;
 
 	buffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KT1_NB_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "sdcard");
-	if (buffer == NULL) {
+	if (buffer == nullptr) {
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -302,13 +302,13 @@ static	void	aTest_2(void) {
 	uint8_t		*rBuffer;
 
 	wBuffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KT2_NB_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "sdcard");
-	if (wBuffer == NULL) {
+	if (wBuffer == nullptr) {
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
 
 	rBuffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KT2_NB_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "sdcard");
-	if (rBuffer == NULL) {
+	if (rBuffer == nullptr) {
 		memo_free(wBuffer);
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
@@ -438,13 +438,13 @@ static	void	aTest_4(void) {
 	uint8_t		*rBuffer;
 
 	wBuffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KT4_NB_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "sdcard");
-	if (wBuffer == NULL) {
+	if (wBuffer == nullptr) {
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
 
 	rBuffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KT4_NB_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "sdcard");
-	if (rBuffer == NULL) {
+	if (rBuffer == nullptr) {
 		memo_free(wBuffer);
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
@@ -589,10 +589,10 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_0,					// Specifications (just use specification_x)
-		aStrText_0,							// Info string (NULL if anonymous)
+		aStrText_0,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_0,							// Code of the process
-		aStrIden_0,							// Identifier (NULL if anonymous)
+		aStrIden_0,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_LOW_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -600,10 +600,10 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		1,									// Index
 		specification_1,					// Specifications (just use specification_x)
-		aStrText_1,							// Info string (NULL if anonymous)
+		aStrText_1,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_1,							// Code of the process
-		aStrIden_1,							// Identifier (NULL if anonymous)
+		aStrIden_1,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -612,7 +612,7 @@ int		main(int argc, const char *argv[]) {
 	pack.oArgv 		  = (const char_t **)argv;
 	pack.oReleasePack = &releasePack;
 
-	if (kern_createProcess(&specification_0, NULL,  &process_0) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_0, nullptr,  &process_0) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 	if (kern_createProcess(&specification_1, &pack, &process_1) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 
 // Let the time to the process "aProcess_1" to run

@@ -79,8 +79,8 @@ MODULE(
 	Cycle,										// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_CYCLE,									// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
 	cycle_clean,								// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
@@ -144,7 +144,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			serialManager_t		serialManager = KURT0;
 			cyclePack_t			pack;
 			bool				stop = false, releasePack = false;
-	const	uKOS_module_t		*module = NULL;
+	const	uKOS_module_t		*module = nullptr;
 
 	UNUSED(argc);
 	UNUSED(argv);
@@ -240,15 +240,15 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			PROCESS_STACKMALLOC(
 				0,											// Index
 				specification,								// Specifications (just use specification_x)
-				aTabCycle[indexSerialManager].oText,		// Info string (NULL if anonymous)
+				aTabCycle[indexSerialManager].oText,		// Info string (nullptr if anonymous)
 				KKERN_SZ_STACK_LL,							// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 				local_process,								// Code of the process
-				aTabCycle[indexSerialManager].oIdentifier,	// Identifier (NULL if anonymous)
+				aTabCycle[indexSerialManager].oIdentifier,	// Identifier (nullptr if anonymous)
 				serialManager,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 				KKERN_PRIORITY_NORMAL_01					// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 			);
 
-			if (vProcess[core][indexSerialManager] == NULL) {
+			if (vProcess[core][indexSerialManager] == nullptr) {
 				if (kern_createProcess(&specification, &pack, &vProcess[core][indexSerialManager]) != KERR_KERN_NOERR) {
 					error = KERR_PRO;
 				}
@@ -259,9 +259,9 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			break;
 		}
 		case KMOD_STP: {
-			if (vProcess[core][indexSerialManager] != NULL) {
+			if (vProcess[core][indexSerialManager] != nullptr) {
 				kern_killProcess(vProcess[core][indexSerialManager]);
-				vProcess[core][indexSerialManager] = NULL;
+				vProcess[core][indexSerialManager] = nullptr;
 				error = KERR_TER;
 			}
 			else {
@@ -365,7 +365,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 // Kill the process & the ressources
 
 	system_release(KMODE_READ_WRITE);
-	vProcess[core][indexSerialManager] = NULL;
+	vProcess[core][indexSerialManager] = nullptr;
 	vKillRequest[core] = false;
 	(void)dprintf(KSYST, "Cycle terminated.\n\n");
 	exit(EXIT_OS_SUCCESS);

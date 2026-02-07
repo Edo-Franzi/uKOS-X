@@ -72,9 +72,9 @@ MODULE(
 	Run,										// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_RUN,									// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -95,10 +95,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	(void)dprintf(KSYST, "Execute the downloaded application.\n");
 
 	system_getDownloadCodeAddress((void **)&code);
-	if (code == NULL) { (void)dprintf(KSYST, "No application in the memory!\n\n");     status = EXIT_OS_FAILURE;     }
+	if (code == nullptr) { (void)dprintf(KSYST, "No application in the memory!\n\n");     status = EXIT_OS_FAILURE;     }
 	else              { (void)dprintf(KSYST, "Run the downloaded application...\n\n"); status = EXIT_OS_SUCCESS_CLI; }
 
-	system_setDownloadCodeAddress(NULL);
+	system_setDownloadCodeAddress(nullptr);
 
 	status = (status == EXIT_OS_SUCCESS_CLI) ? ((*code)(argc, argv)) : (status);
 	return (status);

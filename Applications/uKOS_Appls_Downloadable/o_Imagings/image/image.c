@@ -83,9 +83,9 @@ MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
 	KNUM_APPLICATION,					// Module identifier (defined in the module.h)
-	NULL,								// Address of the initialisation code (early pre-init)
-	aStart,								// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,								// Address of the clean code (clean the module)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	aStart,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
 	" 1.0",								// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
@@ -98,7 +98,7 @@ STRG_LOC_CONST(aStrAcquisition[]) = "imager - Acquisition";
 STRG_LOC_CONST(aStrShareBuffer[]) = "Share_Buffer";
 
 static	sema_t		*vSemaImgAcqu;
-static	uint8_t		*vImage = NULL;
+static	uint8_t		*vImage = nullptr;
 static	uint32_t	vW, vH;
 
 // Prototypes
@@ -128,17 +128,17 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 // Configurations for an imager APTINA
 
 	configureIMG0.oAcqMode  = KIMAGER_SNAP;
-	configureIMG0.oImgCnf   = NULL;
+	configureIMG0.oImgCnf   = nullptr;
 	configureIMG0.oPixMode  = KIMAGER_PIX_8_BITS;
 	configureIMG0.oStRows   = 0u;
 	configureIMG0.oStCols   = 0u;
 	configureIMG0.oNbRows	= (uint16_t)vH;
 	configureIMG0.oNbCols	= (uint16_t)vW;
 	configureIMG0.oKernSync = 0u;
-	configureIMG0.oHSync    = NULL;
-	configureIMG0.oFrame    = NULL;
+	configureIMG0.oHSync    = nullptr;
+	configureIMG0.oFrame    = nullptr;
 	configureIMG0.oVSync    = local_transfer;
-	configureIMG0.oDMAEc    = NULL;
+	configureIMG0.oDMAEc    = nullptr;
 
 	if (imager_configure(&configureIMG0) != KERR_IMAGER_NOERR) {
 		(void)dprintf(KSYST, "img0 manager problem\n");
@@ -184,7 +184,7 @@ static void __attribute__ ((noreturn)) aProcess_send(const void *argument) {
 	PRIVILEGE_ELEVATE;
 
 	imageYUY2 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (vW * vH * 2), "image");
-	if (imageYUY2 == NULL) {
+	if (imageYUY2 == nullptr) {
 		LOG(KFATAL_USER, "Out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -199,7 +199,7 @@ static void __attribute__ ((noreturn)) aProcess_send(const void *argument) {
 
 	while (true) {
 		imageGray = vImage;
-		if (imageGray != NULL) {
+		if (imageGray != nullptr) {
 			kern_lockMutex(mutex, KWAIT_INFINITY);
 			local_convertToYUY2(imageGray, imageYUY2, vW, vH);
 			kern_unlockMutex(mutex);
@@ -240,10 +240,10 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_acquisition,			// Specifications (just use specification_x)
-		aStrText_acquisition,				// Info string (NULL if anonymous)
+		aStrText_acquisition,				// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_acquisition,				// Code of the process
-		aStrIden_acquisition,				// Identifier (NULL if anonymous)
+		aStrIden_acquisition,				// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -251,10 +251,10 @@ int		main(int argc, const char *argv[]) {
 	PROCESS_STACKMALLOC(
 		1,									// Index
 		specification_send,					// Specifications (just use specification_x)
-		aStrText_send,						// Info string (NULL if anonymous)
+		aStrText_send,						// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_send,						// Code of the process
-		aStrIden_send,						// Identifier (NULL if anonymous)
+		aStrIden_send,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -263,8 +263,8 @@ int		main(int argc, const char *argv[]) {
 	TinyUSB_video_getImageSize(&vW, &vH);
 
 	if (kern_createMutex(aStrShareBuffer, &mutex)								   != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create mutx"); return (EXIT_OS_FAILURE); }
-	if (kern_createProcess(&specification_acquisition, NULL, &process_acquisition) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
-	if (kern_createProcess(&specification_send,		   NULL, &process_send)		   != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_acquisition, nullptr, &process_acquisition) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
+	if (kern_createProcess(&specification_send,		   nullptr, &process_send)		   != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS_CLI);

@@ -67,9 +67,9 @@ MODULE(
 	SerialFlash,					// Module name (the first letter has to be upper case)
 	KID_FAM_STORAGE,				// Family (defined in the module.h)
 	KNUM_SERIAL_FLASH,				// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -82,7 +82,7 @@ static	mutx_t		*vMutex_Reserve[KNB_CORES];
 
 // Prototypes
 
-extern	void		stub_serialFlash_init(void);
+extern	int32_t		stub_serialFlash_init(void);
 extern	int32_t		stub_serialFlash_initialise(void);
 extern	int32_t		stub_serialFlash_readStatus(void);
 extern	int32_t		stub_serialFlash_read(uint8_t *buffer, uint32_t size, uint32_t sector);
@@ -115,8 +115,8 @@ static	int32_t		local_init(void);
  *
  */
 int32_t	serialFlash_reserve(reserveMode_t reserveMode, uint32_t timeout) {
-	uint32_t	core;
 	int32_t		status;
+	uint32_t	core;
 
 	UNUSED(reserveMode);
 
@@ -154,8 +154,8 @@ int32_t	serialFlash_reserve(reserveMode_t reserveMode, uint32_t timeout) {
  *
  */
 int32_t	serialFlash_release(reserveMode_t reserveMode) {
-	uint32_t	core;
 	int32_t		status;
+	uint32_t	core;
 
 	UNUSED(reserveMode);
 
@@ -354,6 +354,7 @@ int32_t	serialFlash_ioctl(storageIoctl_t command, void *buffer) {
  *
  */
 static	int32_t	local_init(void) {
+			int32_t		status = KERR_STORAGE_NOERR;
 			uint32_t	core;
 	static	bool		vInit[KNB_CORES] = MCSET(false);
 
@@ -365,9 +366,9 @@ static	int32_t	local_init(void) {
 
 		if (kern_createMutex(KSERIAL_FLASH_MUTEX_RESERVE, &vMutex_Reserve[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "serialFlash: create mutx"); exit(EXIT_OS_PANIC); }
 
-		stub_serialFlash_init();
+		status = stub_serialFlash_init();
 	}
-	RETURN_INT_RESTORE(KERR_STORAGE_NOERR);
+	RETURN_INT_RESTORE(status);
 }
 
 #endif

@@ -74,9 +74,9 @@ MODULE(
 	Dumptrace,									// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_DUMP_TRACE,							// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -131,7 +131,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // Reserve the necessary memory
 
 	traceFifo = (recordTracing_t *)memo_malloc(KMEMO_ALIGN_8, (KRECORD_SZ_TRACE_FIFO * sizeof(recordTracing_t)), "dumptrace");
-	if (traceFifo == NULL) {
+	if (traceFifo == nullptr) {
 		(void)dprintf(KSYST, "Not enough memory.\n");
 		PRIVILEGE_RESTORE;
 
@@ -154,7 +154,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	(void)dprintf(KSYST, "      Time [us]   Parameter            Process or ISR identifier          Information\n\n");
 
 	for (i = 0; i < nbTraceWrites; i++) {
-		identifier = (rTraceFifo->oProcess == NULL) ? ("From ISR") : (rTraceFifo->oProcess->oSpecification.oIdentifier);
+		identifier = (rTraceFifo->oProcess == nullptr) ? ("From ISR") : (rTraceFifo->oProcess->oSpecification.oIdentifier);
 		local_compose(identifier, &idSpacer);
 		(void)dprintf(KSYST, "%12lld-us   0x%016"PRIXPTR"   %s%s  %s\n", rTraceFifo->oTimeStamp, rTraceFifo->oParameter, identifier, idSpacer, rTraceFifo->oMessage);
 

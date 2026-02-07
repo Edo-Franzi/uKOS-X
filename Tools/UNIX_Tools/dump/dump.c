@@ -164,7 +164,7 @@ int		main(int32_t argc, const char_t *argv[]) {
 			else                                         { error = KERRCLI; 	 }
 
 			strcpy(driverID, argv[2]);												// Driver ID (FT000001)
-			baudrate = (uint32_t)strtol(argv[3], NULL, 10u);						// Baudrate (460800)
+			baudrate = (uint32_t)strtol(argv[3], nullptr, 10u);						// Baudrate (460800)
 			fileName = argv[6];														// Filename
 			break;
 		}
@@ -286,7 +286,7 @@ static	int32_t	local_app_d2x(char_t *driverID, uint32_t type, uint32_t display, 
 
 	handle = d2x_open(driverID, baudrate);
 	error  = local_open(type, fileName, &fpFile, &fpPipe);
-	if ((handle == NULL) || (error == false)) {
+	if ((handle == nullptr) || (error == false)) {
 		d2x_close(handle);
 		local_close(type, fileName, fpFile, fpPipe);
 		return (KERRAPP);

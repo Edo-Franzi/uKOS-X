@@ -93,7 +93,7 @@ extern	"C" {
  * \param[out]	*number				Ptr on the number
  * \param[in]	nbNumbers			Number of numbers
  * \return		KERR_RANDOM_NOERR	OK
- * \return		KERR_RANDOM_NOERR	General error
+ * \return		KERR_RANDOM_GEERR	General error
  *
  */
 extern	int32_t random_read(randomGenerator_t generator, uint32_t *number, uint32_t nbNumbers);

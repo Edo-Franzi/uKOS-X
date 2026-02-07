@@ -110,7 +110,7 @@ void	vcp_list(void) {
 	uint32_t	device;
 	char_t		buffer[64];
 
-	status = FT_ListDevices(&nbDevices, NULL, FT_LIST_NUMBER_ONLY);
+	status = FT_ListDevices(&nbDevices, nullptr, FT_LIST_NUMBER_ONLY);
 	if (status == FT_OK) { fprintf(stdout, "Number of device: %0d\n", nbDevices);           }
 	else				 { fprintf(stdout, "Error: FT_ListDevices status = %0d\n", status); }
 
@@ -225,7 +225,7 @@ bool	vcp_readAByte(int32_t handle, uint8_t *receive) {
 		}
 		time.tv_sec  = 0;
 		time.tv_nsec = 10000;
-		nanosleep(&time, NULL);
+		nanosleep(&time, nullptr);
 		if (timeout++ > vTimeoutLimit) {
 			return (false);
 		}
@@ -259,7 +259,7 @@ bool	vcp_read(int32_t handle, uint8_t *receive, uint32_t *count) {
    		}
 		time.tv_sec  = 0;
 		time.tv_nsec = 10000;
-		nanosleep(&time, NULL);
+		nanosleep(&time, nullptr);
 		if (timeout++ > vTimeoutLimit) {
 			return (false);
 		}

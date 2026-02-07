@@ -108,6 +108,6 @@ int32_t	stub_machine_readFunctionName(const uintptr_t pc, const char_t **functio
 
 	UNUSED(pc);
 
-	*function = NULL;
+	*function = nullptr;
 	return (KERR_SYSTEM_NOERR);
 }

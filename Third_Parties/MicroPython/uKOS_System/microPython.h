@@ -67,7 +67,7 @@
 // mpyt access macros
 // ------------------
 
-#define	MICROPYTHON_CMDLINE		microPython_exchangeData(NULL);
+#define	MICROPYTHON_CMDLINE		microPython_exchangeData(nullptr);
 #define	MICROPYTHON_COMPUTE(x)	microPython_exchangeData(x);
 
 // Configuration structure
@@ -120,11 +120,11 @@ extern	int32_t	microPython_configure(microPythonCnf_t *configure);
  * const    char_t     myRoutine [] = "def plus(a,b):\n"
  *                                    "    return a + b\n";
  *
- *    status = microPython_exchangeData(NULL);
+ *    status = microPython_exchangeData(nullptr);
  *    status = microPython_exchangeData(myRoutine);
  * \endcode
  *
- * \param[in]	*pyProgram				NULL = Command line interpreter mode
+ * \param[in]	*pyProgram				nullptr = Command line interpreter mode
  * \param[in]	-						Ptr on the ascii script / program
  * \return		KERR_MICROPYTHON_NOERR	OK
  *

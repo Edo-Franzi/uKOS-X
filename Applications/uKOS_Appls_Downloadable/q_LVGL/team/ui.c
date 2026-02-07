@@ -131,7 +131,7 @@ static	void	local_InitBars(labeledBar_t *bar, lv_obj_t *parent, int32_t x, int32
 // Set the values & prepare the callback
 
 	lv_bar_set_value(bar->oBar, initialValue, LV_ANIM_OFF);
-	lv_obj_add_event_cb(bar->oBar, local_BarEvent_cb, LV_EVENT_DRAW_MAIN_END, NULL);
+	lv_obj_add_event_cb(bar->oBar, local_BarEvent_cb, LV_EVENT_DRAW_MAIN_END, nullptr);
 
 	bar->oLabel = lv_label_create(parent);
 	lv_label_set_text(bar->oLabel, text);
@@ -190,7 +190,7 @@ void	ui_setBar_3(uint32_t position) { local_setBars(&vBar_3, position); }
 
 static	void	local_setBars(labeledBar_t *bar, uint32_t position) {
 
-	if ((bar == NULL) || (bar->oBar == NULL)) { return; }
+	if ((bar == nullptr) || (bar->oBar == nullptr)) { return; }
 
 	position = (position < (KBAR_MIN_VALUE + 1u)) ? (KBAR_MIN_VALUE) : (position);
 	position = (position >  KBAR_MAX_VALUE)		  ? (KBAR_MAX_VALUE) : (position);

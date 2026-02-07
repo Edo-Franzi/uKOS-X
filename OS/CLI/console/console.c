@@ -85,9 +85,9 @@ MODULE(
 	Console,												// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,											// Family (defined in the module.h)
 	KNUM_CONSOLE,											// Module identifier (defined in the module.h)
-	NULL,													// Address of the initialisation code (early pre-init)
-	prgm,													// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,													// Address of the clean code (clean the module)
+	nullptr,												// Address of the initialisation code (early pre-init)
+	prgm,													// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,												// Address of the clean code (clean the module)
 	" 1.0",													// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),						// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0														// Execution cores
@@ -182,10 +182,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		PROCESS_STACKMALLOC(
 			0,									// Index
 			specification,						// Specifications (just use specification_x)
-			aTabConsole[index].oText,			// Info string (NULL if anonymous)
+			aTabConsole[index].oText,			// Info string (nullptr if anonymous)
 			KKERN_SZ_STACK_LL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 			local_process,						// Code of the process
-			aTabConsole[index].oIdentifier,		// Identifier (NULL if anonymous)
+			aTabConsole[index].oIdentifier,		// Identifier (nullptr if anonymous)
 			serialManager,						// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 			KKERN_PRIORITY_NORMAL_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
@@ -231,10 +231,10 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 	commandLine = (char_t *)memo_malloc(KMEMO_ALIGN_8, ((KLN_CMD_LINE_BUF + 1u) * sizeof(char_t)), "cmd_line");
 	argv		= (const char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "argv");
 
-	if ((commandLine == NULL) || (argv == NULL)) {
+	if ((commandLine == nullptr) || (argv == nullptr)) {
 		(void)dprintf(KSYST, "Out of memory\n");
-		if (commandLine != NULL) { memo_free((void *)commandLine); }
-		if (argv		!= NULL) { memo_free((void *)argv);		   }
+		if (commandLine != nullptr) { memo_free((void *)commandLine); }
+		if (argv		!= nullptr) { memo_free((void *)argv);		  }
 		LOG(KFATAL_SYSTEM, "console: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}

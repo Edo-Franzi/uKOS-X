@@ -70,9 +70,9 @@ MODULE(
 	Init,							// Module name (the first letter has to be upper case)
 	KID_FAM_STARTUPS,				// Family (defined in the module.h)
 	KNUM_INIT,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -564,12 +564,12 @@ static	void	local_RCC_Configuration(void) {
 // f(out) = f(vco) / R			f(out) = 20.84-MHz, R = 24	---> f(vco) = 500-MHz
 // f(vco) = f(ck in) * (N/M)	N/M = 125/4					---> N = 125, M = 4
 // f(Q)   = f(vco) / Q			Q = 2						---> f(Q) = 250-MHz
-// f(P)   = f(vco) / P			P = 8						---> f(P) = 62.5-MHz
+// f(P)   = f(vco) / P			P = 24						---> f(P) = 20.84-MHz
 
 	REG(RCC)->PLL3DIVR = 0u;									//
 	REG(RCC)->PLL3DIVR = ((24u - 1u) * RCC_PLL3DIVR_PLL3R_0)	// Divider for R
 					   | ((2u - 1u) * RCC_PLL3DIVR_PLL3Q_0)		// Divider for Q
-					   | ((8u - 1u) * RCC_PLL3DIVR_PLL3P_0)		// Divider for P
+					   | ((24u - 1u) * RCC_PLL3DIVR_PLL3P_0)	// Divider for P
 					   | ((125u - 1u) * RCC_PLL3DIVR_PLL3N_0);	// Divider for N
 
 	REG(RCC)->PLL3CFGR = RCC_PLL3CFGR_PLL3REN					// Out R enable
@@ -620,7 +620,7 @@ static	void	local_RCC_Configuration(void) {
 					 | (0u * RCC_CCIPR2_OCTOSPISEL_0)			// OCTOSP uses System Clock clock
 					 | (0u * RCC_CCIPR2_LTDCSEL)				// LTDC uses PLL3R clock
 					 | (0u * RCC_CCIPR2_USART6SEL_0)			// USART6 uses PCLK1 clock
-					 | (0u * RCC_CCIPR2_DSISEL)					// DSI uses PLL3R clock
+					 | (0u * RCC_CCIPR2_DSISEL)					// DSI uses PLL3P clock
 					 | (2u * RCC_CCIPR2_RNGSEL_0)				// RNG uses HSI clock
 					 | (4u * RCC_CCIPR2_SAI2SEL_0)				// SAI2 uses HSI clock
 					 | (4u * RCC_CCIPR2_SAI1SEL_0)				// SAI1 uses HSI clock

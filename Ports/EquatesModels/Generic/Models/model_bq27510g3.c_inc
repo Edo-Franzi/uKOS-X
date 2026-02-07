@@ -52,9 +52,10 @@
  * - Configure some specific parts
  *
  */
-void	model_bq27510g3_init(void) {
+int32_t	model_bq27510g3_init(void) {
 
 	cb_configure();
+	return (KERR_BATTERY_NOERR);
 }
 
 /*

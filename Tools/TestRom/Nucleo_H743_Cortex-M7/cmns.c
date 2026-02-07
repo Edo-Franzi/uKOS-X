@@ -88,7 +88,7 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 			uint8_t		data;
 	const	char_t		*wkAscii = ascii;
 
-	if (ascii == NULL) { return; }
+	if (ascii == nullptr) { return; }
 
 	switch (serialManager) {
 

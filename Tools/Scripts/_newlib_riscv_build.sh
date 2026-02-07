@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
-# burn.
-# =====
+# _newlib_riscv_build.
+# ====================
 
 # SPDX-License-Identifier: MIT
 
@@ -10,11 +10,11 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		script for burning the arm flash via the stm32programmer.
-#			script mainly generated with chatgpt
+# Goal:		Build the newlib (specific RVXX)
 #
-#			- Usage:
-#			  ./secure.sh
+#			OS:
+#			OSX 26.xx			yes
+#			Ubuntu 24.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -50,23 +50,25 @@
 #
 #------------------------------------------------------------------------
 
-set -euo pipefail
+readonly build_machine="${BUILD}/${MACHINE}"
+readonly log_file="${build_machine}/newlib_temp.txt"
 
-SCRIPT_PATH="${0:A:h}"
+echo "Start building newlib: $(date)" > "${log_file}"
 
-BOOT="FSBL"
-APPL="FLASH"
+mkdir -p "${build_machine}/newlib-${NLB_RVXX_VER}"
+cd "${build_machine}/newlib-${NLB_RVXX_VER}"
 
-cp -f "${SCRIPT_PATH}/${BOOT}.doNotErase" "${BOOT}.bin"
+"${PACKS_NBL}/configure" \
+	--target="${TARGET}" \
+	--prefix="${prefix}" \
+	--enable-multilib \
+	--disable-werror \
+	--disable-nls \
+	--disable-libssp \
+	${=NLB_CONFIG}			|| { echo "Error configuring newlib";	exit 1; }
+make -j "${PARALLEL_JOBS}"	|| { echo "Error building newlib";		exit 1; }
+make install				|| { echo "Error installing newlib";	exit 1; }
+make clean					|| { echo "Error cleaning newlib";		exit 1; }
 
-STM32_PROGRAMMER_BIN="${STM32_PROGRAMMER_BIN:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin}"
-STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_BIN}/STM32_Programmer_CLI"
-STM32_PROGRAMMER_SIG="${STM32_PROGRAMMER_BIN}/STM32_SigningTool_CLI"
-
-"${STM32_PROGRAMMER_SIG}" -s -bin "${BOOT}.bin" -nk -of 0x80000000 -t fsbl -o "${BOOT}-trusted.bin" -hv 2.3 -dump "${BOOT}-trusted.bin" -align
-"${STM32_PROGRAMMER_SIG}" -s -bin "${APPL}.bin" -nk -of 0x80000000 -t fsbl -o "${APPL}-trusted.bin" -hv 2.3 -dump "${APPL}-trusted.bin" -align
-
-chmod +w "${BOOT}-trusted.bin" "${APPL}-trusted.bin"
-
-"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -d "${BOOT}-trusted.bin" 0x70000000
-"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -d "${APPL}-trusted.bin" 0x70100000
+echo "End building newlib:	 $(date)" >> "${log_file}"
+mv "${log_file}" "${build_machine}/newlib_ready.txt"

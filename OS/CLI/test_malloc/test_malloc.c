@@ -84,9 +84,9 @@ MODULE(
 	Test_malloc,								// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_TEST_MALLOC,							// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -122,16 +122,16 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	(void)dprintf(KSYST, "Random test of the memo_malloc.\n");
 
-	vParameter[0].oProcessName = (const char_t *)"Process: 0 "; vParameter[0].oTabPtr = NULL; vParameter[0].oNbSamples = 0u;
-	vParameter[1].oProcessName = (const char_t *)"Process: 1 "; vParameter[1].oTabPtr = NULL; vParameter[1].oNbSamples = 0u;
-	vParameter[2].oProcessName = (const char_t *)"Process: 2 "; vParameter[2].oTabPtr = NULL; vParameter[2].oNbSamples = 0u;
-	vParameter[3].oProcessName = (const char_t *)"Process: 3 "; vParameter[3].oTabPtr = NULL; vParameter[3].oNbSamples = 0u;
-	vParameter[4].oProcessName = (const char_t *)"Process: 4 "; vParameter[4].oTabPtr = NULL; vParameter[4].oNbSamples = 0u;
-	vParameter[5].oProcessName = (const char_t *)"Process: 5 "; vParameter[5].oTabPtr = NULL; vParameter[5].oNbSamples = 0u;
-	vParameter[6].oProcessName = (const char_t *)"Process: 6 "; vParameter[6].oTabPtr = NULL; vParameter[6].oNbSamples = 0u;
-	vParameter[7].oProcessName = (const char_t *)"Process: 7 "; vParameter[7].oTabPtr = NULL; vParameter[7].oNbSamples = 0u;
-	vParameter[8].oProcessName = (const char_t *)"Process: 8 "; vParameter[8].oTabPtr = NULL; vParameter[8].oNbSamples = 0u;
-	vParameter[9].oProcessName = (const char_t *)"Process: 9 "; vParameter[9].oTabPtr = NULL; vParameter[9].oNbSamples = 0u;
+	vParameter[0].oProcessName = (const char_t *)"Process: 0 "; vParameter[0].oTabPtr = nullptr; vParameter[0].oNbSamples = 0u;
+	vParameter[1].oProcessName = (const char_t *)"Process: 1 "; vParameter[1].oTabPtr = nullptr; vParameter[1].oNbSamples = 0u;
+	vParameter[2].oProcessName = (const char_t *)"Process: 2 "; vParameter[2].oTabPtr = nullptr; vParameter[2].oNbSamples = 0u;
+	vParameter[3].oProcessName = (const char_t *)"Process: 3 "; vParameter[3].oTabPtr = nullptr; vParameter[3].oNbSamples = 0u;
+	vParameter[4].oProcessName = (const char_t *)"Process: 4 "; vParameter[4].oTabPtr = nullptr; vParameter[4].oNbSamples = 0u;
+	vParameter[5].oProcessName = (const char_t *)"Process: 5 "; vParameter[5].oTabPtr = nullptr; vParameter[5].oNbSamples = 0u;
+	vParameter[6].oProcessName = (const char_t *)"Process: 6 "; vParameter[6].oTabPtr = nullptr; vParameter[6].oNbSamples = 0u;
+	vParameter[7].oProcessName = (const char_t *)"Process: 7 "; vParameter[7].oTabPtr = nullptr; vParameter[7].oNbSamples = 0u;
+	vParameter[8].oProcessName = (const char_t *)"Process: 8 "; vParameter[8].oTabPtr = nullptr; vParameter[8].oNbSamples = 0u;
+	vParameter[9].oProcessName = (const char_t *)"Process: 9 "; vParameter[9].oTabPtr = nullptr; vParameter[9].oNbSamples = 0u;
 
 // Analyse the command line
 // ------------------------
@@ -196,7 +196,7 @@ static	bool	local_reserve(uint32_t number, uint32_t nbSamples) {
 
 	vParameter[number].oNbSamples = nbSamples;
 	vParameter[number].oTabPtr    = (uint8_t **)memo_malloc(KMEMO_ALIGN_16, (nbSamples * sizeof(uint8_t *)), "test_malloc");
-	if (vParameter[number].oTabPtr == NULL) {
+	if (vParameter[number].oTabPtr == nullptr) {
 		if (number > 0u) {
 			for (i = 0u; i < number; i++) {
 				memo_free((void *)vParameter[i].oTabPtr);
@@ -219,10 +219,10 @@ static	bool	local_install(uint32_t number) {
 	uintptr_t	*stack;
 
 	stack = (uintptr_t *)memo_malloc(KMEMO_ALIGN_16, (KSZ_STACK * sizeof(uintptr_t *)), "test_malloc");
-	if (stack == NULL) { return (false); }
+	if (stack == nullptr) { return (false); }
 
-	vSpecification[number].oIdentifier	  = NULL;
-	vSpecification[number].oText		  = NULL;
+	vSpecification[number].oIdentifier	  = nullptr;
+	vSpecification[number].oText		  = nullptr;
 	vSpecification[number].oCode		  = (void (*)(const void *argument))local_process;
 	vSpecification[number].oStackStart	  = &stack[0];
 	vSpecification[number].oStack		  = &stack[((KSZ_STACK - KSTACK_ALIGNMENT) & KSTACK_ALIGNMENT_MASK)];
@@ -232,7 +232,7 @@ static	bool	local_install(uint32_t number) {
 	vSpecification[number].oSerialManager = KDEF0;
 	vSpecification[number].oKind		  = KPROC_NORMAL;
 	vSpecification[number].oMode		  = KPROC_USER;
-	vSpecification[number].oScheduleHook  = NULL;
+	vSpecification[number].oScheduleHook  = nullptr;
 
 	status = (kern_createProcess(&vSpecification[number], &vParameter[number], &vProcess[number]) == KERR_KERN_NOERR) ? (true) : (false);
 	return (status);
@@ -264,7 +264,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 // Initialise the ptr table
 
 		for (i = 0u; i < nbSamples; i++) {
-			aTabPtr[i] = NULL;
+			aTabPtr[i] = nullptr;
 		}
 
 // Try to reserve as many blocs as possible
@@ -277,7 +277,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 			} while (amount < 5u);
 
 			aTabPtr[i] = (uint8_t *)memo_malloc(KMEMO_ALIGN_16, (amount * sizeof(uint8_t)), "test_malloc");
-			if (aTabPtr[i] == NULL) {
+			if (aTabPtr[i] == nullptr) {
 				break;
 			}
 
@@ -306,7 +306,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 // Release the reserved blocs
 
 		for (i = 0u; i < nbSamples; i++) {
-			if (aTabPtr[i] == NULL) {
+			if (aTabPtr[i] == nullptr) {
 				break;
 			}
 

@@ -52,8 +52,8 @@
 #include	<math.h>
 
 extern				void		(*vExce_extIntVectors[KNB_CORES][KNB_EXT_INTERRUPTIONS])(uint32_t core, uint64_t parameter);
-static				uint16_t	*vImageE0 = NULL;
-static				uint16_t	*vImageE1 = NULL;
+static				uint16_t	*vImageE0 = nullptr;
+static				uint16_t	*vImageE1 = nullptr;
 static				sema_t		*vSeHandleAQ;
 static				sema_t		*vSeHandleIM;
 static				mutx_t		*vMutex;
@@ -76,9 +76,9 @@ MODULE(
 	Imgk,							// Module name (the first letter has to be upper case)
 	KID_FAM_PERIPHERALS,			// Family (defined in the module.h)
 	KIMGK_NUM,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -434,14 +434,14 @@ int32_t	imgk_configure(const cnfImgk_t *configure) {
 
 // Reserve the memory
 
-	if (vImageE0 != NULL) { memo_free(vImageE0); }
-	if (vImageE1 != NULL) { memo_free(vImageE1); }
+	if (vImageE0 != nullptr) { memo_free(vImageE0); }
+	if (vImageE1 != nullptr) { memo_free(vImageE1); }
 
 	vPage	  = 1u;
 	vImageE0  = (uint16_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KIMAGER_NB_COLS_QVGA * (size_t)KIMAGER_NB_ROWS_QVGA * sizeof(uint16_t)), "imgk");
 	vImageE1  = (uint16_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KIMAGER_NB_COLS_QVGA * (size_t)KIMAGER_NB_ROWS_QVGA * sizeof(uint16_t)), "imgk");
-	if (vImageE0 == NULL) { status = KERR_IMGK_NOMEM; }
-	if (vImageE1 == NULL) { status = KERR_IMGK_NOMEM; }
+	if (vImageE0 == nullptr) { status = KERR_IMGK_NOMEM; }
+	if (vImageE1 == nullptr) { status = KERR_IMGK_NOMEM; }
 
 	dvp->rgb_addr = (uint32_t)((uintptr_t)vImageE0);
 	return (status);
@@ -572,9 +572,9 @@ static	int32_t	local_init(void) {
 // Initialise the clock rate
 // Initialise the image
 
-		local_initCKRate(NULL);
-		local_initImages(NULL);
-		local_initOV2640(NULL);
+		local_initCKRate(nullptr);
+		local_initImages(nullptr);
+		local_initOV2640(nullptr);
 
 		dvp->dvp_cfg &= ~DVP_CFG_AUTO_ENABLE;
 		dvp->dvp_cfg |= DVP_CFG_START_INT_ENABLE | DVP_CFG_FINISH_INT_ENABLE;

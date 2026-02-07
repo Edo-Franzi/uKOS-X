@@ -75,9 +75,9 @@ MODULE(
 	Gdb,										// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_GDB,									// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -106,16 +106,16 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification,						// Specifications (just use specification_x)
-		vStrText,							// Info string (NULL if anonymous)
+		vStrText,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_LL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process,						// Code of the process
-		vStrIden,							// Identifier (NULL if anonymous)
+		vStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_NORMAL_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
 	kern_suspendProcess(1000u);
-	kern_createProcess(&specification, NULL, &process);
+	kern_createProcess(&specification, nullptr, &process);
 	return (EXIT_OS_SUCCESS_CLI);
 }
 

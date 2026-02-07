@@ -68,9 +68,9 @@ MODULE(
 	Lcd0,							// Module name (the first letter has to be upper case)
 	KID_FAM_PERIPHERALS,			// Family (defined in the module.h)
 	KLCD0_NUM,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -277,7 +277,7 @@ int32_t	lcd0_drawString(uint16_t x, uint16_t y, const char *s, uint16_t color) {
  */
 int32_t	lcd0_drawRamString(const char *s, uint32_t *area, uint16_t fntColor, uint16_t bgdColor) {
 			size_t		width = 0;
-			uint32_t	*pixel = NULL;
+			uint32_t	*pixel = nullptr;
 			uint8_t		i, j, data;
 			int32_t		status;
 	const	uint8_t		*font;

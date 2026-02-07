@@ -1295,7 +1295,7 @@ This makes precise signals especially suitable for real-time tasks requiring **d
 
 ```c
 // Example of signal usage (referred to the figure)
-// Use the default signal group (*sigGroup = NULL)
+// Use the default signal group (*sigGroup = nullptr)
 
 #define KSIGNAL_A   0x1u
 #define KSIGNAL_B   0x2u
@@ -1323,7 +1323,7 @@ static void __attribute__ ((noreturn)) Process_main(const void *argument) {
 
 // Generate continuous synchros
 
-    *sigGroup_0 = NULL;
+    *sigGroup_0 = nullptr;
     kern_setPreciseSignal(precise_0,
                           sigGroup_0,
                           KKERN_HANDLE_BROADCAST,
@@ -1337,7 +1337,7 @@ static void __attribute__ ((noreturn)) Process_main(const void *argument) {
 // Generate one-shot synchros
 
         time = xyz
-        *sigGroup_1 = NULL;
+        *sigGroup_1 = nullptr;
         kern_setPreciseSignal(precise_0,
                               sigGroup_1,
                               KKERN_HANDLE_BROADCAST,
@@ -1349,7 +1349,7 @@ static void __attribute__ ((noreturn)) Process_main(const void *argument) {
 
 static void __attribute__ ((noreturn)) Process_0(const void *argument) {
     uint32_t     signal;
-    sign_t       *sigGroup = NULL;
+    sign_t       *sigGroup = nullptr;
 
     UNUSED(argument);
 
@@ -1364,7 +1364,7 @@ static void __attribute__ ((noreturn)) Process_0(const void *argument) {
 
 static void __attribute__ ((noreturn)) Process_1(const void *argument) {
     uint32_t     signal;
-    sign_t       *sigGroup = NULL;
+    sign_t       *sigGroup = nullptr;
 
     UNUSED(argument);
 
@@ -1379,7 +1379,7 @@ static void __attribute__ ((noreturn)) Process_1(const void *argument) {
 
 static void __attribute__ ((noreturn)) Process_2(const void *argument) {
     uint32_t     signal;
-    sign_t       *sigGroup = NULL;
+    sign_t       *sigGroup = nullptr;
 
     UNUSED(argument);
 

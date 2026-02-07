@@ -35,9 +35,9 @@ MODULE(
     UserAppl,                              // Module name
     KID_FAM_APPLICATIONS,                  // Family
     KNUM_APPLICATION,                      // Module
-    NULL,                                  // Address of pre init
+    nullptr,                               // Address of pre init
     aStart,                                // Address of the code
-    NULL,                                  // Address of post clean
+    nullptr,                               // Address of post clean
     " 1.0",                                // Revision string
     ((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),    // Flags
     0                                      // Execution cores
@@ -60,9 +60,9 @@ MODULE(
     Coherence,                             // Module name
     KID_FAM_CLI,                           // Family
     (('_'<<8)+'C'),                        // Module
-    NULL,                                  // Address of pre init
+    nullptr,                               // Address of pre init
     prgm,                                  // Address of the code
-    NULL,                                  // Address of post clean
+    nullptr,                               // Address of post clean
     " 1.0",                                // Revision string
     ((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),    // Flags
     0                                      // Execution cores
@@ -73,9 +73,9 @@ MODULE(
     UserAppl,                              // Module name
     KID_FAM_APPLICATIONS,                  // Family
     KNUM_APPLICATION,                      // Module
-    NULL,                                  // Address of pre init
+    nullptr,                               // Address of pre init
     aStart,                                // Address of the code
-    NULL,                                  // Address of post clean
+    nullptr,                               // Address of post clean
     " 1.0",                                // Revision string
     ((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),    // Flags
     0                                      // Execution cores

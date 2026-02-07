@@ -192,7 +192,7 @@ const	uintptr_t	g_pfnVectors_C1[] __attribute__((used, aligned(512))) = {
 
 // Cortex-M33 Processor Exceptions Numbers
 
-	(uintptr_t)NULL,											// Address: 0x0000_0004
+	(uintptr_t)nullptr,											// Address: 0x0000_0004
 	(uintptr_t)NonMaskableInt_C1_IRQHandler,					// Address: 0x0000_0008
 	(uintptr_t)HardFault_C1_IRQHandler,							// Address: 0x0000_000C
 	(uintptr_t)MemoryManagement_C1_IRQHandler,					// Address: 0x0000_0010

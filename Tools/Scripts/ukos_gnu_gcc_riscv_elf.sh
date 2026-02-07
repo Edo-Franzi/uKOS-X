@@ -92,7 +92,7 @@ export GCC_VER="${GCC_RVXX_VER}"
 
 export PACKS_GCC="${PATH_TOOLS_GCC}/Packages/gcc-${GCC_VER}"
 export PACKS_BIN="${PATH_TOOLS_GCC}/Packages/binutils-${BIN_VER}"
-export PACKS_NBL="${PATH_TOOLS_GCC}/Packages/newlib-${NLB_VER}"
+export PACKS_NBL="${PATH_TOOLS_GCC}/Packages/newlib-${NLB_RVXX_VER}"
 export PACKS_GDB="${PATH_TOOLS_GCC}/Packages/gdb-${GDB_VER}"
 
 export PATCH="${PATH_SCRIPTS}/Patches"
@@ -146,11 +146,11 @@ if [[ ! -d "gcc-${GCC_VER}" ]]; then
 	cd ..
 fi
 
-if [[ ! -d "newlib-${NLB_VER}" ]]; then
-	echo "Downloading newlib-${NLB_VER}"
-	git clone "https://sourceware.org/git/newlib-cygwin.git" "newlib-${NLB_VER}"
-	git -C "newlib-${NLB_VER}" fetch --tags
-	git -C "newlib-${NLB_VER}" checkout "tags/newlib-${NLB_VER}"
+if [[ ! -d "newlib-${NLB_RVXX_VER}" ]]; then
+	echo "Downloading newlib-${NLB_RVXX_VER}"
+	git clone "https://sourceware.org/git/newlib-cygwin.git" "newlib-${NLB_RVXX_VER}"
+	git -C "newlib-${NLB_RVXX_VER}" fetch --tags
+	git -C "newlib-${NLB_RVXX_VER}" checkout "tags/newlib-${NLB_RVXX_VER}"
 fi
 
 # Configurations
@@ -221,7 +221,7 @@ if [[ ! -f "${build_machine}/gnu_gcc_pass1_ready.txt" ]]; then
 fi
 cat "${build_machine}/gnu_gcc_pass1_ready.txt" >> "${LOG_FILE}"
 
-"${PATH_SCRIPTS}/_newlib_build.sh"
+"${PATH_SCRIPTS}/_newlib_riscv_build.sh"
 if [[ ! -f "${build_machine}/newlib_ready.txt" ]]; then
 	echo "Failed to build newlib"
 	exit 1

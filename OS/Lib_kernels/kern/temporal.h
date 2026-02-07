@@ -126,7 +126,7 @@ extern	int32_t	kern_suspendProcess(uint32_t time);
  * proc_t     *process;
  * int32_t    status;
  *
- *    status = kern_setNewTimeout(NULL, KWAIT312MS);
+ *    status = kern_setNewTimeout(nullptr, KWAIT312MS);
  * \endcode
  *
  * - Just change the internal timeout counter

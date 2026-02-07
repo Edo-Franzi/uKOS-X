@@ -115,11 +115,11 @@ void	test_10(void) {
 // Initialise the stack-frame for the process P1
 
 	stack = &vStackP0[800 - 4];
-	KERN_PREPARE_FRAME(stack, process_0, NULL, KINT_IMASK_ALL)
+	KERN_PREPARE_FRAME(stack, process_0, nullptr, KINT_IMASK_ALL)
 	vStackCurP0 = (uintptr_t)stack;
 
 	stack = &vStackP1[800 - 4];
-	KERN_PREPARE_FRAME(stack, process_1, NULL, KINT_IMASK_ALL)
+	KERN_PREPARE_FRAME(stack, process_1, nullptr, KINT_IMASK_ALL)
 	vStackCurP1 = (uintptr_t)stack;
 
 // Waiting for the multitasking

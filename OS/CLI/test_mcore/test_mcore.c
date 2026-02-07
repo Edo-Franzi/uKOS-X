@@ -75,8 +75,8 @@ MODULE(
 	Test_mcore,									// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_TEST_MCORE,							// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
 	test_mcore_clean,							// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
@@ -122,10 +122,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification_RX,					// Specifications (just use specification_x)
-		aStrText_RX,						// Info string (NULL if anonymous)
+		aStrText_RX,						// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process_RX,					// Code of the process
-		aStrIden_RX,						// Identifier (NULL if anonymous)
+		aStrIden_RX,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_MEDIUM_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -133,10 +133,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	PROCESS_STACKMALLOC(
 		1,									// Index
 		specification_TX,					// Specifications (just use specification_x)
-		aStrText_TX,						// Info string (NULL if anonymous)
+		aStrText_TX,						// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process_TX,					// Code of the process
-		aStrIden_TX,						// Identifier (NULL if anonymous)
+		aStrIden_TX,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_MEDIUM_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -176,7 +176,7 @@ static	int32_t	test_mcore_clean(uint32_t argc, const char_t *argv[]) {
  */
 static void __attribute__ ((noreturn)) local_process_TX(const void *argument) {
 			uint32_t	core;
-			uint8_t		*send = NULL, counter = (uint8_t)'a';
+			uint8_t		*send = nullptr, counter = (uint8_t)'a';
 			size_t		size;
 			int32_t		status;
 			mbox_t		*mailBox;
@@ -202,7 +202,7 @@ static void __attribute__ ((noreturn)) local_process_TX(const void *argument) {
 
 		size = strlen(message) + 3;
 		send = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (uint32_t)(size * sizeof(uint8_t)), "send");
-		if (send == NULL) {
+		if (send == nullptr) {
 			LOG(KFATAL_SYSTEM, "test_mcore: out of memory");
 			exit(EXIT_OS_FAILURE);
 		}
@@ -270,7 +270,7 @@ static void __attribute__ ((noreturn)) local_process_RX(const void *argument) {
 	while (kern_getMailboxById(idReceiveMbox, &mailBox) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
 	message = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KSZ_MESSAGE * sizeof(uint8_t)), "receive");
-	if (message == NULL) {
+	if (message == nullptr) {
 		LOG(KFATAL_SYSTEM, "test_mcore: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}

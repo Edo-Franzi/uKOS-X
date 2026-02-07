@@ -75,9 +75,9 @@ MODULE(
 	Semaphore,									// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_SEMAPHORE,								// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -110,7 +110,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	for (core = 0u; core < KNB_CORES; core++) {
 		(void)dprintf(KSYST, "Semaphores used by the core %"PRIu32"\n\n", core);
 		for (i = 0u; i < KKERN_NB_SEMAPHORES; i++) {
-			if (vKern_sema[core][i].oIdentifier != NULL) {
+			if (vKern_sema[core][i].oIdentifier != nullptr) {
 
 // Prepare the generic printing characteristics
 // for all the semaphores (identifier, spacer, kind, counter & syncProcess)
@@ -121,8 +121,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 				counter = vKern_sema[core][i].oCounter;
 
-				if (vKern_sema[core][i].oOwner == NULL) { syncProcess = "";																																 }
-				else									{ syncProcess = (vKern_sema[core][i].oOwner == KKERN_HANDLE_FROM_ISR) ? ("From ISR") : (vKern_sema[core][i].oOwner->oSpecification.oIdentifier); }
+				if (vKern_sema[core][i].oOwner == nullptr) { syncProcess = "";																															    }
+				else									   { syncProcess = (vKern_sema[core][i].oOwner == KKERN_HANDLE_FROM_ISR) ? ("From ISR") : (vKern_sema[core][i].oOwner->oSpecification.oIdentifier); }
 				local_compose(syncProcess, &idSpacerS);
 
 // Scann the semaphore list and collect

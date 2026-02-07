@@ -67,9 +67,9 @@ MODULE(
 	Serial,							// Module name (the first letter has to be upper case)
 	KID_FAM_SERIALS,				// Family (defined in the module.h)
 	KNUM_SERIAL,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -650,7 +650,7 @@ static	void	local_getDevice(serialManager_t serialManager, serialManager_t *mana
 	kern_getProcessRun(&process);
 	while (*manager == KSYST) {
 		kern_getSerialForProcess(process, manager);
-		if ((*manager != KSYST) || (process->oInternal.oProcFather == NULL)) {
+		if ((*manager != KSYST) || (process->oInternal.oProcFather == nullptr)) {
 			break;
 		}
 		process = process->oInternal.oProcFather;

@@ -272,7 +272,7 @@ extern	int32_t	asmp_getRunningCore(uint32_t *core);
  * \return		KERR_ASMP_CORNA	The core number is not not allowed
  *
  */
-int32_t	asmp_getReferenceCore(uint32_t core, const char_t **coreReference);
+extern	int32_t	asmp_getReferenceCore(uint32_t core, const char_t **coreReference);
 
 /*!
  * \brief Get the handle of the RX full semaphore

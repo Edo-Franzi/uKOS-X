@@ -100,9 +100,9 @@ MODULE(
 	Process,									// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_PROCESS,								// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -168,7 +168,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // Collect the process information usable for the statistics
 
 			bufSysProcess = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, ((size_t)KNB_CORES * (size_t)KKERN_NB_PROCESSES * sizeof(process_t)), "process");
-			if (bufSysProcess != NULL) {
+			if (bufSysProcess != nullptr) {
 
 				SPIN_LOCK(vProcess);
 				kern_criticalSection(KENTER_CRITICAL);
@@ -256,8 +256,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 								if (sysProcess->oPC != 0u) {
 									machine_readFunctionName(sysProcess->oPC, &functionName);
-									if (functionName == NULL) { (void)dprintf(KSYST, " - PC = 0x%016"PRIXPTR"\n",    sysProcess->oPC);               }
-									else {                      (void)dprintf(KSYST, " - PC = 0x%016"PRIXPTR" %s\n", sysProcess->oPC, functionName); }
+									if (functionName == nullptr) { (void)dprintf(KSYST, " - PC = 0x%016"PRIXPTR"\n",    sysProcess->oPC);               }
+									else { 						   (void)dprintf(KSYST, " - PC = 0x%016"PRIXPTR" %s\n", sysProcess->oPC, functionName); }
 								}
 								else {
 									(void)dprintf(KSYST, "\n");
@@ -323,7 +323,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 static	bool	local_getProcessByNb(uint8_t core, uint16_t number, proc_t **handle) {
 
 	kern_criticalSection(KENTER_CRITICAL);
-	*handle = NULL;
+	*handle = nullptr;
 
 	if (number >= KKERN_NB_PROCESSES)											   { kern_criticalSection(KEXIT_CRITICAL); return (false); }
 	if ((vKern_proc[core][number].oInternal.oState & (1u<<BPROC_INSTALLED)) == 0u) { kern_criticalSection(KEXIT_CRITICAL); return (false); }
@@ -447,7 +447,7 @@ static	void	local_printParameter_P1(uint8_t core, uint16_t number, process_t *ha
 
 	UNUSED(core);
 
-	father = (handle->oInternal.oProcFather == NULL)	  ? ("Orphan") : (handle->oInternal.oProcFather->oSpecification.oIdentifier);
+	father = (handle->oInternal.oProcFather == nullptr)	  ? ("Orphan") : (handle->oInternal.oProcFather->oSpecification.oIdentifier);
 	space  = (handle->oSpecification.oMode == KPROC_USER) ? ("User")   : ("Privileged");
 
 	(void)dprintf(KSYST, "Process identifier: %d %s\n", number, handle->oSpecification.oIdentifier);

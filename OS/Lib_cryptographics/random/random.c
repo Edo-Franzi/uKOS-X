@@ -67,9 +67,9 @@ MODULE(
 	Random,							// Module name (the first letter has to be upper case)
 	KID_FAM_CRYPTOGRAPHICS,			// Family (defined in the module.h)
 	KNUM_RANDOM,					// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	NULL,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0								// Execution cores
@@ -83,8 +83,8 @@ static	mutx_t		*vMutex_Reserve_Random[KNB_CORES];
 
 // Prototypes
 
-static	void		local_init(void);
-extern	void		stub_random_init(void);
+static	int32_t		local_init(void);
+extern	int32_t		stub_random_init(void);
 extern	int32_t		stub_random_read(randomGenerator_t generator, uint32_t *number);
 
 /*
@@ -106,18 +106,20 @@ extern	int32_t		stub_random_read(randomGenerator_t generator, uint32_t *number);
  * \param[out]	*number				Ptr on the number
  * \param[in]	nbNumbers			Number of numbers
  * \return		KERR_RANDOM_NOERR	OK
- * \return		KERR_RANDOM_NOERR	General error
+ * \return		KERR_RANDOM_GEERR	General error
  *
  */
 int32_t random_read(randomGenerator_t generator, uint32_t *number, uint32_t nbNumbers) {
 	uint32_t	core, i, *wkNumber = number;
+	int32_t		status;
 
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
-	local_init();
+	status = local_init();
+	if (status != KERR_RANDOM_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
-	if ((number == NULL) || (nbNumbers == 0u)) {
+	if ((number == nullptr) || (nbNumbers == 0u)) {
 		PRIVILEGE_RESTORE;
 		return (KERR_RANDOM_GEERR);
 	}
@@ -142,7 +144,8 @@ int32_t random_read(randomGenerator_t generator, uint32_t *number, uint32_t nbNu
  *   has to be called at least once
  *
  */
-static	void	local_init(void) {
+static	int32_t	local_init(void) {
+			int32_t		status = KERR_RANDOM_NOERR;
 			uint32_t	core;
 	static	bool		vInit[KNB_CORES] = MCSET(false);
 
@@ -154,9 +157,9 @@ static	void	local_init(void) {
 
 		if (kern_createMutex(aStrIdSRandom, &vMutex_Reserve_Random[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "rand: create mutx"); exit(EXIT_OS_PANIC); }
 
-		stub_random_init();
+		status = stub_random_init();
 	}
-	INTERRUPTION_RESTORE;
+	RETURN_INT_RESTORE(status);
 }
 
 #endif

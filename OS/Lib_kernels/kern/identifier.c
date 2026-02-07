@@ -63,7 +63,7 @@ bool	identifiers_cmpStrings(const char_t *string_1, const char_t *string_2) {
 	uint8_t		i;
 	bool		status;
 
-	if ((string_1 == NULL) || (string_2 == NULL)) {
+	if ((string_1 == nullptr) || (string_2 == nullptr)) {
 		return (false);
 	}
 

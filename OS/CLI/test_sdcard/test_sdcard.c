@@ -75,8 +75,8 @@ MODULE(
 	Test_sdcard,								// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_TEST_SDCARD,							// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
 	test_sdcard_clean,							// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
@@ -123,10 +123,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	PROCESS_STACKMALLOC(
 		0,									// Index
 		specification,						// Specifications (just use specification_x)
-		aStrText,							// Info string (NULL if anonymous)
+		aStrText,							// Info string (nullptr if anonymous)
 		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process,						// Code of the process
-		aStrIden,							// Identifier (NULL if anonymous)
+		aStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -180,13 +180,13 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 	killRequest	= (const bool *)argument;
 
 	wBuffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KNB_SD_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "test_sdcard");
-	if (wBuffer == NULL) {
-		local_error(KERR_NOMEM, 0u, 0u, NULL, NULL);
+	if (wBuffer == nullptr) {
+		local_error(KERR_NOMEM, 0u, 0u, nullptr, nullptr);
 	}
 
 	rBuffer = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (KNB_SD_SECTORS * KSDCARD_SZ_SECTOR * sizeof(uint8_t)), "test_sdcard");
-	if (rBuffer == NULL) {
-		local_error(KERR_NOMEM, 0u, 0u, wBuffer, NULL);
+	if (rBuffer == nullptr) {
+		local_error(KERR_NOMEM, 0u, 0u, wBuffer, nullptr);
 	}
 
 	RESERVE(SDCARD, KMODE_READ_WRITE);
@@ -316,8 +316,8 @@ static void __attribute__ ((noreturn)) local_error(uint8_t error, int32_t status
 		}
 	}
 
-	if (wBuffer != NULL) { memo_free(wBuffer); }
-	if (rBuffer != NULL) { memo_free(rBuffer); }
+	if (wBuffer != nullptr) { memo_free(wBuffer); }
+	if (rBuffer != nullptr) { memo_free(rBuffer); }
 	RELEASE(SDCARD, KMODE_READ_WRITE);
 
 	LOG(KFATAL_SYSTEM, "test_sdcard: SD-Card problem");

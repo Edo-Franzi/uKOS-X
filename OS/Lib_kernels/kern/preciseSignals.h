@@ -121,7 +121,7 @@ extern	void	preciseSignals_init(void);
  *    status = kern_createPreciseSignal(identifier, &preciseSignal);
  * \endcode
  *
- * \param[in]	*identifier		Ptr on the precise signal identifier (NULL = anonymous)
+ * \param[in]	*identifier		Ptr on the precise signal identifier (nullptr = anonymous)
  * \param[out]	**handle		Ptr on the handle
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_PRFUL	No more precise signal
@@ -142,7 +142,7 @@ extern	int32_t	kern_createPreciseSignal(const char_t *identifier, prcs_t **handl
  *        uint32_t     signal;
  *        prcs_t       *preciseSignal;
  *        proc_t       *process23;
- *        sign_t       *oSignalGroup = NULL;
+ *        sign_t       *oSignalGroup = nullptr;
  *
  *        // In this example the "signal" is hard-coded. The user can also use the
  *        // system call kern_createBitSignal to automatically obtain a signal.
@@ -165,7 +165,7 @@ extern	int32_t	kern_createPreciseSignal(const char_t *identifier, prcs_t **handl
  * \endcode
  *
  * \param[in]		*handle			Ptr on the handle
- * \param[in, out]	**sigGroup		Ptr on the sigGroup handle. Set variable to NULL for the default group
+ * \param[in, out]	**sigGroup		Ptr on the sigGroup handle. Set variable to nullptr for the default group
  * \param[in]		*toProcess		Ptr on the process handle (selective signal)
  * \param[in]		-				KKERN_HANDLE_BROADCAST, broadcast to all the installed processes the signals
  * \param[in]		period			Time period in us

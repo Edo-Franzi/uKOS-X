@@ -231,7 +231,7 @@ enum {
 
 struct work {
 			list_t				*oListDebg;													// Ptr on the list where the process was connected (before the kern_stopProcess)
-			proc_t				*oProcFather;												// Ptr on the father process (NULL = orphan)
+			proc_t				*oProcFather;												// Ptr on the father process (nullptr = orphan)
 			uint16_t			oStateDebg;													// Process state (before the kern_stopProcess)
 			uint16_t			oState;														// Process state
 			#define				BPROC_FIRST					0u								// Process first

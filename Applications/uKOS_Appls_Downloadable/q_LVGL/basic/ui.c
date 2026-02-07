@@ -51,7 +51,7 @@
 #include	"ui.h"
 #include	"../ulvgl.h"
 
-static	lv_obj_t	*vL1, *vL2, *vL3, *vArc, *vSquare[KSQUARES_NB_MAX] = { NULL };
+static	lv_obj_t	*vL1, *vL2, *vL3, *vArc, *vSquare[KSQUARES_NB_MAX] = { nullptr };
 
 // Prototypes
 
@@ -162,7 +162,7 @@ static	void	local_DrawArc(void) {
 	lv_obj_set_size(vArc, KARC_DIAMETER, KARC_DIAMETER);
 	lv_arc_set_rotation(vArc, 270);
 	lv_arc_set_bg_angles(vArc, 0, 360);
-	lv_obj_remove_style(vArc, NULL, LV_PART_KNOB);
+	lv_obj_remove_style(vArc, nullptr, LV_PART_KNOB);
 	lv_obj_remove_flag(vArc, LV_OBJ_FLAG_CLICKABLE);
 	lv_obj_set_pos(vArc, KARC_POS_X, KARC_POS_Y);
 
@@ -191,7 +191,7 @@ static	void	local_DrawRandomSquares(void) {
 
 // Install a timer callback (every 100-ms)
 
-	lv_timer_create(local_square_cb, 100, NULL);
+	lv_timer_create(local_square_cb, 100, nullptr);
 }
 
 static	void	local_square_cb(lv_timer_t *time) {
@@ -216,7 +216,7 @@ static	void	local_square_cb(lv_timer_t *time) {
 // Delete the oldest handle
 // Create a new one
 
-	if (vSquare[index] != NULL) { lv_obj_delete(vSquare[index]); }
+	if (vSquare[index] != nullptr) { lv_obj_delete(vSquare[index]); }
 
 	localSquare	   = lv_obj_create(lv_screen_active());
     vSquare[index] = localSquare;

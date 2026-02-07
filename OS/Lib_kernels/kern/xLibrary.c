@@ -92,7 +92,7 @@ void	xLibrary_update(void) {
 
 	core = GET_RUNNING_CORE;
 
-	if (vKern_runProc[core]->oInternal.oLocal != NULL) {
+	if (vKern_runProc[core]->oInternal.oLocal != nullptr) {
 		_impure_ptr = (reent_t *)vKern_runProc[core]->oInternal.oLocal;
 	}
 }

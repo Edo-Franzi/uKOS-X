@@ -175,7 +175,7 @@ extern	int32_t	spi2_writeRead(uint8_t *data);
  * Simple reads: spi_multipleWriteRead(xyz, 0, &rBuffer[0], 20, KWAIT_INFINITY);			R, R, R, ..
  * Writes-reads: spi_multipleWriteRead(xyz, 20, &rBuffer[0], 20, KWAIT_INFINITY);			W, R, W, ..
  *				 condition (wSize == rSize)
- *				 if xyz == NULL, write 0x00
+ *				 if xyz == nullptr, write 0x00
  *				 if xyz == (&wBuffer[0], write the buffer content
  *
  * EEPROM mode:  spi_multipleWriteRead(&wBuffer[0], 4, &rBuffer[0], 20, KWAIT_INFINITY);	W, W, W, R, R, R, R, ..

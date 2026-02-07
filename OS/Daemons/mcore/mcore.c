@@ -76,9 +76,9 @@ MODULE(
 	Mcore,							// Module name (the first letter has to be upper case)
 	KID_FAM_DAEMONS,				// Family (defined in the module.h)
 	KNUM_MCORE,						// Module identifier (defined in the module.h)
-	NULL,							// Address of the initialisation code (early pre-init)
-	prgm,							// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,							// Address of the clean code (clean the module)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	prgm,							// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
 	" 1.0",							// Revision string (major . minor)
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	KEXECUTION_CORE					// Execution cores
@@ -113,11 +113,11 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	DAEMON_PRIVILEGED(
 		core,								// Core
 		specification_SndX,					// Specifications (just use specification_x)
-		aStrText_SndX,						// Info string (NULL if anonymous)
+		aStrText_SndX,						// Info string (nullptr if anonymous)
 		vStack_SndX,						// Stack location
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process_SndX,					// Code of the process
-		aStrIden_SndX,						// Identifier (NULL if anonymous)
+		aStrIden_SndX,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -125,11 +125,11 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	DAEMON_PRIVILEGED(
 		core,								// Core
 		specification_RecX,					// Specifications (just use specification_x)
-		aStrText_RecX,						// Info string (NULL if anonymous)
+		aStrText_RecX,						// Info string (nullptr if anonymous)
 		vStack_RecX,						// Stack location
 		KKERN_SZ_STACK_XL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process_RecX,					// Code of the process
-		aStrIden_RecX,						// Identifier (NULL if anonymous)
+		aStrIden_RecX,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
 		KKERN_PRIORITY_HIGH_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
@@ -138,8 +138,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	while (asmp_waitingForReady() != KERR_ASMP_NOERR) { kern_suspendProcess(10); }
 
-	if (kern_createProcess(&specification_SndX, NULL, &process_SndX) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "mcore: create proc"); exit(EXIT_OS_PANIC); }
-	if (kern_createProcess(&specification_RecX, NULL, &process_RecX) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "mcore: create proc"); exit(EXIT_OS_PANIC); }
+	if (kern_createProcess(&specification_SndX, nullptr, &process_SndX) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "mcore: create proc"); exit(EXIT_OS_PANIC); }
+	if (kern_createProcess(&specification_RecX, nullptr, &process_RecX) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "mcore: create proc"); exit(EXIT_OS_PANIC); }
 
 	LOG(KINFO_SYSTEM, "mcore: daemon mcore launched");
 	return (EXIT_OS_SUCCESS_CLI);
@@ -159,7 +159,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  */
 static void __attribute__ ((noreturn)) local_process_SndX(const void *argument) {
 			uint32_t	core, toCore, size, order = 0u;
-			uint8_t		*receive = NULL, *send = NULL;
+			uint8_t		*receive = nullptr, *send = nullptr;
 			mbox_t		*mailBox;
 			sema_t		*semaphore;
 			mcnf_t		configure = {
@@ -194,7 +194,7 @@ static void __attribute__ ((noreturn)) local_process_SndX(const void *argument) 
 	}
 
 	send = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (KASMP_SZ_BUFFER * sizeof(uint8_t)), "send");
-	if (send == NULL) {
+	if (send == nullptr) {
 		LOG(KFATAL_SYSTEM, "mcore: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -239,7 +239,7 @@ static void __attribute__ ((noreturn)) local_process_SndX(const void *argument) 
  */
 static void __attribute__ ((noreturn)) local_process_RecX(const void *argument) {
 			uint32_t	core, fromCore, size, order;
-			uint8_t		*receive = NULL, *send = NULL;
+			uint8_t		*receive = nullptr, *send = nullptr;
 			mbox_t		*mailBox;
 			sema_t		*semaphore;
 			mcnf_t		configure = {
@@ -272,7 +272,7 @@ static void __attribute__ ((noreturn)) local_process_RecX(const void *argument) 
 	}
 
 	receive = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (KASMP_SZ_BUFFER * sizeof(uint8_t)), "receive");
-	if (receive == NULL) {
+	if (receive == nullptr) {
 		LOG(KFATAL_SYSTEM, "mcore: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -290,7 +290,7 @@ static void __attribute__ ((noreturn)) local_process_RecX(const void *argument) 
 		}
 
 		send = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (size * sizeof(uint8_t)), "send");
-		if (send == NULL) {
+		if (send == nullptr) {
 			LOG(KFATAL_SYSTEM, "mcore: out of memory");
 			exit(EXIT_OS_FAILURE);
 		}

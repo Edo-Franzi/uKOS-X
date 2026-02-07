@@ -108,9 +108,9 @@ MODULE(
 	Hexloader,									// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
 	KNUM_HEX_LOADER,							// Module identifier (defined in the module.h)
-	NULL,										// Address of the initialisation code (early pre-init)
-	prgm,										// Address of the code (prgm for tools, aStart for applications, NULL for libraries)
-	NULL,										// Address of the clean code (clean the module)
+	nullptr,									// Address of the initialisation code (early pre-init)
+	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
@@ -140,7 +140,7 @@ enum {
  *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
-	uint8_t			*address = NULL, byte, hexValue, type = 0u, checksum, counter;
+	uint8_t			*address = nullptr, byte, hexValue, type = 0u, checksum, counter;
 	int32_t			status, error = KERR_H_LOADER_NOT, (*code)(uint32_t argc, const char_t *argv[]);
 	uintptr_t		offset = 0u, page = 0u;
 	bool			terminate = false, equals;
@@ -266,9 +266,9 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 				if (local_checkSignature() == true) {
 					ramHeader.oMemLocation	  = KNO_MEM;
-					ramHeader.oStart		  = NULL;
+					ramHeader.oStart		  = nullptr;
 					ramHeader.oLnApplication  = 0u;
-					ramHeader.oModule		  = NULL;
+					ramHeader.oModule		  = nullptr;
 					memcpy((void *)linker_stUMemo, (const void *)&ramHeader, sizeof(ramHeader));
 					return ((*code)(argc, argv));
 				}

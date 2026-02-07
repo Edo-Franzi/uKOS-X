@@ -134,5 +134,5 @@ void	crt0(void) {
 
 	vCrt0_randomSeed = seed;
 
-	main(0u, NULL);
+	main(0u, nullptr);
 }
