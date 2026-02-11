@@ -1,15 +1,15 @@
 /*
-; uKOS.
+; nvic.
 ; =====
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		NVIC equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,46 +48,57 @@
 
 #pragma	once
 
-// IWYU pragma: begin_exports
+// NVIC address definitions
+// ------------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+typedef struct {
+	volatile	uint32_t	ISER[16];
+	volatile	uint32_t	RESERVED0[16];
+	volatile	uint32_t	ICER[16];
+	volatile	uint32_t	RSERVED1[16];
+	volatile	uint32_t	ISPR[16];
+	volatile	uint32_t	RESERVED2[16];
+	volatile	uint32_t	ICPR[16];
+	volatile	uint32_t	RESERVED3[16];
+	volatile	uint32_t	IABR[16];
+	volatile	uint32_t	RESERVED4[16];
+	volatile	uint32_t	ITNS[16];
+	volatile	uint32_t	RESERVED5[16];
+	volatile	uint8_t		IP[496];
+	volatile	uint32_t	RESERVED6[580];
+	volatile	uint32_t	STIR;
+} NVIC_TypeDef;
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#if (defined(__cplusplus))
+#define	NVIC_S	reinterpret_cast<NVIC_TypeDef *>(0xE000E100u)
+#define	NVIC_NS	reinterpret_cast<NVIC_TypeDef *>(0xE002E100u)
 
-// IWYU pragma: end_exports
+#else
+#define	NVIC_S	((NVIC_TypeDef *)0xE000E100u)
+#define	NVIC_NS	((NVIC_TypeDef *)0xE002E100u)
+#endif
 
-// uKOS-X main constants
-// -----------------------
+// System Reset
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.2.3"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		2
-#define	uKOS_VERSION_PATCH		3
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#define NVIC_VECTRESET				0u
+#define NVIC_SYSRESETREQ			2u
+#define NVIC_AIRCR_VECTKEY			(0x5FAu<<16)
+#define NVIC_AIRCR_ENDIANESS		15u
+
+// NVIC macros
+
+#define	NVIC_EnableIRQ(IRQn) \
+		REG(NVIC)->ISER[((uint32_t)IRQn) / 32u] = (((uint32_t)1u)<<(((uint32_t)(IRQn)) % 32u))
+
+#define	NVIC_DisableIRQ(IRQn) \
+		REG(NVIC)->ICER[((uint32_t)IRQn) / 32u] = (((uint32_t)1u)<<(((uint32_t)(IRQn)) % 32u))
+
+#define	NVIC_SetPendingIRQ(IRQn) \
+		REG(NVIC)->ISPR[((uint32_t)IRQn) / 32u] = (((uint32_t)1u)<<(((uint32_t)(IRQn)) % 32u))
+
+#define	NVIC_ClearPendingIRQ(IRQn) \
+		REG(NVIC)->ICPR[((uint32_t)IRQn) / 32u] = (((uint32_t)1u)<<(((uint32_t)(IRQn)) % 32u))
+
+#define	NVIC_SetPriority(IRQn, priority) \
+		if (IRQn >= 0) { REG(NVIC)->IP[(uint32_t)IRQn] = (uint32_t)(((uint32_t)priority)<<(uint32_t)KNVIC_PRIORITY_SHIFT); } \
+		else		   { REG(SCB)->SHP[((uint32_t)IRQn & 0xFu) - 4u] = ((uint32_t)priority<<(uint32_t)KNVIC_PRIORITY_SHIFT); }

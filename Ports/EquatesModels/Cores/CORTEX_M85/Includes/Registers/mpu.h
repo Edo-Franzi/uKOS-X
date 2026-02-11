@@ -1,15 +1,15 @@
 /*
-; uKOS.
-; =====
+; mpu.
+; ====
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		MPU equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,46 +48,31 @@
 
 #pragma	once
 
-// IWYU pragma: begin_exports
-
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
-
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
-
-// IWYU pragma: end_exports
-
-// uKOS-X main constants
+// MPU address definitions
 // -----------------------
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.2.3"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		2
-#define	uKOS_VERSION_PATCH		3
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+typedef struct {
+	volatile	const	uint32_t	TYPE;
+	volatile			uint32_t	CTRL;
+	volatile			uint32_t	RNR;
+	volatile			uint32_t	RBAR;
+	volatile			uint32_t	RLAR;
+	volatile			uint32_t	RBAR_A1;
+	volatile			uint32_t	RLAR_A1;
+	volatile			uint32_t	RBAR_A2;
+	volatile			uint32_t	RLAR_A2;
+	volatile			uint32_t	RBAR_A3;
+	volatile			uint32_t	RLAR_A3;
+	volatile			uint32_t	RESERVED0;
+	volatile			uint32_t	MAIR0;
+	volatile			uint32_t	MAIR1;
+} MPU_TypeDef;
+
+#if (defined(__cplusplus))
+#define	MPU_S	reinterpret_cast<MPU_TypeDef *>(0xE000ED90u)
+#define	MPU_NS	reinterpret_cast<MPU_TypeDef *>(0xE002ED90u)
+
+#else
+#define	MPU_S	((MPU_TypeDef *)0xE000ED90u)
+#define	MPU_NS	((MPU_TypeDef *)0xE002ED90u)
+#endif

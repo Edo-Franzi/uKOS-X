@@ -77,7 +77,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # --------
 
 readonly package=0.20.0
-readonly hash=cdf7499
+readonly hash=e416a81
 
 export PATH="${PATH_GCC_ARM}/bin":"${PATH}"
 printf '%b%s%b\n' "${YELLOW}" "$(arm-none-eabi-gcc --version)" "${NC}"
@@ -88,7 +88,7 @@ printf '\n%bDownload the TinyUSB package ...%b\n\n' "${BOLD}" "${NC}"
 
 cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/TinyUSB"
 rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/TinyUSB/TinyUSB-${package}"
-git clone https://github.com/hathach/tinyusb "TinyUSB-${package}"
+git clone https://github.com/hathach/tinyusb.git "TinyUSB-${package}"
 cd "TinyUSB-${package}"
 git submodule update --init lib
 git checkout "${hash}"

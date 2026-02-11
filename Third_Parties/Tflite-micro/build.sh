@@ -80,14 +80,14 @@ fi
 # Packages
 # --------
 
-readonly hash=6ce10ee
+readonly hash=510a6c5
 
 printf '\n%bDownload the Tflite-micro package ...%b\n\n' "${BOLD}" "${NC}"
 
 # Clone the right package
 cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro"
 rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Tflite-micro"
-git clone https://github.com/tensorflow/tflite-micro Tflite-micro
+git clone https://github.com/tensorflow/tflite-micro.git Tflite-micro
 cd Tflite-micro
 git checkout "${hash}"
 

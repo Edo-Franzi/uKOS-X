@@ -1,15 +1,17 @@
 /*
-; uKOS.
-; =====
+; syscallDispatcher.
+; ==================
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		Syscall dispatcher.
+;				- uKernel messages
+;				- manager system calls
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -46,48 +48,39 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+extern	void	kernel_message_C0(void);
+extern	void	kern_privilegeElevate(void);
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+/*
+ * \brief SVCall_IRQHandler
+ *
+ * Stack frame after the SVC(x) instruction
+ *
+ *	+92		 ...
+ *	+28		 xPSR
+ *	+24		 pc
+ *	+20		 lr
+ *	+16		 r12
+ *	+12		 r3
+ *	+8		 r2
+ *	+4		 r1
+ *	+0		 r0
+ */
+void	SVCall_C0_IRQHandler(void) __attribute__ ((naked));
+void	SVCall_C0_IRQHandler(void) {
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+// Branch to 	 --> kernel_message
+// Branch to 	 --> kern_privilegeElevate
 
-// IWYU pragma: end_exports
+	SVC_DISPATCHER_C0;
+}
 
-// uKOS-X main constants
-// -----------------------
+void	__attribute__ ((noreturn)) syscall(const uintptr_t *arg) {
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.2.3"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		2
-#define	uKOS_VERSION_PATCH		3
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+	UNUSED(arg);
+
+	LOG(KFATAL_SYSTEM, "syscallDispatcher: no system call");
+	exit(EXIT_OS_PANIC_NO_SYSCALL);
+}

@@ -1,6 +1,6 @@
 ### **The MIT License (MIT)**
 
-*Copyright (c) 20xx, Edo. Franzi (ukos.ch)*
+*Copyright (c) 2025-2026, Edo. Franzi (ukos.ch)*
 
 #### Description:
 

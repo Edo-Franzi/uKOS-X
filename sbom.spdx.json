@@ -1,0 +1,263 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "uKOS-X SBOM (0.2.3)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.3-2026-02-11",
+  "creationInfo": {
+    "created": "2026-02-11T00:00:00Z",
+    "creators": [
+      "Person: Edo. Franzi",
+      "Tool: manual-from-THIRD_PARTY_NOTICE"
+    ]
+  },
+
+  "hasExtractedLicensingInfos": [
+    {
+      "licenseId": "LicenseRef-FatFs-ChaN",
+      "name": "FatFs License (ChaN)",
+      "extractedText": "License text not embedded in this SBOM. See the FatFs license/notice shipped in Third_Parties/FatFs/ (or upstream documentation)."
+    },
+    {
+      "licenseId": "LicenseRef-IntelRDFPMath",
+      "name": "IntelRDFPMathLib License (Intel Corp.)",
+      "extractedText": "License text not embedded in this SBOM. See the IntelRDFPMathLib license/notice shipped in Third_Parties/IntelRDFPMath/ (or upstream documentation)."
+    },
+    {
+      "licenseId": "LicenseRef-decnumber",
+      "name": "decnumber License (see repository notice)",
+      "extractedText": "License text not embedded in this SBOM. See the license file referenced by the project (e.g. ,LICENSES/License_DecNumbers.txt) and upstream headers."
+    }
+  ],
+
+  "packages": [
+    {
+      "name": "uKOS-X",
+      "SPDXID": "SPDXRef-Package-uKOS-X",
+      "versionInfo": "0.2.3",
+      "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
+      "filesAnalyzed": false,
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "NOASSERTION",
+      "homepage": "https://github.com/Edo-Franzi/uKOS-X",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.3",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "Cppcheck",
+      "SPDXID": "SPDXRef-Package-Cppcheck",
+      "versionInfo": "2.19.0",
+      "downloadLocation": "https://github.com/danmar/cppcheck.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "GPL-3.0-or-later",
+      "licenseConcluded": "GPL-3.0-or-later",
+      "copyrightText": "NOASSERTION",
+      "comment": "Location: Third_Parties/Cppcheck/. Development tool only (not linked into firmware binaries).",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/danmar/cppcheck@2.19.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "decnumber",
+      "SPDXID": "SPDXRef-Package-decnumber",
+      "versionInfo": "3.68 (commit ace3fa6)",
+      "downloadLocation": "https://github.com/raitechnology/libdecnumber.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "LicenseRef-decnumber",
+      "licenseConcluded": "LicenseRef-decnumber",
+      "copyrightText": "NOASSERTION",
+      "comment": "Location: Third_Parties/decnumber/. License file referenced by project notice: LICENSES/License_DecNumbers.txt",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/raitechnology/libdecnumber@ace3fa6",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "Doxygen-awesome-css",
+      "SPDXID": "SPDXRef-Package-DoxygenAwesome",
+      "versionInfo": "3.41",
+      "downloadLocation": "https://github.com/jothepro/doxygen-awesome-css.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "Copyright (c) 2021-2023 jothepro",
+      "comment": "Location: Third_Parties/Doxygen-awesome/",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/jothepro/doxygen-awesome-css@3.41",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "FatFs",
+      "SPDXID": "SPDXRef-Package-FatFs",
+      "versionInfo": "0.16 (commit 30ca13c)",
+      "downloadLocation": "https://github.com/abbrev/fatfs.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "LicenseRef-FatFs-ChaN",
+      "licenseConcluded": "LicenseRef-FatFs-ChaN",
+      "copyrightText": "NOASSERTION",
+      "comment": "Location: Third_Parties/FatFs/. License: FatFs (ChaN).",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/abbrev/fatfs@30ca13c",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "IntelRDFPMathLib",
+      "SPDXID": "SPDXRef-Package-IntelRDFPMath",
+      "versionInfo": "2.3 (commit ffca6d2)",
+      "downloadLocation": "https://github.com/xmake-mirror/IntelRDFPMathLib.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "LicenseRef-IntelRDFPMath",
+      "licenseConcluded": "LicenseRef-IntelRDFPMath",
+      "copyrightText": "Copyright (c) 2007-2024, Intel Corp.",
+      "comment": "Location: Third_Parties/IntelRDFPMath/. License: Intel Corp.",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/xmake-mirror/IntelRDFPMathLib@ffca6d2",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "LVGL",
+      "SPDXID": "SPDXRef-Package-LVGL",
+      "versionInfo": "9.4.0",
+      "downloadLocation": "https://github.com/lvgl/lvgl.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "NOASSERTION",
+      "comment": "Location: Third_Parties/LVGL/",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/lvgl/lvgl@9.4.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "MicroPython",
+      "SPDXID": "SPDXRef-Package-MicroPython",
+      "versionInfo": "1.27.0",
+      "downloadLocation": "https://github.com/micropython/micropython.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "Copyright (c) 2013-2019 Damien P. George",
+      "comment": "Location: Third_Parties/MicroPython/",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/micropython/micropython@v1.27.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "tflite-micro",
+      "SPDXID": "SPDXRef-Package-TFLiteMicro",
+      "versionInfo": "commit 510a6c5",
+      "downloadLocation": "https://github.com/tensorflow/tflite-micro.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "Apache-2.0",
+      "licenseConcluded": "Apache-2.0",
+      "copyrightText": "Copyright (c) 2020 The TensorFlow Authors",
+      "comment": "Location: Third_Parties/Tflite-micro/",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/tensorflow/tflite-micro@3b638dd",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "TinyUSB",
+      "SPDXID": "SPDXRef-Package-TinyUSB",
+      "versionInfo": "0.20.0 (commit e416a81)",
+      "downloadLocation": "https://github.com/hathach/tinyusb.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "Copyright (c) 2018, hathach (tinyusb.org)",
+      "comment": "Location: Third_Parties/TinyUSB/",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/hathach/tinyusb@0.20.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+
+    {
+      "name": "STM32Cube_FW_N6",
+      "SPDXID": "SPDXRef-Package-STM32CubeN6",
+      "versionInfo": "1.3.0",
+      "downloadLocation": "https://github.com/STMicroelectronics/STM32CubeN6.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "BSD-3-Clause",
+      "licenseConcluded": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2024, STMicroelectronics",
+      "comment": "External vendor SDK (not distributed in this repository). Included for firmware builds only.",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/STMicroelectronics/STM32CubeN6@1.3.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    }
+  ],
+
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-uKOS-X"
+    },
+
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-Cppcheck" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-decnumber" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-DoxygenAwesome" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-FatFs" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-IntelRDFPMath" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-LVGL" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-MicroPython" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-TFLiteMicro" },
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-TinyUSB" },
+
+    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "DEPENDS_ON", "relatedSpdxElement": "SPDXRef-Package-STM32CubeN6" }
+  ]
+}

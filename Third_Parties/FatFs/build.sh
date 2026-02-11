@@ -89,7 +89,7 @@ printf '\n%bDownload the FatFs package ...%b\n\n' "${BOLD}" "${NC}"
 
 cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs"
 rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/FatFs-${package}"
-git clone https://github.com/abbrev/fatfs "FatFs-${package}"
+git clone https://github.com/abbrev/fatfs.git "FatFs-${package}"
 cd "FatFs-${package}"
 git checkout "${hash}"
 

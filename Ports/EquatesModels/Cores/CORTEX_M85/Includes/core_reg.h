@@ -1,15 +1,15 @@
 /*
-; uKOS.
-; =====
+; core_reg.
+; =========
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		cortex_m85_core equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -50,44 +50,15 @@
 
 // IWYU pragma: begin_exports
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#include	<stdint.h>
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#include	"Registers/core_debug.h"
+#include	"Registers/scb.h"
+#include	"Registers/fpe.h"
+#include	"Registers/mpu.h"
+#include	"Registers/nvic.h"
+#include	"Registers/systick.h"
+#include	"Registers/memsys.h"
+#include	"Registers/core_addendum.h"
 
 // IWYU pragma: end_exports
-
-// uKOS-X main constants
-// -----------------------
-
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.2.3"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		2
-#define	uKOS_VERSION_PATCH		3
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)

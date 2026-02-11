@@ -1,15 +1,15 @@
 /*
-; uKOS.
-; =====
+; core_debug.
+; ===========
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		COREDEBUG equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,46 +48,28 @@
 
 #pragma	once
 
-// IWYU pragma: begin_exports
+// COREDEBUG address definitions
+// -----------------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+typedef struct {
+	volatile	uint32_t	DHCSR;
+	volatile	uint32_t	DCRSR;
+	volatile	uint32_t	DCRDR;
+	volatile	uint32_t	DEMCR;
+	volatile	uint32_t	DSCEMCR;
+	volatile	uint32_t	DAUTHCTRL;
+	volatile	uint32_t	DSCSR;
+} CoreDebug_TypeDef;
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#if (defined(__cplusplus))
+#define	CoreDebug_S		reinterpret_cast<CoreDebug_TypeDef *>(0xE000EDF0u)
+#define	CoreDebug_NS	reinterpret_cast<CoreDebug_TypeDef *>(0xE002EDF0u)
 
-// IWYU pragma: end_exports
+#else
+#define	CoreDebug_S		((CoreDebug_TypeDef *)0xE000EDF0u)
+#define	CoreDebug_NS	((CoreDebug_TypeDef *)0xE002EDF0u)
+#endif
 
-// uKOS-X main constants
-// -----------------------
+// DEMCR register
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.2.3"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		2
-#define	uKOS_VERSION_PATCH		3
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#define CoreDebug_DEMCR_TRCENA		(1u<<24)

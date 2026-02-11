@@ -57,7 +57,17 @@ SCRIPT_PATH="${0:A:h}"
 BOOT="FSBL"
 APPL="FLASH"
 
-cp -f "${SCRIPT_PATH}/${BOOT}.doNotErase" "${BOOT}.bin"
+if [ -f "${SCRIPT_PATH}/fsbl/build/release/fsbl.bin" ]; then
+	cp -f "${SCRIPT_PATH}/fsbl/build/release/fsbl.bin" "${SCRIPT_PATH}/fsbl.noSignature"
+	cp -f "${SCRIPT_PATH}/fsbl.noSignature" "${BOOT}.bin"
+
+elif [ -f "${SCRIPT_PATH}/fsbl.noSignature" ]; then
+	cp -f "${SCRIPT_PATH}/fsbl.noSignature" "${BOOT}.bin"
+
+else
+	echo "You need to build the fsbl.bin"
+	exit 1
+fi
 
 STM32_PROGRAMMER_BIN="${STM32_PROGRAMMER_BIN:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin}"
 STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_BIN}/STM32_Programmer_CLI"

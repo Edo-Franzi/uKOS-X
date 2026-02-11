@@ -89,7 +89,7 @@ printf '\n%bDownload the IntelRDFPMath package ...%b\n\n' "${BOLD}" "${NC}"
 
 cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/IntelRDFPMath"
 rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/IntelRDFPMath/IntelRDFPMath-${package}"
-git clone https://github.com/xmake-mirror/IntelRDFPMathLib "IntelRDFPMath-${package}"
+git clone https://github.com/xmake-mirror/IntelRDFPMathLib.git "IntelRDFPMath-${package}"
 cd "IntelRDFPMath-${package}"
 git checkout "${hash}"
 
