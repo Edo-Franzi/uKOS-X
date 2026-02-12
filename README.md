@@ -2,6 +2,12 @@
 
 (c) 2025-2026, Edo. Franzi, [http://www.ukos.ch](http://www.ukos.ch/)
 
+## Support
+
+This project is developed independently.
+
+**Ozone SmartView** support for **µKOS-X** is available through **[SEGGER](https://www.segger.com) Ozone** (via the SmartView plugin).
+
 ## Introduction
 
 µKOS-X is a multitasking operating system designed specifically for **embedded microcontroller- and DSP-based** systems. Its development traces back to 1984, with the creation of **µKOS-0**. At that time, I developed a simple scheduler without any additional services, constrained by the extremely limited memory available. This early system ran on a Motorola MC6809 processor operating at 1 MHz.

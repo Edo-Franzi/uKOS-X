@@ -156,7 +156,7 @@ void	model_kernel_init(void) {
 
 	#if (KKERN_NB_PRECISE_SIGNALS > 0)
 	TIM4->PSC  = (uint16_t)KPSCT4;
-	TIM4->ARR  = (uint16_t)KARRT4;
+	TIM4->ARR  = (uint32_t)KARRT4;
 	TIM4->EGR  = (uint16_t)TIM4_EGR_UG;
 	TIM4->CNT  = 0u;
 	TIM4->DIER = (uint16_t)TIM4_DIER_UIE;
@@ -167,7 +167,7 @@ void	model_kernel_init(void) {
 // Timer 2 (free running timer for statistics and for the tickcount)
 
 	TIM2->PSC  = (uint16_t)KPSCT2;
-	TIM2->ARR  = (uint16_t)KARRT2;
+	TIM2->ARR  = (uint32_t)KARRT2;
 	TIM2->EGR  = (uint16_t)TIM2_EGR_UG;
 	TIM2->CNT  = 0u;
 	TIM2->DIER = (uint16_t)TIM2_DIER_UIE;
@@ -177,7 +177,7 @@ void	model_kernel_init(void) {
 // Timer 5 (1-ms or tickless)
 
 	TIM5->PSC  = (uint16_t)KPSCT5;
-	TIM5->ARR  = (uint16_t)KARRT5;
+	TIM5->ARR  = (uint32_t)KARRT5;
 	TIM5->EGR  = (uint16_t)TIM5_EGR_UG;
 	TIM5->CNT  = 0u;
 	TIM5->DIER = (uint16_t)TIM5_DIER_UIE;
@@ -187,7 +187,7 @@ void	model_kernel_init(void) {
 // Timer 3 (20-ms)
 
 	TIM3->PSC  = (uint16_t)KPSCT3;
-	TIM3->ARR  = (uint16_t)KARRT3;
+	TIM3->ARR  = (uint32_t)KARRT3;
 	TIM3->EGR  = (uint16_t)TIM3_EGR_UG;
 	TIM3->CNT  = 0u;
 	TIM3->DIER = (uint16_t)TIM3_DIER_UIE;

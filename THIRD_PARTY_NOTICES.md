@@ -85,7 +85,7 @@ the third-party components shipped in this repository.
 ### 2.8) Tflite-micro
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/tensorflow/tflite-micro.git
-- Version: commit 510a6c5
+- Version: commit 49126df
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2020 The TensorFlow Authors. All rights reserved.
@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit e416a81
+- Version: 0.20.0 / commit d13284d
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

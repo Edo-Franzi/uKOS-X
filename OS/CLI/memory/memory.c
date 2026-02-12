@@ -147,11 +147,11 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 // This because of a gcc bug
 // !!! Never use this
-//     ... if ((int32_t)linker_lnHeapI0 > 0)
+//     ... if ((int32_t)linker_lnHeap > 0)
 //
 //     but use this
 //     ... int32_t var
-//     ... var = (int32_t)linker_lnHeapI0
+//     ... var = (int32_t)linker_lnHeap
 //     ... if (var > 0)
 
 	length = (intptr_t)linker_lnHeap;
