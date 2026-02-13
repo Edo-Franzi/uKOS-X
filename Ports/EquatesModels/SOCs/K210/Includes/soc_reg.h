@@ -64,6 +64,7 @@
 #include	"Registers/K210_plic.h"
 #include	"Registers/K210_dvp.h"
 #include	"Registers/K210_dmac.h"
+#include	"Registers/K210_rtc.h"
 #include	"Registers/soc_addendum.h"
 
 // IWYU pragma: end_exports

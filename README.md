@@ -4,9 +4,11 @@
 
 ## Support
 
-This project is developed independently.
-
-**Ozone SmartView** support for **µKOS-X** is available through **[SEGGER](https://www.segger.com) Ozone** (via the SmartView plugin).
+<div>
+  <img src="Tools/Ozone_Plugin/assets/segger.jpg" align="right" width="95" />
+  <p>This project is developed independently.</p>
+  <p><b>Ozone SmartView</b> support for μKOS-X is available through <b>SEGGER Ozone</b> (via the SmartView plugin).</p>
+</div>
 
 ## Introduction
 

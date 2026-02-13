@@ -47,7 +47,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 # uKOS-X CMake module setup
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../cmake")
 
 # Project path configuration
 # - PATH_UKOS	--> Main uKOS-X folder
@@ -199,7 +199,7 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
 # Lib_xxxx components (user) -> liblibx_u.a
 add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
 add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
-add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S MLPN_HAVE_HELIUM_FP_S)
+add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
 add_library(libx_u ${LIBX_U})
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
 
@@ -288,6 +288,9 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${MI
 
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
+
+# Hardware RTC support
+add_compile_definitions(KCALENDAR_WITH_HW_RTC_S=true)
 
 # Stack integrity monitoring
 add_compile_definitions(

@@ -47,7 +47,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 # uKOS-X CMake module setup
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../cmake")
 
 # Project path configuration
 # - PATH_UKOS	--> Main uKOS-X folder
@@ -85,6 +85,9 @@ add_compile_options(
 	-g3 # include extra information for debugger
 	-Os # optimisation
 )
+
+# Graphical display
+set(DISPLAY TFT_2_4_Inches)
 
 # Sources
 # -------
@@ -235,13 +238,21 @@ list(APPEND CLI_U
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
 
+# Graphic library integration (LVGL)
+add_compile_definitions(SYSTEM_LVGL_S)
+find_library(LVGL LVGL ${PATH_UKOS}/Third_Parties/LVGL/Library/${CORE}/${DISPLAY})
+file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DSYSTEM_LVGL_S ")
+
 # All library components
-set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u)
+set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${LVGL})
 
 # System configuration flags
 
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
+
+# Hardware RTC support
+add_compile_definitions(KCALENDAR_WITH_HW_RTC_S=true)
 
 # Baudrate
 add_compile_definitions(KCOMM_DEFAULT_BAUDRATE=115200)

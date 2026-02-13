@@ -514,6 +514,25 @@ static	void	local_GPIO_Configuration(void) {
  */
 static	void	local_RCC_Configuration(void) {
 
+	#ifdef KCALENDAR_WITH_HW_RTC_S
+
+// Enable backup domain access
+
+	REG(PWR)->DBPR |= PWR_DBPR_DBP;								// Disable backup domain write protection
+
+// Enable LSI, select it as RTC source, and enable RTC (on STM32U5G9, LSI is in BDCR register)
+// Do all BDCR modifications in minimal writes to avoid backup domain issues
+
+	REG(RCC)->BDCR = (REG(RCC)->BDCR & ~RCC_BDCR_RTCSEL)
+				   | RCC_BDCR_LSION								// Enable the LSI
+				   | (2u * RCC_BDCR_RTCSEL_0)					// LSI is the source for the RTC
+				   | RCC_BDCR_RTCEN;							// RTC enable
+
+// Waiting for LSI ready
+
+	while ((REG(RCC)->BDCR & RCC_BDCR_LSIRDY) == 0U) { ; }
+	#endif
+
 // Enable HSI, HSE & HSI48 clocks
 
 	REG(RCC)->CR |= RCC_CR_HSION | RCC_CR_HSEON | RCC_CR_HSI48ON;

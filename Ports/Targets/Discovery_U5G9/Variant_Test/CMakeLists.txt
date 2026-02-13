@@ -47,7 +47,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 # uKOS-X CMake module setup
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../cmake")
 
 # Project path configuration
 # - PATH_UKOS	--> Main uKOS-X folder
@@ -279,6 +279,9 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${MI
 
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
+
+# Hardware RTC support
+add_compile_definitions(KCALENDAR_WITH_HW_RTC_S=true)
 
 # Hardware check of the stack
 add_compile_definitions(STUB_KERN_CHECK_XSP_LIMIT_S)

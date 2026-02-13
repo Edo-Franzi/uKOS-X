@@ -1,0 +1,201 @@
+/*
+; model_rtc.
+; ==========
+
+;------------------------------------------------------------------------
+; Author:	Laurent von Allmen		The 2026-02-13
+; Author:	Claude Code (Anthropic)	The 2026-02-13
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for managing the time & date by a hardware rtc.
+;			In the rtc it stored the local time.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#include	"uKOS.h"
+
+// Prototypes
+
+static	bool	local_isLeapYear(int year);
+
+/*
+ * \brief model_rtc_update
+ *
+ * - Update the hardware rtc with a new UTC time
+ *
+ */
+void	model_rtc_update(uint64_t unixTime) {
+	tm_t		localTime;
+	time_t		now;
+	uint8_t		absDays, absMonths, absYears, absHours, absMinutes, absSeconds;
+	uint8_t		century;
+	bool		isLeap;
+	uint32_t	timeout;
+
+	now = (time_t)(unixTime / CLOCKS_PER_SEC);
+	localtime_r(&now, &localTime);
+
+//			time.h formats		rtc formats
+//
+// Days:	1..31				1..31
+// Months:	0..11				1..12
+// Years:	since 1900			0..99
+// Hours:	0..23				0..23
+// Minutes:	0..59				0..59
+// Seconds:	0..59				0..59
+
+	absDays    = (uint8_t)localTime.tm_mday;
+	absMonths  = (uint8_t)(localTime.tm_mon  + 1);
+	absYears   = (uint8_t)(localTime.tm_year % 100);
+	absHours   = (uint8_t)localTime.tm_hour;
+	absMinutes = (uint8_t)localTime.tm_min;
+	absSeconds = (uint8_t)localTime.tm_sec;
+	century    = (uint8_t)(localTime.tm_year / 100);
+
+	isLeap = local_isLeapYear(localTime.tm_year + 1900);
+
+// Ensure RTC is properly initialised and clocked
+// Check if RTC is enabled, if not configure it
+
+	if ((sysctl->clk_en_peri.rtc_clk_en) == 0u) {
+
+// Enable RTC clock
+
+		sysctl->clk_en_peri.rtc_clk_en = 1u;
+
+// Release RTC from reset
+
+		sysctl->peri_reset.rtc_reset = 0u;
+		kern_suspendProcess(1u);
+	}
+
+// Enable write access to RTC registers
+
+	rtc->register_ctrl.write_enable = 1u;
+
+// Wait for write enable with timeout
+
+	while (rtc->register_ctrl.write_enable == 0U) { ; }
+
+// Write date and time registers (K210 uses binary format, not BCD)
+
+	kern_suspendProcess(1u);
+	rtc->time.hour   = absHours   & 0x1Fu;
+	rtc->time.minute = absMinutes & 0x3Fu;
+	rtc->time.second = absSeconds & 0x3Fu;
+
+	kern_suspendProcess(1u);
+	rtc->date.year  = absYears;
+	rtc->date.month = absMonths & 0x0Fu;
+	rtc->date.day   = absDays   & 0x1Fu;
+	rtc->date.week  = ((uint8_t)localTime.tm_wday) & 0x07u;
+
+	kern_suspendProcess(1u);
+	rtc->extended.century   = century & 0x1Fu;
+	rtc->extended.leap_year = isLeap ? (1u) : (0u);
+
+// Disable write access to RTC registers
+
+	rtc->register_ctrl.write_enable = 0u;
+}
+
+/*
+ * \brief model_rtc_readUnixTime
+ *
+ * - Read the Unix time from the rtc local time
+ *
+ */
+void	model_rtc_readUnixTime(uint64_t *unixTime) {
+	time_t		now;
+	tm_t		localTime;
+	uint32_t	date_reg, time_reg, ext_reg;
+	uint32_t	timeout;
+
+// Enable read access to RTC registers
+
+	rtc->register_ctrl.read_enable = 1u;
+
+// Waiting for read enable with timeout
+
+	while ((rtc->register_ctrl.read_enable == 0U) { ; }
+
+// Read the RTC registers (K210 uses binary format, not BCD)
+// Important: read atomically to avoid inconsistent values
+
+	time_reg = *(volatile uint32_t *)&rtc->time;
+	date_reg = *(volatile uint32_t *)&rtc->date;
+	ext_reg  = *(volatile uint32_t *)&rtc->extended;
+
+// Disable read access
+
+	rtc->register_ctrl.read_enable = 0u;
+
+// Extract fields from registers
+//
+//			time.h formats		rtc formats
+//
+// Days:	1..31				1..31
+// Months:	0..11				1..12
+// Years:	since 1900			0..99
+// Hours:	0..23				0..23
+// Minutes:	0..59				0..59
+// Seconds:	0..59				0..59
+
+	localTime.tm_mday  = (int)((date_reg >> 8u)  & 0x1Fu);
+	localTime.tm_mon   = (int)(((date_reg >> 16u) & 0xFu) - 1u);
+	localTime.tm_year  = (int)((((ext_reg & 0x1Fu) * 100u) + ((date_reg >> 24u) & 0xFFu)) - 1900u);
+	localTime.tm_hour  = (int)((time_reg >> 24u) & 0x1Fu);
+	localTime.tm_min   = (int)((time_reg >> 16u) & 0x3Fu);
+	localTime.tm_sec   = (int)((time_reg >> 10u) & 0x3Fu);
+	localTime.tm_isdst = -1;
+
+	now = mktime(&localTime);
+	*unixTime = (uint64_t)(now * CLOCKS_PER_SEC);
+}
+
+/*
+ * \brief local_isLeapYear
+ *
+ * - Check if a year is a leap year
+ *
+ */
+static	bool	local_isLeapYear(int year) {
+	if ((year % 4) != 0)	{ return (false); }
+	if ((year % 100) != 0)	{ return (true);  }
+	if ((year % 400) != 0)	{ return (false); }
+	return (true);
+}

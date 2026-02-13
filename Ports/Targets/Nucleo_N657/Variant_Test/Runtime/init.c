@@ -510,6 +510,28 @@ static	void	local_GPIO_Configuration(void) {
  */
 static	void	local_RCC_Configuration(void) {
 
+	#ifdef KCALENDAR_WITH_HW_RTC_S
+
+// Enable backup domain access
+
+	REG(PWR)->DBPCR |= PWR_DBPCR_DBP;							// Disable backup domain write protection
+
+// Enable LSI, select it as RTC source, and enable RTC
+// On STM32N657: LSI in CR, RTC source in CCIPR7, RTC enable in APB4LENR
+
+	REG(RCC)->CR |= RCC_CR_LSION;								// Enable the LSI
+
+// Waiting for LSI ready
+
+	while ((REG(RCC)->SR & RCC_SR_LSIRDY) == 0U) { ; }
+
+// Select LSI as RTC source and enable RTC
+
+	REG(RCC)->CCIPR7 = (REG(RCC)->CCIPR7 & ~RCC_CCIPR7_RTCSEL)
+					 | (2u * RCC_CCIPR7_RTCSEL_0);				// LSI is the source for the RTC
+	REG(RCC)->APB4LENR |= RCC_APB4LENR_RTCEN;					// RTC enable
+	#endif
+
 	REG(RCC)->CR |= RCC_CR_HSION								// Set HSION bit (64-MHz)
 				  | RCC_CR_HSEON;								// Set HSEON bit (48-MHz)
 	(void)(REG(RCC)->CR);										//

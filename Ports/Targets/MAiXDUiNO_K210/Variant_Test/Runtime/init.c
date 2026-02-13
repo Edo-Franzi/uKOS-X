@@ -384,6 +384,23 @@ static	void	local_RCU_Configuration(void) {
 // 9. Change CPU CLK to PLL
 
 	sysctl->clk_sel0.aclk_sel = (uint32_t)SYSCTL_SOURCE_PLL0 & 0x01u;
+
+// 10. Initialise RTC if enabled
+
+	#ifdef KCALENDAR_WITH_HW_RTC_S
+
+// Enable RTC clock
+
+	sysctl->clk_en_peri.rtc_clk_en = 1u;
+
+// Release RTC from reset
+
+	sysctl->peri_reset.rtc_reset = 0u;
+
+// Waiting for RTC to be ready
+
+	local_wait_100n(100u);
+	#endif
 }
 
 /*

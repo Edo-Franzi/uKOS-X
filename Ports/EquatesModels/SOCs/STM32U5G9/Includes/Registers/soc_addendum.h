@@ -540,3 +540,12 @@ enum : uint32_t {
 #define	LTDC_LxCLUTWR_GREEN_0	LTDC_L1CLUTWR_GREEN_0
 #define	LTDC_LxCLUTWR_BLUE		LTDC_L1CLUTWR_BLUE
 #define	LTDC_LxCLUTWR_BLUE_0	LTDC_L1CLUTWR_BLUE_0
+
+// RTC additional definitions
+// --------------------------
+
+// WPR Configuration (Write Protection Register)
+
+#define	RTC_WPR_UNLOCK_KEY1		0x000000CAu
+#define	RTC_WPR_UNLOCK_KEY2		0x00000053u
+#define	RTC_WPR_LOCK_KEY		0x000000FFu

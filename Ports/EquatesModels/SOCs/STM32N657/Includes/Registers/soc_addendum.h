@@ -272,3 +272,13 @@ typedef struct {
 											(f7<<7)   | (f6<<6)   | (f5<<5)   | (f4<<4)   |	\
 											(f3<<3)   | (f2<<2)   | (f1<<1)   | (f0<<0);
 #endif
+
+// RTC additional definitions
+// --------------------------
+
+// WPR Configuration (Write Protection Register)
+
+#define	RTC_WPR_UNLOCK_KEY1		0x000000CAu
+#define	RTC_WPR_UNLOCK_KEY2		0x00000053u
+#define	RTC_WPR_LOCK_KEY		0x000000FFu
+

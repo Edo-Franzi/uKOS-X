@@ -1,0 +1,248 @@
+/*
+; model_rtc.
+; ==========
+
+;------------------------------------------------------------------------
+; Author:	Laurent von Allmen		The 2026-02-13
+; Author:	Claude Code (Anthropic)	The 2026-02-13
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for managing the time & date by a hardware rtc.
+;			In the rtc it stored the local time.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#include	<stdint.h>
+#include	<time.h>
+
+#include	"types.h"
+#include	"soc_reg.h"
+#include	"kern/kern.h"
+
+// Prototypes
+
+static	void	local_binToBCD(uint8_t *value);
+
+/*
+ * \brief model_rtc_update
+ *
+ * - Update the hardware rtc with a new UTC time
+ *
+ */
+void	model_rtc_update(uint64_t unixTime) {
+	tm_t		localTime;
+	time_t		now;
+	uint8_t		absDays, absMonths, absYears, absHours, absMinutes, absSeconds;
+
+	now = (time_t)(unixTime / CLOCKS_PER_SEC);
+	localtime_r(&now, &localTime);
+
+//			time.h formats		rtc formats
+//
+// Days:	1..31				1..31
+// Months:	0..11				1..12
+// Years:	since 1900			0..99
+// Hours:	0..23				0..23
+// Minutes:	0..59				0..59
+// Seconds:	0..59				0..59
+
+	absDays	   = (uint8_t)localTime.tm_mday;
+	absMonths  = (uint8_t)(localTime.tm_mon  + 1);
+	absYears   = (uint8_t)(localTime.tm_year - 100);
+	absHours   = (uint8_t)localTime.tm_hour;
+	absMinutes = (uint8_t)localTime.tm_min;
+	absSeconds = (uint8_t)localTime.tm_sec;
+
+// Binary format to BCD
+
+	local_binToBCD(&absDays);
+	local_binToBCD(&absMonths);
+	local_binToBCD(&absYears);
+	local_binToBCD(&absHours);
+	local_binToBCD(&absMinutes);
+	local_binToBCD(&absSeconds);
+
+// Make possible the access to the RTC & RTC backup register.
+// After the restart, the RTC is in the protected mode
+// Remove the write protection
+// Enter in the initialisation mode
+
+	REG(PWR)->DBPR |= PWR_DBPR_DBP;
+
+// Wait for DBP bit to be actually set (synchronisation delay)
+
+	{
+		uint32_t timeout = 0x10000U;
+		while (((REG(PWR)->DBPR & PWR_DBPR_DBP) == 0U) && (timeout > 0U)) {
+			timeout--;
+		}
+	}
+
+// Ensure RTC is properly initialised and clocked
+// Check if RTC is enabled, if not configure it
+
+	if ((REG(RCC)->BDCR & RCC_BDCR_RTCEN) == 0U) {
+		// Enable LSI if not already enabled
+		if ((REG(RCC)->BDCR & RCC_BDCR_LSION) == 0U) {
+			REG(RCC)->BDCR |= RCC_BDCR_LSION;
+			// Wait for LSI to be ready
+			uint32_t timeout = 0x10000U;
+			while (((REG(RCC)->BDCR & RCC_BDCR_LSIRDY) == 0U) && (timeout > 0U)) {
+				timeout--;
+			}
+		}
+
+		// Select LSI as RTC clock source (RTCSEL = 10b for LSI)
+		REG(RCC)->BDCR = (REG(RCC)->BDCR & ~RCC_BDCR_RTCSEL) | (2U * RCC_BDCR_RTCSEL_0);
+
+		// Enable RTC
+		REG(RCC)->BDCR |= RCC_BDCR_RTCEN;
+
+		// Wait a bit for RTC to start
+		{
+			volatile uint32_t delay = 0x1000U;
+			while (delay > 0U) {
+				delay--;
+			}
+		}
+	}
+
+	REG(RTC)->WPR = RTC_WPR_UNLOCK_KEY1;
+	REG(RTC)->WPR = RTC_WPR_UNLOCK_KEY2;
+
+// Waiting for ready to write
+// Set the new counter values (BCD values)
+
+	REG(RTC)->ICSR |= RTC_ICSR_INIT;
+
+// Wait for initialisation mode with timeout
+
+	{
+		uint32_t timeout = 0x10000U;
+		while (((REG(RTC)->ICSR & RTC_ICSR_INITF) == 0U) && (timeout > 0U)) {
+			timeout--;
+		}
+		if (timeout == 0U) {
+			// Timeout occurred, restore write protection and return
+			REG(RTC)->WPR = RTC_WPR_LOCK_KEY;
+			return;
+		}
+	}
+
+	kern_suspendProcess(1U);
+	REG(RTC)->TR = ((uint32_t)(absHours   /  16U)<<20U)
+				 | ((uint32_t)(absHours   & 0xFu)<<16U)
+				 | ((uint32_t)(absMinutes /  16U)<<12U)
+				 | ((uint32_t)(absMinutes & 0xFu)<<8U)
+				 | ((uint32_t)(absSeconds /  16U)<<4U)
+				 | ((uint32_t)(absSeconds & 0xFu)<<0U);
+
+	kern_suspendProcess(1U);
+	REG(RTC)->DR = ((uint32_t)(absYears  / 16U )<<20U)
+				 | ((uint32_t)(absYears  & 0xFu)<<16U)
+				 | ((uint32_t)(absMonths / 16U )<<12U)
+				 | ((uint32_t)(absMonths & 0xFu)<<8U)
+				 | ((uint32_t)(absDays   / 16U )<<4U)
+				 | ((uint32_t)(absDays   & 0xFu)<<0U);
+
+	kern_suspendProcess(1U);
+	REG(RTC)->ICSR &= (uint32_t)~RTC_ICSR_INIT;
+
+// Exit from the initialisation mode
+// Set the write protection
+
+	REG(RTC)->WPR = RTC_WPR_LOCK_KEY;
+}
+
+/*
+ * \brief model_rtc_readUnixTime
+ *
+ * - Read the Unix time from the rtc local time
+ *
+ */
+void	model_rtc_readUnixTime(uint64_t *unixTime) {
+	time_t		now;
+	tm_t		localTime;
+	uint32_t	date, time;
+
+// Important: read the RTC time before the date
+// Build the Unix time
+
+	time = REG(RTC)->TR;
+	date = REG(RTC)->DR;
+
+// BCD format to binary
+//
+//			time.h formats		rtc formats
+//
+// Days:	1..31				1..31
+// Months:	0..11				1..12
+// Years:	since 1900			0..99
+// Hours:	0..23				0..23
+// Minutes:	0..59				0..59
+// Seconds:	0..59				0..59
+
+	localTime.tm_mday  = (int)((((date>>4)  & 0x3U) * 10U) + ((date>>0U)  & 0xFU));
+	localTime.tm_mon   = (int)((((date>>12) & 0x1U) * 10U) + ((date>>8U)  & 0xFU) - 1U);
+	localTime.tm_year  = (int)((((date>>20) & 0xFU) * 10U) + ((date>>16U) & 0xFU) + 100U);
+	localTime.tm_hour  = (int)((((time>>20) & 0x3U) * 10U) + ((time>>16U) & 0xFU));
+	localTime.tm_min   = (int)((((time>>12) & 0x7U) * 10U) + ((time>>8U)  & 0xFU));
+	localTime.tm_sec   = (int)((((time>>4)  & 0x7U) * 10U) + ((time>>0U)  & 0xFU));
+	localTime.tm_isdst = -1;
+
+	now = mktime(&localTime);
+	*unixTime = (uint64_t)(now * CLOCKS_PER_SEC);
+}
+
+/*
+ * \brief local_binToBCD
+ *
+ * - This function converts the binary value in BCD value
+ *
+ */
+static	void	local_binToBCD(uint8_t *value) {
+	uint8_t		x = *value;
+	uint8_t		bcd = 0U, shift = 0U, digit;
+
+	while ((x > 0U) && (shift < 8U)) {
+		digit = (uint8_t)((uint32_t)x % 10U);
+		bcd	  = (uint8_t)((uint32_t)bcd | ((uint32_t)digit<<(uint32_t)shift));
+		x	  = (uint8_t)((uint32_t)x / 10U);
+		shift = (uint8_t)(shift + 4U);
+    }
+    *value = bcd;
+}

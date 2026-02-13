@@ -584,6 +584,37 @@ static	void	local_RCC_Configuration(void) {
 	RCC->CFGR = (4u * RCC_CFGR_MCO1SEL_0)				// MCO1 HSI48
 			  | (1u * RCC_CFGR_MCO1PRE_0)				// prescaler / 1
 			  | (3u * RCC_CFGR_SW_0);					// CPU clock = PLL
+
+	#ifdef KCALENDAR_WITH_HW_RTC_S
+
+// RTC
+// ---
+
+	PWR->CR1 |= PWR_CR1_DBP;							//
+	while ((PWR->CR1 & PWR_CR1_DBP) == 0u) { ; }		// Disable backup domain write protection
+
+// Prepare the LSE (disable bypass),
+
+	RCC->BDCR &= ~RCC_BDCR_LSEBYP;						// LSE oscillator not bypassed
+	RCC->BDCR &= ~RCC_BDCR_LSEDRV;						//
+	RCC->BDCR |=  (3u * RCC_BDCR_LSEDRV_0);				// Highest drive
+	RCC->BDCR |=  RCC_BDCR_LSEON;						//
+	while ((RCC->BDCR & RCC_BDCR_LSERDY) == 0u) { ; }	// LSE on
+
+// LSE as a clock for the RTC
+
+    RCC->BDCR &= ~RCC_BDCR_RTCSRC;						//
+    RCC->BDCR |=  (1u * RCC_BDCR_RTCSRC_0);				// LSE is the source for the RTC
+    RCC->BDCR |=  RCC_BDCR_RTCEN;						// RTC enable
+
+	RTC->WPR = RTC_WPR_UNLOCK_KEY1;						//
+	RTC->WPR = RTC_WPR_UNLOCK_KEY2;						// Unlock
+
+	RTC->CR &= ~RTC_CR_BYPSHAD;							// Disable the bypass
+
+	RTC->WPR = RTC_WPR_LOCK_KEY;						// Lock
+	#endif
+
 }
 
 /*

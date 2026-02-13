@@ -387,13 +387,28 @@ static	void	local_GPIO_Configuration(void) {
 static	void	local_RCC_Configuration(void) {
 
 	RCC->CSR	 |= RCC_CSR_LSION;						// Enable the LSI
-	RCC->CR      &= 0xFFFFFF0Eu;						// MSI off
-	RCC->CR      |= 0x000101BCu;						// HSI & HSE on, MSI 48-MHz
-	RCC->CFGR     = 0x00000000u;						// Reset CFGR register
-	RCC->CR      &= 0xFEF7FFFFu;						// Reset CSSON and PLLON bits
-	RCC->PLLCFGR  = 0x00001000u;						// Reset PLLCFGR register
-	RCC->CR      &= 0xFFFBFFFFu;						// Reset HSEBYP bit
-	RCC->CR      |= 0x00000001u;						// MSI on
+
+	#ifdef KCALENDAR_WITH_HW_RTC_S
+	while ((RCC->CSR & RCC_CSR_LSIRDY) == 0u) { ; }		// Wait for LSI ready
+
+// Enable backup domain access and configure RTC
+
+	PWR->CR1 |= PWR_CR1_DBP;							// Disable backup domain write protection
+
+// Select LSI as RTC clock source and enable RTC
+
+	RCC->BDCR = (RCC->BDCR & ~RCC_BDCR_RTCSEL)
+			  | (2u * RCC_BDCR_RTCSEL_0);				// LSI is the source for the RTC
+	RCC->BDCR |= RCC_BDCR_RTCEN;						// RTC enable
+	#endif
+
+	RCC->CR      &= 0xFFFFFF0EU;						// MSI off
+	RCC->CR      |= 0x000101BCU;						// HSI & HSE on, MSI 48-MHz
+	RCC->CFGR     = 0x00000000U;						// Reset CFGR register
+	RCC->CR      &= 0xFEF7FFFFU;						// Reset CSSON and PLLON bits
+	RCC->PLLCFGR  = 0x00001000U;						// Reset PLLCFGR register
+	RCC->CR      &= 0xFFFBFFFFU;						// Reset HSEBYP bit
+	RCC->CR      |= 0x00000001U;						// MSI on
 
 // Activate the ART + 5ws (OK for 120-MHz)
 

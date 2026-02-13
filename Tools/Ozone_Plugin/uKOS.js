@@ -59,6 +59,7 @@ var		vCortex				  = 0;
 var		vRisc_vRV32			  = 1;
 var		vRisc_vRV64			  = 2;
 var		vNbCores			  = 1;
+var		vSzFrame			  = 0;
 var		vInterface			  = [];
 var		vArchString			  = "";
 var		vuKOSString			  = ""
@@ -94,14 +95,25 @@ function init() {
 	switch (arch) {
 		default:
 		case vCortex: {
-			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority"];
+			vSzFrame = 10;
+			vPadding = 8;
+			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "stack", "sp[0]", "sp[1]", "sp[2]", "sp[3]", "sp[4]", "sp[5]", "sp[6]", "sp[7]", "sp[8]", "sp[9]"];
 			vArchString = "ARM - cortex M";
 			vPadding = 8;
 			break;
 		}
-		case vRisc_vRV32:
+		case vRisc_vRV32: {
+			vSzFrame = 10;
+			vPadding = 8;
+			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "stack", "sp[0]", "sp[1]", "sp[2]", "sp[3]", "sp[4]", "sp[5]", "sp[6]", "sp[7]", "sp[8]", "sp[9]"];
+			vArchString = "RISC-V RV32";
+			vPadding = 8;
+			break;
+		}
 		case vRisc_vRV64: {
-			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority"];
+			vSzFrame = 10;
+			vPadding = 16;
+			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "stack", "sp[0]", "sp[1]", "sp[2]", "sp[3]", "sp[4]", "sp[5]", "sp[6]", "sp[7]", "sp[8]", "sp[9]"];
 			vArchString = "RISC-V RV32";
 			vPadding = 8;
 			break;
@@ -335,10 +347,15 @@ function uKOS_getProcessRow(rowIndex) {
 	var		stateText;
 	var		timeout;
 	var		dynaPriority;
+	var		stackPtr;
 	var		stack;
+	var		size;
+	var		expr;
+	var		value;
 	var		arch;
 	var		core;
 	var		i;
+	var		j;
 
 	core = vNbCores - 1;
 	arch = Number(vuKOSArchitecture);
@@ -350,7 +367,7 @@ function uKOS_getProcessRow(rowIndex) {
 			process		   = Debug.evaluate("vKern_current["+ core +"]");
 			currentProcess = Debug.evaluate("&vKern_proc["+ core +"]["+ i +"]");
 			identifier	   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oIdentifier").toString();
-			stack		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oStack");
+			stackPtr	   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oStack");
 			mode		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oMode");
 			nbExecutions   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oStatistic.oNbExecutions");
 			nested		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oNestedPrivilege");
@@ -382,9 +399,16 @@ function uKOS_getProcessRow(rowIndex) {
 			result.push(timeout.toString(10));
 			result.push(nbExecutions.toString(10));
 			result.push(dynaPriority.toString(10));
+			result.push("0x" + local_padLeftString(stackPtr.toString(16).toUpperCase(), vPadding));
+
+			size = (arch == 2) ? (8) : (4);
+
+			for (j = 0; j < vSzFrame; j++) {
+				value = TargetInterface.peekWord(stackPtr + (j * size));
+				result.push("0x" + local_padLeftString(value.toString(16).toUpperCase(), vPadding));
+			}
 			return (result);
 		}
-
 	}
 	return (null);
 }
