@@ -64,7 +64,6 @@ void	model_rtc_update(uint64_t unixTime) {
 	uint8_t		absDays, absMonths, absYears, absHours, absMinutes, absSeconds;
 	uint8_t		century;
 	bool		isLeap;
-	uint32_t	timeout;
 
 	now = (time_t)(unixTime / CLOCKS_PER_SEC);
 	localtime_r(&now, &localTime);
@@ -143,7 +142,6 @@ void	model_rtc_readUnixTime(uint64_t *unixTime) {
 	time_t		now;
 	tm_t		localTime;
 	uint32_t	date_reg, time_reg, ext_reg;
-	uint32_t	timeout;
 
 // Enable read access to RTC registers
 
@@ -151,7 +149,7 @@ void	model_rtc_readUnixTime(uint64_t *unixTime) {
 
 // Waiting for read enable with timeout
 
-	while ((rtc->register_ctrl.read_enable == 0U) { ; }
+	while (rtc->register_ctrl.read_enable == 0U) { ; }
 
 // Read the RTC registers (K210 uses binary format, not BCD)
 // Important: read atomically to avoid inconsistent values

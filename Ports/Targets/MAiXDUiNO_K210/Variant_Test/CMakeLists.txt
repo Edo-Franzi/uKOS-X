@@ -47,7 +47,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 # uKOS-X CMake module setup
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
 
 # Project path configuration
 # - PATH_UKOS	--> Main uKOS-X folder

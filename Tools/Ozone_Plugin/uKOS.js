@@ -61,6 +61,7 @@ var		vRisc_vRV64			  = 2;
 var		vNbCores			  = 1;
 var		vSzFrame			  = 0;
 var		vInterface			  = [];
+var		vStackFrameRoutine	  = [];
 var		vArchString			  = "";
 var		vuKOSString			  = ""
 var		vuKOSMajorString	  = ""
@@ -95,27 +96,30 @@ function init() {
 	switch (arch) {
 		default:
 		case vCortex: {
-			vSzFrame = 10;
+			vSzFrame = 18;
 			vPadding = 8;
-			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "stack", "sp[0]", "sp[1]", "sp[2]", "sp[3]", "sp[4]", "sp[5]", "sp[6]", "sp[7]", "sp[8]", "sp[9]"];
+			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "Stack", "lre", "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12", "lr", "pc", "xpdr", "basepri"];
+			vStackFrameRoutine = local_geStackFrameCortex;
 			vArchString = "ARM - cortex M";
 			vPadding = 8;
 			break;
 		}
 		case vRisc_vRV32: {
-			vSzFrame = 10;
+			vSzFrame = 35;
 			vPadding = 8;
-			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "stack", "sp[0]", "sp[1]", "sp[2]", "sp[3]", "sp[4]", "sp[5]", "sp[6]", "sp[7]", "sp[8]", "sp[9]"];
+			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "Stack", "ra", "sp", "gp", "tp", "t0", "t1", "t2", "t3", "t4", "t5", "t6", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "mepc", "mcause", "mstatus", "mth"];
+			vStackFrameRoutine = local_geStackFrameRV32;
 			vArchString = "RISC-V RV32";
 			vPadding = 8;
 			break;
 		}
 		case vRisc_vRV64: {
-			vSzFrame = 10;
+			vSzFrame = 35;
 			vPadding = 16;
-			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "stack", "sp[0]", "sp[1]", "sp[2]", "sp[3]", "sp[4]", "sp[5]", "sp[6]", "sp[7]", "sp[8]", "sp[9]"];
-			vArchString = "RISC-V RV32";
-			vPadding = 8;
+			vInterface = ["Process", "Id", "Privilege", "Prov. Privilege", "Nested Privilege", "State", "Timeout [ms]", "Nb Executions", "Dynamic Priority", "Stack", "ra", "sp", "gp", "tp", "t0", "t1", "t2", "t3", "t4", "t5", "t6", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "mepc", "mcause", "mstatus", "mth"];
+			vStackFrameRoutine = local_geStackFrameRV64;
+			vArchString = "RISC-V RV64";
+			vPadding = 16;
 			break;
 		}
 	}
@@ -252,6 +256,180 @@ function local_getCurrentRow(pageName) {
 }
 
 /*
+ * local_geStackFrameCortex()
+ *
+ *  Functions description:
+ *    Returns the stack frame of a process for a specific architecture
+ */
+function local_geStackFrameCortex(stack) {
+	var		i;
+	var		add;
+	var		lre;
+	var		basepri;
+	var		stackframe = new Array(vSzFrame);
+
+	i		= 0;
+	add		= stack;
+
+// For cortex machine we collect the following frame
+
+// uKOS-X cortex stackframe
+// lre (s31..s16) basepri r4 r5 r6 r7 r8 r9 r10 r11 r0 r1 r2 r3 r12 lr pc xpdr (s15..s0) (fpscr)
+//
+// Collected in this format
+// lre r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 lr pc xpdr basepri
+
+	lre		= TargetInterface.peekWord(add); add += 4;
+
+// Verify if it is a lazy stacking (with or without FPU)
+// If it is the case, then skip S16..S31
+
+	if ((lre & 0x10) != 0x10) {
+		add += (4 * 16);
+	}
+
+	basepri	= TargetInterface.peekWord(add); add += 4;
+
+// Save ...
+// 0   1  2  3  4  5  6  7  8  9  10 11  12  13  14 15 16   17
+// lre r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 lr pc xpdr basepri
+//
+// lre ............................................................
+// ................r4 r5 r6 r7 r8 r9 r10 r11.......................
+// ....r0 r1 r2 r3.................................................
+// ..........................................r12 lr pc xpdr........
+// .........................................................basepri
+
+									  stackframe[0]  = lre;
+	for (i = 5;  i < (5  + 8); i++) { stackframe[i]  = TargetInterface.peekWord(add); add += 4; }
+	for (i = 1;  i < (1  + 4); i++) { stackframe[i]  = TargetInterface.peekWord(add); add += 4; }
+	for (i = 13; i < (13 + 4); i++) { stackframe[i]  = TargetInterface.peekWord(add); add += 4; }
+									  stackframe[17] = basepri;
+
+	return (stackframe);
+}
+
+/*
+ * local_geStackFrameRV32()
+ *
+ *  Functions description:
+ *    Returns the stack frame of a process for a specific architecture
+ */
+function local_geStackFrameRV32(stack) {
+	var		stackframe = new Array(vSzFrame);
+
+// For RV32 machine we collect the following frame
+
+// uKOS-X RV32 stackframe
+// 0    1      2       3   4   5   6  7  8  9  10 11 12 13 14 15 16 17   18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+// mepc mcause mstatus mth s11 s10 s9 s8 s7 s6 s5 s4 s3 s2 s1 tp gp (x0) t6 t5 t4 t3 a7 a6 a5 a4 a3 a2 a1 a0 s0 t2 t1 t0 ra
+//
+// Collected in this format
+// ra sp gp tp t0 t1 t2 t3 t4 t5 t6 s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 a0 a1 a2 a3 a4 a5 a6 a7 mepc mcause mstatus mth
+
+// Save ...
+// 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20  21  22 23 24 25 26 27 28 29 30 31   32     33      34
+// ra sp gp tp t0 t1 t2 t3 t4 t5 t6 s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 a0 a1 a2 a3 a4 a5 a6 a7 mepc mcause mstatus mth
+
+	stackframe[0]  = TargetInterface.peekWord(4 * 34);
+	stackframe[1]  = stack;
+	stackframe[2]  = TargetInterface.peekWord(4 * 16);
+	stackframe[3]  = TargetInterface.peekWord(4 * 15);
+	stackframe[4]  = TargetInterface.peekWord(4 * 33);
+	stackframe[5]  = TargetInterface.peekWord(4 * 32);
+	stackframe[6]  = TargetInterface.peekWord(4 * 31);
+	stackframe[7]  = TargetInterface.peekWord(4 * 21);
+	stackframe[8]  = TargetInterface.peekWord(4 * 20);
+	stackframe[9]  = TargetInterface.peekWord(4 * 19);
+	stackframe[10] = TargetInterface.peekWord(4 * 18);
+	stackframe[11] = TargetInterface.peekWord(4 * 30);
+	stackframe[12] = TargetInterface.peekWord(4 * 14);
+	stackframe[13] = TargetInterface.peekWord(4 * 13);
+	stackframe[14] = TargetInterface.peekWord(4 * 12);
+	stackframe[15] = TargetInterface.peekWord(4 * 11);
+	stackframe[16] = TargetInterface.peekWord(4 * 10);
+	stackframe[17] = TargetInterface.peekWord(4 * 9);
+	stackframe[18] = TargetInterface.peekWord(4 * 8);
+	stackframe[19] = TargetInterface.peekWord(4 * 7);
+	stackframe[20] = TargetInterface.peekWord(4 * 6);
+	stackframe[21] = TargetInterface.peekWord(4 * 5);
+	stackframe[22] = TargetInterface.peekWord(4 * 4);
+	stackframe[23] = TargetInterface.peekWord(4 * 29);
+	stackframe[24] = TargetInterface.peekWord(4 * 28);
+	stackframe[25] = TargetInterface.peekWord(4 * 27);
+	stackframe[26] = TargetInterface.peekWord(4 * 26);
+	stackframe[27] = TargetInterface.peekWord(4 * 25);
+	stackframe[28] = TargetInterface.peekWord(4 * 24);
+	stackframe[29] = TargetInterface.peekWord(4 * 23);
+	stackframe[30] = TargetInterface.peekWord(4 * 22);
+	stackframe[31] = TargetInterface.peekWord(4 * 0);
+	stackframe[32] = TargetInterface.peekWord(4 * 1);
+	stackframe[33] = TargetInterface.peekWord(4 * 2);
+	stackframe[34] = TargetInterface.peekWord(4 * 3);
+	return (stackframe);
+}
+
+/*
+ * local_geStackFrameRV64()
+ *
+ *  Functions description:
+ *    Returns the stack frame of a process for a specific architecture
+ */
+function local_geStackFrameRV64(stack) {
+	var		stackframe = new Array(vSzFrame);
+
+// For RV64 machine we collect the following frame
+
+// uKOS-X RV64 stackframe
+// 0   1    2       3      4                     18 19 20 21 22 23 24 25 26 27 28 29  30                                  51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68
+// mth core mstatus mcause mepc (fcr, fs0..fs11) x0 gp tp s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 (ft11..ft8, fa7..fa0, ft7..ft0) t6 t5 t4 t3 a7 a6 a5 a4 a3 a2 a1 a0 s1 s0 t2 t1 t0 ra
+//
+// Collected in this format
+// ra sp gp tp t0 t1 t2 t3 t4 t5 t6 s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 a0 a1 a2 a3 a4 a5 a6 a7 mepc mcause mstatus mth
+
+// Save ...
+// 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20  21  22 23 24 25 26 27 28 29 30 31   32     33      34
+// ra sp gp tp t0 t1 t2 t3 t4 t5 t6 s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 a0 a1 a2 a3 a4 a5 a6 a7 mepc mcause mstatus mth
+
+	stackframe[0]  = TargetInterface.peekWord(8 * 68);
+	stackframe[1]  = stack;
+	stackframe[2]  = TargetInterface.peekWord(8 * 19);
+	stackframe[3]  = TargetInterface.peekWord(8 * 20);
+	stackframe[4]  = TargetInterface.peekWord(8 * 67);
+	stackframe[5]  = TargetInterface.peekWord(8 * 66);
+	stackframe[6]  = TargetInterface.peekWord(8 * 65);
+	stackframe[7]  = TargetInterface.peekWord(8 * 54);
+	stackframe[8]  = TargetInterface.peekWord(8 * 53);
+	stackframe[9]  = TargetInterface.peekWord(8 * 52);
+	stackframe[10] = TargetInterface.peekWord(8 * 51);
+	stackframe[11] = TargetInterface.peekWord(8 * 64);
+	stackframe[12] = TargetInterface.peekWord(8 * 63);
+	stackframe[13] = TargetInterface.peekWord(8 * 21);
+	stackframe[14] = TargetInterface.peekWord(8 * 22);
+	stackframe[15] = TargetInterface.peekWord(8 * 23);
+	stackframe[16] = TargetInterface.peekWord(8 * 24);
+	stackframe[17] = TargetInterface.peekWord(8 * 25);
+	stackframe[18] = TargetInterface.peekWord(8 * 26);
+	stackframe[19] = TargetInterface.peekWord(8 * 27);
+	stackframe[20] = TargetInterface.peekWord(8 * 28);
+	stackframe[21] = TargetInterface.peekWord(8 * 29);
+	stackframe[22] = TargetInterface.peekWord(8 * 30);
+	stackframe[23] = TargetInterface.peekWord(8 * 62);
+	stackframe[24] = TargetInterface.peekWord(8 * 61);
+	stackframe[25] = TargetInterface.peekWord(8 * 60);
+	stackframe[26] = TargetInterface.peekWord(8 * 59);
+	stackframe[27] = TargetInterface.peekWord(8 * 58);
+	stackframe[28] = TargetInterface.peekWord(8 * 57);
+	stackframe[29] = TargetInterface.peekWord(8 * 56);
+	stackframe[30] = TargetInterface.peekWord(8 * 55);
+	stackframe[31] = TargetInterface.peekWord(8 * 4);
+	stackframe[32] = TargetInterface.peekWord(8 * 3);
+	stackframe[33] = TargetInterface.peekWord(8 * 2);
+	stackframe[34] = TargetInterface.peekWord(8 * 0);
+	return (stackframe);
+}
+
+/*
  * local_padLeftString()
  *
  *  Functions description:
@@ -336,7 +514,7 @@ function uKOS_getProcessRow(rowIndex) {
 	var		result					= [];
 	var		nbProcess;
 	var		process;
-	var		currentProcess;
+	var		runProcess;
 	var		identifier;
 	var		nbExecutions;
 	var		mode;
@@ -347,11 +525,8 @@ function uKOS_getProcessRow(rowIndex) {
 	var		stateText;
 	var		timeout;
 	var		dynaPriority;
-	var		stackPtr;
 	var		stack;
-	var		size;
-	var		expr;
-	var		value;
+	var		stackFrame;
 	var		arch;
 	var		core;
 	var		i;
@@ -364,18 +539,20 @@ function uKOS_getProcessRow(rowIndex) {
 		vLastPrimaryUsedRow++;
 		state = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oState");
 		if ((state & (1<<BPROC_INSTALLED)) != 0) {
-			process		   = Debug.evaluate("vKern_current["+ core +"]");
-			currentProcess = Debug.evaluate("&vKern_proc["+ core +"]["+ i +"]");
+			runProcess	   = Debug.evaluate("vKern_runProc["+ core +"]");
+			process		   = Debug.evaluate("&vKern_proc["+ core +"]["+ i +"]");
 			identifier	   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oIdentifier").toString();
-			stackPtr	   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oStack");
+			stack		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oStack");
 			mode		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oSpecification.oMode");
 			nbExecutions   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oStatistic.oNbExecutions");
 			nested		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oNestedPrivilege");
 			dynaPriority   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oDynamicPriority");
 			timeout		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oTimeout");
 
-			stateText  = (process == currentProcess) ? ("Running")  : ("Scheduled");
-			status	   = (process == currentProcess) ? ("Running")  : ("Scheduled");
+			stackframe = vStackFrameRoutine(stack);
+
+			stateText  = (process == runProcess) ? ("Running")  : ("Scheduled");
+			status	   = (process == runProcess) ? ("Running")  : ("Scheduled");
 
 			if ((state & (1<<BPROC_SUSP_TIME))   != 0) { status = "Waiting"; stateText = "Susp. for a Time";	   }
 			if ((state & (1<<BPROC_SUSP_SIGN))   != 0) { status = "Waiting"; stateText = "Susp. for a Signal";	   }
@@ -399,13 +576,20 @@ function uKOS_getProcessRow(rowIndex) {
 			result.push(timeout.toString(10));
 			result.push(nbExecutions.toString(10));
 			result.push(dynaPriority.toString(10));
-			result.push("0x" + local_padLeftString(stackPtr.toString(16).toUpperCase(), vPadding));
+			result.push("0x" + local_padLeftString(stack.toString(16).toUpperCase(), vPadding));
 
-			size = (arch == 2) ? (8) : (4);
+// Print the stack frames for all processes except the running one,
+// because when Ozone stops execution, the stack frame of the running process has not been built yet.
 
-			for (j = 0; j < vSzFrame; j++) {
-				value = TargetInterface.peekWord(stackPtr + (j * size));
-				result.push("0x" + local_padLeftString(value.toString(16).toUpperCase(), vPadding));
+			if (process != runProcess) {
+				for (j = 0; j < vSzFrame; j++) {
+					result.push("0x" + local_padLeftString(stackframe[j].toString(16).toUpperCase(), vPadding));
+				}
+			}
+			else {
+				for (j = 0; j < vSzFrame; j++) {
+					result.push("_");
+				}
 			}
 			return (result);
 		}

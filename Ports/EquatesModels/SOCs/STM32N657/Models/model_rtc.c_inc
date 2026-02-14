@@ -114,7 +114,7 @@ void	model_rtc_update(uint64_t unixTime) {
 
 // Waiting for LSI to be ready
 
-			while (((REG(RCC)->SR & RCC_SR_LSIRDY) == 0u) { ; }
+			while ((REG(RCC)->SR & RCC_SR_LSIRDY) == 0u) { ; }
 		}
 
 // Select LSI as RTC clock source (RTCSEL = 10b for LSI)
