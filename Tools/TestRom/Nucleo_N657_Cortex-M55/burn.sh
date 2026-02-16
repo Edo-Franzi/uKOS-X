@@ -57,7 +57,7 @@ APPL="testROM"
 
 cp -f "./burn/${BOOT}.doNotErase" "${BOOT}.bin"
 
-STM32_PROGRAMMER_BIN="${STM32_PROGRAMMER_BIN:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin}"
+STM32_PROGRAMMER_BIN="${STM32_PROGRAMMER_BIN:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin}"
 STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_BIN}/STM32_Programmer_CLI"
 STM32_PROGRAMMER_SIG="${STM32_PROGRAMMER_BIN}/STM32_SigningTool_CLI"
 

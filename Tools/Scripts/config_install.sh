@@ -113,7 +113,7 @@ export PATH_SCRIPTS
 # - gmp
 # - mpfr
 
-export BIN_VER=2.45.1
+export BIN_VER=2.46.0
 export GCC_ARM_VER=15.2.0
 export GCC_RVXX_VER=15.2.0
 export NLB_VER=4.6.0
