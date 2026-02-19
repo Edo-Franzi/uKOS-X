@@ -34,3 +34,6 @@ frozentest.*
 build*/
 /compile_flags.txt
 Static_Analysis/
+Discovery_V873/
+STM32V873/
+Discovery_V873_Cortex-M85/

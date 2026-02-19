@@ -37,7 +37,7 @@ make burn
 
 ## Build Configuration Options
 
-CMake accepts several build options that control compilation behavior:
+CMake accepts several build options that control compilation behaviour:
 
 | Option | Default | Description |
 |--------|---------|-------------|
@@ -166,7 +166,7 @@ which is equivalent to
 cmake -B build -DUSE_LLVM=OFF
 ```
 
-**LLVM Toolchain:** Uses Clang compilers for potentially better optimization
+**LLVM Toolchain:** Uses Clang compilers for potentially better optimisation
 ```shell
 cmake -B build -DUSE_LLVM=ON
 ```
