@@ -398,7 +398,7 @@ Use working TestROM code to debug main RISC-V target implementation.
 
 | File | Purpose |
 |------|---------|
-| `init.c` | Hardware initialization (GPIO, PLL, clocks) |
+| `init.c` | Hardware initialisation (GPIO, PLL, clocks) |
 | `clockTree.h` | Clock frequency definitions |
 | `Runtime/link_p.ld` | Main linker script |
 | `Runtime/system_p.ld` | Section definitions |

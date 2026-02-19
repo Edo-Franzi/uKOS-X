@@ -145,7 +145,7 @@ int32_t	model_sdcard_readStatus(void) {
  *	   - if R1 == 0x01u       OK, else, unknown sdcard
  *	   - if R7 == 0x000001AAu OK, else, unknown sdcard
  *
- *	 - Send the KSEND_OP_COND_SDC(0x40000000u) (sdcard initialization process)
+ *	 - Send the KSEND_OP_COND_SDC(0x40000000u) (sdcard initialisation process)
  *	   - if R1 == 0x00u OK, else, waiting under timeout, then, unknown sdcard
  *
  *	 - Send the KREAD_OCR (Read the ocr)
@@ -186,7 +186,7 @@ int32_t	model_sdcard_initialise(sdcard_specification_t *specification) {
 // Send cmd KSEND_IF_COND: No answer                    -> unknown (SD V1 not supported)
 //                         Answer match 0x1AAu          -> SD V2 byte address, or SD V2 block address
 //                         Answer does not match 0x1AAu -> Unknown
-// Send cmd KSEND_OP_COND_SDC: (Repeat until != idle)   -> initialization phase
+// Send cmd KSEND_OP_COND_SDC: (Repeat until != idle)   -> initialisation phase
 
 	if (local_writeCommand(KSEND_IF_COND, 0x000001AAu) != (1u<<BIDLE)) {
 		local_deselectRelease();

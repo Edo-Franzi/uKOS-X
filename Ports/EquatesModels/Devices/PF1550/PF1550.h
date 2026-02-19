@@ -52,7 +52,7 @@
 
 #define	KI2C_ADD_PF1550						0x08u							// I2C PF1550 address
 
-// PF1550 initialization table
+// PF1550 initialisation table
 
 typedef	struct	pf1550	pf1550_t;
 

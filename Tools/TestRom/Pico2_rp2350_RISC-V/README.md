@@ -5,7 +5,7 @@ Minimal bare-metal test environment for debugging RISC-V boot and basic function
 ## Purpose
 
 This TestROM provides a minimal environment to verify:
-1. **Boot sequence** - RISC-V startup and initialization
+1. **Boot sequence** - RISC-V startup and initialisation
 2. **Clock configuration** - PLL and system clocks
 3. **GPIO** - LED control
 4. **Serial communication** - UART for debugging
@@ -80,7 +80,7 @@ Pico2_rp2350_RISC-V/
 ├── CMakeLists.txt          # Build configuration
 ├── first_rv.c              # RISC-V startup code (full version)
 ├── picobin_rv.c            # Boot block (ARCHSEL=1 for RISC-V)
-├── init.c                  # Hardware initialization
+├── init.c                  # Hardware initialisation
 ├── cmns.c                  # Common functions (delays, UART)
 ├── tests.c                 # Test dispatcher
 ├── tests_00.c              # Test 0: LED blink
@@ -185,7 +185,7 @@ Connect external LEDs through 330Ω resistors to GND.
 
 **If not working:**
 - Check picobin block has ARCHSEL=1 (RISC-V mode)
-- Verify clock initialization (should be 150 MHz)
+- Verify clock initialisation (should be 150 MHz)
 - Check GPIO configuration
 - Review startup code execution
 

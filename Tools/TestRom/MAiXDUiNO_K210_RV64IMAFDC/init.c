@@ -59,7 +59,7 @@
 
 // ----------------------------------I------------I-----------------------------------------I--------------I
 
-LOC_CONST_STRG(aStrApplication[]) =	"init         First hardware initializations.           (c) EFr-2026";
+LOC_CONST_STRG(aStrApplication[]) =	"init         First hardware initialisations.           (c) EFr-2026";
 LOC_CONST_STRG(aStrHelp[])        = "Init\n"
 									"====\n\n"
 

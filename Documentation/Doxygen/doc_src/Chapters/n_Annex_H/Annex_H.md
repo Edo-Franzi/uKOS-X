@@ -58,7 +58,7 @@ Comprehensive information about these standards can be found on the official MIS
 |                 |                   |                      |                                                              |
 |                 |                   |                      | **Initialisation**                                           |
 | 30              | Required          | Yes                  | All automatic variables shall have been assigned a value before being used |
-| 31              | Required          | Yes                  | Braces shall be used to indicate and match the structure in the non-zero initialization of arrays and structures |
+| 31              | Required          | Yes                  | Braces shall be used to indicate and match the structure in the non-zero initialisation of arrays and structures |
 | 32              | Required          | Yes                  | In an enumerator list, the '=' construct shall not be used to explicitly initialize members other than the first, unless all items are explicitly initialized |
 |                 |                   |                      |                                                              |
 |                 |                   |                      | **Operators**                                                |

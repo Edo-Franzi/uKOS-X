@@ -13,8 +13,8 @@
 ;			Set 16 & 26 pixel fonts.
 ;			Internal memry allocator
 ;
-;			Configuration file for LVGL v9.4.x
-;			(based on lv_conf_template.h v9.4.0)
+;			Configuration file for LVGL v9.5.x
+;			(based on lv_conf_template.h v9.5.0)
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

@@ -69,7 +69,7 @@ the third-party components shipped in this repository.
 ### 2.6) LVGL
 - Location: `Third_Parties/LVGL/`
 - Upstream: https://github.com/lvgl/lvgl.git
-- Version: 9.4.0
+- Version: 9.5.0
 - License: MIT
 - Copyright:
   -  Copyright (c) LVGL Kft and contributors

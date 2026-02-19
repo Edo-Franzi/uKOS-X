@@ -1,17 +1,17 @@
-# gcc_application_CORTEX_M55.
-# ===========================
+# llvm_application_CORTEX_M85.
+# ============================
 
 # SPDX-License-Identifier: MIT
 
 #------------------------------------------------------------------------
-# Author:	Edo. Franzi		The 2025-01-01
+# Author:	Laurent von Allmen		The 2025-01-01
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X applications (cortex-m55 specific).
+# Goal:		makefile for uKOS-X applications (cortex-m85 specific).
 #
-#   (c) 2025-2026, Edo. Franzi
-#   --------------------------
+#   (c) 2025-2026, Laurent von Allmen
+#   ---------------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 #   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -44,13 +44,29 @@
 #
 #------------------------------------------------------------------------
 
-ifndef PATH_GCC_ARM
-$(error PATH_GCC_ARM is not defined)
+ifndef PATH_LLVM_ARM
+$(error PATH_LLVM_ARM is not defined)
 endif
 
 # Compiler flags
 
-PATH_COMPILER	=  $(PATH_GCC_ARM)
+PATH_COMPILER	=  $(PATH_LLVM_ARM)
+
+CLANGVERS := $(shell $(PATH_COMPILER)/bin/clang -dumpversion | cut -f1 -d.)
+CLANGVERS_GT_19 := $(shell [ $(CLANGVERS) -gt 19 ] && echo true)
+TARGET_TRIPLE_MIDDLE = unknown-none
+
+ifneq (,$(findstring DNOFPU_S,$(CFLAGS)))
+CLANG_CFG		=  --target=thumbv8.1m.main-$(TARGET_TRIPLE_MIDDLE)-eabi
+
+else
+CLANG_CFG		=  --target=thumbv8.1m.main-$(TARGET_TRIPLE_MIDDLE)-eabihf
+endif
+
+CC				=  $(PATH_COMPILER)/bin/clang
+CXX				=  $(PATH_COMPILER)/bin/clang++
+CFLAGS			+= $(CLANG_CFG)
+LDFLAGS			+= $(CLANG_CFG)
 
 FLAGS_UKOS		=  -DUKOS_S -D$(BOARD)_S -D$(SOC)_S -D$(CORE)_S -DLITTLE_ENDIAN_S -DCACHE_S
 ifneq ($(USER_MODE),0)
@@ -59,11 +75,11 @@ endif
 
 SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
 
-GPPCOMPILER		=  $(PATH_COMPILER)/bin/$(PREFIX)g++
+GPPCOMPILER		=  $(PATH_COMPILER)/bin/clang++
 GPPLDOPTION		=  -lc -lstdc++
 
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
+CPU_SPEC		?= -mcpu=cortex-m85 -mthumb
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)
@@ -76,7 +92,7 @@ C_CXX_FLAGS		+= -MMD
 
 C_CXX_FLAGS		+= -fshort-enums
 C_CXX_FLAGS		+= -fstack-usage
-C_CXX_FLAGS		+= -mpoke-function-name
+#C_CXX_FLAGS	+= -mpoke-function-name				#NOTE: option unknown by clang
 
 # Warnings for the build
 # ----------------------
@@ -121,9 +137,12 @@ LINKS_LD		?= $(PATH_MAPP)/link_App.ld
 
 LDFLAGS			+= -L$(PATH_CORE)/Runtime
 LDFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
-LDFLAGS			+= -Wall -nostartfiles
+LDFLAGS			+= -Wall
+ifeq ($(CLANGVERS_GT_19),true)
+LDFLAGS			+= -nostartfiles
+endif
 LDFLAGS			+= -T$(LINKS_LD)
-LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage -Wl,--no-warn-rwx-segment
+LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage
 
 # Generate some useful & necessary files
 

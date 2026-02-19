@@ -1,5 +1,5 @@
-# gcc_application_CORTEX_M55.
-# ===========================
+# gcc_system_CORTEX_M33.
+# ======================
 
 # SPDX-License-Identifier: MIT
 
@@ -8,7 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X applications (cortex-m55 specific).
+# Goal:		makefile for uKOS-X systems (cortex-m85 specific).
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -52,18 +52,21 @@ endif
 
 PATH_COMPILER	=  $(PATH_GCC_ARM)
 
-FLAGS_UKOS		=  -DUKOS_S -D$(BOARD)_S -D$(SOC)_S -D$(CORE)_S -DLITTLE_ENDIAN_S -DCACHE_S
-ifneq ($(USER_MODE),0)
+FLAGS_UKOS		+= -DUKOS_S -D$(BOARD)_S -D$(SOC)_S -D$(CORE)_S -DLITTLE_ENDIAN_S -DROMABLE_S -DCACHE_S
+ifneq ($(KERNEL_OPT),)
+FLAGS_UKOS		+= -D$(KERNEL_OPT)_S
+endif
+ifeq ($(USER_MODE),0)
+MODE			=  _p
+else
+MODE			=  _pu
 FLAGS_UKOS		+= -DPRIVILEGED_USER_S
 endif
 
 SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
 
-GPPCOMPILER		=  $(PATH_COMPILER)/bin/$(PREFIX)g++
-GPPLDOPTION		=  -lc -lstdc++
-
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
+CPU_SPEC		?= -mcpu=cortex-m85 -mthumb
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)
@@ -117,8 +120,9 @@ CXXFLAGS		+= -fno-rtti
 CXXFLAGS		+= -fno-exceptions
 CXXFLAGS		+= $(C_CXX_FLAGS)
 
-LINKS_LD		?= $(PATH_MAPP)/link_App.ld
+LINKS_LD		?= $(PATH_MAPP)/link${MODE}.ld
 
+LDFLAGS			+= -L$(PATH_SOC)/Runtime
 LDFLAGS			+= -L$(PATH_CORE)/Runtime
 LDFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 LDFLAGS			+= -Wall -nostartfiles
@@ -128,9 +132,9 @@ LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage -Wl,--no-warn-rw
 # Generate some useful & necessary files
 
 ifeq ($(NOLISTING),)
-utils : $(TARGET).lst $(TARGET).dis $(TARGET).bin $(TARGET).hex $(TARGET).s3
+utils : $(TARGET).lst $(TARGET).dis $(TARGET).bin $(TARGET).hex $(TARGET).ck $(TARGET).s3
 else
-utils : $(TARGET).bin $(TARGET).hex $(TARGET).s3
+utils : $(TARGET).bin $(TARGET).hex $(TARGET).ck $(TARGET).s3
 endif
 
 utilStack : $(TARGET).stack

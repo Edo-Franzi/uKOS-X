@@ -127,7 +127,7 @@ static	bool	cb_CTSCheck(void) {
 /*
  * \brief cb_init
  *
- * - Specific initializations          __
+ * - Specific initialisations          __
  *   i.e the hardware CTS interruption   \__
  *
  */
@@ -187,7 +187,7 @@ static	void	cb_read(void) {
 	#endif
 
 // State machine management
-// During the initialization sequence, do not run the state-machine
+// During the initialisation sequence, do not run the state-machine
 
 	if (vEndInitSeq == true) {
 		if (vState != nullptr) {

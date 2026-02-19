@@ -48,7 +48,7 @@
 
 #pragma	once
 
-// Aptina initialization table
+// Aptina initialisation table
 
 typedef	struct	ov2640	ov2640_t;
 

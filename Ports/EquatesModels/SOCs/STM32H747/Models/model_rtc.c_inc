@@ -91,7 +91,7 @@ void	model_rtc_update(uint64_t unixTime) {
 // Make possible the access to the RTC & RTC backup register.
 // After the restart, the RTC is in the protected mode
 // Remove the write protection
-// Enter in the initialization mode
+// Enter in the initialisation mode
 
 	PWR->CR1 |= PWR_CR1_DBP;
 	RTC->WPR = RTC_WPR_UNLOCK_KEY1;
@@ -122,7 +122,7 @@ void	model_rtc_update(uint64_t unixTime) {
 	kern_suspendProcess(1u);
 	RTC->ISR &= (uint32_t)~RTC_ISR_INIT;
 
-// Exit from the initialization mode
+// Exit from the initialisation mode
 // Set the write protection
 
 	RTC->WPR = RTC_WPR_LOCK_KEY;

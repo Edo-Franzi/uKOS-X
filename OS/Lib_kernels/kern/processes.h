@@ -329,7 +329,7 @@ extern	void	processes_init(void);
  * status = kern_createProcess(&vSpecs_0, nullptr, &vProcess_0);
  * status = kern_createProcess(&vSpecs_1, nullptr, &vProcess_1);
  *
- * To simplify the way to write this initialization, a couple of macros are available;
+ * To simplify the way to write this initialisation, a couple of macros are available;
  * so, the previous example can be written in this way:
  *
  * #define    KSIZE         1024          // Size of the stack in bytes

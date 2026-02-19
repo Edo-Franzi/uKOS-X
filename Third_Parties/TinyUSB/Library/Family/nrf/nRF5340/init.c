@@ -95,7 +95,7 @@ void	USBREGULATOR_C0_IRQHandler(void)	{ USBREGULATOR_IRQHandler(); }
 /*
  * \brief coreUSB_init
  *
- * - USB / Power initialization
+ * - USB / Power initialisation
  *
  */
 void	coreUSB_init(void) {

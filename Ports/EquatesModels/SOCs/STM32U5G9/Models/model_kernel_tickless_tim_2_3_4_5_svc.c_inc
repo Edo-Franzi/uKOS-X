@@ -78,7 +78,7 @@
 #define KARRT4		(~0u)																// Autoreload (every 4294-s)
 #endif
 
-// Special initialization for the tickless scheduler
+// Special initialisation for the tickless scheduler
 // 1-bit corresponds to 0.250-ms, so N = 4
 // The maximum usable time withing the tickless mode is:
 // (0xFFFFFFFF - 1) >> 4 --> 0x3FFFFFFF

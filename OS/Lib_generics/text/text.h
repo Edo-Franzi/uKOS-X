@@ -187,7 +187,8 @@ extern	int32_t	text_checkAsciiBuffer(const char_t *ascii1, const char_t *ascii2,
  * \endcode
  *
  * - Format of the order:
- *   - string,CR,LF a \0 char is added at the end
+ *   - string\0 char is added at the end
+ *     The CR or LF at the end are skipped
  *
  * \param[in]	serialManager	Serial Communication Manager
  * \param[in]	*ascii			Ptr on the ASCII buffer

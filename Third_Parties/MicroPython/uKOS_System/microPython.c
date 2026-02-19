@@ -164,7 +164,7 @@ int32_t	microPython_exchangeData(const char_t *pyProgram) {
 			text_waitString(serialManager, ascii, (KSZ_INPUT - 4));
 
 			size = strlen(ascii);
-			ascii[size - 1] = '\r'; ascii[size - 0] = '\n'; ascii[size + 1] = '\0';
+			ascii[size] = '\r'; ascii[size + 1] = '\n'; ascii[size + 2] = '\0';
 
 // Check the "quit"
 

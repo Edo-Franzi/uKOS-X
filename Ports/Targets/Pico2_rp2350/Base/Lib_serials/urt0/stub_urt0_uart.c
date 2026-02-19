@@ -85,7 +85,7 @@ static	bool	cb_CTSCheck_C1(void) {
 /*
  * \brief cb_init_Cx
  *
- * - Specific initializations          __
+ * - Specific initialisations          __
  *   i.e the hardware CTS interruption   \__
  *
  */

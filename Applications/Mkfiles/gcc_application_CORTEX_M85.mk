@@ -1,4 +1,4 @@
-# gcc_application_CORTEX_M55.
+# gcc_application_CORTEX_M85.
 # ===========================
 
 # SPDX-License-Identifier: MIT
@@ -8,7 +8,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X applications (cortex-m55 specific).
+# Goal:		makefile for uKOS-X applications (cortex-m85 specific).
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -63,7 +63,7 @@ GPPCOMPILER		=  $(PATH_COMPILER)/bin/$(PREFIX)g++
 GPPLDOPTION		=  -lc -lstdc++
 
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
+CPU_SPEC		?= -mcpu=cortex-m85 -mthumb
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)

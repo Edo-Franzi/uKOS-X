@@ -203,7 +203,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 	local_initialiseYUY2(imageYUY2, w, h);
 
 // At the power-on the imager starts to send images.
-// Just after the SNAP initialization it is necessary waiting for the end of the
+// Just after the SNAP initialisation it is necessary waiting for the end of the
 // current transfer (~ 40-ms) before starting.
 
 	kern_suspendProcess(40u);

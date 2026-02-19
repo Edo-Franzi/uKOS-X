@@ -50,7 +50,7 @@ The following files need to be consolidated before moving in the µKOS-X porting
 | clockTree.h          | Clock tree definitions                                    | Has to be written  |
 | cmns.c               | Minimal UART support (by polling)                         | Available template |
 | first.c              | SOC specific interruption handlers                        | Has to be written  |
-| init.c               | Very first initialization code (e.g. HW initializations)  | Available template |
+| init.c               | Very first initialisation code (e.g. HW initialisations)  | Available template |
 | tests.c              | Test inclusion & launcher                                 | Available          |
 | test_xx.c            | The basic tests                                           | Has to be written  |
 | makefile             | The TestRom makefile                                      | Has to be written  |
