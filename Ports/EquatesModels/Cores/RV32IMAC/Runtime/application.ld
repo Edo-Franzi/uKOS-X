@@ -128,4 +128,5 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_enBSS = ABSOLUTE(.);
 	} > prgm_data
+
 }

@@ -355,6 +355,15 @@ l_MLPs:
     - Nucleo_N657
     - Pico2_rp2350
 
+  test_TFL:
+    - Alastor_H743
+    - Asmodee_H747
+    - Discovery_U5G9
+    - MAiXDUiNO_K210
+    - Nucleo_H743
+    - Nucleo_N657
+    - Pico2_rp2350
+
 m_MicroPythons:
   basic:
     - Alastor_H743

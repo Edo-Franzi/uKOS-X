@@ -151,4 +151,5 @@ SECTIONS {
 		*(.ARM.extab* .gnu.linkonce.armextab.*)
 		*(.ARM.exidx*)
 	}
+
 }

@@ -171,4 +171,5 @@ SECTIONS {
 		*(COMMON)
 		linker_enBSS = ABSOLUTE(.);
 	} > prgm_data
+
 }
