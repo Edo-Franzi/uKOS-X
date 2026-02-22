@@ -16,7 +16,7 @@
 # 			Display the FFT of the temperature vector
 #
 #			Necessary packages:
-#			pip3 install numpy pyserial matplotlib
+#			python3 -m pip install numpy pyserial matplotlib
 #
 #			python3 X.py
 #

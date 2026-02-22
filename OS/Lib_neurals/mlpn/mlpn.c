@@ -98,6 +98,8 @@ MODULE(
 static	float32_t	local_nonLinear_tan0(float32_t p);
 static	float32_t	local_nonLinear_tan1(float32_t p);
 static	float32_t	local_nonLinear_tan2(float32_t p);
+static	float32_t	local_nonLinear_relu(float32_t p);
+static	float32_t	local_nonLinear_line(float32_t p);
 static	int32_t		local_init(void);
 static	int32_t		local_computeLayer(mlpnLayer_t *layer);
 static	int32_t		local_initialiseLayer(mlpnLayer_t *layer);
@@ -484,6 +486,14 @@ static __attribute__ ((optimize("O3,inline,aggressive-loop-optimizations,unroll-
 			nonLinear = local_nonLinear_tan2;
 			break;
 		}
+		case KMLPN_RELU: {
+			nonLinear = local_nonLinear_relu;
+			break;
+		}
+		case KMLPN_LINE: {
+			nonLinear = local_nonLinear_line;
+			break;
+		}
 	}
 
 // For all the neurons
@@ -569,6 +579,35 @@ static	float32_t	local_nonLinear_tan2(float32_t p) {
 
 	if (p <= -1.0f) { return (-1.0f); }
 	if (p >= +1.0f) { return (+1.0f); }
+	return (p);
+}
+
+/*
+ * \brief local_nonLinear_relu
+ *
+ * - This is a very fast relu function
+ *
+ *   relu(p) = 0, if p <= 0
+ *   relu(p) = p, if p > 0
+ *
+ */
+static	float32_t	local_nonLinear_relu(float32_t p) {
+
+	if (p <= 0.0f) { return (0.0f); }
+	if (p > +1.0f) { return (p);	}
+	return (p);
+}
+
+/*
+ * \brief local_nonLinear_line
+ *
+ * - This is a very fast linear function
+ *
+ *   line(p) = p
+ *
+ */
+static	float32_t	local_nonLinear_line(float32_t p) {
+
 	return (p);
 }
 

@@ -93,7 +93,9 @@ struct mlpnLayer {
 enum {
 			KMLPN_TAN0 = 0u,									// libm tanh
 			KMLPN_TAN1,											// Lambert's tanh approximation
-			KMLPN_TAN2											// Ultrafast tanh approximation
+			KMLPN_TAN2,											// Ultrafast tanh approximation
+			KMLPN_RELU,											// Ultrafast relu
+			KMLPN_LINE,											// Ultrafast linear
 };
 
 // Prototypes

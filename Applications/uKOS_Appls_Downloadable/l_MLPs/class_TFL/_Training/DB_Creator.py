@@ -20,7 +20,7 @@
 #			Class 2b: data < (150 - KCLASS_MARGIN)
 #
 #			Necessary packages:
-#			pip3 install numpy pyserial matplotlib
+#			python3 -m pip install numpy pyserial matplotlib
 #
 #			python3 DB_Creator.py
 #

@@ -4,7 +4,7 @@
 *                         www.segger.com                             *
 **********************************************************************
 
-File          : Discovery_U5A9/Variant_Test/System/ozone_config.jdebug
+File          : Pico2_rp2350/Variant_Test/System/ozone_config.jdebug
 Created       : 15 Mar 2024 20:07
 Ozone Version : V3.32a
 */
@@ -22,12 +22,12 @@ void OnProjectLoad (void) {
   //
   // Dialog-generated settings
   //
-  Project.SetDevice ("STM32U5G9VJ");
+  Project.SetDevice ("RP2350_M33_0");
   Project.SetHostIF ("USB", "");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M33F.svd");
-  Project.AddSvdFile ("$(ProjectDir)/../../../../../Ports/EquatesModels/SOCs/STM32U5G9/Includes/Registers/STM32U5Gx.svd");
+  Project.AddSvdFile ("$(ProjectDir)/../../../../../Ports/EquatesModels/SOCs/rp2350/Includes/Registers/rp2350.svd");
   //
   // User settings
   //

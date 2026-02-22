@@ -18,7 +18,7 @@
 #			With X the input vector & Y the expected vector
 #
 #			Necessary packages:
-#			pip3 install numpy matplotlib
+#			python3 -m pip install numpy matplotlib
 #
 #			python3 backprop.py
 #
@@ -283,7 +283,7 @@ def main():
 	plt.ioff()
 	plt.show()
 
-	# Export the network structure for the uKOS-X mlp0 library
+	# Export the network structure for the uKOS-X mlpn library
 	mlp_exportNetwork(weights, config.KLAYERS)
 	mlp_validation(weights, X)
 

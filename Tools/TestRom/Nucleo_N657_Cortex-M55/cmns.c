@@ -90,7 +90,7 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 		default:
 		case KURT0: {
 			while (true) {
-				while ((REG(USART1)->ISR_FIFO & USART_ISR_FIFO_TXFNF) == 0) { ; }
+				while ((REG(USART1)->ISR_FIFO & USART_ISR_FIFO_TXFNF) == 0u) { ; }
 
 				data = (uint8_t)*wkAscii;
 				wkAscii++;
@@ -121,7 +121,7 @@ void	cmns_receive(serialManager_t serialManager, char_t *data) {
 
 		default:
 		case KURT0: {
-			while ((REG(USART1)->ISR_FIFO & USART_ISR_FIFO_RXFNE) == 0) { ; }
+			while ((REG(USART1)->ISR_FIFO & USART_ISR_FIFO_RXFNE) == 0u) { ; }
 
 			*data = (uint8_t)REG(USART1)->RDR;
 			break;
@@ -147,5 +147,5 @@ void	cmns_wait(uint32_t us) {
 	wkUs = (wkUs / 12u) * (KFREQUENCY_CORE / 1000000u);
 	#endif
 
-	for (time = 0; time < wkUs; time++) { NOP; }
+	for (time = 0u; time < wkUs; time++) { NOP; }
 }

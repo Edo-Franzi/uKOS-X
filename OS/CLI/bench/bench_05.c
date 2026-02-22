@@ -66,19 +66,25 @@
 // CLI tool specific
 // =================
 
-#if (defined(Nucleo_H743_S) || defined(Nucleo_N657_S))
-static	void	 local_loop(uint32_t nb);
-#endif
-
 /*
  * \brief bench_05
  *
  * - loop
  *
  */
+#if (!defined(Nucleo_H743_S) && !defined(Nucleo_N657_S))
+
 bool	bench_05(void) {
 
-	#if (defined(Nucleo_H743_S) || defined(Nucleo_N657_S))
+	(void)dprintf(KSYST, "Bench 05: not available for this target\n");
+	return true;
+}
+
+#else
+static	void	 local_loop(uint32_t nb);
+
+bool	bench_05(void) {
+
 	(void)dprintf(KSYST, "Bench 05: For scope tests!\n");
 
 	kern_suspendProcess(1000u);
@@ -89,14 +95,9 @@ bool	bench_05(void) {
 		ANALYSER_TOGGLE;
 		local_loop(KNB_TESTS);
 	}
-	#else
-	(void)dprintf(KSYST, "Bench 05: not available for this target\n");
-	#endif
 
 	return (true);
 }
-
-#if (defined(Nucleo_H743_S) || defined(Nucleo_N657_S))
 
 // Local routines
 // ==============
@@ -114,4 +115,5 @@ static	void local_loop(uint32_t nb) {
 		NOP;
 	}
 }
+
 #endif

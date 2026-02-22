@@ -47,7 +47,7 @@
 #define	KCONNECTED		true
 #define	KDISCONNECTED	false
 
-static	bool	vConnected[KNB_CORES] = MCSET(KDISCONNECTED);
+static	bool	vConnected[CFG_TUD_CDC] = MCSET(KDISCONNECTED);
 
 /*
  * \brief TinyUSB_cdc_init
@@ -76,16 +76,16 @@ void	TinyUSB_cdc_clean(void) {
  *
  */
 void	TinyUSB_cdc_write(uint8_t itf, const uint8_t *buffer, uint32_t size) {
-	uint32_t	core;
+	uint32_t	retry = 0u;
 
-	core = GET_RUNNING_CORE;
+// When connected, wait for the FIFO to have enough space
+// When disconnected, try briefly then give up (do not block forever)
 
 	while (tud_cdc_n_write_available(itf) < size) {
-		if (vConnected[core] == KDISCONNECTED) {
-			kern_suspendProcess(10u);
-		}
-		else {
-			kern_suspendProcess(1u);
+		kern_suspendProcess(1U);
+		retry++;
+		if ((vConnected[itf] == KDISCONNECTED) && (retry > 10u)) {
+			return;
 		}
 	}
 
@@ -119,23 +119,19 @@ void	TinyUSB_cdc_read(uint8_t itf, uint8_t *buffer, uint32_t *size) {
  *
  */
 void	tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
-	uint32_t	core;
 
-	UNUSED(itf);
 	UNUSED(rts);
 
-	core = GET_RUNNING_CORE;
-
 	if (dtr == true) {
-		if (vConnected[core] == KDISCONNECTED) {
-			vConnected[core] = KCONNECTED;
+		if (vConnected[itf] == KDISCONNECTED) {
+			vConnected[itf] = KCONNECTED;
 
 			LOG(KINFO_SYSTEM, "model_TinyUSB_cdc: connected");
 		}
 	}
 	else {
-		if (vConnected[core] == KCONNECTED) {
-			vConnected[core] = KDISCONNECTED;
+		if (vConnected[itf] == KCONNECTED) {
+			vConnected[itf] = KDISCONNECTED;
 
 			LOG(KINFO_SYSTEM, "model_TinyUSB_cdc: disconnected");
 		}
@@ -151,4 +147,15 @@ void	tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
 void	tud_cdc_rx_cb(uint8_t itf) {
 
 	UNUSED(itf);
+}
+
+/*
+ * \brief TinyUSB_cdc_isConnected
+ *
+ * - Return whether a CDC interface is connected
+ *
+ */
+bool	TinyUSB_cdc_isConnected(uint8_t itf) {
+
+	return (vConnected[itf]);
 }

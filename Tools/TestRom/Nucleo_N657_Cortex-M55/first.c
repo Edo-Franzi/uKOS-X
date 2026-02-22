@@ -490,7 +490,7 @@ INTERRUPT_SPECIFIC_HANDLER(LTDC_UP_ERR_C0)
 void	Reset_C0_Handler(void) {
 
 	#if defined(OZONE_S)
-	register	volatile	uint32_t	wait = 1;
+	register	volatile	uint32_t	wait = 1u;
 	while (wait) { NOP; }
 	#endif
 
@@ -506,18 +506,18 @@ void	Reset_C0_Handler(void) {
 
 	REG(RCC)->AHB2ENR |= RCC_AHB2ENR_RAMCFGEN;
 
-	REG(RAMCFG)->AXISRAM1CR = 0;
-	REG(RAMCFG)->AXISRAM2CR = 0;
-	REG(RAMCFG)->AXISRAM3CR = 0;
-	REG(RAMCFG)->AXISRAM4CR = 0;
-	REG(RAMCFG)->AXISRAM5CR = 0;
-	REG(RAMCFG)->AXISRAM6CR = 0;
+	REG(RAMCFG)->AXISRAM1CR = 0u;
+	REG(RAMCFG)->AXISRAM2CR = 0u;
+	REG(RAMCFG)->AXISRAM3CR = 0u;
+	REG(RAMCFG)->AXISRAM4CR = 0u;
+	REG(RAMCFG)->AXISRAM5CR = 0u;
+	REG(RAMCFG)->AXISRAM6CR = 0u;
 
 // Disable the stack limits (xyzLIM)
 // The FSBL boot set these registers
 
-	core_setPSPLIM(0);
-	core_setMSPLIM(0);
+	core_setPSPLIM(0u);
+	core_setMSPLIM(0u);
 	INST_SYNC_BARRIER;
 
 	SET_THREAD_STACK(linker_topStackFirst_C0);

@@ -9,7 +9,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Low level init for the uKOS-X Discovery_U5G9 module.
+; Goal:		Low level init for the uKOS-X Nucleo_N657_Cortex-M55 module.
 ;
 ;			!!! This code HAS not to contain static data.
 ;			!!! It is called before to copy and to initialise
@@ -108,6 +108,7 @@ static	inline	void	cache_D_Invalidate(void);
 static	inline	void	cache_I_Enable(void);
 static	inline	void	cache_I_Disable(void);
 static	inline	void	cache_I_Invalidate(void);
+
 /*
  * \brief init_init
  *

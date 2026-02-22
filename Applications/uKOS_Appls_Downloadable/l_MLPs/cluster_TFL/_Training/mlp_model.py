@@ -15,7 +15,7 @@
 #			We use the Sysquake database for the training.
 #
 #			Necessary packages:
-#			pip3 install numpy tensorflow pillow
+#			python3 -m pip install numpy tensorflow pillow
 #
 #			python3 mlp_model.py
 #			xxd -i  mlp_model.tflite > mlp_model.c_inc

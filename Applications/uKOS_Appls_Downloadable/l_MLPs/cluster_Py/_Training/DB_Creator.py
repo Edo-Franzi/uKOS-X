@@ -21,7 +21,7 @@
 #			Class 4:  ((-0.1 < x < 0.1) or (-0.1 < y < 0.1))
 #
 #			Necessary packages:
-#			pip3 install numpy pyserial matplotlib
+#			python3 -m pip install numpy pyserial matplotlib
 #
 #			python3 DB_Creator.py
 #
