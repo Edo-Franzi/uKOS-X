@@ -73,6 +73,7 @@ PATH_TINYUSB		=  $(PATH_UKOS)/Third_Parties/TinyUSB
 
 PROVIDER			=  nordic
 FAMILY				=  nrf
+CORE				=  CORTEX_M33
 SOC					=  nRF5340
 TINYUSB_FS			=  libTinyUSB_FS.a
 TINYUSB_HS			=  libTinyUSB_HS.a
@@ -85,7 +86,7 @@ PREFIX				?= arm-none-eabi-
 PATH_COMPILER		=  $(PATH_GCC_ARM)
 FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
 CPU_SPEC			=  -mcpu=cortex-m33 -mthumb
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -D$(SOC)_S -DLITTLE_ENDIAN_S
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -D$(SOC)_S -D$(CORE)_S -DLITTLE_ENDIAN_S
 
 CFLAGS				+= -DNRF5340_XXAA -DNRF5340_XXAA_APPLICATION -DCPU_APPLICATION_S
 CFLAGS				+= -DSECURE_S

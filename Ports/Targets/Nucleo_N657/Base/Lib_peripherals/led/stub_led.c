@@ -62,9 +62,10 @@ int32_t	stub_led_init(void) {
 	INTERRUPTION_OFF;
 	vMute = false;
 
-	REG(GPIOG)->ODR |= (1u<<BLED_0);
-	REG(GPIOG)->ODR |= (1u<<BLED_1);
-	REG(GPIOG)->ODR |= (1u<<BLED_2);
+	REG(GPIOE)->ODR &= (uint32_t)~(1u<<BLED_0);
+	REG(GPIOG)->ODR |=			  (1u<<BLED_1);
+	REG(GPIOG)->ODR |=			  (1u<<BLED_2);
+	REG(GPIOG)->ODR |=			  (1u<<BLED_3);
 	RETURN_INT_RESTORE(KERR_LED_NOERR);
 }
 
@@ -79,10 +80,11 @@ int32_t	stub_led_on(uint8_t ledNb) {
 	INTERRUPTION_OFF;
 	if (vMute == true) { RETURN_INT_RESTORE(KERR_LED_NOERR); }
 	switch (ledNb) {
-		case 0u: { REG(GPIOG)->ODR &= (uint32_t)~(1u<<BLED_0);	break; }
-		case 1u: { REG(GPIOG)->ODR &= (uint32_t)~(1u<<BLED_1);	break; }
-		case 2u: { REG(GPIOG)->ODR &= (uint32_t)~(1u<<BLED_2);	break; }
-		default: { RETURN_INT_RESTORE(KERR_LED_NODEV);			break; }
+		case 0u: { REG(GPIOE)->ODR |=			 (1u<<BLED_0); break; }
+		case 1u: { REG(GPIOG)->ODR &= (uint32_t)~(1u<<BLED_1); break; }
+		case 2u: { REG(GPIOG)->ODR &= (uint32_t)~(1u<<BLED_2); break; }
+		case 3u: { REG(GPIOG)->ODR &= (uint32_t)~(1u<<BLED_3); break; }
+		default: { RETURN_INT_RESTORE(KERR_LED_NODEV);		   break; }
 	}
 
 	RETURN_INT_RESTORE(KERR_LED_NOERR);
@@ -99,10 +101,11 @@ int32_t	stub_led_off(uint8_t ledNb) {
 	INTERRUPTION_OFF;
 	if (vMute == true) { RETURN_INT_RESTORE(KERR_LED_NOERR); }
 	switch (ledNb) {
-		case 0u: { REG(GPIOG)->ODR |= (1u<<BLED_0);	   break; }
-		case 1u: { REG(GPIOG)->ODR |= (1u<<BLED_1);	   break; }
-		case 2u: { REG(GPIOG)->ODR |= (1u<<BLED_2);	   break; }
-		default: { RETURN_INT_RESTORE(KERR_LED_NODEV); break; }
+		case 0u: { REG(GPIOE)->ODR &= (uint32_t)~(1u<<BLED_0); break; }
+		case 1u: { REG(GPIOG)->ODR |=			 (1u<<BLED_1); break; }
+		case 2u: { REG(GPIOG)->ODR |=			 (1u<<BLED_2); break; }
+		case 3u: { REG(GPIOG)->ODR |=			 (1u<<BLED_3); break; }
+		default: { RETURN_INT_RESTORE(KERR_LED_NODEV);		   break; }
 	}
 
 	RETURN_INT_RESTORE(KERR_LED_NOERR);
@@ -119,9 +122,10 @@ int32_t	stub_led_toggle(uint8_t ledNb) {
 	INTERRUPTION_OFF;
 	if (vMute == true) { RETURN_INT_RESTORE(KERR_LED_NOERR); }
 	switch (ledNb) {
-		case 0u: { REG(GPIOG)->ODR ^= (1u<<BLED_0);	   break; }
+		case 0u: { REG(GPIOE)->ODR ^= (1u<<BLED_0);	   break; }
 		case 1u: { REG(GPIOG)->ODR ^= (1u<<BLED_1);	   break; }
 		case 2u: { REG(GPIOG)->ODR ^= (1u<<BLED_2);	   break; }
+		case 3u: { REG(GPIOG)->ODR ^= (1u<<BLED_3);	   break; }
 		default: { RETURN_INT_RESTORE(KERR_LED_NODEV); break; }
 	}
 
@@ -141,8 +145,9 @@ int32_t	stub_led_mute(bool mute) {
 	INTERRUPTION_OFF;
 	vMute = true;
 
-	REG(GPIOG)->ODR |= (1u<<BLED_0);
-	REG(GPIOG)->ODR |= (1u<<BLED_1);
-	REG(GPIOG)->ODR |= (1u<<BLED_2);
+	REG(GPIOE)->ODR &= (uint32_t)~(1u<<BLED_0);
+	REG(GPIOG)->ODR |=			  (1u<<BLED_1);
+	REG(GPIOG)->ODR |=			  (1u<<BLED_2);
+	REG(GPIOG)->ODR |=			  (1u<<BLED_3);
 	RETURN_INT_RESTORE(KERR_LED_NOERR);
 }
