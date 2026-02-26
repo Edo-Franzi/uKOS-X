@@ -174,16 +174,22 @@
 
 #if (!defined(INTERRUPTION_OFF_HARD))
 #define	INTERRUPTION_OFF_HARD	__asm volatile ("																			 \n \
-								cpsid		i"																					\
-								);																								\
-								INST_SYNC_BARRIER;
+								cpsid		i																				 \n	\
+								isb			0xF"																				\
+								:																								\
+								:																								\
+								: "memory"																						\
+								)
 #endif
 
 #if (!defined(INTERRUPTION_ON_HARD))
 #define	INTERRUPTION_ON_HARD	__asm volatile ("																			 \n \
-								cpsie		i"																					\
-								);																								\
-								INST_SYNC_BARRIER;
+								cpsie		i																				 \n \
+								isb			0xF"																				\
+								:																								\
+								:																								\
+								: "memory"																						\
+								)
 #endif
 
 #if (!defined(INTERRUPTION_OFF))
@@ -313,19 +319,28 @@ extern	void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 
 #if (!defined(DATA_SYNC_BARRIER))
 #define	DATA_SYNC_BARRIER		__asm volatile ("																			 \n \
-								dsb"																							\
+								dsb			0xF"																				\
+								:																								\
+								:																								\
+								: "memory"																						\
 								)
 #endif
 
 #if (!defined(INST_SYNC_BARRIER))
 #define	INST_SYNC_BARRIER		__asm volatile ("																			 \n \
-								isb"															  								\
+								isb			0xF"																				\
+								:																								\
+								:																								\
+								: "memory"																						\
 								)
 #endif
 
 #if (!defined(MEMO_SYNC_BARRIER))
 #define	MEMO_SYNC_BARRIER		__asm volatile ("																			 \n \
-								dmb"																							\
+								dmb			0xF"																				\
+								:																								\
+								:																								\
+								: "memory"																						\
 								)
 #endif
 

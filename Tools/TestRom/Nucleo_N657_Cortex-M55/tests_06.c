@@ -87,7 +87,7 @@ static	void	local_process(uint32_t message);
 void	test_06(void) {
 	volatile	uint32_t	message = 0;
 
-	vVectors[15 + SVCall_IRQn] = (uintptr_t)SVCall_IRQHandler;
+	vVectors[15 + SVCall_IRQn] = (uintptr_t)SVCall_C0_IRQHandler;
 
 	cmns_init();
 
@@ -108,8 +108,8 @@ void	test_06(void) {
  */
 #define	KSAVEREGISTERS	"r0", "r1", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11"
 
-void	SVCall_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
-void	SVCall_IRQHandler(void) {
+void	SVCall_C0_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
+void	SVCall_C0_IRQHandler(void) {
 
 // Recover the message
 
