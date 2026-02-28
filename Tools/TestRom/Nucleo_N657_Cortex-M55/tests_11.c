@@ -104,6 +104,7 @@ void	local_TIM5_IRQHandler(void) {
 // Acknowledge the TIM5 interruption
 
 	REG(TIM5)->SR &= ~TIM5_SR_UIF;
+	(void)REG(TIM5)->SR;
 
 	LED_BLUE_TOGGLE;
 }

@@ -59,7 +59,6 @@
 #define CONTROL_SET_PRIVILEGED_MODE		(0u<<0u)
 
 #define	MSC_PFCR_MAX_OS_0				(1U<<7u)
-#define	ICB_ACTLR_DISLOBR				(1U<<5u)
 
 // MPU additilnal definition & macros
 // ----------------------------------

@@ -49,15 +49,11 @@ cmake_minimum_required(VERSION 3.26)
 # Add uKOS-X CMake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Ports/Mkfiles/cmake")
 
-# Project paths
-
-# - PATH_UKOS	--> Main uKOS-X folder
-# - PATH_VARI	--> Projects Root Variant folder
-# - PATH_BASE	--> Projects Root Base folder
-# - PATH_PORT	--> PATH_UKOS/Ports
+# Get project paths
 include(set-project-paths)
 cmake_path(GET CMAKE_SOURCE_DIR PARENT_PATH PATH_TEST_ROM)
 
+# Set toolchain
 include(select-arm-toolchain)
 
 project(
@@ -66,34 +62,25 @@ project(
 	LANGUAGES C
 )
 
-# Microcontroller description. Mandatory variables and include
+set(TARGET_NAME testROM)
 
-set(SOC STM32N657)
-set(CORE CORTEX_M55)
+# Define the list of valid values for test number
+set(VALID_TEST_NUMBERS 00 01 02 03 04 05 06 07 08 09 10 11 12)
 
-# Customisation of firmware copyright text
+# Set the default value
+set(TEST_NUMBER "01" CACHE STRING "Number of test to run.")
 
-add_compile_definitions(
-	"uKOS_NAME="
-	"uKOS_OWNER=(c) LvA"
-	"SECURE_S"
-)
+# Set the property for GUI tools
+set_property(CACHE TEST_NUMBER PROPERTY STRINGS ${VALID_TEST_NUMBERS})
 
-# Selection of script to transfer binary to SOC
-set(BURN burn)
+# Validate the value of TEST_NUMBER
+if(NOT TEST_NUMBER IN_LIST VALID_TEST_NUMBERS)
+    message(FATAL_ERROR "Invalid value for TEST_NUMBER: ${TEST_NUMBER}. Valid values are: ${VALID_TEST_NUMBERS}.")
+endif()
+message(STATUS "Configured to use test number ${TEST_NUMBER}" )
 
-# Apply settings
-include(proj_config)
-
-# Extra compilation options
-
-add_compile_options(
-	-g # includes extra information for debugger
-	-Os # OPTIMISATION
-)
-
-set(LOCAL_TARGET testROM)
-set(TARGET_ELF ${LOCAL_TARGET}.elf)
+set(FLAGS_FP -mfloat-abi=hard -mfpu=fpv5-sp-d16)
+set(CPU_SPEC -mcpu=cortex-m55 -mthumb)
 
 list(APPEND PATH_INCLUDES
 	${PATH_TEST_ROM}/_Commun
@@ -108,29 +95,71 @@ list(APPEND PATH_INCLUDES
 include_directories(${PATH_INCLUDES})
 
 # Sources
-# -------
-
-add_executable(${TARGET_ELF}
+add_executable(${TARGET_NAME}.elf
     first.c
     init.c
     cmns.c
     tests.c
-    ${PATH_TEST_ROM}/_Commun/Runtime/crt0.c
+    ${PATH_TEST_ROM}/_Commun/Runtime/crt0_b.c
     ${PATH_TEST_ROM}/_Commun/Runtime/debug.c
 )
 
-target_link_libraries(${TARGET_ELF} PUBLIC core_compiler_flags)
-target_compile_options(${TARGET_ELF} PUBLIC -Wall)
-
-set(LINKS_LD Runtime/link_p.ld)
-set(TARGET_COMMON_LINK_OPTIONS
-	-T${LINKS_LD} # link script
-	-L${CMAKE_SOURCE_DIR}
-	$<$<C_COMPILER_ID:GNU>:-nostartfiles>
-	$<$<AND:$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,20>,$<C_COMPILER_ID:Clang>>:-nostartfiles>
+# Forward selected test
+set_source_files_properties(tests.c
+    PROPERTIES
+        COMPILE_DEFINITIONS "USING_CMAKE;TEST_${TEST_NUMBER}_S"
 )
-target_link_options(${TARGET_ELF} PRIVATE
-	${TARGET_COMMON_LINK_OPTIONS}
-	$<$<C_COMPILER_ID:GNU>:-Wl,--no-print-map-discarded>
-	-Wl,-Map=${LOCAL_TARGET}.map,--cref,--print-memory-usage
+
+target_compile_definitions(${TARGET_NAME}.elf PRIVATE
+    CACHE_S
+    SECURE_S
+)
+
+target_compile_options(${TARGET_NAME}.elf PRIVATE
+    ${CPU_SPEC}
+    ${FLAGS_FP}
+    -g -Os
+    -Wall
+    $<$<C_COMPILER_ID:GNU>:-Wlogical-op>
+    $<$<C_COMPILER_ID:Clang>:-falign-loops=16>
+)
+
+if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    set(LINKS_LD Runtime/link_p.lld)
+else()
+    set(LINKS_LD Runtime/link_p.ld)
+endif()
+
+target_link_options(${TARGET_NAME}.elf PRIVATE
+    ${CPU_SPEC}
+    ${FLAGS_FP}
+    -Wall
+    -nostartfiles
+    -L${CMAKE_SOURCE_DIR}
+    -T${LINKS_LD}
+    -Wl,-Map=${TARGET_NAME}.map,--cref,--print-memory-usage
+    $<$<C_COMPILER_ID:GNU>:-Wl,--no-warn-rwx-segment>
+)
+target_link_libraries(${TARGET_NAME}.elf PRIVATE m)
+
+# Add map file in the list of files removed by make clean
+set_property(TARGET ${TARGET_NAME}.elf APPEND
+	PROPERTY ADDITIONAL_CLEAN_FILES
+		${TARGET_NAME}.map
+)
+
+# Create hex and bin files (utils)
+add_custom_command(TARGET ${TARGET_NAME}.elf
+	POST_BUILD
+	COMMAND ${CMAKE_OBJCOPY} -O ihex --strip-all ${TARGET_NAME}.elf ${TARGET_NAME}.hex
+	COMMAND ${CMAKE_OBJCOPY} -O binary --strip-all ${TARGET_NAME}.elf ${TARGET_NAME}.bin
+	VERBATIM
+	BYPRODUCTS ${TARGET_NAME}.hex ${TARGET_NAME}.bin
+)
+
+# Program the SOC with binary
+add_custom_target(burn
+	DEPENDS ${TARGET_NAME}.elf
+	COMMAND ${CMAKE_SOURCE_DIR}/burn.sh
+	VERBATIM
 )

@@ -72,7 +72,13 @@ OBJ				+= ../_Commun/Runtime/crt0_b.o ../_Commun/Runtime/debug.o
 
 # Target & Infrastructure
 
+ifeq ($(COMPILER_FAMILY),llvm)
+PATH_COMPILER	=  $(PATH_LLVM_ARM)
+CC				=  $(PATH_COMPILER)/bin/clang
+
+else
 CC				=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
+endif
 AS				=  $(PATH_COMPILER)/bin/$(PREFIX)as
 OBJCOPY			=  $(PATH_COMPILER)/bin/$(PREFIX)objcopy
 OBJDUMP			=  $(PATH_COMPILER)/bin/$(PREFIX)objdump
@@ -87,14 +93,20 @@ CFLAGS			+= -MMD
 CFLAGS			+= -DCACHE_S -DSECURE_S
 
 CFLAGS			+= -Wall
+ifeq ($(COMPILER_FAMILY),gcc)
 CFLAGS			+= -Wlogical-op
+endif
 
 LINKS_LD		=  Runtime/link_p.ld
 
 LDFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 LDFLAGS			+= -Wall -nostartfiles
 LDFLAGS			+= -T$(LINKS_LD)
+ifeq ($(COMPILER_FAMILY),gcc)
 LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage -Wl,--no-warn-rwx-segment
+else
+LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage
+endif
 
 SWTCH_OBJDUMP	=  -f -p -g -D -d -h -t -s
 

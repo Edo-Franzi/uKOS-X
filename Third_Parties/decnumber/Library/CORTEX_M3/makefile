@@ -81,7 +81,7 @@ PREFIX				?= arm-none-eabi-
 PATH_COMPILER		=  $(PATH_GCC_ARM)
 FLAGS_FP			=  -mfloat-abi=soft
 CPU_SPEC			=  -mcpu=cortex-m3 -mthumb
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
 
 # The included makefiles
 

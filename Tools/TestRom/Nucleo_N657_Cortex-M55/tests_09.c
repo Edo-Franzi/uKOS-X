@@ -104,6 +104,7 @@ void	local_TIM3_IRQHandler(void) {
 // Acknowledge the TIM3 interruption
 
 	REG(TIM3)->SR &= ~TIM3_SR_UIF;
+	(void)REG(TIM3)->SR;
 
 	LED_BLUE_TOGGLE;
 }

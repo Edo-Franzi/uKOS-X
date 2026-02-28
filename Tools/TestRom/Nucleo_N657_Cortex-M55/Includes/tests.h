@@ -60,6 +60,7 @@
 #include	"macros_core.h"
 #include	"core.h"
 
+#ifndef USING_CMAKE
 #define	TEST_00_S			// Test of the clocks via MCO1-2
 #undef	TEST_01_S			// Test blink the RED, GREEN & BLUE Leds
 #undef	TEST_02_S			// Test sending data via the cnms manager
@@ -73,5 +74,6 @@
 #undef	TEST_10_S			// Test of the TIM4 interruption
 #undef	TEST_11_S			// Test of the TIM5 interruption
 #undef	TEST_12_S			// Test of some RAM limits
+#endif
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

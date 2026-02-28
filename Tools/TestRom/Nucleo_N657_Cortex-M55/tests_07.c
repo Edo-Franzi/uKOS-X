@@ -108,7 +108,7 @@ void	test_07(void) {
 	volatile	uintptr_t	*stack;
 	volatile	uint32_t	priority;
 
-	vVectors[15 + SVCall_IRQn] = (uintptr_t)SVCall_IRQHandler;
+	vVectors[15 + SVCall_IRQn] = (uintptr_t)SVCall_C0_IRQHandler;
 
 	cmns_init();
 
@@ -223,19 +223,17 @@ void	process_1(uintptr_t *argument) {
 }
 
 /*
- * \brief SVCall_IRQHandler
+ * \brief SVCall_C0_IRQHandler
  *
  * - Change the context f(message)
  *
  */
-#define	KSAVEREGISTERS	"r0", "r1", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11"
-
-void	SVCall_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
-void	SVCall_IRQHandler(void) {
-
-// Recover the message
+[[gnu::naked]]
+void	SVCall_C0_IRQHandler(void) {
 
 	__asm volatile ("							\n \
+												\n \
+	/* Recover the message */					\n \
 	cpsid		i								\n \
 	tst			lr,#0x4							\n \
 	ite 		eq								\n \
@@ -246,15 +244,10 @@ void	SVCall_IRQHandler(void) {
 	it 			eq								\n \
 	addeq		r1,r0,#(32+68+4)				\n \
 	ldr			r1,[r1]							\n \
-	str			r1,%0"							   \
-	:											   \
-	: "m" (vMessage)							   \
-	: KSAVEREGISTERS							   \
-	);
-
-// Save the machine context
-
-	__asm volatile ("							\n \
+	ldr			r2,=vMessage					\n \
+	str			r1,[r2]							\n \
+												\n \
+	/* Save the machine context */				\n \
 	mrs			r1,basepri						\n \
 	stmdb 		r0!,{r1,r4-r11}					\n \
 	tst			lr,#0x10						\n \
@@ -265,26 +258,17 @@ void	SVCall_IRQHandler(void) {
 	ite 		eq								\n \
 	msreq		msp,r0							\n \
 	msrne		psp,r0							\n \
-	str			r0,%0							\n \
-	cpsie		i"								   \
-	:											   \
-	: "m" (vSaveStack)							   \
-	: KSAVEREGISTERS							   \
-	);
-
-	local_scheduler();
-
-// Run the next process
-// --------------------
-
-// Final restore
-// - Recover the new Px stack
-// - Restore the machine context
-// - Returm to the process
-
-	__asm volatile ("							\n \
+	ldr			r1,=vSaveStack					\n \
+	str			r0,[r1]							\n \
+	cpsie		i								\n \
+												\n \
+	/* Call the scheduler */					\n \
+	bl			local_scheduler					\n \
+												\n \
+	/* Restore the machine context */			\n \
 	cpsid		i								\n \
-	ldr			r0,%0							\n \
+	ldr			r0,=vSaveStack					\n \
+	ldr			r0,[r0]							\n \
 	ldmia		r0!,{lr}						\n \
 	tst			lr,#0x10						\n \
 	it 			eq								\n \
@@ -294,13 +278,7 @@ void	SVCall_IRQHandler(void) {
 	ite 		eq								\n \
 	msreq		msp,r0							\n \
 	msrne		psp,r0							\n \
-	msr			basepri,r1"						   \
-	:											   \
-	: "m" (vSaveStack)							   \
-	: KSAVEREGISTERS							   \
-	);
-
-	__asm volatile ("							\n \
+	msr			basepri,r1						\n \
 	cpsie		i								\n \
 	dmb											\n \
 	dsb											\n \
@@ -315,7 +293,7 @@ void	SVCall_IRQHandler(void) {
  * - Pico scheduler
  *
  */
-static	void	__attribute__ ((noinline)) local_scheduler(void) {
+static	void	__attribute__ ((noinline, used)) local_scheduler(void) {
 
 	switch (vMessage) {
 		default:

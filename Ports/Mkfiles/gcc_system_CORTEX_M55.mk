@@ -52,7 +52,7 @@ endif
 
 PATH_COMPILER	=  $(PATH_GCC_ARM)
 
-FLAGS_UKOS		+= -DUKOS_S -D$(BOARD)_S -D$(SOC)_S -D$(CORE)_S -DLITTLE_ENDIAN_S -DROMABLE_S -DCACHE_S
+FLAGS_UKOS		+= -DUKOS_S -D$(BOARD)_S -D$(SOC)_S -D$(CORE)_S -DROMABLE_S -DCACHE_S
 ifneq ($(KERNEL_OPT),)
 FLAGS_UKOS		+= -D$(KERNEL_OPT)_S
 endif
@@ -66,7 +66,7 @@ endif
 SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
 
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
+CPU_SPEC		?= -march=armv8.1-m.main+mve.fp+fp.dp -mthumb
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)

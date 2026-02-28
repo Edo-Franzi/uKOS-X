@@ -305,15 +305,15 @@ static	void	local_printProcess(uint32_t core, uint16_t number) {
 
 	serialManager = (uint32_t)process.oSpecification.oSerialManager;
 
-	#if (defined(LITTLE_ENDIAN_S))
+	#if (defined(BIG_ENDIAN_S))
 	for (i = 0u; i < 4u; i++) {
-		serialManagerA[3u - i] = (char_t)(serialManager & 0xFFu);
+		serialManagerA[i] = (char_t)(serialManager & 0xFFu);
 		serialManager = serialManager>>8;
 	}
 
 	#else
 	for (i = 0u; i < 4u; i++) {
-		serialManagerA[i] = (char_t)(serialManager & 0xFFu);
+		serialManagerA[3u - i] = (char_t)(serialManager & 0xFFu);
 		serialManager = serialManager>>8;
 	}
 	#endif

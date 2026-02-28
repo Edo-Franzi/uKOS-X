@@ -81,7 +81,7 @@ PREFIX				?= riscv64-unknown-elf-
 PATH_COMPILER		=  $(PATH_GCC_RVXX)
 FLAGS_FP			=  -mabi=ilp32
 CPU_SPEC			=  -march=rv32imac_zicsr_zifencei
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
 
 # The included makefiles
 

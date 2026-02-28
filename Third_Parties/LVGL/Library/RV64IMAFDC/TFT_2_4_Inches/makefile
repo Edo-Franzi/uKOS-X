@@ -82,7 +82,7 @@ PREFIX				?= riscv64-unknown-elf-
 PATH_COMPILER		=  $(PATH_GCC_RVXX)
 FLAGS_FP			=  -mabi=lp64d
 CPU_SPEC			=  -march=rv64imafdc_zicsr_zifencei -mcmodel=medany
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DLITTLE_ENDIAN_S -DSECURE_S
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
 
 # The included makefiles
 

@@ -53,6 +53,7 @@
 #include	<stdint.h>
 
 #include	"Registers/core_debug.h"
+#include	"Registers/icb.h"
 #include	"Registers/scb.h"
 #include	"Registers/fpe.h"
 #include	"Registers/mpu.h"

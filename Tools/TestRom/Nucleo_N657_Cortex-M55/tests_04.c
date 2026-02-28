@@ -61,7 +61,6 @@ void	local_USART1_IRQHandler(void);
  *
  */
 void	test_04(void) {
-	uint32_t	i;
 
 	INTERRUPT_VECTOR(USART1_C0_IRQn, local_USART1_IRQHandler);
 	NVIC_SetPriority(USART1_C0_IRQn, KINT_LEVEL_COMMUNICATIONS);

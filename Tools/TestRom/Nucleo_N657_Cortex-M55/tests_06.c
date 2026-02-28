@@ -76,6 +76,7 @@ static		char_t		vString[20];
 
 // Prototypes
 
+static	void	local_handleSVCall(uint32_t message);
 static	void	local_process(uint32_t message);
 
 /*
@@ -101,17 +102,16 @@ void	test_06(void) {
 }
 
 /*
- * \brief SVCall_IRQHandler
+ * \brief SVCall_C0_IRQHandler
  *
  * - Change the context f(message)
+ * - Pure naked: only asm statements (required by clang)
+ * - The message is extracted from the stack and passed via r0
+ *   to local_handleSVCall
  *
  */
-#define	KSAVEREGISTERS	"r0", "r1", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11"
-
-void	SVCall_C0_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
+[[gnu::naked]]
 void	SVCall_C0_IRQHandler(void) {
-
-// Recover the message
 
 	__asm volatile ("							\n \
 	cpsid		i								\n \
@@ -123,17 +123,9 @@ void	SVCall_C0_IRQHandler(void) {
 	tst			lr,#0x10						\n \
 	it 			eq								\n \
 	addeq		r1,r0,#(32+68+4)				\n \
-	ldr			r1,[r1]							\n \
-	str			r1,%0							\n \
-	push 		{lr}"							   \
-	:											   \
-	: "m" (vMessage)							   \
-	: KSAVEREGISTERS							   \
-	);
-
-		local_process(vMessage);
-
-	__asm volatile ("							\n \
+	ldr			r0,[r1]							\n \
+	push 		{lr}							\n \
+	bl			local_handleSVCall				\n \
 	pop			{lr}							\n \
 	cpsie		i								\n \
 	dmb											\n \
@@ -141,6 +133,18 @@ void	SVCall_C0_IRQHandler(void) {
 	isb											\n \
 	bx			lr"								   \
 	);
+}
+
+/*
+ * \brief local_handleSVCall
+ *
+ * - Process the SVC call (non-naked wrapper)
+ *
+ */
+static	void	__attribute__ ((noinline, used)) local_handleSVCall(uint32_t message) {
+
+	vMessage = message;
+	local_process(vMessage);
 }
 
 /*

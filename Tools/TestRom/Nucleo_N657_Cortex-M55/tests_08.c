@@ -102,8 +102,11 @@ void	test_08(void) {
 void	local_TIM2_IRQHandler(void) {
 
 // Acknowledge the TIM2 interruption
+// Read-back to ensure the write completes before the handler returns;
+// without this, on Cortex-M55 the NVIC can re-enter the handler immediately.
 
-	REG(TIM2)->SR &= ~TIM2_SR_UIF;
+	REG(TIM2)->SR = ~TIM2_SR_UIF;
+	(void)REG(TIM2)->SR;
 
 	LED_BLUE_TOGGLE;
 }
