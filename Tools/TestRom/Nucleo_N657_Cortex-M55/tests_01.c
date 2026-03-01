@@ -49,6 +49,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_01_S))
+
+#define BLINK_PAUSE 500000
 /*
  * \brief test_01
  *
@@ -59,13 +61,13 @@ void	test_01(void) {
 
 	while (true) {
 		LED_RED_TOGGLE;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 
 		LED_GREEN_TOGGLE;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 
 		LED_BLUE_TOGGLE;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 	}
 }
 #endif

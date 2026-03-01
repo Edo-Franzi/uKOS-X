@@ -83,14 +83,29 @@ AS				=  $(PATH_COMPILER)/bin/$(PREFIX)as
 OBJCOPY			=  $(PATH_COMPILER)/bin/$(PREFIX)objcopy
 OBJDUMP			=  $(PATH_COMPILER)/bin/$(PREFIX)objdump
 
+# Test selection (e.g. make TEST_NUMBER=13)
+# When set, passes -DUSING_CMAKE -DTEST_$(TEST_NUMBER)_S so that
+# tests.h does not override the test selection.
+
+TEST_NUMBER		?=
+
+ifeq ($(TEST_NUMBER),13)
+# MVE/Helium requires -march with +mve.fp, no -mfpu
+FLAGS_FP		?= -mfloat-abi=hard
+CPU_SPEC		?= -march=armv8.1-m.main+mve.fp+fp.dp -mthumb
+else
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
 CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
+endif
 
 CFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS			+= -c -g -Os
 CFLAGS			+= $(PATH_INCLUDES)
 CFLAGS			+= -MMD
 CFLAGS			+= -DCACHE_S -DSECURE_S
+ifneq ($(TEST_NUMBER),)
+CFLAGS			+= -DUSING_CMAKE -DTEST_$(TEST_NUMBER)_S
+endif
 
 CFLAGS			+= -Wall
 ifeq ($(COMPILER_FAMILY),gcc)

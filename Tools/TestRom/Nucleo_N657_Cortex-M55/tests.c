@@ -64,6 +64,7 @@
  *		tests_10: Test of the TIM4 interruption
  *		tests_11: Test of the TIM5 interruption
  *		tests_12: Test of some RAM limits
+ *		tests_13: Test of the MVE/Helium dot product benchmark
  *
  */
 
@@ -148,6 +149,11 @@ void	test_12(void);
 	test_12();
 #endif
 
+#if (defined(TEST_13_S))
+void	test_13(void);
+	test_13();
+#endif
+
 }
 
 #include	"tests_00.c"
@@ -163,3 +169,4 @@ void	test_12(void);
 #include	"tests_10.c"
 #include	"tests_11.c"
 #include	"tests_12.c"
+#include	"tests_13.c"

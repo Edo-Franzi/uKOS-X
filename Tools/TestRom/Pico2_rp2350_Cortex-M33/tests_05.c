@@ -93,9 +93,7 @@ void	test_05(void) {
 
 // Waiting for the TIM0 Alarme 0 & 1 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(100000);

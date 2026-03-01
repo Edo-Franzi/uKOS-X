@@ -88,9 +88,7 @@ void	test_11(void) {
 
 // Waiting for the RTC0 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(1000000);

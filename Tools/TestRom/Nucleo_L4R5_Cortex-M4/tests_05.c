@@ -74,9 +74,7 @@ void	test_05(void) {
 
 // Waiting for the LPUART1 interruption
 
-	__asm volatile ("			\n \
-		cpsie		i"			   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		LPUART1->CR1 |= LPUART1_CR1_TXFEIE;

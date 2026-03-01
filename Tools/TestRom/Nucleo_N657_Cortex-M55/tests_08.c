@@ -49,13 +49,14 @@
 #include	"tests.h"
 
 #if (defined(TEST_08_S))
+
 #define	KTTIMESAMPLING	((float64_t)(0.5))										// 500-ms
 #define KPSCT2			((KFREQUENCY_TIM / (KFREQUENCY_1MHz)) - 1)				// Prescaler for 1'000'000-Hz
 #define KARRT2			((uint32_t)((KFREQUENCY_1MHz * KTTIMESAMPLING) - 1))	// Autoreload
 
 // Prototypes
 
-void	local_TIM2_IRQHandler(void);
+void	TIM2_C0_IRQHandler(void);
 
 /*
  * \brief test_08
@@ -68,38 +69,29 @@ void	test_08(void) {
 	REG(RCC)->APB1LENR |= RCC_APB1LENR_TIM2EN;
 	STRONG_BARRIER;
 
-// Initialise the TIM2 to generate an interruption every 500-ms
-
-	INTERRUPT_VECTOR(TIM2_C0_IRQn, local_TIM2_IRQHandler);
 	NVIC_SetPriority(TIM2_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
 	NVIC_EnableIRQ(TIM2_C0_IRQn);
 
-	REG(TIM2)->CR1 &= ~TIM2_CR1_CEN;
+	REG(TIM2)->CR1  = 0;
 	REG(TIM2)->PSC  = KPSCT2;
 	REG(TIM2)->ARR  = KARRT2;
 	REG(TIM2)->CNT  = 0;
 	REG(TIM2)->DIER = TIM2_DIER_UIE;
-	REG(TIM2)->CR1 |= TIM2_CR1_CEN;
-
-// Waiting for the TIM2 interruption
-
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	REG(TIM2)->CR1  = TIM2_CR1_CEN;
 
 	while (true) {
-		cmns_wait(100000);
+		cmns_wait(500000);
 		LED_RED_TOGGLE;
 	}
 }
 
 /*
- * \brief local_TIM2_IRQHandler
+ * \brief TIM2_C0_IRQHandler
  *
  * - Blink the BLUE Led
  *
  */
-void	local_TIM2_IRQHandler(void) {
+void	TIM2_C0_IRQHandler(void) {
 
 // Acknowledge the TIM2 interruption
 // Read-back to ensure the write completes before the handler returns;

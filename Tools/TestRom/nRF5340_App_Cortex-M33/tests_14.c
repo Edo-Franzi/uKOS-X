@@ -102,9 +102,7 @@ void	test_14(void) {
 
 // Waiting for the TIM1 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		#if (defined(CPU_APPLICATION_S))

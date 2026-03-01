@@ -72,9 +72,7 @@ void	test_07(void) {
 
 	cmns_init();
 
-	__asm volatile ("			\n \
-		cpsie		i"			   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		REG(UART0)->UARTIMSC |= UART_UARTIMSC_TXIM;

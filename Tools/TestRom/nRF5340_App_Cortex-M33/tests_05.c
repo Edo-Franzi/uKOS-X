@@ -74,9 +74,7 @@ void	test_05(void) {
 
 // Waiting for the UARTE_1 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	REG(UARTE1)->RXD_PTR	   = (uint32_t)&data;
 	REG(UARTE1)->RXD_MAXCNT    = 1u;

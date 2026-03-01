@@ -80,7 +80,7 @@ add_compile_definitions(
 set(BURN secure)
 
 # Enable Helium/MVE with floating-point support for neural networks
-set(CPU_FEATURES "mve.fp")
+set(CPU_FEATURES "Helium" "Double")
 # Apply project settings
 include(proj_config)
 

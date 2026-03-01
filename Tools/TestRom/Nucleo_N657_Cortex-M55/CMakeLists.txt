@@ -47,7 +47,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 # Add uKOS-X CMake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Ports/Mkfiles/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Ports/cmake")
 
 # Get project paths
 include(set-project-paths)
@@ -65,7 +65,7 @@ project(
 set(TARGET_NAME testROM)
 
 # Define the list of valid values for test number
-set(VALID_TEST_NUMBERS 00 01 02 03 04 05 06 07 08 09 10 11 12)
+set(VALID_TEST_NUMBERS 00 01 02 03 04 05 06 07 08 09 10 11 12 13)
 
 # Set the default value
 set(TEST_NUMBER "01" CACHE STRING "Number of test to run.")
@@ -79,8 +79,14 @@ if(NOT TEST_NUMBER IN_LIST VALID_TEST_NUMBERS)
 endif()
 message(STATUS "Configured to use test number ${TEST_NUMBER}" )
 
-set(FLAGS_FP -mfloat-abi=hard -mfpu=fpv5-sp-d16)
-set(CPU_SPEC -mcpu=cortex-m55 -mthumb)
+if(TEST_NUMBER STREQUAL "13")
+	# MVE/Helium requires -march with +mve.fp, no -mfpu
+	set(FLAGS_FP -mfloat-abi=hard)
+	set(CPU_SPEC -march=armv8.1-m.main+mve.fp+fp.dp -mthumb)
+else()
+	set(FLAGS_FP -mfloat-abi=hard -mfpu=fpv5-sp-d16)
+	set(CPU_SPEC -mcpu=cortex-m55 -mthumb)
+endif()
 
 list(APPEND PATH_INCLUDES
 	${PATH_TEST_ROM}/_Commun

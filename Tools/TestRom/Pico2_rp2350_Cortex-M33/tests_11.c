@@ -80,9 +80,7 @@ static	void	local_codeCore_1(void) {
 
 // Waiting for the door bell interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(100000);
@@ -120,9 +118,7 @@ void	test_11(void) {
 
 // Generate a door bell on the core 1
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cpt++;

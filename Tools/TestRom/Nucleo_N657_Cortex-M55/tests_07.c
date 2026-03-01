@@ -49,6 +49,9 @@
 #include	"tests.h"
 
 #if (defined(TEST_07_S))
+
+#define BLINK_PAUSE 300000
+
 extern		uintptr_t	*vVectors;
 
 #define	VERBOSE_S
@@ -168,9 +171,7 @@ void	test_07(void) {
 
 // Waiting for the multitasking
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	MESSAGE(KMSGFIRST);
 	while (true) {
@@ -193,9 +194,9 @@ void	process_0(uintptr_t *argument) {
 	while (true) {
 		cmns_send(KURT0, "Run P0\n");
 		LED_RED_ON;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		LED_RED_OFF;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		MESSAGE(KMSGRUNP1);
 	}
 }
@@ -215,9 +216,9 @@ void	process_1(uintptr_t *argument) {
 	while (true) {
 		cmns_send(KURT0, "Run P1\n");
 		LED_BLUE_ON;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		LED_BLUE_OFF;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		MESSAGE(KMSGRUNP0);
 	}
 }

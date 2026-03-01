@@ -83,9 +83,7 @@ void	test_10(void) {
 
 // Waiting for the TIM4 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(100000);

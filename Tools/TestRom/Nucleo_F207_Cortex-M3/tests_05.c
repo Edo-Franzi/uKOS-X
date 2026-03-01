@@ -74,9 +74,7 @@ void	test_05(void) {
 
 // Waiting for the UART3 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		USART3->CR1 |= USART3_CR1_TXEIE;

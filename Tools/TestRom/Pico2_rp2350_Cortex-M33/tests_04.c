@@ -81,9 +81,7 @@ void	test_04(void) {
 
 // Waiting for the UART0 interruption
 
-	__asm volatile ("			\n \
-		cpsie		i"			   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		vTransmitted = false;

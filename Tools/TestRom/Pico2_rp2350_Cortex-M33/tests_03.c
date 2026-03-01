@@ -76,9 +76,7 @@ void	test_03(void) {
 
 // Waiting for the UART0 interruption
 
-	__asm volatile ("			\n \
-		cpsie		i"			   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(100000);

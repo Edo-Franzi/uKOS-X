@@ -76,9 +76,7 @@ void	test_04(void) {
 
 // Waiting for the UARTE_1 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		length = strlen(vString);

@@ -52,7 +52,7 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(PATH_TOOLCHAIN_PREFIX ${PATH_LLVM_ARM}/bin/llvm-)
 
 # Validate that all required toolchain utilities exist
-foreach(tool IN ITEMS clang clang++ ld.lld scan-build)
+foreach(tool IN ITEMS clang clang++ ld.lld)
 	set(tool_path "${PATH_LLVM_ARM}/bin/${tool}")
 	if(NOT EXISTS "${tool_path}")
 		message(FATAL_ERROR "Toolchain utility not found: ${tool_path}\n"

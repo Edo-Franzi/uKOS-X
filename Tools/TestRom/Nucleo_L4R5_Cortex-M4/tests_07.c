@@ -117,21 +117,21 @@ void	test_07(void) {
 
 	*(--stack) = 0x01000000;					// xPSR
 	*(--stack) = (uintptr_t)process_0;			// pc Process address
-	*(--stack) = 0xFFFFFFFD;					// lr		
-	*(--stack) = 0x12121212;					// r12		
-	*(--stack) = 0x03030303;					// r3		
-	*(--stack) = 0x02020202;					// r2		
-	*(--stack) = 0x01010101;					// r1		
-	*(--stack) = 0x00000000;					// r0 process arguments		
-	*(--stack) = 0x11111111;					// r11		
-	*(--stack) = 0x10101010;					// r10		
-	*(--stack) = 0x09090909;					// r9		
-	*(--stack) = 0x08080808;					// r8		
-	*(--stack) = 0x07070707;					// r7		
-	*(--stack) = 0x06060606;					// r6		
-	*(--stack) = 0x05050505;					// r5		
-	*(--stack) = 0x04040404;					// r4		
-	*(--stack) = priority;						// basepri	
+	*(--stack) = 0xFFFFFFFD;					// lr
+	*(--stack) = 0x12121212;					// r12
+	*(--stack) = 0x03030303;					// r3
+	*(--stack) = 0x02020202;					// r2
+	*(--stack) = 0x01010101;					// r1
+	*(--stack) = 0x00000000;					// r0 process arguments
+	*(--stack) = 0x11111111;					// r11
+	*(--stack) = 0x10101010;					// r10
+	*(--stack) = 0x09090909;					// r9
+	*(--stack) = 0x08080808;					// r8
+	*(--stack) = 0x07070707;					// r7
+	*(--stack) = 0x06060606;					// r6
+	*(--stack) = 0x05050505;					// r5
+	*(--stack) = 0x04040404;					// r4
+	*(--stack) = priority;						// basepri
 	*(--stack) = 0xFFFFFFFD;					// lr
 
 	vStackCurP0 = (uintptr_t)stack;				// Stack of the process 0
@@ -144,30 +144,28 @@ void	test_07(void) {
 
 	*(--stack) = 0x01000000;					// xPSR
 	*(--stack) = (uintptr_t)process_1;			// pc Process address
-	*(--stack) = 0xFFFFFFFD;					// lr		
-	*(--stack) = 0x12121212;					// r12		
-	*(--stack) = 0x03030303;					// r3		
-	*(--stack) = 0x02020202;					// r2		
-	*(--stack) = 0x01010101;					// r1		
-	*(--stack) = 0x00000000;					// r0 process arguments		
-	*(--stack) = 0x11111111;					// r11		
-	*(--stack) = 0x10101010;					// r10		
-	*(--stack) = 0x09090909;					// r9		
-	*(--stack) = 0x08080808;					// r8		
-	*(--stack) = 0x07070707;					// r7		
-	*(--stack) = 0x06060606;					// r6		
-	*(--stack) = 0x05050505;					// r5		
-	*(--stack) = 0x04040404;					// r4		
-	*(--stack) = priority;						// basepri	
+	*(--stack) = 0xFFFFFFFD;					// lr
+	*(--stack) = 0x12121212;					// r12
+	*(--stack) = 0x03030303;					// r3
+	*(--stack) = 0x02020202;					// r2
+	*(--stack) = 0x01010101;					// r1
+	*(--stack) = 0x00000000;					// r0 process arguments
+	*(--stack) = 0x11111111;					// r11
+	*(--stack) = 0x10101010;					// r10
+	*(--stack) = 0x09090909;					// r9
+	*(--stack) = 0x08080808;					// r8
+	*(--stack) = 0x07070707;					// r7
+	*(--stack) = 0x06060606;					// r6
+	*(--stack) = 0x05050505;					// r5
+	*(--stack) = 0x04040404;					// r4
+	*(--stack) = priority;						// basepri
 	*(--stack) = 0xFFFFFFFD;					// lr
 
 	vStackCurP1 = (uintptr_t)stack;				// Stack of the process 1
 
 // Waiting for the multitasking
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	MESSAGE(KMSGFIRST);
 	while (true) {
@@ -275,7 +273,7 @@ void	SVCall_IRQHandler(void) {
 // --------------------
 
 // Final restore
-// - Recover the new Px stack 
+// - Recover the new Px stack
 // - Restore the machine context
 // - Returm to the process
 

@@ -44,21 +44,6 @@
 #
 #------------------------------------------------------------------------
 
-# With the the time zone set for the Switzerland
-# CET+1		!!! For CET+1, the string has to be CET-1
-# CEST		Support the Summer day
-# M3.5.0/2	Start summer day in March (3), 5th occurance (5) of Sunday (0) @ 2am (/2)
-# M10.5.0/2 End summer day in October (10), 5th occurance (5) of Sunday (0) @ 2am (/2)
-#
-set(TZ_UTC_SHIFT "CET-1" CACHE STRING "String to set the time zone; !!! For CET+1, the string has to be CET-1")
-add_compile_definitions(
-	TZ_UTC_SHIFT="${TZ_UTC_SHIFT}"
-)
-set(TZ_DST_SPEC "CEST,M3.5.0/2,M10.5.0/2" CACHE STRING "String to set summer time")
-add_compile_definitions(
-	TZ_DST_SPEC="${TZ_DST_SPEC}"
-)
-
 # Function to derive SoC properties from SoC name
 #
 # This function automatically determines the PROVIDER and FAMILY from a SoC name,
@@ -214,21 +199,21 @@ function(configure_arm_core)
 	if(${CORE} STREQUAL "CORTEX_M3")
 		set(LLVM_TARGET "thumbv7m-${TARGET_TRIPLE_MIDDLE}-eabi")
 		set(MCPU "cortex-m3")
-		set(MARCH "thumbv7m")
+		set(MARCH "armv7-m")
 		set(MFLOAT_ABI "soft")
 		set(EXTRA_COMPILE_FLAGS "$<$<C_COMPILER_ID:Clang>:-mfpu=none>")
 
 	elseif(${CORE} STREQUAL "CORTEX_M4")
 		set(LLVM_TARGET "thumbv7em-${TARGET_TRIPLE_MIDDLE}-eabihf")
 		set(MCPU "cortex-m4")
-		set(MARCH "thumbv7em")
+		set(MARCH "armv7e-m")
 		set(MFLOAT_ABI "hard")
 		set(MFPU "fpv4-sp-d16")
 
 	elseif(${CORE} STREQUAL "CORTEX_M7")
 		set(LLVM_TARGET "thumbv7em-${TARGET_TRIPLE_MIDDLE}-eabihf")
 		set(MCPU "cortex-m7")
-		set(MARCH "thumbv7em")
+		set(MARCH "armv7e-m")
 		set(MFLOAT_ABI "hard")
 		set(MFPU "fpv5-sp-d16")
 		set(HAS_CACHE TRUE)
@@ -236,7 +221,7 @@ function(configure_arm_core)
 	elseif(${CORE} STREQUAL "CORTEX_M33")
 		set(LLVM_TARGET "thumbv8m.main-${TARGET_TRIPLE_MIDDLE}-eabi")
 		set(MCPU "cortex-m33")
-		set(MARCH "thumbv8m.main")
+		set(MARCH "armv8-m.main")
 		# Check for feature-based configuration
 		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
 			# CORTEX_M33_VALID_FEATURES
@@ -264,28 +249,26 @@ function(configure_arm_core)
 
 	elseif(${CORE} STREQUAL "CORTEX_M55")
 		set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabihf")
-		set(MCPU "cortex-m55")
-		set(MARCH "thumbv8.1m.main")
+		set(MARCH "armv8.1-m.main")
 		set(MFLOAT_ABI "hard")
-		set(MFPU "fpv5-sp-d16")
 		# Check for feature-based configuration
 		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
 			# CORTEX_M55_VALID_FEATURES
-			#	"mve|Helium M-Profile Vector Extension||MLPN_HAVE_HELIUM_FP_S|+mve"
-			#	"mve.fp|Helium MVE with explicit FP support||MLPN_HAVE_HELIUM_FP_S|+mve.fp"
+			#	"Helium|Helium M-Profile Vector Extension||MLPN_HAVE_HELIUM_FP_S|+mve"
+			#	"Double|Double precision FP support||MLPN_HAVE_HELIUM_FP_S|+mve.fp"
 			#	"nofp|Disable floating point unit|||+nofp"
 			foreach(feature IN LISTS CPU_FEATURES)
-				if(${feature} STREQUAL "mve")
+				if(${feature} STREQUAL "Helium")
 					set(has_mve TRUE)
-				elseif(${feature} STREQUAL "mve.fp")
-					set(has_mve_fp TRUE)
+				elseif(${feature} STREQUAL "Double")
+					set(has_dp TRUE)
 				elseif(${feature} STREQUAL "nofp")
 					set(has_nofp TRUE)
 				endif()
 			endforeach()
 		endif()
 		# Check if MVE/Helium is requested
-		if(has_mve OR has_mve_fp)
+		if(has_mve)
 			# Helium/MVE mode
 			unset(MFPU)	 # MVE doesn't use -mfpu
 			# Build -march with MVE extensions
@@ -293,17 +276,28 @@ function(configure_arm_core)
 			if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
 				set(MARCH "armv8.1-m.main")
 			endif()
-			if(has_mve_fp)
-				set(MARCH "${MARCH}+mve.fp")
-			else()
-				set(MARCH "${MARCH}+mve")
-			endif()
+            set(MARCH "${MARCH}+mve.fp")
+            if(has_dp)
+                set(MARCH "${MARCH}+fp.dp")
+            endif()
+		elseif(has_dp)
+            set(MARCH "${MARCH}+fp.dp")
 		elseif(has_nofp)
 			# No floating point
-			set(LLVM_TARGET "${BASE_MARCH}-${TARGET_TRIPLE_MIDDLE}-eabi")
+			set(LLVM_TARGET "${MARCH}-${TARGET_TRIPLE_MIDDLE}-eabi")
 			set(MFLOAT_ABI "soft")
 			unset(MFPU)
 		endif()
+		set(HAS_CACHE TRUE)
+
+	elseif(${CORE} STREQUAL "CORTEX_M85")
+		set(LLVM_TARGET "thumbv8m.main-${TARGET_TRIPLE_MIDDLE}-eabi")
+		set(MCPU "cortex-m85")
+		set(MARCH "armv8-m.main")
+        # Hard float ABI (default)
+        set(LLVM_TARGET "${LLVM_TARGET}hf")
+        set(MFLOAT_ABI "hard")
+        set(MFPU "fpv5-sp-d16")
 		set(HAS_CACHE TRUE)
 
 	elseif(${CORE} STREQUAL "CORTEX_A7")
@@ -332,7 +326,7 @@ function(configure_arm_core)
 	if(DEFINED MCPU)
 		list(APPEND COMPILE_FLAGS "-mcpu=${MCPU}")
 	endif()
-	if(DEFINED MARCH AND CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	if(DEFINED MARCH AND (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR ${CORE} STREQUAL "CORTEX_M55"))
 		list(APPEND COMPILE_FLAGS "-march=${MARCH}")
 	endif()
 	if(DEFINED MFLOAT_ABI)

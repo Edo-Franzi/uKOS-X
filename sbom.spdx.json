@@ -1,9 +1,9 @@
 {
-  "spdxVersion": "SPDX-2.18",
+  "spdxVersion": "SPDX-2.19",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.2.18)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.18-2026-02-27",
+  "name": "uKOS-X SBOM (0.2.19)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.19-2026-03-01",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -34,7 +34,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.2.18",
+      "versionInfo": "0.2.19",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -44,7 +44,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.18",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.19",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]

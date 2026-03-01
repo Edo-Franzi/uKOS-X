@@ -49,6 +49,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_02_S))
+
+#define BLINK_PAUSE 1000000
 /*
  * \brief test_02
  *
@@ -60,7 +62,7 @@ void	test_02(void) {
 	cmns_init();
 
 	while (true) {
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		LED_RED_TOGGLE;
 
 		cmns_send(KURT0, "Nous sommes les petits Strumpfs, trala lala lala ...\n");

@@ -138,7 +138,7 @@ void	cmns_receive(serialManager_t serialManager, char_t *data) {
  *
  */
 void	cmns_wait(uint32_t us) {
-	uint32_t	wkUs = us, time;
+	uint32_t	wkUs = us;
 
 	#if (defined(CACHE_S))
 	wkUs = (wkUs / 7u) * (KFREQUENCY_CORE / 1000000u);
@@ -147,5 +147,6 @@ void	cmns_wait(uint32_t us) {
 	wkUs = (wkUs / 12u) * (KFREQUENCY_CORE / 1000000u);
 	#endif
 
-	for (time = 0u; time < wkUs; time++) { NOP; }
+	for (uint32_t time = 0u; time < wkUs; time++) { NOP; }
+	__asm volatile ("" ::: "memory");
 }

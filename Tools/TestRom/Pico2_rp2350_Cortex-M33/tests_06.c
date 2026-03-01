@@ -165,9 +165,7 @@ void	test_06(void) {
 
 // Waiting for the multitasking
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	MESSAGE(KMSGFIRST);
 	while (true) {

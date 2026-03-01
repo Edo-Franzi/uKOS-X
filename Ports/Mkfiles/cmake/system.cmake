@@ -88,7 +88,6 @@ target_compile_definitions(system_compiler_flags INTERFACE
 	UKOS_S
 	${SOC}_S
 	${CORE}_S
-	LITTLE_ENDIAN_S
 	ROMABLE_S
 	"$<$<BOOL:${KERNEL_OPT}>:${KERNEL_OPT}_S>"
 	_POSIX_C_SOURCE=200809L

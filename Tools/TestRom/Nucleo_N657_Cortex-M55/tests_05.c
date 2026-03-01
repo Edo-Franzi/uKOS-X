@@ -49,6 +49,9 @@
 #include	"tests.h"
 
 #if (defined(TEST_05_S))
+
+#define BLINK_PAUSE 100000
+
 bool		vTransmitted = false;
 uint8_t		vString[] = ".. but we are not afraid, we are alway firsts ...\n";
 
@@ -74,17 +77,15 @@ void	test_05(void) {
 
 // Waiting for the USART1 interruption
 
-	__asm volatile ("			\n \
-		cpsie		i"			   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		REG(USART1)->CR1_FIFO |= USART_CR1_FIFO_TXFNFIE;
 
 // Let terminate the buffer transfer
 
-		cmns_wait(100000);
-		do { } while (vTransmitted == false);
+		cmns_wait(BLINK_PAUSE);
+		do { } while (!vTransmitted);
 
 		vTransmitted = false;
 		LED_RED_TOGGLE;

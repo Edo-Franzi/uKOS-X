@@ -89,9 +89,7 @@ static	void	local_codeCore_1(void) {
 
 // Waiting for the TIM0 Alarme 1 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(100000);
@@ -148,9 +146,7 @@ void	test_09(void) {
 
 // Waiting for the TIM0 Alarme 0 interruption
 
-	__asm volatile ("			\n \
-	cpsie		i"				   \
-	);
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
 		cmns_wait(1000000);
