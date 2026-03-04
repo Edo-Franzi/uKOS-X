@@ -140,7 +140,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // Read mode (with write register)
 //  wki2c 1 -R address register nbBytes
 
-	unit = (uint8_t)strtol(argv[1], &dummy, 10u);
+	unit = (uint8_t)strtoul(argv[1], &dummy, 10u);
 	switch (unit) {
 		default:
 		case 0u: { i2cManager = KI2C0; break; }
@@ -153,7 +153,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		i2c_configure(i2cManager, &aConfigure);
 
 		if (argc > 4u) {
-			address = (uint8_t)strtol(argv[3], &dummy, 16u);
+			address = (uint8_t)strtoul(argv[3], &dummy, 16u);
 
 			text_checkAsciiBuffer(argv[2], "-W", &equals); if (equals == true) { mode = KWRITE; }
 			text_checkAsciiBuffer(argv[2], "-R", &equals); if (equals == true) { mode = KREAD;  }
@@ -162,7 +162,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				case KWRITE: {
 					number = (uint16_t)(argc - 4u);
 					for (i = 0u; i < number; i++) {
-						buffer8[i] = (uint8_t)strtol(argv[4 + i], &dummy, 16u);
+						buffer8[i] = (uint8_t)strtoul(argv[4 + i], &dummy, 16u);
 					}
 					status = i2c_write(i2cManager, address, &buffer8[0], number);
 					switch (status) {
@@ -172,8 +172,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 					break;
 				}
 				case KREAD: {
-					number		 = (uint16_t)strtol(argv[5], &dummy, 10u);
-					chipRegister = (uint8_t) strtol(argv[4], &dummy, 16u);
+					number		 = (uint16_t)strtoul(argv[5], &dummy, 10u);
+					chipRegister = (uint8_t) strtoul(argv[4], &dummy, 16u);
 					buffer8[0]	 = chipRegister;
 
 					status = i2c_read(i2cManager, address, &buffer8[0], number);

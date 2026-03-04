@@ -164,7 +164,7 @@ int		main(int32_t argc, const char_t *argv[]) {
 			else                                         { error = KERRCLI; 	 }
 
 			strcpy(driverID, argv[2]);												// Driver ID (FT000001)
-			baudrate = (uint32_t)strtol(argv[3], nullptr, 10u);						// Baudrate (460800)
+			baudrate = (uint32_t)strtoul(argv[3], nullptr, 10u);					// Baudrate (460800)
 			fileName = argv[6];														// Filename
 			break;
 		}

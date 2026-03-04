@@ -143,7 +143,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // Try to reserve the MPY memory segment
 
 	if (error == KERR_NOT) {
-		MPYSize   = (uint32_t)strtol(argv[2], &dummy, 10u);
+		MPYSize   = (uint32_t)strtoul(argv[2], &dummy, 10u);
 		MPYMemory = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (MPYSize * sizeof(uint8_t)), "mpy");
 		error = (MPYMemory == nullptr) ? (KERR_NME) : (error);
 

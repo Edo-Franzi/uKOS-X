@@ -140,7 +140,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		}
 		case 3u: {
 			core = 0u;
-			number = (uint32_t)strtol(argv[2], &dummy, 10u);
+			number = (uint32_t)strtoul(argv[2], &dummy, 10u);
 			text_checkAsciiBuffer(argv[1], "-proc", &equals); if (equals == true) { object = KOBJ_PROC; break; }
 			text_checkAsciiBuffer(argv[1], "-sema", &equals); if (equals == true) { object = KOBJ_SEMA;	break; }
 			text_checkAsciiBuffer(argv[1], "-mutx", &equals); if (equals == true) { object = KOBJ_MUTX; break; }
@@ -153,13 +153,13 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			break;
 		}
 		case 4: {
-			core = (uint32_t)strtol(argv[1], &dummy, 10u);
+			core = (uint32_t)strtoul(argv[1], &dummy, 10u);
 			if (core >= KNB_CORES) {
 				error = KERR_NOC;
 				break;
 			}
 
-			number = (uint32_t)strtol(argv[3], &dummy, 10u);
+			number = (uint32_t)strtoul(argv[3], &dummy, 10u);
 			text_checkAsciiBuffer(argv[2], "-proc", &equals); if (equals == true) { object = KOBJ_PROC; break; }
 			text_checkAsciiBuffer(argv[2], "-sema", &equals); if (equals == true) { object = KOBJ_SEMA;	break; }
 			text_checkAsciiBuffer(argv[1], "-mutx", &equals); if (equals == true) { object = KOBJ_MUTX; break; }

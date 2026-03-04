@@ -122,6 +122,14 @@ extern	uint32_t	board_millis(void);
  */
 extern	void	osal_task_delay(uint32_t msec);
 
+/*
+ * \brief osal_time_millis
+ *
+ * - Time elapsed in ms
+ *
+ */
+extern	uint32_t	osal_time_millis(void);
+
 // Semaphore
 // =========
 

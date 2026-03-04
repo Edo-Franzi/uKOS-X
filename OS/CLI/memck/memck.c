@@ -123,9 +123,9 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		error = KERR_INA;
 	}
 	else {
-		startAdd = (uintptr_t)strtol(argv[1], &dummy, 16u);
-		endAdd	 = (uintptr_t)strtol(argv[2], &dummy, 16u);
-		time	 = (uint32_t) strtol(argv[3], &dummy, 16u);
+		startAdd = (uintptr_t)strtoul(argv[1], &dummy, 16u);
+		endAdd	 = (uintptr_t)strtoul(argv[2], &dummy, 16u);
+		time	 = (uint32_t) strtoul(argv[3], &dummy, 16u);
 
 		kern_getSerialForProcess(process, &pack.oSerialManager);
 		pack.oStartAdd	  = startAdd;

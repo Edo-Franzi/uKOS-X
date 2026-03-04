@@ -118,9 +118,9 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // Values passed by the boot
 
 	if (argc == 4) {
-		vConfigure[core].oTime[0] = (uint32_t)strtol(argv[1], &dummy, 10u);
-		vConfigure[core].oTime[1] = (uint32_t)strtol(argv[2], &dummy, 10u);
-		vConfigure[core].oLed	  = (uint8_t)strtol(argv[3], &dummy, 10u);
+		vConfigure[core].oTime[0] = (uint32_t)strtoul(argv[1], &dummy, 10u);
+		vConfigure[core].oTime[1] = (uint32_t)strtoul(argv[2], &dummy, 10u);
+		vConfigure[core].oLed	  = (uint8_t )strtoul(argv[3], &dummy, 10u);
 	}
 
 	PROCESS_STACKMALLOC(

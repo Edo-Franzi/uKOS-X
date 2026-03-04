@@ -114,7 +114,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			break;
 		}
 		case 2u: {
-			core = (uint32_t)strtol(argv[1], &dummy, 10u);
+			core = (uint32_t)strtoul(argv[1], &dummy, 10u);
 			if (core >= KNB_CORES) {
 				core = 0u;
 			}

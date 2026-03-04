@@ -348,7 +348,7 @@ static	void	local_state_PD(uint8_t data) {
 		}
 		else {
 			vASCIINumber[vI] = '\0';
-			vSize = (int32_t)strtol(&vASCIINumber[0], &dummy, 10u);
+			vSize = (int32_t)strtoul(&vASCIINumber[0], &dummy, 10u);
 			vRead = true;
 		}
 	}

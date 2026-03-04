@@ -143,7 +143,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	switch (argc) {
 		case 2u: {
-			nbSamples = (uint32_t)strtol(argv[1], &dummy, 10u);
+			nbSamples = (uint32_t)strtoul(argv[1], &dummy, 10u);
 
 // Reserve the necessary buffers
 

@@ -1,6 +1,6 @@
 /*
-; core_reg.
-; =========
+; sau.
+; ====
 
 ; SPDX-License-Identifier: MIT
 
@@ -9,7 +9,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		cortex_m85_core equates.
+; Goal:		sau equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,19 +48,67 @@
 
 #pragma	once
 
-// IWYU pragma: begin_exports
+// SAU address definitions
+// -----------------------
 
-#include	<stdint.h>
+typedef struct {
+	volatile	uint32_t	CTRL;
+	volatile	uint32_t	TYPE;
+	volatile	uint32_t	RNR;
+	volatile	uint32_t	RBAR;
+	volatile	uint32_t	RLAR;
+	volatile	uint32_t	SFSR;
+	volatile	uint32_t	SFAR;
+} SAU_TypeDef;
 
-#include	"Registers/core_debug.h"
-#include	"Registers/sau.h"
-#include	"Registers/icb.h"
-#include	"Registers/scb.h"
-#include	"Registers/fpe.h"
-#include	"Registers/mpu.h"
-#include	"Registers/nvic.h"
-#include	"Registers/systick.h"
-#include	"Registers/memsys.h"
-#include	"Registers/core_addendum.h"
+#if (defined(__cplusplus))
+#define	SAU_S	reinterpret_cast<SAU_TypeDef *>(0xE000EDD0u)
+#define	SAU_NS	reinterpret_cast<SAU_TypeDef *>(0xE000EDD0u)
 
-// IWYU pragma: end_exports
+#else
+#define	SAU_S	((SAU_TypeDef *)0xE000EDD0u)
+#define	SAU_NS	((SAU_TypeDef *)0xE000EDD0u)
+#endif
+
+// CTRL Configuration
+
+#define	SAU_CTRL_ENABLE		(0x1u<<0)
+#define	SAU_CTRL_ALLNS		(0x1u<<1)
+
+// TYPE Configuration
+
+#define	SAU_TYPE_SREGION	(0xFFu<<0)
+#define	SAU_TYPE_SREGION_0	(0x1u<<0)
+
+// RNR Configuration
+
+#define	SAU_RNR_REGION		(0xFFu<<0)
+#define	SAU_RNR_REGION_0	(0x1u<<0)
+
+// RBAR Configuration
+
+#define	SAU_RBAR_BADDR		(0x7FFFFFFu<<5)
+#define	SAU_RBAR_BADDR_0	(0x1u<<5)
+
+// RLAR Configuration
+
+#define	SAU_RLAR_ENABLE		(0x1u<<0)
+#define	SAU_RLAR_NSC		(0x1u<<1)
+#define	SAU_RLAR_LADDR		(0x7FFFFFFu<<5)
+#define	SAU_RLAR_LADDR_0	(0x1u<<5)
+
+// SFSR Configuration
+
+#define	SAU_SFSR_INVEP		(0x1u<<0)
+#define	SAU_SFSR_INVIS		(0x1u<<1)
+#define	SAU_SFSR_INVER		(0x1u<<2)
+#define	SAU_SFSR_AUVIOL		(0x1u<<3)
+#define	SAU_SFSR_INVTRAN	(0x1u<<4)
+#define	SAU_SFSR_LSPERR		(0x1u<<5)
+#define	SAU_SFSR_SFARVALID	(0x1u<<6)
+#define	SAU_SFSR_LSERR		(0x1u<<7)
+
+// SFAR Configuration
+
+#define	SAU_SFAR_ADDRESS	(0xFFFFFFFFu<<0)
+#define	SAU_SFAR_ADDRESS_0	(0x1u<<0)

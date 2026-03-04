@@ -121,7 +121,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // test 1000
 
 	if (argc == 2u) {
-		nbTests = (int32_t)strtol(argv[1], &dummy, 10u);
+		nbTests = (int32_t)strtoul(argv[1], &dummy, 10u);
 
 // Test 1: LEDs
 // ------------

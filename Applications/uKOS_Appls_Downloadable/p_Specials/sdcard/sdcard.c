@@ -170,7 +170,7 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
 		exit(EXIT_OS_FAILURE);
 	}
 
-	testNumber = (int32_t)strtol(argv[2], &dummy, 10u);
+	testNumber = (int32_t)strtoul(argv[2], &dummy, 10u);
 
 // Reserve the sdcard
 

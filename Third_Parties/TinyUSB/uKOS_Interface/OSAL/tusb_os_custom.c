@@ -129,6 +129,19 @@ void	osal_task_delay(uint32_t msec) {
 }
 
 /*
+ * \brief osal_time_millis
+ *
+ * - Time elapsed in ms
+ *
+ */
+uint32_t	osal_time_millis(void) {
+	uint64_t	time;
+
+	kern_readTickCount(&time);
+	return ((uint32_t)(time / 1000u));
+}
+
+/*
  * \brief osal_semaphore_create
  *
  * - Create an anonymous synchro semaphore

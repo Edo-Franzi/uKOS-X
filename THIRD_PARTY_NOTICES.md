@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit a8a4db3
+- Version: 0.20.0 / commit 13e0b0c
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

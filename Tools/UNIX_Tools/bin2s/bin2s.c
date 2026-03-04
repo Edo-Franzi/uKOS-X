@@ -358,7 +358,7 @@ static	uint32_t	local_getSx(char_t type) {
  */
 static	uint32_t	local_getAddress(const char_t *hexString) {
 
-	return ((uint32_t)strtol(hexString, 0, 16u));
+	return ((uint32_t)strtoul(hexString, 0, 16u));
 }
 
 /*
