@@ -1,9 +1,9 @@
 {
-  "spdxVersion": "SPDX-2.21",
+  "spdxVersion": "SPDX-2.22",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.2.21)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.21-2026-03-04",
+  "name": "uKOS-X SBOM (0.2.22)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.22-2026-03-06",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -34,7 +34,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.2.21",
+      "versionInfo": "0.2.22",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -44,7 +44,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.21",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.22",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -53,7 +53,7 @@
     {
       "name": "Cppcheck",
       "SPDXID": "SPDXRef-Package-Cppcheck",
-      "versionInfo": "2.21.0",
+      "versionInfo": "2.20.0",
       "downloadLocation": "https://github.com/danmar/cppcheck.git",
       "filesAnalyzed": false,
       "licenseDeclared": "GPL-3.0-or-later",
@@ -205,7 +205,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 (commit 13e0b0c)",
+      "versionInfo": "0.20.0 (commit 06a4c6d)",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",

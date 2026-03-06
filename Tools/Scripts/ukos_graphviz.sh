@@ -79,6 +79,8 @@ else
 fi
 git -C "${PACKS}" checkout ${GRAPHVIZ_VER}
 
+chmod +x "${PACKS}/lib/common/"*.py
+
 # Building the tool
 # -----------------
 

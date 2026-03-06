@@ -28,7 +28,7 @@ the third-party components shipped in this repository.
 ### 2.1) Cppcheck
 - Location: `Third_Parties/Cppcheck/`
 - Upstream: https://github.com/danmar/cppcheck.git
-- Version: 2.19.0
+- Version: 2.20.0
 - License: GPL-3.0-or-later
 - Copyright:
   -  See upstream project copyright notices in source headers.
@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 13e0b0c
+- Version: 0.20.0 / commit 06a4c6d
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)
