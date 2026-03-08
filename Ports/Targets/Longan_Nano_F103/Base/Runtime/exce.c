@@ -101,11 +101,11 @@ void	exce_init(void) {
 	uint8_t		nbExceptions, nbInterruptions;
 
 	for (nbExceptions = 0u; nbExceptions < KNB_EXCEPTIONS; nbExceptions++) {
-		EXCEPTION_VECTOR(nbExceptions, model_coreDump_displayExceptions);
+		vExce_indExcVectors[GET_RUNNING_CORE][nbExceptions] = model_coreDump_displayExceptions;
 	}
 
 	for (nbInterruptions = 0u; nbInterruptions < KNB_INTERRUPTIONS; nbInterruptions++) {
-		INTERRUPT_VECTOR(nbInterruptions, model_coreDump_displayInterruptions);
+		vExce_indIntVectors[GET_RUNNING_CORE][nbInterruptions] = model_coreDump_displayInterruptions;
 	}
 }
 

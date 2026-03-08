@@ -152,23 +152,23 @@ extern	bool	vExce_isException[KNB_CORES];
 #define EXCLUDE_CPPCHECK
 #ifdef EXCLUDE_CPPCHECK
 
-#define	EXCEPTION_SPECIFIC_HANDLER(irq)																							\
-								void irq##_local_IRQHandler(void) {																\
+#define	EXCEPTION_SPECIFIC_HANDLER(exc)																							\
+								void exc##_local_IRQHandler(void) {																\
 									uint32_t	core;																			\
 									void		(*go)(void);																	\
 																																\
 									core = GET_RUNNING_CORE;																	\
 									vExce_isException[core] = true;																\
-									go = vExce_indExcVectors[core][irq##_IRQn];													\
+									go = vExce_indExcVectors[core][exc##_IRQn];													\
 									(*go)();																					\
 									vExce_isException[core] = false;															\
 								}																								\
 																																\
-								void irq##_IRQHandler(void) __attribute__ ((weak, naked));										\
-								void irq##_IRQHandler(void) {																	\
+								void exc##_IRQHandler(void) __attribute__ ((weak, naked));										\
+								void exc##_IRQHandler(void) {																	\
 																																\
 									INTERRUPTION_IN;																			\
-									CALL_FNCT(irq##_local_IRQHandler);															\
+									CALL_FNCT(exc##_local_IRQHandler);															\
 									INTERRUPTION_OUT;																			\
 								}
 #endif

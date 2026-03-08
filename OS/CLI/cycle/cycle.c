@@ -336,6 +336,8 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 	const	char_t				**argv;
 	const	cyclePack_t			*pack;
 
+	PRIVILEGE_ELEVATE;
+
 	core = GET_RUNNING_CORE;
 	kern_getProcessRun(&process);
 
@@ -368,6 +370,8 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 	vProcess[core][indexSerialManager] = nullptr;
 	vKillRequest[core] = false;
 	(void)dprintf(KSYST, "Cycle terminated.\n\n");
+
+	PRIVILEGE_RESTORE;
 	exit(EXIT_OS_SUCCESS);
 }
 

@@ -244,15 +244,15 @@
 extern	volatile	bool	vPriv_insideException[KNB_CORES];
 extern				void	(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 
-#define	EXCEPTION_SPECIFIC_HANDLER(irq)																							\
-								void irq##_IRQHandler(void) __attribute__ ((weak));												\
-								void irq##_IRQHandler(void) {																	\
+#define	EXCEPTION_SPECIFIC_HANDLER(exc)																							\
+								void exc##_IRQHandler(void) __attribute__ ((weak));												\
+								void exc##_IRQHandler(void) {																	\
 									uint32_t	core;																			\
 									void		(*go)(void);																	\
 																																\
 									core = GET_RUNNING_CORE;																	\
 									vPriv_insideException[core] = true;															\
-									go = vExce_indExcVectors[core][(int32_t)irq##_IRQn + (int32_t)KNB_EXCEPTIONS];				\
+									go = vExce_indExcVectors[core][(int32_t)exc##_IRQn + (int32_t)KNB_EXCEPTIONS];				\
 									(*go)();																					\
 								}
 #endif

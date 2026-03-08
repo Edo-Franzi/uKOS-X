@@ -191,7 +191,7 @@ void	stub_LCD_On(void) {
 /*
  * \brief stub_LCD_flush_cb
  *
- * - Callback for flushing an image in the LCD displa
+ * - Callback for flushing an image in the LCD display
  *
  */
 void	stub_LCD_flush_cb(lv_display_t *lv_display, const lv_area_t *area, uint8_t *pixelMapping) {

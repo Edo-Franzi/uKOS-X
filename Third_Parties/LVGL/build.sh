@@ -101,6 +101,9 @@ build_core() {
 printf '\n%bBuilding for cortex M55! ...%b\n' "${BOLD}" "${NC}"
 build_core CORTEX_M55 WaveShare_2_Inches
 
+printf '\n%bBuilding for cortex M585! ...%b\n' "${BOLD}" "${NC}"
+build_core CORTEX_M85 RK050HR18_5_Inches
+
 printf '\n%bBuilding for RV64IMAFDC! ...%b\n' "${BOLD}" "${NC}"
 build_core RV64IMAFDC TFT_2_4_Inches
 

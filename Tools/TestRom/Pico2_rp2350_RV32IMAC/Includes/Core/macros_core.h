@@ -243,10 +243,10 @@ extern	bool	vExce_isException[KNB_CORES];
 // --------------------------
 // Moved from macros_soc.h for IWYU compliance (eliminates circular dependency)
 
-#define	EXCEPTION_VECTOR(vectorNb, address)																							\
+#define	EXCEPTION_VECTOR(vectorNb, address)																						\
 								vExce_indExcVectors[GET_RUNNING_CORE][vectorNb] = address
 
-#define	INTERRUPT_VECTOR(vectorNb, address)																							\
+#define	INTERRUPT_VECTOR(vectorNb, address)																						\
 								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address
 
 // Misc assembler macro

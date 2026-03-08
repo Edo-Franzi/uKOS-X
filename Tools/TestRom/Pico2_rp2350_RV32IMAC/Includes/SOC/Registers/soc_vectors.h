@@ -126,8 +126,8 @@ typedef enum IRQn {
 	POWMAN_IRQ_TIMER_IRQn	= 45,	//
 } IRQn_Type;
 
-#define	KNB_EXCEPTIONS		16U		// RISC-V: exception codes 0-15
-#define	KNB_INTERRUPTIONS	46U		// RP2350: 46 peripheral interrupts (same for ARM and RISC-V)
+#define	KNB_EXCEPTIONS		16u		// RISC-V: exception codes 0-15
+#define	KNB_INTERRUPTIONS	46u		// RP2350: 46 peripheral interrupts (same for ARM and RISC-V)
 
 #else // ARM Cortex-M33
 
@@ -194,8 +194,8 @@ typedef enum IRQn {
 	POWMAN_IRQ_TIMER_IRQn	= 45,	//
 } IRQn_Type;
 
-#define	KNB_EXCEPTIONS		14U		// ARM Cortex-M33: 14 exception vectors
-#define	KNB_INTERRUPTIONS	46U		// RP2350: 46 peripheral interrupts
+#define	KNB_EXCEPTIONS		14u		// ARM Cortex-M33: 14 exception vectors
+#define	KNB_INTERRUPTIONS	46u		// RP2350: 46 peripheral interrupts
 
 #endif // __riscv
 

@@ -114,20 +114,20 @@ void	exce_init(void) {
 // mcause bit 63 == 0: Internal exception
 
 	for (nbInt_Exceptions = 0u; nbInt_Exceptions < KNB_INT_INTERRUPTIONS; nbInt_Exceptions++) {
-		INT_EXCEPTION_VECTOR(nbInt_Exceptions, (void (*)(uint32_t core, uint64_t parameter))coreDump_displayInt_Exceptions);
+		vExce_intExcVectors[GET_RUNNING_CORE][nbInt_Exceptions] = coreDump_displayInt_Exceptions;
 	}
 
 // mcause bit 63 == 1: Internal interruption
 
 	for (nbInt_Interruptions = 0u; nbInt_Interruptions < KNB_INT_INTERRUPTIONS; nbInt_Interruptions++) {
-		INT_INTERRUPT_VECTOR(nbInt_Interruptions, (void (*)(uint32_t core, uint64_t parameter))coreDump_displayInt_Interruption);
+		vExce_intIntVectors[GET_RUNNING_CORE][nbInt_Interruptions] = coreDump_displayInt_Interruption;
 	}
 
 // mcause bit 63 == 1: Internal interruption
 // Machine External Interrupt (PLIC)
 
 	for (nbExt_Interruptions = 0u; nbExt_Interruptions < KNB_EXT_INTERRUPTIONS; nbExt_Interruptions++) {
-		EXT_INTERRUPT_VECTOR(nbExt_Interruptions, (void (*)(uint32_t core, uint64_t parameter))coreDump_displayExt_Interruption);
+		vExce_extIntVectors[GET_RUNNING_CORE][nbExt_Interruptions] = coreDump_displayExt_Interruption;
 	}
 
 // Disable the interruptions
