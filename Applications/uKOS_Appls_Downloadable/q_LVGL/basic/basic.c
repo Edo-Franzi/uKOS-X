@@ -110,21 +110,32 @@ extern	void	ui_draw(void);
 /*
  * \brief aProcess_tick
  *
- * - P_tick: Every 2-ms
+ * - P_tick: Every 1-ms
  *			- Increment the VLGL tick
  *
  */
 static void __attribute__ ((noreturn)) aProcess_tick(const void *argument) {
+	uint32_t	delta;
+	uint64_t	last, now;
 
 	UNUSED(argument);
 
-	while (true) {
-		if (vLVGLReady == true) {
-			lv_tick_inc(2u);
-			lv_timer_handler();
-		}
-		kern_suspendProcess(2u);
-	}
+	do { kern_suspendProcess(1u); } while (vLVGLReady == false);
+
+    kern_readTickCount(&last);
+
+    while (true) {
+        kern_readTickCount(&now);
+
+		delta = (uint32_t)((now - last) / 1000u);
+        if (delta > 0u) {
+            lv_tick_inc(delta);
+			last += (uint64_t)delta * 1000u;
+        }
+
+        lv_timer_handler();
+        kern_suspendProcess(1u);
+    }
 }
 
 /*
@@ -204,7 +215,7 @@ int		main(int argc, const char *argv[]) {
 		aProcess_tick,						// Code of the process
 		aStrIden_tick,						// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
-		KKERN_PRIORITY_MEDIUM_00			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
+		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
 	PROCESS_STACKMALLOC(

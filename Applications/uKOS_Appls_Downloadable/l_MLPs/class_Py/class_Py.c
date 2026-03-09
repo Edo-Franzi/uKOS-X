@@ -131,7 +131,7 @@ MODULE(
  *			- Display the result
  *
  */
-static	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
+static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 			float32_t	x, y, gain = 2.0f;
 			uint64_t	time[2];
 			uint32_t	random[2], delta = 0u;

@@ -113,7 +113,7 @@
 //
 #define	LV_DPI_DEF										130
 
-// Résolution
+// Resolution
 //
 #define	LV_HOR_RES_MAX									800
 #define	LV_VER_RES_MAX									480
@@ -132,9 +132,9 @@
 #define	LV_DRAW_BUF_ALIGN								4
 
 #define	LV_DRAW_TRANSFORM_USE_MATRIX					0
-#define	LV_DRAW_LAYER_SIMPLE_BUF_SIZE					(24 * 1024)
+#define	LV_DRAW_LAYER_SIMPLE_BUF_SIZE					(64 * 1024)
 #define	LV_DRAW_LAYER_MAX_MEMORY						0
-#define	LV_DRAW_THREAD_STACK_SIZE						(8 * 1024)
+#define	LV_DRAW_THREAD_STACK_SIZE						(16 * 1024)
 #define	LV_DRAW_THREAD_PRIO								LV_THREAD_PRIO_HIGH
 
 #define	LV_USE_DRAW_SW									1
