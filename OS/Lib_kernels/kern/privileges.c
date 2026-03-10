@@ -115,10 +115,6 @@ int32_t	kern_setPrivilegeMode(uint8_t mode) {
 
 	core = GET_RUNNING_CORE;
 
-	RIGHTS_ELEVATION;
-
-// From this point, we are in hard-ioff state.
-
 	const	bool	in_svc = vPriv_insideSVC[core];
 	const	bool	in_exc = vPriv_insideException[core];
 
@@ -126,10 +122,13 @@ int32_t	kern_setPrivilegeMode(uint8_t mode) {
 // If so, enabling privileged mode is unnecessary.
 
 	if ((in_svc == true) || (in_exc == true)) {
-		INTERRUPTION_ON_HARD;
 		return (KERR_KERN_NOERR);
 	}
 
+	RIGHTS_ELEVATION;
+
+// From this point, we are in hard-ioff state.
+//
 // If the process is already running in privileged mode, no need to re-enable it.
 
 	if (vKern_runProc[core]->oSpecification.oMode == KPROC_PRIVILEGED) {

@@ -1,9 +1,9 @@
 {
-  "spdxVersion": "SPDX-2.26",
+  "spdxVersion": "SPDX-2.27",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.2.26)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.26-2026-03-10",
+  "name": "uKOS-X SBOM (0.2.27)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.2.27-2026-03-10",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -34,7 +34,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.2.26",
+      "versionInfo": "0.2.27",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -44,7 +44,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.26",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.2.27",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -205,7 +205,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 (commit 7ddf631)",
+      "versionInfo": "0.20.0 (commit 7249c65)",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
