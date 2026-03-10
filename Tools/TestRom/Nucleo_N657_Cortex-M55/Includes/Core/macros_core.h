@@ -275,6 +275,7 @@ extern				void	(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 									vPriv_insideException[core] = true;															\
 									go = vExce_indExcVectors[core][(int32_t)exc##_IRQn + (int32_t)KNB_EXCEPTIONS];				\
 									(*go)();																					\
+									vPriv_insideException[core] = false;														\
 								}
 #endif
 

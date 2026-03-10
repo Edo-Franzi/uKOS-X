@@ -115,13 +115,27 @@ int32_t	kern_setPrivilegeMode(uint8_t mode) {
 
 	core = GET_RUNNING_CORE;
 
-	const	bool	in_svc = (vPriv_insideSVC[core] == true);
-	const	bool	in_exc = (vPriv_insideException[core] == true);
-
-	if ((in_svc == true) || (in_exc == true)) { return (KERR_KERN_NOERR); }
-
 	RIGHTS_ELEVATION;
-	if (vKern_runProc[core]->oSpecification.oMode == KPROC_PRIVILEGED) { INTERRUPTION_ON_HARD; return (KERR_KERN_NOERR); }
+
+// From this point, we are in hard-ioff state.
+
+	const	bool	in_svc = vPriv_insideSVC[core];
+	const	bool	in_exc = vPriv_insideException[core];
+
+// Determine if the elevation request originates from an SVC or an exception.
+// If so, enabling privileged mode is unnecessary.
+
+	if ((in_svc == true) || (in_exc == true)) {
+		INTERRUPTION_ON_HARD;
+		return (KERR_KERN_NOERR);
+	}
+
+// If the process is already running in privileged mode, no need to re-enable it.
+
+	if (vKern_runProc[core]->oSpecification.oMode == KPROC_PRIVILEGED) {
+		INTERRUPTION_ON_HARD;
+		return (KERR_KERN_NOERR);
+	}
 
 	switch (mode) {
 		case KPROC_PRIVILEGED: {
@@ -130,7 +144,7 @@ int32_t	kern_setPrivilegeMode(uint8_t mode) {
 			break;
 		}
 		case KPROC_USER: {
-			vKern_runProc[core]->oInternal.oNestedPrivilege -= (vKern_runProc[core]->oInternal.oNestedPrivilege > 0) ? (1u) : (0u);
+			vKern_runProc[core]->oInternal.oNestedPrivilege -= (vKern_runProc[core]->oInternal.oNestedPrivilege > 0u) ? (1u) : (0u);
 			if (vKern_runProc[core]->oInternal.oNestedPrivilege == 0u) {
 				vKern_runProc[core]->oInternal.oState &= (uint16_t)~(1u<<BPROC_PRIV_ELEVATED);
 
@@ -181,10 +195,9 @@ void	kern_privilegeElevate(void) {
 
 	#if (defined(PRIVILEGED_USER_S))
 
-// Recover the callAddress -> in r0
-// GET_ADDRESS_ELEVATION_CALLER prepare r0 with the caller address
-// r0 is passed as a parameter to the CALL_FNCT_ELEVATION
-// accordingly to the ABI of the cortex
+// Load the caller address into r0.
+// GET_ADDRESS_ELEVATION_CALLER sets r0, which is then passed as the
+// argument to CALL_FNCT_ELEVATION according to the Cortex ABI.
 
 	GET_ADDRESS_ELEVATION_CALLER;
 	CALL_FNCT_ELEVATION(local_elevate);

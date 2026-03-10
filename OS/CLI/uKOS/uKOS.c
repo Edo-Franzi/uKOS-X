@@ -130,5 +130,6 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 	(void)dprintf(KSYST, "VCS#: %s\n\n", aStrShowRev);
 	(void)dprintf(KSYST, "%s", aStruKOS);
+
 	return (EXIT_OS_SUCCESS_CLI);
 }

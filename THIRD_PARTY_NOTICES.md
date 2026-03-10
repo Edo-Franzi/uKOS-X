@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-03-02
+(c) 2025-2026, Edo. Franzi, 2026-03-10
 
 
 
@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 06a4c6d
+- Version: 0.20.0 / commit 7ddf631
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

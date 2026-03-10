@@ -6,7 +6,7 @@
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
-; Modifs:
+; Modifs:	Edo. Franzi		The 2026-03-10	Support the version 2.x of the OS
 ;
 ; Project:	uKOS-X
 ; Goal:		Ozone uKOS plugin.
