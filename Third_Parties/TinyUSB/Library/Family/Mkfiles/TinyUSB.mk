@@ -130,41 +130,41 @@ PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_time/include
 endif
 
-SRC					=   $(PATH_TINYUSB)/uKOS_System/headerTusb.c
-SRC					+=  $(PATH_TINYUSB)/uKOS_Interface/Descriptors/$(PROFILE)/usb_descriptors.c
-SRC					+=  $(PATH_TINYUSB)/uKOS_Interface/OSAL/tusb_os_custom.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/src/tusb.c
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/class -name '*.c')
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/common -name '*.c')
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/device -name '*.c')
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/host -name '*.c')
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/osal -name '*.c')
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/typec -name '*.c')
+SRC					=  $(PATH_TINYUSB)/uKOS_System/headerTusb.c
+SRC					+= $(PATH_TINYUSB)/uKOS_Interface/Descriptors/$(PROFILE)/usb_descriptors.c
+SRC					+= $(PATH_TINYUSB)/uKOS_Interface/OSAL/tusb_os_custom.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/tusb.c
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/class -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/common -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/device -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/host -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/osal -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/typec -name '*.c')
 
 ifeq ($(PROVIDER), st)
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/st -name '*.c')
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/synopsys -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/st -name '*.c')
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/synopsys -name '*.c')
 endif
 
 ifeq ($(PROVIDER), nordic)
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/nordic -name '*.c')
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/src/nrfx_usbreg.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/src/nrfx_power.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/mdk/system_nrf5340_application.c
-SRC					+=  $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/nordic -name '*.c')
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/src/nrfx_usbreg.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/src/nrfx_power.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/mdk/system_nrf5340_application.c
+SRC					+= $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
 endif
 
 ifeq ($(PROVIDER), raspberrypi)
-SRC					+=  $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/pio_usb -name '*.c')
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/hcd_rp2040.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/rp2040_usb.c
-SRC					+=  $(PATH_TINYUSB)/uKOS_Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/claim.c
-SRC_A				+=  $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_panic/panic.c
-SRC					+=  $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c
-SRC					+=  $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
+SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/pio_usb -name '*.c')
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/hcd_rp2040.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/rp2040_usb.c
+SRC					+= $(PATH_TINYUSB)/uKOS_Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/claim.c
+SRC_A				+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_panic/panic.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c
+SRC					+= $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
 
 CPPFLAGS			+= $(PATH_INCLUDES)
 ASFLAGS				+= $(CPUFLAGS) -x assembler-with-cpp
@@ -173,15 +173,15 @@ endif
 
 vpath %.S $(sort $(dir $(SRC_A)))
 
-OBJ_C				=  $(patsubst %.c,%.o,$(SRC))
-OBJ_A				=  $(notdir $(patsubst %.S,%.o,$(SRC_A)))
+OBJ_C				= $(patsubst %.c,%.o,$(SRC))
+OBJ_A				= $(notdir $(patsubst %.S,%.o,$(SRC_A)))
 
-OBJ_C_FS			=  $(OBJ_C:.o=.fs.o)
-OBJ_C_HS			=  $(OBJ_C:.o=.hs.o)
-OBJ_A_FS			=  $(OBJ_A:.o=.fs.o)
-OBJ_A_HS			=  $(OBJ_A:.o=.hs.o)
+OBJ_C_FS			= $(OBJ_C:.o=.fs.o)
+OBJ_C_HS			= $(OBJ_C:.o=.hs.o)
+OBJ_A_FS			= $(OBJ_A:.o=.fs.o)
+OBJ_A_HS			= $(OBJ_A:.o=.hs.o)
 
-CFLAGS				+= -g3 $(OPTIMISATION)
+CFLAGS				+= $(OPTIMISATION)
 CFLAGS				+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS				+= $(STANDARD)
 CFLAGS				+= $(FLAGS_UKOS)

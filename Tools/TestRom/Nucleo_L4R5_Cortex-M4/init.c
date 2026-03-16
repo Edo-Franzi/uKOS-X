@@ -61,7 +61,7 @@ static	void	local_PWR_Configuration(void);
 static	void	local_GPIO_Configuration(void);
 static	void	local_RCC_Configuration(void);
 static	void	local_MPU_Configuration(void);
-static	void	local_FPU_Configuration(void);
+static	void	local_FPE_Configuration(void);
 static	void	local_USB_Configuration(void);
 
 /*
@@ -81,17 +81,17 @@ void	init_init(void) {
 	local_GPIO_Configuration();
 	local_RCC_Configuration();
 	local_MPU_Configuration();
-	local_FPU_Configuration();
+	local_FPE_Configuration();
 	local_USB_Configuration();
 }
 
 /*
- * \brief local_FPU_Configuration
+ * \brief local_FPE_Configuration
  *
- * - Enable the FPU
+ * - Enable the FPE
  *
  */
-static	void	local_FPU_Configuration(void) {
+static	void	local_FPE_Configuration(void) {
 
 // Set CP10 and CP11 Full Access
 // Lazy stacking enable
@@ -152,22 +152,22 @@ static	void	local_GPIO_Configuration(void) {
 
 // Init all the GPIO A, B, C, D, E, F, G, H
 
-// PA00, AL,  50-MHz, Push-pull	TIM2_PWM1	AF1		CN10 D32 +-
-// PA01, AN,  50-MHz, Pull-up	ADC			AF15	CN10 A8 +-
-// PA02, OU,  50-MHz, Push-pull	QSPI1_NSS	AF15	CN10 D26 +-
-// PA03, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A0 +-
-// PA04, OU,  50-MHz, Push-pull	SPI3_NSS	AF15	CN7  D24 +-
-// PA05, AL,  50-MHz, Push-pull	SPI1_SCK	AF5		CN7  D13 +-
-// PA06, AL,  50-MHz, Pull-up	SPI1_MISO	AF5		CN7  D12 +-
-// PA07, AL,  50-MHz, Push-pull	SPI1_MOSI	AF5		CN7  D11 +-
-// PA08, AL,  50-MHz, Pull-up	TPI (MCO)	AF0 +-
-// PA09, IN,  50-MHz, -			VBUS_FS!!	AF15 +-
-// PA10, AL,  50-MHz, Pull-up	USB_ID		AF10 +-
-// PA11, AL,  99-MHz, -			USB_DM		AF10 +-
-// PA12, AL,  99-MHz, -			USB_DP		AF10 +-
-// PA13, AL,  50-MHz, Pull-up 	TMS			AF0 +-
-// PA14, AL,  50-MHz, Pull-down TCK			AF0 +-
-// PA15, AL,  50-MHz, Pull-up	TDI			AF0
+// PA00, AL,  50-MHz, Push-pull	TIM2_PWM1	AF01	CN10 D32	+-
+// PA01, AN,  50-MHz, Pull-up	ADC			AF15	CN10 A8		+-
+// PA02, OU,  50-MHz, Push-pull	QSPI1_NSS	AF15	CN10 D26	+-
+// PA03, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A0		+-
+// PA04, OU,  50-MHz, Push-pull	SPI3_NSS	AF15	CN7  D24	+-
+// PA05, AL,  50-MHz, Push-pull	SPI1_SCK	AF05	CN7  D13	+-
+// PA06, AL,  50-MHz, Pull-up	SPI1_MISO	AF05	CN7  D12	+-
+// PA07, AL,  50-MHz, Push-pull	SPI1_MOSI	AF05	CN7  D11	+-
+// PA08, AL,  50-MHz, Pull-up	TPI (MCO)	AF00	+-
+// PA09, IN,  50-MHz, -			VBUS_FS!!	AF15	+-
+// PA10, AL,  50-MHz, Pull-up	USB_ID		AF10	+-
+// PA11, AL,  99-MHz, -			USB_DM		AF10	+-
+// PA12, AL,  99-MHz, -			USB_DP		AF10	+-
+// PA13, AL,  50-MHz, Pull-up 	TMS			AF00	+-
+// PA14, AL,  50-MHz, Pull-down TCK			AF00	+-
+// PA15, AL,  50-MHz, Pull-up	TDI			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(A,KAL,KAL,KAL,KAL,KAL,KAL,KIN,KAL,KAL,KAL,KAL,KOU,KAN,KOU,KAN,KAL,
@@ -177,22 +177,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 1u, 0u, 0u);
 
-// PB00, AL,  50-MHz, Pull-up	QSPI1_IO1	AF0		CN10 D29 +-
-// PB01, AN,  50-MHz, Pull-up	ADC			AF15	CN10 A6 +-
-// PB02, IN,  50-MHz, Pull-up	--------	AF15	CN9  D72 +-
-// PB03, AL,  50-MHz, Push-pull	SPI3_SCK	AF6		CN7  D23 +-
-// PB04, AL,  50-MHz, Pull-up	SPI3_MISO	AF6		CN7  D25 +-
-// PB05, AL,  50-MHz, Push-pull	SPI3_MOSI	AF6		CN7  D22 +-
-// PB06, IN,  50-MHz, Pull-up	--------	AF15	CN9	 D71 +-
-// PB07, OU,  50-MHz, Push-pull	LED_Blue	AF15 +-
-// PB08, AL,  50-MHz, Open DU	I2C1_SCL	AF4		CN7  D15 +-
-// PB09, AL,  50-MHz, Open DU	I2C1_SDA	AF4		CN7  D14 +-
-// PB10, AL,  50-MHz, Push-pull	QSPI1_SCK	AF10	CN10 D27 +-
-// PB11, AL,  50-MHz, Push-pull	TIM2_PWM3	AF1		CN10 D35 +-
-// PB12, AL,  50-MHz, Push-pull	I2S2_WS_A	AF13	CN7  D19 +-
-// PB13, AL,  50-MHz, Push-pull	I2S2_CK_A	AF13	CN7  D18 +-
-// PB14, OU,  50-MHz, Push-pull	LED_Red		AF15 +-
-// PB15, AL,  50-MHz, Push-pull	I2S2_SDO_A	AF13	CN7  D17 +-
+// PB00, AL,  50-MHz, Pull-up	QSPI1_IO1	AF00	CN10 D29	+-
+// PB01, AN,  50-MHz, Pull-up	ADC			AF15	CN10 A6		+-
+// PB02, IN,  50-MHz, Pull-up	--------	AF15	CN9  D72	+-
+// PB03, AL,  50-MHz, Push-pull	SPI3_SCK	AF06	CN7  D23	+-
+// PB04, AL,  50-MHz, Pull-up	SPI3_MISO	AF06	CN7  D25	+-
+// PB05, AL,  50-MHz, Push-pull	SPI3_MOSI	AF06	CN7  D22	+-
+// PB06, IN,  50-MHz, Pull-up	--------	AF15	CN9	 D71	+-
+// PB07, OU,  50-MHz, Push-pull	LED_Blue	AF15	+-
+// PB08, AL,  50-MHz, Open DU	I2C1_SCL	AF04	CN7  D15	+-
+// PB09, AL,  50-MHz, Open DU	I2C1_SDA	AF04	CN7  D14	+-
+// PB10, AL,  50-MHz, Push-pull	QSPI1_SCK	AF10	CN10 D27	+-
+// PB11, AL,  50-MHz, Push-pull	TIM2_PWM3	AF01	CN10 D35	+-
+// PB12, AL,  50-MHz, Push-pull	I2S2_WS_A	AF13	CN7  D19	+-
+// PB13, AL,  50-MHz, Push-pull	I2S2_CK_A	AF13	CN7  D18	+-
+// PB14, OU,  50-MHz, Push-pull	LED_Red		AF15	+-
+// PB15, AL,  50-MHz, Push-pull	I2S2_SDO_A	AF13	CN7  D17	+-
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(B,KAL,KOU,KAL,KAL,KAL,KAL,KAL,KAL,KOU,KIN,KAL,KAL,KAL,KIN,KAN,KAL,
@@ -202,22 +202,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KOD,KOD,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PC00, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A1 +-
-// PC01, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A3 +-
-// PC02, AN,  50-MHz, Pull-up	ADC			AF15	CN10 A7 +-
-// PC03, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A2 +-
-// PC04, AN,  50-MHz, Pull-up	ADC			AF15	CN9	 A4 +-
-// PC05, AN,  50-MHz, Pull-up	ADC			AF15	CN9	 A5 +-
-// PC06, AL,  50-MHz, Push-pull	I2S2_MCK_A	AF13	CN7  D16 +-
-// PC07, OU,  50-MHz, Push-pull	LED_Green	AF15 +-
-// PC08, AL,  50-MHz, Push-pull	SDMMC_D0	AF12	CN8  D43 +-
-// PC09, AL,  50-MHz, Push-pull	SDMMC_D1	AF12	CN8  D44 +-
-// PC10, AL,  50-MHz, Push-pull	SDMMC_D2	AF12	CN8  D45 +-
-// PC11, AL,  50-MHz, Push-pull	SDMMC_D3	AF12	CN8  D46 +-
-// PC12, AL,  50-MHz, Push-pull	SDMMC_CLK	AF12	CN8  D47 +-
-// PC13, IN,  50-MHz, Pull-up	SW_User		AF15 +-
-// PC14, AL,  50-MHz, -			OSC			AF0 +-
-// PC15, AL,  50-MHz, -			OSC			AF0 +-
+// PC00, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A1		+-
+// PC01, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A3		+-
+// PC02, AN,  50-MHz, Pull-up	ADC			AF15	CN10 A7		+-
+// PC03, AN,  50-MHz, Pull-up	ADC			AF15	CN9  A2		+-
+// PC04, AN,  50-MHz, Pull-up	ADC			AF15	CN9	 A4		+-
+// PC05, AN,  50-MHz, Pull-up	ADC			AF15	CN9	 A5		+-
+// PC06, AL,  50-MHz, Push-pull	I2S2_MCK_A	AF13	CN7  D16	+-
+// PC07, OU,  50-MHz, Push-pull	LED_Green	AF15	+-
+// PC08, AL,  50-MHz, Push-pull	SDMMC_D0	AF12	CN8  D43	+-
+// PC09, AL,  50-MHz, Push-pull	SDMMC_D1	AF12	CN8  D44	+-
+// PC10, AL,  50-MHz, Push-pull	SDMMC_D2	AF12	CN8  D45	+-
+// PC11, AL,  50-MHz, Push-pull	SDMMC_D3	AF12	CN8  D46	+-
+// PC12, AL,  50-MHz, Push-pull	SDMMC_CLK	AF12	CN8  D47	+-
+// PC13, IN,  50-MHz, Pull-up	SW_User		AF15	+-
+// PC14, AL,  50-MHz, -			OSC			AF00	+-
+// PC15, AL,  50-MHz, -			OSC			AF00	+-
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(C,KAL,KAL,KIN,KAL,KAL,KAL,KAL,KAL,KOU,KAL,KAN,KAN,KAN,KAN,KAN,KAN,
@@ -227,22 +227,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PD00, AL,  50-MHz, Pull-up	CAN1_RX		AF9		CN9  D67 +-
-// PD01, AL,  50-MHz, Push-pull	CAN1_TX		AF9		CN9  D66 +-
-// PD02, AL,  50-MHz, Push-pull	SDMMC_CMD	AF12	CN8  D48 +-
-// PD03, IN,  50-MHz, Pull-up	USART2_CTS	AF15	CN9  D55 +-
-// PD04, OU,  50-MHz, Push-pull	USART2_RTS	AF15	CN9  D54 +-
-// PD05, AL,  50-MHz, Push-pull	USART2_TX	AF7		CN9  D53 +-
-// PD06, AL,  50-MHz, Pull-up	USART2_RX	AF7		CN9  D52 +-
-// PD07, AL,  50-MHz, Push-pull	USART2_SCLK	AF7		CN9  D51 +-
-// PD08, AL,  50-MHz, Push-pull	USART3_TX	AF7		CN10 D1 +-
-// PD09, AL,  50-MHz, Pull-up	USART3_RX	AF7		CN10 D0 +-
-// PD10, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PD11, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PD12, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PD13, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PD14, OU,  50-MHz, Push-pull	SPI1_NSS	AF15	CN7  D10 +-
-// PD15, AL,  50-MHz, Push-pull	TIM4_PWM2	AF2		CN7  D9 +-
+// PD00, AL,  50-MHz, Pull-up	CAN1_RX		AF09	CN9  D67	+-
+// PD01, AL,  50-MHz, Push-pull	CAN1_TX		AF09	CN9  D66	+-
+// PD02, AL,  50-MHz, Push-pull	SDMMC_CMD	AF12	CN8  D48	+-
+// PD03, IN,  50-MHz, Pull-up	USART2_CTS	AF15	CN9  D55	+-
+// PD04, OU,  50-MHz, Push-pull	USART2_RTS	AF15	CN9  D54	+-
+// PD05, AL,  50-MHz, Push-pull	USART2_TX	AF07	CN9  D53	+-
+// PD06, AL,  50-MHz, Pull-up	USART2_RX	AF07	CN9  D52	+-
+// PD07, AL,  50-MHz, Push-pull	USART2_SCLK	AF07	CN9  D51	+-
+// PD08, AL,  50-MHz, Push-pull	USART3_TX	AF07	CN10 D1		+-
+// PD09, AL,  50-MHz, Pull-up	USART3_RX	AF07	CN10 D0		+-
+// PD10, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PD11, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PD12, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PD13, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PD14, OU,  50-MHz, Push-pull	SPI1_NSS	AF15	CN7  D10	+-
+// PD15, AL,  50-MHz, Push-pull	TIM4_PWM2	AF02	CN7  D9		+-
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(D,KAL,KOU,KOU,KOU,KOU,KOU,KAL,KAL,KAL,KAL,KAL,KOU,KIN,KAL,KAL,KAL,
@@ -252,22 +252,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PE00, AL,  50-MHz, Pull-up	TIM4_ETR	AF2		CN10 D34 +-
-// PE01, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PE02, AL,  50-MHz, Push-pull	SAI1_SCK_A	AF3		CN9  D56 +-
-// PE03, AL,  50-MHz, Push-pull	SAI1_SD_B	AF13	CN9  D60 +-
-// PE04, AL,  50-MHz, Push-pull	SAI1_FS_A	AF3		CN9  D57 +-
-// PE05, AL,  50-MHz, Push-pull	SAI1_SCK_A	AF3		CN9  D58 +-
-// PE06, AL,  50-MHz, Push-pull	SAI1_SD_A	AF3		CN9  D59 +-
-// PE07, AL,  50-MHz, Pull-up	TIM1_ETR	AF1		CN10 D41 +-
-// PE08, AL,  50-MHz, Push-pull	TIM1_PWM1N	AF1		CN10 D42 +-
-// PE09, AL,  50-MHz, Push-pull	TIM1_PWM1	AF1		CN10 D6 +-
-// PE10, AL,  50-MHz, Push-pull	TIM1_PWM2N	AF1		CN10 D40 +-
-// PE11, AL,  50-MHz, Push-pull	TIM1_PWM2	AF1		CN10 D5 +-
-// PE12, AL,  50-MHz, Push-pull	QSPI1_IO0	AF10	CN10 D30 +-
-// PE13, AL,  50-MHz, Push-pull	TIM1_PWM3	AF1		CN10 D3 +-
-// PE14, AL,  50-MHz, Pull-up	QSPI1_IO2	AF10	CN10 D31 +-
-// PE15, AL,  50-MHz, Pull-up	QSPI1_IO3	AF10	CN10 D28 +-
+// PE00, AL,  50-MHz, Pull-up	TIM4_ETR	AF02	CN10 D34	+-
+// PE01, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PE02, AL,  50-MHz, Push-pull	SAI1_SCK_A	AF03	CN9  D56	+-
+// PE03, AL,  50-MHz, Push-pull	SAI1_SD_B	AF13	CN9  D60	+-
+// PE04, AL,  50-MHz, Push-pull	SAI1_FS_A	AF03	CN9  D57	+-
+// PE05, AL,  50-MHz, Push-pull	SAI1_SCK_A	AF03	CN9  D58	+-
+// PE06, AL,  50-MHz, Push-pull	SAI1_SD_A	AF03	CN9  D59	+-
+// PE07, AL,  50-MHz, Pull-up	TIM1_ETR	AF01	CN10 D41	+-
+// PE08, AL,  50-MHz, Push-pull	TIM1_PWM1N	AF01	CN10 D42	+-
+// PE09, AL,  50-MHz, Push-pull	TIM1_PWM1	AF01	CN10 D6		+-
+// PE10, AL,  50-MHz, Push-pull	TIM1_PWM2N	AF01	CN10 D40	+-
+// PE11, AL,  50-MHz, Push-pull	TIM1_PWM2	AF01	CN10 D5		+-
+// PE12, AL,  50-MHz, Push-pull	QSPI1_IO0	AF10	CN10 D30	+-
+// PE13, AL,  50-MHz, Push-pull	TIM1_PWM3	AF01	CN10 D3		+-
+// PE14, AL,  50-MHz, Pull-up	QSPI1_IO2	AF10	CN10 D31	+-
+// PE15, AL,  50-MHz, Pull-up	QSPI1_IO3	AF10	CN10 D28	+-
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(E,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KOU,KAL,
@@ -277,22 +277,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PF00, AL,  50-MHz, Open DU	I2C2_SDA	AF4		CN9  D68 +-
-// PF01, AL,  50-MHz, Open DU	I2C2_SCL	AF4		CN9  D69 +-
-// PF02, AL,  50-MHz, Push-pull	I2C2_SMBA	AF4		CN9  D70 +-
-// PF03, OU,  50-MHz, Push-pull	Out			AF15	CN8  D49 +-
-// PF04, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PF05, OU,  50-MHz, Push-pull	Out			AF15	CN8  D50 +-
-// PF06, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PF07, AL,  50-MHz, Push-pull	SAI1_MCLK_B	AF13	CN9  D62 +-
-// PF08, AL,  50-MHz, Push-pull	SAI1_SLK_B	AF13	CN9  D61 +-
-// PF09, AL,  50-MHz, Push-pull	SAI1_FS_B	AF13	CN9  D63 +-
-// PF10, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PF11, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PF12, OU,  50-MHz, Push-pull	Out			AF15	CN7  D8 +-
-// PF13, OU,  50-MHz, Push-pull	Out			AF15	CN10 D7 +-
-// PF14, OU,  50-MHz, Push-pull	Out			AF15	CN10 D4 +-
-// PF15, OU,  50-MHz, Push-pull	Out			AF15	CN10 D2 +-
+// PF00, AL,  50-MHz, Open DU	I2C2_SDA	AF04	CN9  D68	+-
+// PF01, AL,  50-MHz, Open DU	I2C2_SCL	AF04	CN9  D69	+-
+// PF02, AL,  50-MHz, Push-pull	I2C2_SMBA	AF04	CN9  D70	+-
+// PF03, OU,  50-MHz, Push-pull	Out			AF15	CN8  D49	+-
+// PF04, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PF05, OU,  50-MHz, Push-pull	Out			AF15	CN8  D50	+-
+// PF06, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PF07, AL,  50-MHz, Push-pull	SAI1_MCLK_B	AF13	CN9  D62	+-
+// PF08, AL,  50-MHz, Push-pull	SAI1_SLK_B	AF13	CN9  D61	+-
+// PF09, AL,  50-MHz, Push-pull	SAI1_FS_B	AF13	CN9  D63	+-
+// PF10, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PF11, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PF12, OU,  50-MHz, Push-pull	Out			AF15	CN7  D8		+-
+// PF13, OU,  50-MHz, Push-pull	Out			AF15	CN10 D7		+-
+// PF14, OU,  50-MHz, Push-pull	Out			AF15	CN10 D4		+-
+// PF15, OU,  50-MHz, Push-pull	Out			AF15	CN10 D2		+-
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(F,KOU,KOU,KOU,KOU,KOU,KOU,KAL,KAL,KAL,KOU,KOU,KOU,KOU,KAL,KAL,KAL,
@@ -302,22 +302,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KOD,KOD,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PG00, OU,  50-MHz, Push-pull	Out			AF15	CN9  D65 +-
-// PG01, OU,  50-MHz, Push-pull	Out			AF15	CN9  D64 +-
-// PG02, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG03, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG04, OU,  50-MHz, Push-pull	Out			AF15 +-
+// PG00, OU,  50-MHz, Push-pull	Out			AF15	CN9  D65	+-
+// PG01, OU,  50-MHz, Push-pull	Out			AF15	CN9  D64	+-
+// PG02, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG03, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG04, OU,  50-MHz, Push-pull	Out			AF15	+-
 // PG05, IN,  50-MHz, Pull-up	In			AF15	USB_FAULT
 // PG06, OU,  50-MHz, Push-pull	Out			AF15	USB_POWER
-// PG07, AL,  50-MHz, Push-pull	LPUSART1_TX	AF8  +-
-// PG08, AL,  50-MHz, Pull-up	LPUSART1_RX	AF8  +-
-// PG09, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG10, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG11, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG12, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG13, OU,  50-MHz, Push-pull	Out			AF15 +-
-// PG14, OU,  50-MHz, Push-pull	Out			AF0  +-
-// PG15, IN,  50-MHz, Pull-up	In			AF15 +-
+// PG07, AL,  50-MHz, Push-pull	LPUSART1_TX	AF08	+-
+// PG08, AL,  50-MHz, Pull-up	LPUSART1_RX	AF08	+-
+// PG09, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG10, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG11, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG12, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG13, OU,  50-MHz, Push-pull	Out			AF15	+-
+// PG14, OU,  50-MHz, Push-pull	Out			AF00	+-
+// PG15, IN,  50-MHz, Pull-up	In			AF15	+-
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(G,KIN,KOU,KOU,KOU,KOU,KOU,KOU,KAL,KAL,KOU,KIN,KOU,KOU,KOU,KOU,KOU,
@@ -327,10 +327,10 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PH00, AL,  50-MHz, -			OSC			AF0
-// PH01, AL,  50-MHz, -			OSC			AF0
+// PH00, AL,  50-MHz, -			OSC			AF00
+// PH01, AL,  50-MHz, -			OSC			AF00
 // PH02, IN,  50-MHz, Pull-up	--------	AF15
-// PH03, AL,  50-MHz, Pull-up	--------	AF0
+// PH03, AL,  50-MHz, Pull-up	--------	AF00
 // PH04, IN,  50-MHz, Pull-up	--------	AF15
 // PH05, IN,  50-MHz, Pull-up	--------	AF15
 // PH06, IN,  99-MHz, Pull-up	--------	AF15

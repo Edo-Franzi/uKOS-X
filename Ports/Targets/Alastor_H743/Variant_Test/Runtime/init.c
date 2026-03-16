@@ -200,22 +200,22 @@ static	void	local_GPIO_Configuration(void) {
 
 // Init all the GPIO A, B, C, D, E, F, G, H
 
-// PA00, AL,  50-MHz, Push-pull	USART4_TX	AF8
-// PA01, AL,  50-MHz, Pull-up	USART4_RX	AF8
-// PA02, AL,  50-MHz, Push-pull	USART2_TX	AF7
-// PA03, AL,  50-MHz, Pull-up	USART2_RX	AF7
+// PA00, AL,  50-MHz, Push-pull	USART4_TX	AF08
+// PA01, AL,  50-MHz, Pull-up	USART4_RX	AF08
+// PA02, AL,  50-MHz, Push-pull	USART2_TX	AF07
+// PA03, AL,  50-MHz, Pull-up	USART2_RX	AF07
 // PA04, OU,  50-MHz, Push-pull	SPI6_NSS	AF15	/BSEL_DEBUG
-// PA05, AL,  50-MHz, Push-pull	SPI6_SCK	AF8
+// PA05, AL,  50-MHz, Push-pull	SPI6_SCK	AF08
 // PA06, AL,  50-MHz, Push-pull	DCMI_PIXCK	AF13
-// PA07, AL,  50-MHz, Push-pull	SPI6_MOSI	AF8
+// PA07, AL,  50-MHz, Push-pull	SPI6_MOSI	AF08
 // PA08, OU,  50-MHz, Pull-up	RzFLASH		AF15	/BRZ_FLASH
 // PA09, IN,  50-MHz, Pull-up	VBUS_FS!!	AF15
-// PA10, AL,  50-MHz, Pull-up	USART1_RX	AF7
+// PA10, AL,  50-MHz, Pull-up	USART1_RX	AF07
 // PA11, IN,  50-MHz, Float		OTG_DM!!	AF15
 // PA12, IN,  50-MHz, Float		OTG_DP!!	AF15
-// PA13, AL,  50-MHz, Pull-up 	TMS			AF0
-// PA14, AL,  50-MHz, Pull-down TCK			AF0
-// PA15, AL,  50-MHz, Pull-up	TDI			AF0
+// PA13, AL,  50-MHz, Pull-up 	TMS			AF00
+// PA14, AL,  50-MHz, Pull-down TCK			AF00
+// PA15, AL,  50-MHz, Pull-up	TDI			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(A,KAL,KAL,KAL,KIN,KIN,KAL,KIN,KOU,KAL,KAL,KAL,KOU,KAL,KAL,KAL,KAL,
@@ -228,19 +228,19 @@ static	void	local_GPIO_Configuration(void) {
 // PB00, OU,  50-MHz, Push-pull	SPI2_NSS	AF15	/BSEL_WROOM
 // PB01, OU,  50-MHz, Push-pull	LED0		AF15
 // PB02, IN,  50-MHz, Pull-up	Boot1		AF15
-// PB03, AL,  50-MHz, Push-pull	TDO			AF0
-// PB04, AL,  50-MHz, Pull-up	NJTRST		AF0
+// PB03, AL,  50-MHz, Push-pull	TDO			AF00
+// PB04, AL,  50-MHz, Pull-up	NJTRST		AF00
 // PB05, OU,  50-MHz, Push-pull	LED1		AF15
-// PB06, AL,  50-MHz, Push-pull	USART1_TX	AF7
+// PB06, AL,  50-MHz, Push-pull	USART1_TX	AF07
 // PB07, OU,  50-MHz, Push-pull	LED2		AF15
-// PB08, AL,  50-MHz, Open DU	I2C1_SCL	AF4
-// PB09, AL,  50-MHz, Open DU	I2C1_SDA	AF4
-// PB10, AL,  50-MHz, Push-pull	USART3_TX	AF7
-// PB11, AL,  50-MHz, Pull-up	USART3_RX	AF7
+// PB08, AL,  50-MHz, Open DU	I2C1_SCL	AF04
+// PB09, AL,  50-MHz, Open DU	I2C1_SDA	AF04
+// PB10, AL,  50-MHz, Push-pull	USART3_TX	AF07
+// PB11, AL,  50-MHz, Pull-up	USART3_RX	AF07
 // PB12, OU,  50-MHz, Push-pull	SPI2_NSS	AF15	/BSELFLASH
-// PB13, AL,  50-MHz, Push-pull	SPI2_SCK	AF5
-// PB14, AL,  50-MHz, Pull-up	SPI2_MISO	AF5
-// PB15, AL,  50-MHz, Push-pull	SPI2_MOSI	AF5
+// PB13, AL,  50-MHz, Push-pull	SPI2_SCK	AF05
+// PB14, AL,  50-MHz, Pull-up	SPI2_MISO	AF05
+// PB15, AL,  50-MHz, Push-pull	SPI2_MOSI	AF05
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(B,KAL,KAL,KAL,KOU,KAL,KAL,KAL,KAL,KOU,KAL,KOU,KAL,KAL,KIN,KOU,KOU,
@@ -264,8 +264,8 @@ static	void	local_GPIO_Configuration(void) {
 // PC11, IN,  50-MHz, Pull-down	SW1			AF15
 // PC12, IN,  50-MHz, Pull-down	SW2			AF15
 // PC13, IN,  50-MHz, Pull-down	SW3			AF15
-// PC14, AL,  50-MHz, -			OSC			AF0
-// PC15, AL,  50-MHz, -			OSC			AF0
+// PC14, AL,  50-MHz, -			OSC			AF00
+// PC15, AL,  50-MHz, -			OSC			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(C,KAL,KAL,KIN,KIN,KIN,KIN,KOU,KOU,KIN,KOU,KOU,KOU,KOU,KIN,KIN,KAL,
@@ -302,11 +302,11 @@ static	void	local_GPIO_Configuration(void) {
 
 // PE00, AL,  99-MHz, Push-pull	FMC_NBL0	AF12
 // PE01, AL,  99-MHz, Push-pull	FMC_NBL1	AF12
-// PE02, AL,  50-MHz, Push-pull	SPI4_SCK	AF5
+// PE02, AL,  50-MHz, Push-pull	SPI4_SCK	AF05
 // PE03, OU,  50-MHz, Push-pull	-			AF15	BESP32_ENABLE
 // PE04, OU,  50-MHz, Push-pull	SPI4_NSS	AF15	/BSEL_SDCARD
-// PE05, AL,  50-MHz, Pull-up	SPI4_MISO	AF5
-// PE06, AL,  50-MHz, Push-pull	SPI4_MOSI	AF5
+// PE05, AL,  50-MHz, Pull-up	SPI4_MISO	AF05
+// PE06, AL,  50-MHz, Push-pull	SPI4_MOSI	AF05
 // PE07, AL,  99-MHz, Push-pull	FMC_D4		AF12
 // PE08, AL,  99-MHz, Push-pull	FMC_D5		AF12
 // PE09, AL,  99-MHz, Push-pull	FMC_D6		AF12
@@ -331,10 +331,10 @@ static	void	local_GPIO_Configuration(void) {
 // PF03, AL,  99-MHz, Push-pull	FMC_A3		AF12
 // PF04, AL,  99-MHz, Push-pull	FMC_A4		AF12
 // PF05, AL,  99-MHz, Push-pull	FMC_A5		AF12
-// PF06, AL,  50-MHz, Pull-up	SPI5_NSS	AF5		/IMAGE
-// PF07, AL,  50-MHz, Pull-up	SPI5_SCK	AF5
-// PF08, AL,  50-MHz, Pull-up	SPI5_MISO	AF5
-// PF09, AL,  50-MHz, Pull-up	SPI5_MOSI	AF5
+// PF06, AL,  50-MHz, Pull-up	SPI5_NSS	AF05		/IMAGE
+// PF07, AL,  50-MHz, Pull-up	SPI5_SCK	AF05
+// PF08, AL,  50-MHz, Pull-up	SPI5_MISO	AF05
+// PF09, AL,  50-MHz, Pull-up	SPI5_MOSI	AF05
 // PF10, OU,  50-MHz, Push-pull	SPI2_NSS	AF15	/BSEL_MAGNETO
 // PF11, AL,  99-MHz, Push-pull	SDNRAS		AF12
 // PF12, AL,  99-MHz, Push-pull	FMC_A6		AF12
@@ -362,7 +362,7 @@ static	void	local_GPIO_Configuration(void) {
 // PG09, OU,  50-MHz, Push-pull	OI_W_3		AF15
 // PG10, OU,  50-MHz, Push-pull	OI_W_4		AF15
 // PG11, OU,  50-MHz, Push-pull	OI_W_5		AF15
-// PG12, AL,  50-MHz, Push-pull	SPI6_MISO	AF5
+// PG12, AL,  50-MHz, Push-pull	SPI6_MISO	AF05
 // PG13, IN,  50-MHz, Pull-up	IO_DBGCOMR	AF15
 // PG14, IN,  50-MHz, Pull-up	CD			AF15	/BNO_SDCARD
 // PG15, AL,  99-MHz, Push-pull	SDNCAS		AF12
@@ -375,12 +375,12 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u);
 
-// PH00, AL,  50-MHz, -			OSC			AF0
-// PH01, AL,  50-MHz, -			OSC			AF0
+// PH00, AL,  50-MHz, -			OSC			AF00
+// PH01, AL,  50-MHz, -			OSC			AF00
 // PH02, OU,  50-MHz, Push-pull	OI_V_0		AF15	BEN_CLK
 // PH03, OU,  50-MHz, Push-pull	OI_V_1		AF15
-// PH04, AL,  50-MHz, Open DU	I2C2_SCL	AF4
-// PH05, AL,  50-MHz, Open DU	I2C2_SDA	AF4
+// PH04, AL,  50-MHz, Open DU	I2C2_SCL	AF04
+// PH05, AL,  50-MHz, Open DU	I2C2_SDA	AF04
 // PH06, AL,  99-MHz, Push-pull	SDNEE1		AF12
 // PH07, AL,  99-MHz, Push-pull	SDCKE1		AF12
 // PH08, AL,  50-MHz, Push-pull	DCMI_HSYNC	AF13

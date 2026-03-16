@@ -255,9 +255,9 @@ static	void	local_GPIO_Configuration(void) {
 // PA10, AL,  50-MHz, Pull-up	USART1_RX	AF07
 // PA11, AL,  99-MHz, Push_pull	OTG_FS_DM	AF10
 // PA12, AL,  99-MHz, Push_pull	OTG_FS_DP	AF10
-// PA13, AL,  50-MHz, Pull-up 	SWDIO		AF0
-// PA14, AL,  50-MHz, Pull-down SWCLK		AF0
-// PA15, AL,  50-MHz, Pull-up	TDI			AF0
+// PA13, AL,  50-MHz, Pull-up 	SWDIO		AF00
+// PA14, AL,  50-MHz, Pull-down SWCLK		AF00
+// PA15, AL,  50-MHz, Pull-up	TDI			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(A,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KIN,

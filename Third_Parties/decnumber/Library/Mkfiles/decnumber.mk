@@ -70,7 +70,7 @@ SRC					+= $(LIB_SRC_DIR)/decContext.c
 SRC					+= $(shell find $(LIB_BID_DIR) -name '*.c')
 OBJ					=  $(patsubst %.c,%.o,$(SRC))
 
-CFLAGS				+= -g3 $(OPTIMISATION)
+CFLAGS				+= $(OPTIMISATION)
 CFLAGS				+= -MMD
 CFLAGS				+= -ffunction-sections
 CFLAGS				+= -fdata-sections

@@ -64,7 +64,7 @@ SRC					+= $(shell find $(LIB_SRC_DIR) -name '*.c')
 OBJ					=  $(patsubst %.c,%.o,$(SRC))
 
 CFLAGS				+= -DLV_CONF_INCLUDE_SIMPLE
-CFLAGS				+= -g3 $(OPTIMISATION)
+CFLAGS				+= $(OPTIMISATION)
 CFLAGS				+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS				+= $(STANDARD)
 CFLAGS				+= $(FLAGS_UKOS)

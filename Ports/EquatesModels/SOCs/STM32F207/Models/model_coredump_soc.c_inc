@@ -86,8 +86,7 @@ static	void	local_printInterruption(const char_t **vectorName);
  * BASEPRI  = 0x00000070
  *
  */
-static	void	model_coreDump_displayInterruptions(void) __attribute__ ((naked));
-static	void	model_coreDump_displayInterruptions(void) {
+void	 __attribute__ ((naked, noreturn)) model_coreDump_displayInterruptions(uintptr_t lr __attribute__ ((unused)), uintptr_t *msp __attribute__ ((unused))) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
 
@@ -111,9 +110,6 @@ static	void	__attribute__ ((noinline, used, noreturn)) local_processInterruption
 	const	char_t		*vectorName;
 
 	core = GET_RUNNING_CORE;
-
-	SET_PRIVILEGED_MODE;
-	vKern_runProc[core]->oSpecification.oMode = KPROC_PRIVILEGED;
 
 	vExceptionNb[core] = core_getIPSR();
 	vStackBefore[core] = stackBefore;

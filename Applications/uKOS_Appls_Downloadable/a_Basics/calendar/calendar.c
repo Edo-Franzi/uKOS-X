@@ -83,6 +83,25 @@ STRG_LOC_CONST(aStrHelp[])		  = "This is a romable C application\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
+#if (defined(ROMABLE_S))
+
+// Prototypes
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+
+MODULE(
+	Calendar,							// Module name (the first letter has to be upper case)
+	KID_FAM_CLI,						// Family (defined in the module.h)
+	KNUM_ROMABLE_0,						// Module identifier (defined in the module.h)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	prgm,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
+	" 1.0",								// Revision string (major . minor)
+	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
+	0									// Execution cores
+);
+
+#else
 MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
@@ -94,6 +113,7 @@ MODULE(
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
 );
+#endif
 
 /*
  * \brief aProcess 0
@@ -195,7 +215,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  * - Kill the "main". At this moment only the launched processes are executed
  *
  */
-int		main(int argc, const char *argv[]) {
+MAIN_ENTRY(argc, argv[]) {
 	proc_t	*process_0;
 
 // ---------------------------------I-----------------------------------------I--------------I
@@ -212,7 +232,7 @@ int		main(int argc, const char *argv[]) {
 		0,									// Index
 		specification_0,					// Specifications (just use specification_x)
 		aStrText_0,							// Info string (nullptr if anonymous)
-		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
+		KKERN_SZ_STACK_LL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		aProcess_0,							// Code of the process
 		aStrIden_0,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)

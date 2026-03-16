@@ -65,7 +65,7 @@ static			void	local_PWR_Configuration(void);
 static			void	local_GPIO_Configuration(void);
 static			void	local_RCC_Configuration(void);
 static			void	local_MPU_Configuration(void);
-static			void	local_FPU_Configuration(void);
+static			void	local_FPE_Configuration(void);
 static			void	local_USB_Configuration(void);
 static			void	local_CACHE_Enable(void);
 static	inline	void	cache_I_Enable(void);
@@ -90,7 +90,7 @@ void	init_init(void) {
 	local_GPIO_Configuration();
 	local_RCC_Configuration();
 	local_MPU_Configuration();
-	local_FPU_Configuration();
+	local_FPE_Configuration();
 	local_USB_Configuration();
 	local_CACHE_Enable();
 }
@@ -112,18 +112,18 @@ static	void	local_StackLimit_Configuration(void) {
 	#if (defined(STUB_KERN_CHECK_XSP_LIMIT_S))
 	REG(SCB)->CCR |= (1u<<SCB_CCR_STKOFHFNMIGN);
 
-	core_setPSPLIM((uintptr_t)linker_lowStackFirst_C0 & 0xFFFFFFF8);
-	core_setMSPLIM((uintptr_t)linker_lowStackSystem_C0 & 0xFFFFFFF8);
+	core_setPSPLIM((uintptr_t)linker_lowStackFirst_C0 & 0xFFFFFFF8u);
+	core_setMSPLIM((uintptr_t)linker_lowStackSystem_C0 & 0xFFFFFFF8u);
 	#endif
 }
 
 /*
- * \brief local_FPU_Configuration
+ * \brief local_FPE_Configuration
  *
- * - Enable the FPU
+ * - Enable the FPE
  *
  */
-static	void	local_FPU_Configuration(void) {
+static	void	local_FPE_Configuration(void) {
 
 // Set CP10 and CP11 Full Access
 // Lazy stacking enable
@@ -149,8 +149,8 @@ static	void	local_PWR_Configuration(void) {
 	REG(PWR)->SVMCR |= PWR_SVMCR_IO2SV;
 	REG(PWR)->SVMCR |= PWR_SVMCR_ASV;
 
-	REG(PWR)->VOSR   = (3u * PWR_VOSR_VOS_0);
-	REG(PWR)->VOSR  |= PWR_VOSR_BOOSTEN;
+	REG(PWR)->VOSR  = (3u * PWR_VOSR_VOS_0);
+	REG(PWR)->VOSR |= PWR_VOSR_BOOSTEN;
 
 	while ((REG(PWR)->VOSR & PWR_VOSR_VOSRDY) == 0u) { ; }
 }
@@ -230,9 +230,9 @@ static	void	local_GPIO_Configuration(void) {
 // PA10, AL,  50-MHz, Pull-up	USART1_RX	AF07
 // PA11, AL,  99-MHz, Push_pull	OTG_FS_DM	AF10
 // PA12, AL,  99-MHz, Push_pull	OTG_FS_DP	AF10
-// PA13, AL,  50-MHz, Pull-up 	SWDIO		AF0
-// PA14, AL,  50-MHz, Pull-down SWCLK		AF0
-// PA15, AL,  50-MHz, Pull-up	TDI			AF0
+// PA13, AL,  50-MHz, Pull-up 	SWDIO		AF00
+// PA14, AL,  50-MHz, Pull-down SWCLK		AF00
+// PA15, AL,  50-MHz, Pull-up	TDI			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(A,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KIN,
@@ -434,7 +434,7 @@ static	void	local_GPIO_Configuration(void) {
 // PI03, AL,  99-MHz, --------	HSPI1_CLK	AF08
 // PI04, IN,  50-MHz, Pull-up	--------	AF15
 // PI05, OU,  50-MHz, --------	DSI_POWER	AF15
-// PI06, IN,  50-MHz, Pull-up	--------	AF15
+// PI06, OU,  50-MHz, --------	BDSI_BL		AF15
 // PI07, IN,  50-MHz, Pull-up	--------	AF15
 // PI08, AL,  99-MHz, --------	HSPI1_DQS1	AF08
 // PI09, AL,  99-MHz, --------	HSPI1_IO8	AF08
@@ -446,9 +446,9 @@ static	void	local_GPIO_Configuration(void) {
 // PI15, AL,  99-MHz, --------	HSPI1_I14	AF08
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
-	CNFGPIO(I,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KIN,KIN,KOU,KIN,KAL,KAL,KAL,KAL,
+	CNFGPIO(I,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KIN,KOU,KOU,KIN,KAL,KAL,KAL,KAL,
 			  K99,K99,K99,K99,K99,K99,K99,K99,K50,K50,K50,K50,K99,K99,K99,K99,
-			  KNO,KNO,KNO,KNO,KNO,KNO,KNO,KNO,KPU,KPU,KNO,KPU,KNO,KNO,KNO,KNO,
+			  KNO,KNO,KNO,KNO,KNO,KNO,KNO,KNO,KPU,KNO,KNO,KPU,KNO,KNO,KNO,KNO,
 			  A08,A08,A08,A08,A08,A08,A08,A08,A15,A15,A15,A15,A08,A08,A08,A08,
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
@@ -479,7 +479,6 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u);
-
 }
 
 /*

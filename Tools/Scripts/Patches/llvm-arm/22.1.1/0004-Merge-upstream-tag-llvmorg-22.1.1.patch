@@ -1,0 +1,3530 @@
+From 727cbe4f8e845571e0ab452b41b4a548e35fc1cf Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Fri, 13 Mar 2026 19:30:12 +0200
+Subject: [PATCH 4/4] Merge upstream tag llvmorg-22.1.1
+
+---
+ .ci/green-dragon/clang-stage1-RA.groovy       |  37 ++++
+ .../readability/RedundantTypenameCheck.cpp    |   2 +-
+ .../readability/redundant-typename.cpp        |  25 ++-
+ clang/docs/ReleaseNotes.rst                   |   4 +
+ clang/lib/AST/ASTContext.cpp                  |   7 +-
+ clang/lib/AST/DeclTemplate.cpp                |  20 +--
+ clang/lib/CodeGen/ItaniumCXXABI.cpp           |   4 +
+ .../lib/Frontend/VerifyDiagnosticConsumer.cpp |  24 ++-
+ clang/lib/Interpreter/IncrementalParser.cpp   |  13 +-
+ clang/lib/Sema/SemaCXXScopeSpec.cpp           |  15 +-
+ clang/lib/Sema/SemaExpr.cpp                   |   9 +-
+ clang/lib/Sema/SemaLambda.cpp                 |  78 +++++----
+ clang/lib/Sema/SemaOverload.cpp               |   8 +
+ clang/lib/Sema/SemaTemplateDeduction.cpp      |   2 +
+ .../StaticAnalyzer/Checkers/MallocChecker.cpp |  10 +-
+ clang/test/Analysis/malloc-annotations.c      |  93 ++++++++++
+ ...auth-member-function-pointer-debuglocs.cpp |  39 +++++
+ clang/test/Interpreter/verify-diagnostics.cpp |  16 ++
+ clang/test/Modules/pr177385.cppm              | 165 ++++++++++++++++++
+ clang/test/Modules/pr178893.cppm              |  29 +++
+ clang/test/ParserOpenACC/parse-constructs.cpp |   4 +-
+ clang/test/SemaCXX/GH167120.cpp               |   5 +
+ clang/test/SemaCXX/GH175783.cpp               |  12 ++
+ ...overload-resolution-deferred-templates.cpp |  81 +++++++++
+ clang/test/SemaTemplate/GH181062.cpp          |  24 +++
+ clang/test/SemaTemplate/GH183075.cpp          |  13 ++
+ .../SemaTemplate/temp_arg_nontype_cxx11.cpp   |  11 +-
+ .../SemaTemplate/temp_arg_template_p0522.cpp  |   7 +
+ cmake/Modules/LLVMVersion.cmake               |   2 +-
+ libcxx/docs/ReleaseNotes/22.rst               |   7 +
+ libcxx/include/__config                       |   2 +-
+ libcxx/include/__tree                         |  50 ++++++
+ .../lazy_synth_three_way_comparator.h         |  16 +-
+ libcxx/include/__vector/vector.h              |   2 +-
+ .../debug.non-strict-weak-ordering.pass.cpp   | 130 ++++++++++++++
+ ...upper_bound_non_strict_weak_order.pass.cpp | 151 ++++++++++++++++
+ .../vector.modifiers/append_range.pass.cpp    |  15 +-
+ lld/ELF/Arch/Hexagon.cpp                      |   2 +
+ lld/ELF/Arch/X86_64.cpp                       |   5 +-
+ lld/test/ELF/Inputs/ztext.s                   |  10 --
+ lld/test/ELF/hexagon-duplex-relocs.s          |  40 +++++
+ lld/test/ELF/x86-x32-abs.s                    |  34 ++++
+ lld/test/ELF/ztext.s                          |  60 +++++--
+ lldb/source/Target/StackFrameList.cpp         |  17 +-
+ lldb/source/Target/Target.cpp                 |   3 +-
+ lldb/unittests/Target/CMakeLists.txt          |   2 +
+ .../Target/ScratchTypeSystemTest.cpp          |  59 +++++++
+ llvm/lib/Analysis/BasicAliasAnalysis.cpp      |   3 +-
+ .../Target/AArch64/AArch64ISelLowering.cpp    |   6 +-
+ llvm/lib/Target/AMDGPU/VOP2Instructions.td    |  24 +--
+ llvm/lib/Target/AMDGPU/VOP3PInstructions.td   |   6 +-
+ llvm/lib/Target/AMDGPU/VOPCInstructions.td    |  10 +-
+ llvm/lib/Target/AMDGPU/VOPInstructions.td     |  82 ++++-----
+ llvm/lib/Target/Hexagon/Hexagon.td            |   4 +-
+ llvm/lib/Target/Hexagon/HexagonISelLowering.h |   4 +
+ .../Target/Hexagon/HexagonISelLoweringHVX.cpp |  90 ++++++----
+ .../Target/Hexagon/HexagonNewValueJump.cpp    |   6 +-
+ .../Target/Hexagon/HexagonVLIWPacketizer.cpp  |   5 +-
+ llvm/test/CodeGen/AArch64/sve-sext-zext.ll    |  28 +++
+ .../autohvx/isel-hvx-rescale-predicate.ll     |  14 ++
+ .../CodeGen/Hexagon/disable-packetizer-nvj.ll |  34 ++++
+ .../extract-hvx-subvector-pred-small.ll       |  28 +++
+ .../Hexagon/v81-early-arch-features.ll        |  16 ++
+ .../MC/Disassembler/AMDGPU/gfx10_vop1.txt     |   3 +
+ .../Disassembler/AMDGPU/gfx11_dasm_vop1.txt   |   3 +
+ .../gfx11_dasm_vop3_dpp16_from_vop1.txt       |   4 +
+ .../AMDGPU/gfx11_dasm_vop3_dpp8_from_vop1.txt |   4 +
+ .../AMDGPU/gfx11_dasm_vop3_from_vop1.txt      |   3 +
+ .../AMDGPU/gfx1250_dasm_vop3_from_vop1.txt    |   3 +
+ .../Disassembler/AMDGPU/gfx12_dasm_vop3.txt   |   3 +
+ .../gfx12_dasm_vop3_from_vop1_dpp16.txt       |   4 +
+ .../AMDGPU/gfx12_dasm_vop3_from_vop1_dpp8.txt |   3 +-
+ .../test/MC/Disassembler/AMDGPU/gfx8_vop1.txt |   3 +
+ .../test/MC/Disassembler/AMDGPU/gfx8_vop3.txt |   3 +
+ .../MC/Disassembler/AMDGPU/gfx908_mai.txt     |   8 +
+ .../test/MC/Disassembler/AMDGPU/gfx9_vop1.txt |   3 +
+ .../test/MC/Disassembler/AMDGPU/gfx9_vop3.txt |   3 +
+ llvm/utils/gn/secondary/llvm/version.gni      |   2 +-
+ llvm/utils/lit/lit/__init__.py                |   2 +-
+ llvm/utils/mlgo-utils/mlgo/__init__.py        |   2 +-
+ llvm/utils/release/github-upload-release.py   |  10 +-
+ openmp/CMakeLists.txt                         |  33 ++--
+ openmp/cmake/OpenMPTesting.cmake              |   8 +-
+ openmp/runtime/src/CMakeLists.txt             |  14 +-
+ openmp/runtime/test/parallel/bug63197.c       |  11 +-
+ openmp/tools/omptest/CMakeLists.txt           |  61 ++++---
+ openmp/tools/omptest/test/CMakeLists.txt      |   7 +-
+ .../benchmark/include/benchmark/benchmark.h   |  28 +--
+ 88 files changed, 1654 insertions(+), 298 deletions(-)
+ create mode 100644 .ci/green-dragon/clang-stage1-RA.groovy
+ create mode 100644 clang/test/DebugInfo/CXX/ptrauth-member-function-pointer-debuglocs.cpp
+ create mode 100644 clang/test/Interpreter/verify-diagnostics.cpp
+ create mode 100644 clang/test/Modules/pr177385.cppm
+ create mode 100644 clang/test/Modules/pr178893.cppm
+ create mode 100644 clang/test/SemaCXX/GH167120.cpp
+ create mode 100644 clang/test/SemaCXX/GH175783.cpp
+ create mode 100644 clang/test/SemaTemplate/GH181062.cpp
+ create mode 100644 clang/test/SemaTemplate/GH183075.cpp
+ create mode 100644 libcxx/test/libcxx/containers/associative/debug.non-strict-weak-ordering.pass.cpp
+ create mode 100644 libcxx/test/libcxx/containers/associative/lower_upper_bound_non_strict_weak_order.pass.cpp
+ delete mode 100644 lld/test/ELF/Inputs/ztext.s
+ create mode 100644 lld/test/ELF/hexagon-duplex-relocs.s
+ create mode 100644 lld/test/ELF/x86-x32-abs.s
+ create mode 100644 lldb/unittests/Target/ScratchTypeSystemTest.cpp
+ create mode 100644 llvm/test/CodeGen/Hexagon/autohvx/isel-hvx-rescale-predicate.ll
+ create mode 100644 llvm/test/CodeGen/Hexagon/disable-packetizer-nvj.ll
+ create mode 100644 llvm/test/CodeGen/Hexagon/extract-hvx-subvector-pred-small.ll
+ create mode 100644 llvm/test/CodeGen/Hexagon/v81-early-arch-features.ll
+
+diff --git a/.ci/green-dragon/clang-stage1-RA.groovy b/.ci/green-dragon/clang-stage1-RA.groovy
+new file mode 100644
+index 000000000000..412cf23c27c6
+--- /dev/null
++++ b/.ci/green-dragon/clang-stage1-RA.groovy
+@@ -0,0 +1,37 @@
++branchName = 'main'
++
++library identifier: "zorg-shared-lib@${branchName}",
++        retriever: modernSCM([
++            $class: 'GitSCMSource',
++            remote: "https://github.com/llvm/llvm-zorg.git",
++            credentialsId: scm.userRemoteConfigs[0].credentialsId
++        ])
++
++clangPipeline(
++    jobName: env.JOB_NAME,
++    zorgBranch: branchName,
++    buildConfig: [
++        stage: 1,
++        build_type: 'cmake',
++        cmake_type: 'RelWithDebInfo',
++        assertions: true,
++        projects: 'clang;clang-tools-extra',
++        runtimes: 'compiler-rt',
++        timeout: 120,
++        incremental: false,
++        skipTrigger: env.BRANCH_NAME?.startsWith('release/') ?: false
++    ],
++    testConfig: [
++        test_type: 'testlong',
++        timeout: 120,
++        junit_patterns: [
++            "clang-build/**/testresults.xunit.xml"
++        ]
++    ],
++    triggeredJobs: [
++        'llvm.org/clang-stage2-cmake-RgSan_relay',
++        'llvm.org/clang-stage2-Rthinlto_relay',
++        'llvm.org/relay-lnt-ctmark',
++        'llvm.org/relay-test-suite-verify-machineinstrs'
++    ]
++)
+diff --git a/clang-tools-extra/clang-tidy/readability/RedundantTypenameCheck.cpp b/clang-tools-extra/clang-tidy/readability/RedundantTypenameCheck.cpp
+index fde7748df31f..01f9177c248a 100644
+--- a/clang-tools-extra/clang-tidy/readability/RedundantTypenameCheck.cpp
++++ b/clang-tools-extra/clang-tidy/readability/RedundantTypenameCheck.cpp
+@@ -49,7 +49,7 @@ void RedundantTypenameCheck::registerMatchers(MatchFinder *Finder) {
+ void RedundantTypenameCheck::check(const MatchFinder::MatchResult &Result) {
+   const TypeLoc TL = [&] {
+     if (const auto *TL = Result.Nodes.getNodeAs<TypeLoc>("typeLoc"))
+-      return TL->getType()->isDependentType() ? TypeLoc() : *TL;
++      return TL->getType()->isInstantiationDependentType() ? TypeLoc() : *TL;
+ 
+     auto TL = *Result.Nodes.getNodeAs<TypeLoc>("dependentTypeLoc");
+     while (const TypeLoc Next = TL.getNextTypeLoc())
+diff --git a/clang-tools-extra/test/clang-tidy/checkers/readability/redundant-typename.cpp b/clang-tools-extra/test/clang-tidy/checkers/readability/redundant-typename.cpp
+index cb58826efbda..7ed6ef02a725 100644
+--- a/clang-tools-extra/test/clang-tidy/checkers/readability/redundant-typename.cpp
++++ b/clang-tools-extra/test/clang-tidy/checkers/readability/redundant-typename.cpp
+@@ -279,6 +279,7 @@ WHOLE_TYPE_IN_MACRO Macro2;
+ WHOLE_DECLARATION_IN_MACRO;
+ 
+ template <typename T> struct Wrapper {};
++
+ template <typename T>
+ struct ClassWrapper {
+   using R = T;
+@@ -298,16 +299,34 @@ typename ClassWrapper<T>::R ClassWrapper<T>::g() {
+   return {};
+ }
+ 
+-template <typename T> struct StructWrapper {};
++template <typename T>
++struct IntWrapper {
++  using R = int;
++  Wrapper<R> f();
++  R g();
++};
++
++template <typename T>
++Wrapper<typename IntWrapper<T>::R> IntWrapper<T>::f() {
++  return {};
++}
++
++template <typename T>
++typename IntWrapper<T>::R IntWrapper<T>::g() {
++// CHECK-MESSAGES-20: :[[@LINE-1]]:1: warning: redundant 'typename' [readability-redundant-typename]
++// CHECK-FIXES-20: IntWrapper<T>::R IntWrapper<T>::g() {
++  return {};
++}
++
+ template <typename T>
+ class ClassWithNestedStruct {
+   struct Nested {};
+-  StructWrapper<Nested> f();
++  Wrapper<Nested> f();
+   Nested g();
+ };
+ 
+ template <typename T>
+-StructWrapper<typename ClassWithNestedStruct<T>::Nested> ClassWithNestedStruct<T>::f() {
++Wrapper<typename ClassWithNestedStruct<T>::Nested> ClassWithNestedStruct<T>::f() {
+   return {};
+ }
+ 
+diff --git a/clang/docs/ReleaseNotes.rst b/clang/docs/ReleaseNotes.rst
+index 7ac3e272beff..d4c6025ee063 100644
+--- a/clang/docs/ReleaseNotes.rst
++++ b/clang/docs/ReleaseNotes.rst
+@@ -655,6 +655,7 @@ Bug Fixes to C++ Support
+ - Fixed a crash when parsing the ``enable_if`` attribute on C function declarations with identifier-list parameters. (#GH173826)
+ - Fixed an assertion failure triggered by nested lambdas during capture handling. (#GH172814)
+ - Fixed an assertion failure in vector conversions involving instantiation-dependent template expressions. (#GH173347)
++- Fixed an issue where recursive instantiation could lead to escape of SFINAE errors. (#GH179118)
+ - Fixed an assertion failure in floating conversion narrowing caused by C++ constant expression checks in C23 mode. (#GH173847)
+ 
+ Bug Fixes to AST Handling
+@@ -912,6 +913,9 @@ Crash and bug fixes
+   checked arithmetic builtin functions. (#GH173795)
+ - Fixed a crash introduced in clang-20 when analyzing some "swap" functions.
+   (#GH178797)
++- Fixed a crash introduced in clang-20 in the ``unix.Malloc`` checker when
++  analyzing functions that had both of the ``ownership_returns`` and
++  ``ownership_takes`` attributes. (#GH183344)
+ 
+ Improvements
+ ^^^^^^^^^^^^
+diff --git a/clang/lib/AST/ASTContext.cpp b/clang/lib/AST/ASTContext.cpp
+index f52470a4d745..100e37c131ef 100644
+--- a/clang/lib/AST/ASTContext.cpp
++++ b/clang/lib/AST/ASTContext.cpp
+@@ -7244,9 +7244,12 @@ TemplateName ASTContext::getCanonicalTemplateName(TemplateName Name,
+     return TemplateName(cast<TemplateDecl>(Template->getCanonicalDecl()));
+   }
+ 
+-  case TemplateName::OverloadedTemplate:
+   case TemplateName::AssumedTemplate:
+-    llvm_unreachable("cannot canonicalize unresolved template");
++    // An assumed template is just a name, so it is already canonical.
++    return Name;
++
++  case TemplateName::OverloadedTemplate:
++    llvm_unreachable("cannot canonicalize overloaded template");
+ 
+   case TemplateName::DependentTemplate: {
+     DependentTemplateName *DTN = Name.getAsDependentTemplateName();
+diff --git a/clang/lib/AST/DeclTemplate.cpp b/clang/lib/AST/DeclTemplate.cpp
+index 2f7ae6d6cac6..ed20c720ce06 100644
+--- a/clang/lib/AST/DeclTemplate.cpp
++++ b/clang/lib/AST/DeclTemplate.cpp
+@@ -1668,27 +1668,27 @@ clang::getReplacedTemplateParameter(Decl *D, unsigned Index) {
+   case Decl::Kind::ClassTemplateSpecialization: {
+     const auto *CTSD = cast<ClassTemplateSpecializationDecl>(D);
+     auto P = CTSD->getSpecializedTemplateOrPartial();
+-    TemplateParameterList *TPL;
+     if (const auto *CTPSD =
+             dyn_cast<ClassTemplatePartialSpecializationDecl *>(P)) {
+-      TPL = CTPSD->getTemplateParameters();
+-      // FIXME: Obtain Args deduced for the partial specialization.
+-      return {TPL->getParam(Index), {}};
++      TemplateParameterList *TPL = CTPSD->getTemplateParameters();
++      return {TPL->getParam(Index),
++              CTSD->getTemplateInstantiationArgs()[Index]};
+     }
+-    TPL = cast<ClassTemplateDecl *>(P)->getTemplateParameters();
++    TemplateParameterList *TPL =
++        cast<ClassTemplateDecl *>(P)->getTemplateParameters();
+     return {TPL->getParam(Index), CTSD->getTemplateArgs()[Index]};
+   }
+   case Decl::Kind::VarTemplateSpecialization: {
+     const auto *VTSD = cast<VarTemplateSpecializationDecl>(D);
+     auto P = VTSD->getSpecializedTemplateOrPartial();
+-    TemplateParameterList *TPL;
+     if (const auto *VTPSD =
+             dyn_cast<VarTemplatePartialSpecializationDecl *>(P)) {
+-      TPL = VTPSD->getTemplateParameters();
+-      // FIXME: Obtain Args deduced for the partial specialization.
+-      return {TPL->getParam(Index), {}};
++      TemplateParameterList *TPL = VTPSD->getTemplateParameters();
++      return {TPL->getParam(Index),
++              VTSD->getTemplateInstantiationArgs()[Index]};
+     }
+-    TPL = cast<VarTemplateDecl *>(P)->getTemplateParameters();
++    TemplateParameterList *TPL =
++        cast<VarTemplateDecl *>(P)->getTemplateParameters();
+     return {TPL->getParam(Index), VTSD->getTemplateArgs()[Index]};
+   }
+   case Decl::Kind::ClassTemplatePartialSpecialization:
+diff --git a/clang/lib/CodeGen/ItaniumCXXABI.cpp b/clang/lib/CodeGen/ItaniumCXXABI.cpp
+index a6c80cd083bb..63cb4b698991 100644
+--- a/clang/lib/CodeGen/ItaniumCXXABI.cpp
++++ b/clang/lib/CodeGen/ItaniumCXXABI.cpp
+@@ -3479,6 +3479,10 @@ ItaniumCXXABI::getOrCreateVirtualFunctionPointerThunk(const CXXMethodDecl *MD) {
+ 
+   CGF.StartFunction(GlobalDecl(), FnInfo.getReturnType(), ThunkFn, FnInfo,
+                     FunctionArgs, MD->getLocation(), SourceLocation());
++
++  // Emit an artificial location for this function.
++  auto AL = ApplyDebugLocation::CreateArtificial(CGF);
++
+   llvm::Value *ThisVal = loadIncomingCXXThis(CGF);
+   setCXXABIThisValue(CGF, ThisVal);
+ 
+diff --git a/clang/lib/Frontend/VerifyDiagnosticConsumer.cpp b/clang/lib/Frontend/VerifyDiagnosticConsumer.cpp
+index e263e10bb065..5b24de73b29d 100644
+--- a/clang/lib/Frontend/VerifyDiagnosticConsumer.cpp
++++ b/clang/lib/Frontend/VerifyDiagnosticConsumer.cpp
+@@ -516,6 +516,15 @@ static bool ParseDirective(StringRef S, ExpectedData *ED, SourceManager &SM,
+     bool MatchAnyLine = false;
+     if (!PH.Next("@")) {
+       ExpectedLoc = Pos;
++
++      // If an implicit directive is found in an incremental input buffer, allow
++      // it to match any other incremental input buffer
++      if (PP->isIncrementalProcessingEnabled()) {
++        StringRef CurrentBufferName =
++            SM.getBufferOrFake(SM.getFileID(Pos)).getBufferIdentifier();
++        if (CurrentBufferName.starts_with("input_line_"))
++          MatchAnyFileAndLine = true;
++      }
+     } else {
+       PH.Advance();
+       unsigned Line = 0;
+@@ -552,10 +561,17 @@ static bool ParseDirective(StringRef S, ExpectedData *ED, SourceManager &SM,
+           MatchAnyLine = true;
+           ExpectedLoc = SourceLocation();
+         } else {
+-          // Lookup file via Preprocessor, like a #include.
+-          OptionalFileEntryRef File =
+-              PP->LookupFile(Pos, Filename, false, nullptr, nullptr, nullptr,
+-                             nullptr, nullptr, nullptr, nullptr, nullptr);
++          OptionalFileEntryRef File;
++          if (PP->isIncrementalProcessingEnabled() &&
++              Filename.starts_with("input_line_")) {
++            // Check if it came from the prompt
++            File = SM.getFileManager().getOptionalFileRef(Filename);
++          } else {
++            // Lookup file via Preprocessor, like a #include.
++            File =
++                PP->LookupFile(Pos, Filename, false, nullptr, nullptr, nullptr,
++                               nullptr, nullptr, nullptr, nullptr, nullptr);
++          }
+           if (!File) {
+             Diags.Report(Pos.getLocWithOffset(PH.C - PH.Begin),
+                          diag::err_verify_missing_file)
+diff --git a/clang/lib/Interpreter/IncrementalParser.cpp b/clang/lib/Interpreter/IncrementalParser.cpp
+index bf08911e2353..2d5c1fecda2f 100644
+--- a/clang/lib/Interpreter/IncrementalParser.cpp
++++ b/clang/lib/Interpreter/IncrementalParser.cpp
+@@ -129,8 +129,17 @@ IncrementalParser::Parse(llvm::StringRef input) {
+   SourceLocation NewLoc = SM.getLocForStartOfFile(SM.getMainFileID());
+ 
+   // Create FileID for the current buffer.
+-  FileID FID = SM.createFileID(std::move(MB), SrcMgr::C_User, /*LoadedID=*/0,
+-                               /*LoadedOffset=*/0, NewLoc);
++  FileID FID;
++  // Create FileEntry and FileID for the current buffer.
++  FileEntryRef FE = SM.getFileManager().getVirtualFileRef(
++      SourceName.str(), InputSize, 0 /* mod time*/);
++  SM.overrideFileContents(FE, std::move(MB));
++
++  // Ensure HeaderFileInfo exists before lookup to prevent assertion
++  HeaderSearch &HS = PP.getHeaderSearchInfo();
++  HS.getFileInfo(FE);
++
++  FID = SM.createFileID(FE, NewLoc, SrcMgr::C_User);
+ 
+   // NewLoc only used for diags.
+   if (PP.EnterSourceFile(FID, /*DirLookup=*/nullptr, NewLoc))
+diff --git a/clang/lib/Sema/SemaCXXScopeSpec.cpp b/clang/lib/Sema/SemaCXXScopeSpec.cpp
+index 17ae7ca5627a..fdbd46c10924 100644
+--- a/clang/lib/Sema/SemaCXXScopeSpec.cpp
++++ b/clang/lib/Sema/SemaCXXScopeSpec.cpp
+@@ -381,11 +381,17 @@ namespace {
+ class NestedNameSpecifierValidatorCCC final
+     : public CorrectionCandidateCallback {
+ public:
+-  explicit NestedNameSpecifierValidatorCCC(Sema &SRef)
+-      : SRef(SRef) {}
++  explicit NestedNameSpecifierValidatorCCC(Sema &SRef, bool HasQualifier)
++      : SRef(SRef), HasQualifier(HasQualifier) {}
+ 
+   bool ValidateCandidate(const TypoCorrection &candidate) override {
+-    return SRef.isAcceptableNestedNameSpecifier(candidate.getCorrectionDecl());
++    const NamedDecl *ND = candidate.getCorrectionDecl();
++    if (!SRef.isAcceptableNestedNameSpecifier(ND))
++      return false;
++    // A template type parameter cannot have a nested name specifier.
++    if (HasQualifier && isa<TemplateTypeParmDecl>(ND))
++      return false;
++    return true;
+   }
+ 
+   std::unique_ptr<CorrectionCandidateCallback> clone() override {
+@@ -394,6 +400,7 @@ public:
+ 
+  private:
+   Sema &SRef;
++  bool HasQualifier;
+ };
+ 
+ }
+@@ -596,7 +603,7 @@ bool Sema::BuildCXXNestedNameSpecifier(Scope *S, NestedNameSpecInfo &IdInfo,
+     // different kind of error, so look for typos.
+     DeclarationName Name = Found.getLookupName();
+     Found.clear();
+-    NestedNameSpecifierValidatorCCC CCC(*this);
++    NestedNameSpecifierValidatorCCC CCC(*this, /*HasQualifier=*/!SS.isEmpty());
+     if (TypoCorrection Corrected = CorrectTypo(
+             Found.getLookupNameInfo(), Found.getLookupKind(), S, &SS, CCC,
+             CorrectTypoKind::ErrorRecovery, LookupCtx, EnteringContext)) {
+diff --git a/clang/lib/Sema/SemaExpr.cpp b/clang/lib/Sema/SemaExpr.cpp
+index 4d787a60eba3..12681a1f0c73 100644
+--- a/clang/lib/Sema/SemaExpr.cpp
++++ b/clang/lib/Sema/SemaExpr.cpp
+@@ -2653,6 +2653,13 @@ bool Sema::DiagnoseEmptyLookup(Scope *S, CXXScopeSpec &SS, LookupResult &R,
+                          << DroppedSpecifier << NameRange,
+                      PDiag(NoteID), AcceptableWithRecovery);
+ 
++      if (Corrected.WillReplaceSpecifier()) {
++        NestedNameSpecifier NNS = Corrected.getCorrectionSpecifier();
++        // In order to be valid, a non-empty CXXScopeSpec needs a source range.
++        SS.MakeTrivial(Context, NNS,
++                       NNS ? NameRange.getBegin() : SourceRange());
++      }
++
+       // Tell the callee whether to try to recover.
+       return !AcceptableWithRecovery;
+     }
+@@ -2937,7 +2944,7 @@ ExprResult Sema::BuildQualifiedDeclarationNameExpr(
+     // members were likely supposed to be inherited.
+     DeclContext *DC = computeDeclContext(SS);
+     if (const auto *CD = dyn_cast<CXXRecordDecl>(DC))
+-      if (CD->isInvalidDecl())
++      if (CD->isInvalidDecl() || CD->isBeingDefined())
+         return ExprError();
+     Diag(NameInfo.getLoc(), diag::err_no_member)
+       << NameInfo.getName() << DC << SS.getRange();
+diff --git a/clang/lib/Sema/SemaLambda.cpp b/clang/lib/Sema/SemaLambda.cpp
+index e1b1cd3e0494..be7f73dbc267 100644
+--- a/clang/lib/Sema/SemaLambda.cpp
++++ b/clang/lib/Sema/SemaLambda.cpp
+@@ -261,20 +261,6 @@ Sema::createLambdaClosureType(SourceRange IntroducerRange, TypeSourceInfo *Info,
+   return Class;
+ }
+ 
+-/// Determine whether the given context is or is enclosed in an inline
+-/// function.
+-static bool isInInlineFunction(const DeclContext *DC) {
+-  while (!DC->isFileContext()) {
+-    if (const FunctionDecl *FD = dyn_cast<FunctionDecl>(DC))
+-      if (FD->isInlined())
+-        return true;
+-
+-    DC = DC->getLexicalParent();
+-  }
+-
+-  return false;
+-}
+-
+ std::tuple<MangleNumberingContext *, Decl *>
+ Sema::getCurrentMangleNumberContext(const DeclContext *DC) {
+   // Compute the context for allocating mangling numbers in the current
+@@ -287,31 +273,33 @@ Sema::getCurrentMangleNumberContext(const DeclContext *DC) {
+     DataMember,
+     InlineVariable,
+     TemplatedVariable,
++    ExternallyVisibleVariableInModulePurview,
+     Concept,
+-    NonInlineInModulePurview
+   } Kind = Normal;
+ 
+   bool IsInNonspecializedTemplate =
+       inTemplateInstantiation() || CurContext->isDependentContext();
+ 
++  // Checks if a VarDecl or FunctionDecl is from a module purview and externally
++  // visible. These Decls should be treated as "inline" for the purpose of
++  // mangling in the code below.
++  //
++  // See discussion in https://github.com/itanium-cxx-abi/cxx-abi/issues/186
++  //
++  // zygoloid:
++  //    Yeah, I think the only cases left where lambdas don't need a
++  //    mangling are when they have (effectively) internal linkage or
++  //    appear in a non-inline function in a non-module translation unit.
++  static constexpr auto IsExternallyVisibleInModulePurview =
++      [](const NamedDecl *ND) -> bool {
++    return (ND->isInNamedModule() || ND->isFromGlobalModule()) &&
++           ND->isExternallyVisible();
++  };
++
+   // Default arguments of member function parameters that appear in a class
+   // definition, as well as the initializers of data members, receive special
+   // treatment. Identify them.
+   Kind = [&]() {
+-    if (auto *ND = dyn_cast<NamedDecl>(ManglingContextDecl ? ManglingContextDecl
+-                                                           : cast<Decl>(DC))) {
+-      // See discussion in https://github.com/itanium-cxx-abi/cxx-abi/issues/186
+-      //
+-      // zygoloid:
+-      //    Yeah, I think the only cases left where lambdas don't need a
+-      //    mangling are when they have (effectively) internal linkage or appear
+-      //    in a non-inline function in a non-module translation unit.
+-      Module *M = ND->getOwningModule();
+-      if (M && M->getTopLevelModule()->isNamedModuleUnit() &&
+-          ND->isExternallyVisible())
+-        return NonInlineInModulePurview;
+-    }
+-
+     if (!ManglingContextDecl)
+       return Normal;
+ 
+@@ -324,6 +312,9 @@ Sema::getCurrentMangleNumberContext(const DeclContext *DC) {
+       if (Var->getMostRecentDecl()->isInline())
+         return InlineVariable;
+ 
++      if (IsExternallyVisibleInModulePurview(Var))
++        return ExternallyVisibleVariableInModulePurview;
++
+       if (Var->getDeclContext()->isRecord() && IsInNonspecializedTemplate)
+         return TemplatedVariable;
+ 
+@@ -343,15 +334,35 @@ Sema::getCurrentMangleNumberContext(const DeclContext *DC) {
+     return Normal;
+   }();
+ 
+-  // Itanium ABI [5.1.7]:
++  // Determine whether the given context is or is enclosed in a function that
++  // requires Decl's inside to be mangled, so either:
++  // - an inline function
++  // - or a function in a module purview that is externally visible
++  static constexpr auto IsInFunctionThatRequiresMangling =
++      [](const DeclContext *DC) -> bool {
++    while (!DC->isFileContext()) {
++      if (const FunctionDecl *FD = dyn_cast<FunctionDecl>(DC))
++        if (FD->isInlined() || IsExternallyVisibleInModulePurview(FD))
++          return true;
++
++      DC = DC->getLexicalParent();
++    }
++
++    return false;
++  };
++
++  // Itanium ABI [5.1.8]:
+   //   In the following contexts [...] the one-definition rule requires closure
+   //   types in different translation units to "correspond":
+   switch (Kind) {
+   case Normal: {
+     //  -- the bodies of inline or templated functions
++    //  -- the bodies of externally visible functions in a module purview
++    //     (note: this is not yet part of the Itanium ABI, see the linked Github
++    //     discussion above)
+     if ((IsInNonspecializedTemplate &&
+          !(ManglingContextDecl && isa<ParmVarDecl>(ManglingContextDecl))) ||
+-        isInInlineFunction(CurContext)) {
++        IsInFunctionThatRequiresMangling(CurContext)) {
+       while (auto *CD = dyn_cast<CapturedDecl>(DC))
+         DC = CD->getParent();
+       return std::make_tuple(&Context.getManglingNumberContext(DC), nullptr);
+@@ -360,7 +371,6 @@ Sema::getCurrentMangleNumberContext(const DeclContext *DC) {
+     return std::make_tuple(nullptr, nullptr);
+   }
+ 
+-  case NonInlineInModulePurview:
+   case Concept:
+     // Concept definitions aren't code generated and thus aren't mangled,
+     // however the ManglingContextDecl is important for the purposes of
+@@ -371,8 +381,12 @@ Sema::getCurrentMangleNumberContext(const DeclContext *DC) {
+   case DefaultArgument:
+     //  -- default arguments appearing in class definitions
+   case InlineVariable:
++  case ExternallyVisibleVariableInModulePurview:
+   case TemplatedVariable:
+     //  -- the initializers of inline or templated variables
++    //  -- the initializers of externally visible variables in a module purview
++    //     (note: this is not yet part of the Itanium ABI, see the linked Github
++    //     discussion above)
+     return std::make_tuple(
+         &Context.getManglingNumberContext(ASTContext::NeedExtraManglingDecl,
+                                           ManglingContextDecl),
+diff --git a/clang/lib/Sema/SemaOverload.cpp b/clang/lib/Sema/SemaOverload.cpp
+index 7115b8b7d446..0b6296e9b2ef 100644
+--- a/clang/lib/Sema/SemaOverload.cpp
++++ b/clang/lib/Sema/SemaOverload.cpp
+@@ -6470,6 +6470,12 @@ static ExprResult BuildConvertedConstantExpression(Sema &S, Expr *From,
+     S.Diag(From->getBeginLoc(), diag::ext_cce_narrowing)
+         << CCE << /*Constant*/ 1
+         << PreNarrowingValue.getAsString(S.Context, PreNarrowingType) << T;
++    // If this is an SFINAE Context, treat the result as invalid so it stops
++    // substitution at this point, respecting C++26 [temp.deduct.general]p7.
++    // FIXME: Should do this whenever the above diagnostic is an error, but
++    // without further changes this would degrade some other diagnostics.
++    if (S.isSFINAEContext())
++      return ExprError();
+     break;
+ 
+   case NK_Dependent_Narrowing:
+@@ -6485,6 +6491,8 @@ static ExprResult BuildConvertedConstantExpression(Sema &S, Expr *From,
+     // constant expression.
+     S.Diag(From->getBeginLoc(), diag::ext_cce_narrowing)
+         << CCE << /*Constant*/ 0 << From->getType() << T;
++    if (S.isSFINAEContext())
++      return ExprError();
+     break;
+   }
+   if (!ReturnPreNarrowingValue)
+diff --git a/clang/lib/Sema/SemaTemplateDeduction.cpp b/clang/lib/Sema/SemaTemplateDeduction.cpp
+index a287319cc4f8..0476872e282c 100644
+--- a/clang/lib/Sema/SemaTemplateDeduction.cpp
++++ b/clang/lib/Sema/SemaTemplateDeduction.cpp
+@@ -6501,6 +6501,8 @@ bool Sema::isTemplateTemplateParameterAtLeastAsSpecializedAs(
+   if (Inst.isInvalid())
+     return false;
+ 
++  LocalInstantiationScope Scope(*this);
++
+   //   Given an invented class template X with the template parameter list of
+   //   A (including default arguments):
+   //    - Each function template has a single function parameter whose type is
+diff --git a/clang/lib/StaticAnalyzer/Checkers/MallocChecker.cpp b/clang/lib/StaticAnalyzer/Checkers/MallocChecker.cpp
+index ec7ef237b7c3..68369f8e81eb 100644
+--- a/clang/lib/StaticAnalyzer/Checkers/MallocChecker.cpp
++++ b/clang/lib/StaticAnalyzer/Checkers/MallocChecker.cpp
+@@ -1705,13 +1705,9 @@ bool MallocChecker::evalCall(const CallEvent &Call, CheckerContext &C) const {
+     return true;
+   }
+ 
+-  if (isFreeingOwnershipAttrCall(Call)) {
+-    checkOwnershipAttr(State, Call, C);
+-    return true;
+-  }
+-
+-  if (isAllocatingOwnershipAttrCall(Call)) {
+-    State = MallocBindRetVal(C, Call, State, false);
++  if (isFreeingOwnershipAttrCall(Call) || isAllocatingOwnershipAttrCall(Call)) {
++    if (isAllocatingOwnershipAttrCall(Call))
++      State = MallocBindRetVal(C, Call, State, false);
+     checkOwnershipAttr(State, Call, C);
+     return true;
+   }
+diff --git a/clang/test/Analysis/malloc-annotations.c b/clang/test/Analysis/malloc-annotations.c
+index fdfd1d014ded..ce02e39e04cf 100644
+--- a/clang/test/Analysis/malloc-annotations.c
++++ b/clang/test/Analysis/malloc-annotations.c
+@@ -278,3 +278,96 @@ void testNoUninitAttr(void) {
+   user_free(p);
+ }
+ 
++// Regression test for GH#183344 — crash when a function has both
++// ownership_returns and ownership_takes attributes.
++typedef struct GH183344_X GH183344_X;
++typedef struct GH183344_Y GH183344_Y;
++
++GH183344_Y *GH183344_X_to_Y(GH183344_X *x)
++    __attribute__((ownership_returns(GH183344_Y)))
++    __attribute__((ownership_takes(GH183344_X, 1)));
++
++void testGH183344(void) {
++  GH183344_Y *y = GH183344_X_to_Y(0); // no-crash
++  (void)y;
++} // expected-warning{{Potential leak of memory pointed to by 'y'}}
++
++// Extended regression tests for GH#183344 — additional combinations of
++// ownership_returns, ownership_takes, and ownership_holds.
++
++GH183344_X *GH183344_alloc_X(void)
++    __attribute__((ownership_returns(GH183344_X)));
++void GH183344_free_X(GH183344_X *)
++    __attribute__((ownership_takes(GH183344_X, 1)));
++void GH183344_free_Y(GH183344_Y *)
++    __attribute__((ownership_takes(GH183344_Y, 1)));
++
++// Returns + Holds variant: Y is allocated, X is held (not consumed) by callee.
++GH183344_Y *GH183344_X_to_Y_hold(GH183344_X *x)
++    __attribute__((ownership_returns(GH183344_Y)))
++    __attribute__((ownership_holds(GH183344_X, 1)));
++
++// Returns + two Takes (same pool): both X arguments are consumed, Y is
++// returned. Multiple arg indices in one attribute (same pool) is valid;
++// two ownership_takes attributes with *different* pool names are not.
++GH183344_Y *GH183344_combine_XX(GH183344_X *x1, GH183344_X *x2)
++    __attribute__((ownership_returns(GH183344_Y)))
++    __attribute__((ownership_takes(GH183344_X, 1, 2)));
++
++// No-crash for Returns+Holds with null input — same crash pattern as the
++// original GH183344 bug but with ownership_holds instead of ownership_takes.
++void testGH183344_ReturnsHolds_NullInput(void) {
++  GH183344_Y *y = GH183344_X_to_Y_hold(0); // no-crash
++  (void)y;
++} // expected-warning{{Potential leak of memory pointed to by 'y'}}
++
++// Returns+Takes: allocate X, convert to Y (X consumed), free Y — no warnings.
++void testGH183344_ReturnsTakes_CleanUse(void) {
++  GH183344_X *x = GH183344_alloc_X();
++  GH183344_Y *y = GH183344_X_to_Y(x);
++  GH183344_free_Y(y);
++} // no-warning
++
++// Returns+Takes: after the conversion X is consumed; freeing it again is a
++// double-free.
++void testGH183344_ReturnsTakes_DoubleFreeInput(void) {
++  GH183344_X *x = GH183344_alloc_X();
++  GH183344_Y *y = GH183344_X_to_Y(x);
++  GH183344_free_X(x); // expected-warning{{Attempt to release already released memory}}
++  GH183344_free_Y(y);
++}
++
++// Returns+Takes: X is consumed but Y is never freed — leak on Y.
++void testGH183344_ReturnsTakes_LeakRetval(void) {
++  GH183344_X *x = GH183344_alloc_X();
++  GH183344_Y *y = GH183344_X_to_Y(x);
++  (void)y;
++} // expected-warning{{Potential leak of memory pointed to by 'y'}}
++
++// Returns+Holds: after the hold, X is non-owned by the caller; freeing it
++// produces a "non-owned memory" warning (analogous to af3).
++void testGH183344_ReturnsHolds_FreeHeldInput(void) {
++  GH183344_X *x = GH183344_alloc_X();
++  GH183344_Y *y = GH183344_X_to_Y_hold(x);
++  GH183344_free_X(x); // expected-warning{{Attempt to release non-owned memory}}
++  GH183344_free_Y(y);
++}
++
++// Multiple Takes (same pool) + Returns: both X inputs are consumed, Y is
++// returned and freed — no warnings.
++void testGH183344_CombineXX_CleanUse(void) {
++  GH183344_X *x1 = GH183344_alloc_X();
++  GH183344_X *x2 = GH183344_alloc_X();
++  GH183344_Y *y = GH183344_combine_XX(x1, x2);
++  GH183344_free_Y(y);
++} // no-warning
++
++// Multiple Takes (same pool): after the combine, x2 is already consumed;
++// freeing it again is a double-free.
++void testGH183344_CombineXX_DoubleFreeSecondInput(void) {
++  GH183344_X *x1 = GH183344_alloc_X();
++  GH183344_X *x2 = GH183344_alloc_X();
++  GH183344_Y *y = GH183344_combine_XX(x1, x2);
++  GH183344_free_X(x2); // expected-warning{{Attempt to release already released memory}}
++  GH183344_free_Y(y);
++}
+diff --git a/clang/test/DebugInfo/CXX/ptrauth-member-function-pointer-debuglocs.cpp b/clang/test/DebugInfo/CXX/ptrauth-member-function-pointer-debuglocs.cpp
+new file mode 100644
+index 000000000000..c1fcb2f9dd5f
+--- /dev/null
++++ b/clang/test/DebugInfo/CXX/ptrauth-member-function-pointer-debuglocs.cpp
+@@ -0,0 +1,39 @@
++// RUN: %clang_cc1 -triple arm64-apple-ios   -fptrauth-calls -fptrauth-intrinsics \
++// RUN:     -emit-llvm -std=c++11 -O1 -disable-llvm-passes \
++// RUN:     -debug-info-kind=limited %s -o - | FileCheck %s
++// RUN: %clang_cc1 -triple aarch64-linux-gnu -fptrauth-calls -fptrauth-intrinsics \
++// RUN:     -emit-llvm -std=c++11 -O1 -disable-llvm-passes \
++// RUN:     -debug-info-kind=limited %s -o - | FileCheck %s
++
++// Check that compiler-generated *_vfpthunk_ function has a !dbg location
++// attached to the call instruction.
++
++// CHECK:      define {{.*}}@_ZN1A2f0Ev_vfpthunk_({{.*}})
++// CHECK-SAME:     !dbg ![[SCOPE_INDEX:[0-9]+]]
++// CHECK-NOT:  define
++// CHECK:        %[[DISCR:[0-9]+]] = call i64 @llvm.ptrauth.blend(i64 %{{[0-9]+}}, i64 9385)
++// CHECK-NOT:  define
++// CHECK:        musttail call void %{{[0-9]+}}(ptr
++// CHECK-SAME:     [ "ptrauth"(i32 0, i64 %[[DISCR]]) ]
++// CHECK-SAME:     !dbg ![[LOCATION_INDEX:[0-9]+]]
++
++// CHECK:      ![[SCOPE_INDEX]] = distinct !DISubprogram(
++// CHECK-SAME:                        linkageName: "_ZN1A2f0Ev_vfpthunk_"
++// CHECK-SAME:                        flags: DIFlagArtificial | DIFlagThunk
++// CHECK:      ![[LOCATION_INDEX]] = !DILocation(line: 0, scope: ![[SCOPE_INDEX]])
++
++volatile long T;
++
++struct A {
++  virtual void f0() {
++    T = 0;
++  }
++};
++typedef void (A::*MFP)();
++
++void caller() {
++  A a;
++
++  MFP x = &A::f0;
++  (a.*x)();
++}
+diff --git a/clang/test/Interpreter/verify-diagnostics.cpp b/clang/test/Interpreter/verify-diagnostics.cpp
+new file mode 100644
+index 000000000000..7187a7737984
+--- /dev/null
++++ b/clang/test/Interpreter/verify-diagnostics.cpp
+@@ -0,0 +1,16 @@
++// REQUIRES: host-supports-jit
++// RUN: cat %s | clang-repl -Xcc -Xclang -Xcc -verify
++
++auto x = unknown_val;
++// expected-error@input_line_4:1 {{use of undeclared identifier 'unknown_val'}}
++
++int get_int() { return 42; }
++char* ptr = get_int();
++// expected-error@input_line_8:1 {{cannot initialize a variable of type 'char *' with an rvalue of type 'int'}}
++
++// Verify without input_line_*
++int y = ;
++// expected-error {{expected expression}}
++
++const char* a = "test"; // expected-note {{previous definition is here}}
++const char* a = ""; // expected-error {{redefinition of 'a'}}
+diff --git a/clang/test/Modules/pr177385.cppm b/clang/test/Modules/pr177385.cppm
+new file mode 100644
+index 000000000000..02852ce3b6fe
+--- /dev/null
++++ b/clang/test/Modules/pr177385.cppm
+@@ -0,0 +1,165 @@
++// RUN: rm -rf %t
++// RUN: mkdir %t
++// RUN: split-file %s %t
++// RUN: mkdir %t/tmp
++
++// RUN: %clang_cc1 -std=c++26 %t/std.cppm  -emit-module-interface -o %t/std.pcm
++// RUN: %clang_cc1 -std=c++26 %t/optional.cppm  -emit-module-interface -o %t/optional.pcm \
++// RUN:       -fmodule-file=std=%t/std.pcm
++// RUN: %clang_cc1 -std=c++26 %t/date.format.cppm  -emit-module-interface -o %t/date.format.pcm \
++// RUN:       -fmodule-file=std=%t/std.pcm \
++// RUN:       -fmodule-file=bopt.optional=%t/optional.pcm
++// RUN: %clang_cc1 -std=c++26 %t/annotated.cppm  -emit-module-interface -o %t/annotated.pcm \
++// RUN:       -fmodule-file=std=%t/std.pcm \
++// RUN:       -fmodule-file=bopt.optional=%t/optional.pcm \
++// RUN:       -fmodule-file=ldgr:date.format=%t/date.format.pcm
++// RUN: %clang_cc1 -std=c++26 %t/annotated.format.cppm  -emit-module-interface -o %t/annotated.format.pcm \
++// RUN:       -fmodule-file=std=%t/std.pcm \
++// RUN:       -fmodule-file=bopt.optional=%t/optional.pcm \
++// RUN:       -fmodule-file=ldgr:date.format=%t/date.format.pcm \
++// RUN:       -fmodule-file=ldgr:annotated=%t/annotated.pcm
++// RUN: %clang_cc1 -std=c++26 %t/date.test.cppm  -emit-module-interface -o %t/date.test.pcm \
++// RUN:       -fmodule-file=std=%t/std.pcm \
++// RUN:       -fmodule-file=bopt.optional=%t/optional.pcm \
++// RUN:       -fmodule-file=ldgr:date.format=%t/date.format.pcm \
++// RUN:       -fmodule-file=ldgr:annotated=%t/annotated.pcm \
++// RUN:       -fmodule-file=ldgr:annotated.format=%t/annotated.format.pcm
++// RUN: %clang_cc1 -std=c++26 -w %t/annotated.test.cpp -fsyntax-only -verify \
++// RUN:       -fmodule-file=std=%t/std.pcm \
++// RUN:       -fmodule-file=bopt.optional=%t/optional.pcm \
++// RUN:       -fmodule-file=ldgr:date.format=%t/date.format.pcm \
++// RUN:       -fmodule-file=ldgr:annotated=%t/annotated.pcm \
++// RUN:       -fmodule-file=ldgr:annotated.format=%t/annotated.format.pcm \
++// RUN:       -fmodule-file=ldgr:date.testlib=%t/date.test.pcm
++
++//--- std.cppm
++module;
++namespace std {
++inline namespace __1 {
++template <class _Tp> _Tp forward(_Tp);
++template <class... _Args>
++void __invoke(_Args... __args) noexcept(
++    noexcept(__builtin_invoke(forward(__args)...)));
++using string = char;
++struct in_place_t {
++} in_place;
++template <typename...> struct __traits;
++struct Trans_NS___visitation___base {
++  template <class _Visitor, class... _Vs>
++  static void __visit_alt(_Visitor, _Vs... __vs) {
++    __make_fmatrix<_Visitor, decltype(__vs)...>;
++  }
++  struct __dispatcher {
++    template <class _Fp, class... _Vs> static void __dispatch(_Vs... __vs) {
++      _Fp __f;
++      __invoke(__f, __vs...);
++    }
++  };
++  template <class _Fp, class... _Vs> static void __make_dispatch() {
++    __dispatcher::__dispatch<_Fp, _Vs...>;
++  }
++  template <class _Fp, class... _Vs> static void __make_fmatrix_impl() {
++    __make_dispatch<_Fp, _Vs...>;
++  }
++  template <class _Fp, class... _Vs> static void __make_fmatrix() {
++    __make_fmatrix_impl<_Fp, _Vs...>;
++  }
++};
++template <class> class __dtor;
++template <class... _Types> struct __dtor<__traits<_Types...>> {
++  ~__dtor() {
++    Trans_NS___visitation___base::__visit_alt([](auto) {}, this);
++  }
++};
++struct __move_constructor : __dtor<__traits<>> {};
++struct __assignment : __move_constructor {};
++struct __impl : __assignment {};
++template <class> struct variant {
++  __impl __impl_;
++};
++}
++}
++export module std;
++export namespace std {
++using std::forward;
++using std::in_place;
++using std::in_place_t;
++using std::string;
++using std::variant;
++}
++
++//--- optional.cppm
++export module bopt.optional;
++import std;
++namespace bopt {
++template <class T> struct wrapper {
++  template <class Func> wrapper(int, Func f) : value(std::forward(f)()) {}
++  T value;
++};
++template <class T> struct optional_base {
++  struct union_t {
++    T value_;
++  };
++  struct repr {
++    template <class OtherValue>
++    repr(OtherValue) : un_{0, [] { return union_t{}; }} {}
++    wrapper<union_t> un_;
++  };
++  template <class... Args>
++  optional_base(std::in_place_t, Args... args) : repr_{args...} {}
++  repr repr_;
++};
++export template <class T> struct optional : optional_base<T> {
++  optional();
++  template <class U> optional(U) : optional_base<T>{std::in_place, 0} {}
++  template <class U> constexpr void operator=(U) {
++    [] {};
++  }
++};
++}
++
++//--- date.format.cppm
++module ldgr:date.format;
++import bopt.optional;
++namespace ldgr {
++struct date_format {
++  template <class S> static int parse(S s) { bopt::optional<int> year{s}; }
++};
++}
++
++//--- annotated.cppm
++module ldgr:annotated;
++import std;
++import bopt.optional;
++struct lot_annotation {
++  using valuation_expr_t = std::variant<std::string>;
++  bopt::optional<valuation_expr_t> valuation_expr_;
++};
++struct annotated_amount {
++  lot_annotation lot_annotation_;
++};
++
++//--- annotated.format.cppm
++module ldgr:annotated.format;
++import :date.format;
++import :annotated;
++namespace ldgr {
++struct annotated_format {
++  static annotated_amount parse_default() {
++    bopt::optional<int> date;
++    date = date_format::parse(0);
++  }
++};
++}
++
++//--- date.test.cppm
++module ldgr:date.testlib;
++import :date.format;
++void date_from_string() { ldgr::date_format::parse(0); }
++
++//--- annotated.test.cpp
++// expected-no-diagnostics
++module ldgr:annotatedtest;
++import :annotated.format;
++import :date.testlib;
++int main() { ldgr::annotated_format::parse_default(); }
+diff --git a/clang/test/Modules/pr178893.cppm b/clang/test/Modules/pr178893.cppm
+new file mode 100644
+index 000000000000..e58e183d82ab
+--- /dev/null
++++ b/clang/test/Modules/pr178893.cppm
+@@ -0,0 +1,29 @@
++// RUN: %clang_cc1 -std=c++20 -triple %itanium_abi_triple -xc++ -emit-llvm -o - %s -w | FileCheck %s
++
++// CHECK-LABEL: define {{.*}}@_ZZN8PR178893W3mod6format5parseEPiENKUlvE_clEv
++// CHECK-LABEL: define {{.*}}@_ZZN8PR178893W3mod6format5parseEPiENKUlvE0_clEv
++
++export module mod;
++
++namespace PR178893 {
++  struct format {
++      static inline int parse(int* i)
++      {
++          int number;
++          number = [&]() -> int { return i[0]; }();
++
++          volatile bool b = true;
++          if (b) {
++              auto identifier = [&]() -> int { return i[1]; }();
++              return identifier;
++          }
++
++          return number;
++      }
++  };
++
++  int test_format() {
++      int n[2] = {1, 0};
++      return format::parse(n);
++  }
++}
+diff --git a/clang/test/ParserOpenACC/parse-constructs.cpp b/clang/test/ParserOpenACC/parse-constructs.cpp
+index 69b04bcbad9e..6d6285ce63bd 100644
+--- a/clang/test/ParserOpenACC/parse-constructs.cpp
++++ b/clang/test/ParserOpenACC/parse-constructs.cpp
+@@ -18,13 +18,13 @@ namespace NS {
+ #pragma acc routine(NS::foo) seq
+ 
+ // expected-error@+2{{use of undeclared identifier 'templ'; did you mean 'NS::templ'?}}
+-// expected-error@+1{{OpenACC routine name 'templ' names a set of overloads}}
++// expected-error@+1{{OpenACC routine name 'NS::templ' names a set of overloads}}
+ #pragma acc routine(templ) seq
+ // expected-error@+1{{OpenACC routine name 'NS::templ' names a set of overloads}}
+ #pragma acc routine(NS::templ) seq
+ 
+ // expected-error@+2{{use of undeclared identifier 'templ'; did you mean 'NS::templ'?}}
+-// expected-error@+1{{OpenACC routine name 'templ<int>' names a set of overloads}}
++// expected-error@+1{{OpenACC routine name 'NS::templ<int>' names a set of overloads}}
+ #pragma acc routine(templ<int>) seq
+ // expected-error@+1{{OpenACC routine name 'NS::templ<int>' names a set of overloads}}
+ #pragma acc routine(NS::templ<int>) seq
+diff --git a/clang/test/SemaCXX/GH167120.cpp b/clang/test/SemaCXX/GH167120.cpp
+new file mode 100644
+index 000000000000..90251c635cc3
+--- /dev/null
++++ b/clang/test/SemaCXX/GH167120.cpp
+@@ -0,0 +1,5 @@
++// RUN: %clang_cc1 -fsyntax-only -verify %s
++
++namespace foo {}
++template <class type> foo::typel::x f();
++// expected-error@-1 {{no member named 'typel' in namespace 'foo'}}
+diff --git a/clang/test/SemaCXX/GH175783.cpp b/clang/test/SemaCXX/GH175783.cpp
+new file mode 100644
+index 000000000000..6bb2acffdeae
+--- /dev/null
++++ b/clang/test/SemaCXX/GH175783.cpp
+@@ -0,0 +1,12 @@
++// RUN: %clang_cc1 -fspell-checking-limit=0 -verify %s
++
++namespace GH175783 {
++  class B {
++  public:
++    virtual void foo(); // #foo
++  };
++  void (*p)() = &GH175783::foo;
++  // expected-error@-1 {{no member named 'foo' in namespace 'GH175783'; did you mean 'B::foo'?}}
++  // expected-error@-2 {{cannot initialize a variable of type 'void (*)()' with an rvalue of type 'void (B::*)()'}}
++  // expected-note@#foo {{'B::foo' declared here}}
++} // namespace GH175783
+diff --git a/clang/test/SemaCXX/overload-resolution-deferred-templates.cpp b/clang/test/SemaCXX/overload-resolution-deferred-templates.cpp
+index c3bda3988484..acd38b37c3b5 100644
+--- a/clang/test/SemaCXX/overload-resolution-deferred-templates.cpp
++++ b/clang/test/SemaCXX/overload-resolution-deferred-templates.cpp
+@@ -310,3 +310,84 @@ void test() {
+ }
+ 
+ }
++
++namespace GH179118 {
++
++namespace std {
++
++template <bool __v> struct integral_constant {
++  static constexpr bool value = __v;
++};
++
++template <typename _Tp, typename... _Args>
++using __is_constructible_impl =
++    integral_constant<__is_constructible(_Tp, _Args...)>;
++
++template <typename _Tp, typename... _Args>
++struct is_constructible : public std::__is_constructible_impl<_Tp, _Args...> {};
++
++template <bool> struct _cond {
++  template <typename Then, typename> using invoke = Then;
++};
++template <> struct _cond<false> {
++  template <typename, typename Else> using invoke = Else;
++};
++
++template <bool If, typename Then, typename Else>
++using conditional_t = typename _cond<If>::template invoke<Then, Else>;
++
++template <bool, class _Tp = void> struct enable_if;
++template <class _Tp> struct enable_if<true, _Tp> {
++  typedef _Tp type;
++};
++template <bool _Bp, class _Tp = void>
++using enable_if_t = typename enable_if<_Bp, _Tp>::type;
++
++} // namespace std
++
++namespace base {
++
++template <typename...> struct disjunction {};
++template <typename B1, typename... Bn>
++struct disjunction<B1, Bn...>
++    : std::conditional_t<B1::value, B1, disjunction<>> {};
++template <typename> class Optional;
++
++namespace internal {
++template <typename T, typename U>
++using IsConvertibleFromOptional =
++    disjunction<std::is_constructible<T, Optional<U> &>>;
++template <typename T, typename U>
++using IsAssignableFromOptional = IsConvertibleFromOptional<T, U>;
++} // namespace internal
++
++template <typename T> class Optional {
++public:
++  Optional(Optional &&);
++
++  template <typename U,
++            std::enable_if_t<internal::IsConvertibleFromOptional<T, U>::value> =
++                false>
++  Optional(Optional<U>);
++
++  Optional(const Optional &);
++  void operator=(Optional &&);
++
++  template <typename U>
++  std::enable_if_t<std::is_constructible<T, U>::value> operator=(U &&);
++
++  template <typename U>
++  std::enable_if_t<internal::IsAssignableFromOptional<T, U>::Optional>
++  operator=(Optional<U>);
++};
++
++} // namespace base
++
++struct LayoutUnit {
++  template <typename IntegerType> LayoutUnit(IntegerType);
++};
++
++static_assert(
++    std::is_constructible<LayoutUnit, base::Optional<LayoutUnit> &>::value, "");
++
++}
+diff --git a/clang/test/SemaTemplate/GH181062.cpp b/clang/test/SemaTemplate/GH181062.cpp
+new file mode 100644
+index 000000000000..001c74348346
+--- /dev/null
++++ b/clang/test/SemaTemplate/GH181062.cpp
+@@ -0,0 +1,24 @@
++// RUN: %clang_cc1 -fsyntax-only -verify -std=c++26 %s
++
++namespace invalid_partial_spec {
++  template <int> struct integer_sequence {};
++  template <int> struct array {};
++  template <int*> struct MetaValuesHelper; // expected-note {{template is declared here}}
++
++  template <typename TupleName, TupleName kValues>
++  struct MetaValuesHelper<kValues> {
++    // expected-error@-1 {{class template partial specialization is not more specialized than the primary template}}
++    template <int... Is>
++    static array<undefined<Is>(kValues)...> MetaValuesFunc(integer_sequence<Is...>);
++    // expected-note@-1 {{candidate template ignored: substitution failure [with Is = <0>]: use of undeclared identifier 'undefined'}}
++  };
++
++  int kBaseIndexRegistersUsed;
++
++  constexpr array<0> GenMachineInsnInfos() {
++    return decltype(MetaValuesHelper<&kBaseIndexRegistersUsed>::MetaValuesFunc(integer_sequence<0>{})){};
++    // expected-error@-1 {{no matching function for call to 'MetaValuesFunc'}}
++  }
++
++  array<0> u = GenMachineInsnInfos();
++} // namspace invalid_partial_spec
+diff --git a/clang/test/SemaTemplate/GH183075.cpp b/clang/test/SemaTemplate/GH183075.cpp
+new file mode 100644
+index 000000000000..a9aa7d7a2157
+--- /dev/null
++++ b/clang/test/SemaTemplate/GH183075.cpp
+@@ -0,0 +1,13 @@
++// RUN: %clang_cc1 -verify %s
++
++int bar; // #bar
++
++int foo()
++{
++  // FIXME: Bad error recovery.
++  (void)(baz<> + baz<>);
++  // expected-error@-1 2{{use of undeclared identifier 'baz'; did you mean 'bar'?}}
++  // expected-note@#bar 2{{'bar' declared here}}
++  // expected-error@-3 2{{'bar' is expected to be a non-type template, but instantiated to a class template}}
++  // expected-note@#bar 2{{class template declared here}}
++}
+diff --git a/clang/test/SemaTemplate/temp_arg_nontype_cxx11.cpp b/clang/test/SemaTemplate/temp_arg_nontype_cxx11.cpp
+index 45bdb4c623df..0b785700ee23 100644
+--- a/clang/test/SemaTemplate/temp_arg_nontype_cxx11.cpp
++++ b/clang/test/SemaTemplate/temp_arg_nontype_cxx11.cpp
+@@ -43,7 +43,7 @@ void TempFunc() {}
+ 
+ void Useage() {
+   //expected-error@+2 {{no matching function}}
+-  //expected-note@-4 {{candidate template ignored: substitution failure [with a = 1, b = 4294967295, c = 1]: non-type template argument evaluates to -1, which cannot be narrowed to type 'unsigned int'}}
++  //expected-note@-4 {{candidate template ignored: invalid explicitly-specified argument for template parameter 'b'}}
+   TempFunc<1, -1, 1>();
+ }
+ }
+@@ -114,3 +114,12 @@ void lookup() {
+   Kolumn<&container::a>().ls();   // expected-error {{<&container::a}}
+   Kolumn<nullptr>().ls();         // expected-error {{<nullptr}}
+ }
++
++namespace GH167709 {
++  template <unsigned I> struct A {
++    static_assert(false, "shouldn't instantiate this");
++  };
++  template <int> void f() {}
++  template <int I> typename A<I>::type f() = delete;
++  template void f<-1>();
++} // namespace GH167709
+diff --git a/clang/test/SemaTemplate/temp_arg_template_p0522.cpp b/clang/test/SemaTemplate/temp_arg_template_p0522.cpp
+index 60d98a653ff0..bde811c3bf68 100644
+--- a/clang/test/SemaTemplate/temp_arg_template_p0522.cpp
++++ b/clang/test/SemaTemplate/temp_arg_template_p0522.cpp
+@@ -168,3 +168,10 @@ namespace GH101394 {
+     // expected-note@#B  {{passing argument to parameter here}}
+   } // namespace t2
+ } // namespace GH101394
++
++namespace GH181166 {
++  template <template <class...> class> struct A;
++  template <template <class...> class... TT1> A<TT1...> f();
++  template <class ...Ts> struct B {};
++  using T = decltype(f<B>());
++} // namespace GH181166
+diff --git a/cmake/Modules/LLVMVersion.cmake b/cmake/Modules/LLVMVersion.cmake
+index 5fd7a03cb7cd..4a9b19785e5e 100644
+--- a/cmake/Modules/LLVMVersion.cmake
++++ b/cmake/Modules/LLVMVersion.cmake
+@@ -7,7 +7,7 @@ if(NOT DEFINED LLVM_VERSION_MINOR)
+   set(LLVM_VERSION_MINOR 1)
+ endif()
+ if(NOT DEFINED LLVM_VERSION_PATCH)
+-  set(LLVM_VERSION_PATCH 0)
++  set(LLVM_VERSION_PATCH 1)
+ endif()
+ if(NOT DEFINED LLVM_VERSION_SUFFIX)
+   set(LLVM_VERSION_SUFFIX)
+diff --git a/libcxx/docs/ReleaseNotes/22.rst b/libcxx/docs/ReleaseNotes/22.rst
+index 59990d1aa5fe..9f9927095a61 100644
+--- a/libcxx/docs/ReleaseNotes/22.rst
++++ b/libcxx/docs/ReleaseNotes/22.rst
+@@ -117,6 +117,13 @@ Potentially breaking changes
+   first element being returned from ``find`` will be broken, and ``lower_bound`` or ``equal_range`` should be used
+   instead.
+ 
++- The algorithms for ``std::{map,set}`` ``lower_bound`` and ``upper_bound`` operations were modified such that their
++  result changed for comparators that are not a strict weak order. Being a strict weak order was always a requirement
++  of the Standard and still is, however in this release libc++ changed the behavior of ``std::{map,set}`` for such
++  comparators. Since this may be tricky to work around in some cases, an escape hatch is provided in this release:
++  defining ``_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND`` will revert to the historical implementation of
++  these operations. That escape hatch will be removed in LLVM 23.
++
+ - The ABI flag ``_LIBCPP_ABI_NO_REVERSE_ITERATOR_SECOND_MEMBER`` has been split off from
+   ``_LIBCPP_ABI_NO_ITERATOR_BASES``. If you are using this flag and care about ABI stability, you should set
+   ``_LIBCPP_ABI_NO_REVERSE_ITERATOR_SECOND_MEMBER`` as well.
+diff --git a/libcxx/include/__config b/libcxx/include/__config
+index c98cc539b203..72917d12a694 100644
+--- a/libcxx/include/__config
++++ b/libcxx/include/__config
+@@ -30,7 +30,7 @@
+ // _LIBCPP_VERSION represents the version of libc++, which matches the version of LLVM.
+ // Given a LLVM release LLVM XX.YY.ZZ (e.g. LLVM 17.0.1 == 17.00.01), _LIBCPP_VERSION is
+ // defined to XXYYZZ.
+-#  define _LIBCPP_VERSION 220100
++#  define _LIBCPP_VERSION 220101
+ 
+ #  define _LIBCPP_CONCAT_IMPL(_X, _Y) _X##_Y
+ #  define _LIBCPP_CONCAT(_X, _Y) _LIBCPP_CONCAT_IMPL(_X, _Y)
+diff --git a/libcxx/include/__tree b/libcxx/include/__tree
+index 84711057be40..eb17f7d36936 100644
+--- a/libcxx/include/__tree
++++ b/libcxx/include/__tree
+@@ -1247,24 +1247,74 @@ public:
+     return __result;
+   }
+ 
++  // Compatibility escape hatch for comparators that are not strict weak orderings. This
++  // can be removed for the LLVM 23 release.
++#if defined(_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND)
++  template <class _Key>
++  _LIBCPP_HIDE_FROM_ABI __end_node_pointer __lower_bound_unique_compat_impl(const _Key& __v) const {
++    auto __rt     = __root();
++    auto __result = __end_node();
++    while (__rt != nullptr) {
++      if (!value_comp()(__rt->__get_value(), __v)) {
++        __result = std::__static_fancy_pointer_cast<__end_node_pointer>(__rt);
++        __rt     = std::__static_fancy_pointer_cast<__node_pointer>(__rt->__left_);
++      } else {
++        __rt = std::__static_fancy_pointer_cast<__node_pointer>(__rt->__right_);
++      }
++    }
++    return __result;
++  }
++
++  template <class _Key>
++  _LIBCPP_HIDE_FROM_ABI __end_node_pointer __upper_bound_unique_compat_impl(const _Key& __v) const {
++    auto __rt     = __root();
++    auto __result = __end_node();
++    while (__rt != nullptr) {
++      if (value_comp()(__v, __rt->__get_value())) {
++        __result = std::__static_fancy_pointer_cast<__end_node_pointer>(__rt);
++        __rt     = std::__static_fancy_pointer_cast<__node_pointer>(__rt->__left_);
++      } else {
++        __rt = std::__static_fancy_pointer_cast<__node_pointer>(__rt->__right_);
++      }
++    }
++    return __result;
++  }
++#endif // _LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
++
+   template <class _Key>
+   _LIBCPP_HIDE_FROM_ABI iterator __lower_bound_unique(const _Key& __v) {
++#if defined(_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND)
++    return iterator(__lower_bound_unique_compat_impl(__v));
++#else
+     return iterator(__lower_upper_bound_unique_impl<true>(__v));
++#endif
+   }
+ 
+   template <class _Key>
+   _LIBCPP_HIDE_FROM_ABI const_iterator __lower_bound_unique(const _Key& __v) const {
++#if defined(_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND)
++    return const_iterator(__lower_bound_unique_compat_impl(__v));
++#else
+     return const_iterator(__lower_upper_bound_unique_impl<true>(__v));
++#endif
+   }
+ 
+   template <class _Key>
+   _LIBCPP_HIDE_FROM_ABI iterator __upper_bound_unique(const _Key& __v) {
++#if defined(_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND)
++    return iterator(__upper_bound_unique_compat_impl(__v));
++#else
+     return iterator(__lower_upper_bound_unique_impl<false>(__v));
++#endif
+   }
+ 
+   template <class _Key>
+   _LIBCPP_HIDE_FROM_ABI const_iterator __upper_bound_unique(const _Key& __v) const {
++#if defined(_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND)
++    return iterator(__upper_bound_unique_compat_impl(__v));
++#else
+     return iterator(__lower_upper_bound_unique_impl<false>(__v));
++#endif
+   }
+ 
+ private:
+diff --git a/libcxx/include/__utility/lazy_synth_three_way_comparator.h b/libcxx/include/__utility/lazy_synth_three_way_comparator.h
+index 8c78742ccb4e..906166bd2a61 100644
+--- a/libcxx/include/__utility/lazy_synth_three_way_comparator.h
++++ b/libcxx/include/__utility/lazy_synth_three_way_comparator.h
+@@ -9,6 +9,7 @@
+ #ifndef _LIBCPP___UTILITY_LAZY_SYNTH_THREE_WAY_COMPARATOR_H
+ #define _LIBCPP___UTILITY_LAZY_SYNTH_THREE_WAY_COMPARATOR_H
+ 
++#include <__assert>
+ #include <__config>
+ #include <__type_traits/conjunction.h>
+ #include <__type_traits/desugars_to.h>
+@@ -40,8 +41,19 @@ struct __lazy_compare_result {
+                         _LIBCPP_CTOR_LIFETIMEBOUND const _RHS& __rhs)
+       : __comp_(__comp), __lhs_(__lhs), __rhs_(__rhs) {}
+ 
+-  _LIBCPP_HIDE_FROM_ABI bool __less() const { return __comp_(__lhs_, __rhs_); }
+-  _LIBCPP_HIDE_FROM_ABI bool __greater() const { return __comp_(__rhs_, __lhs_); }
++  _LIBCPP_HIDE_FROM_ABI bool __less() const {
++    bool __result = __comp_(__lhs_, __rhs_);
++    _LIBCPP_ASSERT_SEMANTIC_REQUIREMENT(__result ? !static_cast<bool>(__comp_(__rhs_, __lhs_)) : true,
++                                        "Comparator does not induce a strict weak ordering");
++    return __result;
++  }
++
++  _LIBCPP_HIDE_FROM_ABI bool __greater() const {
++    bool __result = __comp_(__rhs_, __lhs_);
++    _LIBCPP_ASSERT_SEMANTIC_REQUIREMENT(__result ? !static_cast<bool>(__comp_(__lhs_, __rhs_)) : true,
++                                        "Comparator does not induce a strict weak ordering");
++    return __result;
++  }
+ };
+ 
+ // This class provides three way comparison between _LHS and _RHS as efficiently as possible. This can be specialized if
+diff --git a/libcxx/include/__vector/vector.h b/libcxx/include/__vector/vector.h
+index 0151f7cf4180..4e48b1c2016b 100644
+--- a/libcxx/include/__vector/vector.h
++++ b/libcxx/include/__vector/vector.h
+@@ -487,7 +487,7 @@ public:
+   _LIBCPP_HIDE_FROM_ABI constexpr void append_range(_Range&& __range) {
+     if constexpr (ranges::forward_range<_Range> || ranges::sized_range<_Range>) {
+       auto __len = ranges::distance(__range);
+-      if (__len < __cap_ - __end_) {
++      if (__len <= __cap_ - __end_) {
+         __construct_at_end(ranges::begin(__range), ranges::end(__range), __len);
+       } else {
+         __split_buffer<value_type, allocator_type> __buffer(__recommend(size() + __len), size(), __alloc_);
+diff --git a/libcxx/test/libcxx/containers/associative/debug.non-strict-weak-ordering.pass.cpp b/libcxx/test/libcxx/containers/associative/debug.non-strict-weak-ordering.pass.cpp
+new file mode 100644
+index 000000000000..00a3a0730545
+--- /dev/null
++++ b/libcxx/test/libcxx/containers/associative/debug.non-strict-weak-ordering.pass.cpp
+@@ -0,0 +1,130 @@
++//===----------------------------------------------------------------------===//
++//
++// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
++// See https://llvm.org/LICENSE.txt for license information.
++// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
++//
++//===----------------------------------------------------------------------===//
++
++// <set>
++// <map>
++
++// This test ensures that libc++ detects when std::set or std::map are used with a
++// predicate that is not a strict weak ordering when the debug mode is enabled.
++
++// REQUIRES: libcpp-hardening-mode=debug
++// UNSUPPORTED: c++03, c++11, c++14
++
++#include <map>
++#include <set>
++#include <utility>
++
++#include "check_assertion.h"
++#include "test_macros.h"
++
++struct InvalidLess {
++  bool operator()(int a, int b) const {
++    if (b == 0)
++      return true;
++    return static_cast<bool>(a % b);
++  }
++};
++
++int main() {
++  // std::set
++  {
++    // find
++    {
++      std::set<int, InvalidLess> s = {1, 2, 3, 4};
++      TEST_LIBCPP_ASSERT_FAILURE(s.find(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).find(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // upper_bound
++    {
++      std::set<int, InvalidLess> s = {1, 2, 3, 4};
++      TEST_LIBCPP_ASSERT_FAILURE(s.upper_bound(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).upper_bound(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // lower_bound
++    {
++      std::set<int, InvalidLess> s = {1, 2, 3, 4};
++      TEST_LIBCPP_ASSERT_FAILURE(s.lower_bound(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).lower_bound(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // equal_range
++    {
++      std::set<int, InvalidLess> s = {1, 2, 3, 4};
++      TEST_LIBCPP_ASSERT_FAILURE(s.equal_range(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).equal_range(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // count
++    {
++      std::set<int, InvalidLess> s = {1, 2, 3, 4};
++      TEST_LIBCPP_ASSERT_FAILURE(s.count(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).count(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // contains
++#if TEST_STD_VER >= 20
++    {
++      std::set<int, InvalidLess> s = {1, 2, 3, 4};
++      TEST_LIBCPP_ASSERT_FAILURE(s.contains(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).contains(4), "Comparator does not induce a strict weak ordering");
++    }
++#endif
++  }
++
++  // std::map
++  {
++    using X   = int;
++    X const x = 99;
++
++    // find
++    {
++      std::map<int, X, InvalidLess> s = {{1, x}, {2, x}, {3, x}, {4, x}};
++      TEST_LIBCPP_ASSERT_FAILURE(s.find(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).find(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // upper_bound
++    {
++      std::map<int, X, InvalidLess> s = {{1, x}, {2, x}, {3, x}, {4, x}};
++      TEST_LIBCPP_ASSERT_FAILURE(s.upper_bound(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).upper_bound(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // lower_bound
++    {
++      std::map<int, X, InvalidLess> s = {{1, x}, {2, x}, {3, x}, {4, x}};
++      TEST_LIBCPP_ASSERT_FAILURE(s.lower_bound(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).lower_bound(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // equal_range
++    {
++      std::map<int, X, InvalidLess> s = {{1, x}, {2, x}, {3, x}, {4, x}};
++      TEST_LIBCPP_ASSERT_FAILURE(s.equal_range(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).equal_range(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // count
++    {
++      std::map<int, X, InvalidLess> s = {{1, x}, {2, x}, {3, x}, {4, x}};
++      TEST_LIBCPP_ASSERT_FAILURE(s.count(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).count(4), "Comparator does not induce a strict weak ordering");
++    }
++
++    // contains
++#if TEST_STD_VER >= 20
++    {
++      std::map<int, X, InvalidLess> s = {{1, x}, {2, x}, {3, x}, {4, x}};
++      TEST_LIBCPP_ASSERT_FAILURE(s.contains(4), "Comparator does not induce a strict weak ordering");
++      TEST_LIBCPP_ASSERT_FAILURE(std::as_const(s).contains(4), "Comparator does not induce a strict weak ordering");
++    }
++#endif
++  }
++}
+diff --git a/libcxx/test/libcxx/containers/associative/lower_upper_bound_non_strict_weak_order.pass.cpp b/libcxx/test/libcxx/containers/associative/lower_upper_bound_non_strict_weak_order.pass.cpp
+new file mode 100644
+index 000000000000..a3e2f3bb631b
+--- /dev/null
++++ b/libcxx/test/libcxx/containers/associative/lower_upper_bound_non_strict_weak_order.pass.cpp
+@@ -0,0 +1,151 @@
++//===----------------------------------------------------------------------===//
++//
++// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
++// See https://llvm.org/LICENSE.txt for license information.
++// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
++//
++//===----------------------------------------------------------------------===//
++
++// <set>
++// <map>
++
++// This test ensures that libc++ maintains its historical behavior when std::set
++// or std::map are used with a comparator that isn't quite a strict weak ordering
++// when _LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND is defined.
++//
++// This escape hatch is only supported as a temporary means to give a bit more time
++// for codebases to fix incorrect usages of associative containers.
++
++// This precise test reproduces a comparator similar to boost::icl::exclusive_less
++// for discrete right-open intervals: it orders disjoint intervals but treats
++// overlapping intervals as equivalent, which is incorrect but was relied upon.
++
++// ADDITIONAL_COMPILE_FLAGS: -D_LIBCPP_ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
++// UNSUPPORTED: c++03, c++11, c++14
++
++#include <cassert>
++#include <map>
++#include <set>
++#include <utility>
++
++struct Interval {
++  int lower;
++  int upper;
++};
++
++struct ExclusiveLess {
++  bool operator()(const Interval& lhs, const Interval& rhs) const { return lhs.upper <= rhs.lower; }
++};
++
++Interval right_open(int lo, int hi) { return Interval{lo, hi}; }
++
++int main() {
++  // std::set
++  {
++    // upper_bound
++    {
++      std::set<Interval, ExclusiveLess> intervals = {
++          right_open(0, 2),
++          right_open(3, 5),
++          right_open(6, 9),
++          right_open(10, 12),
++      };
++      // non-const
++      {
++        auto it = intervals.upper_bound(right_open(4, 7));
++        assert(it != intervals.end());
++        assert(it->lower == 10);
++        assert(it->upper == 12);
++      }
++
++      // const
++      {
++        auto it = std::as_const(intervals).upper_bound(right_open(4, 7));
++        assert(it != intervals.end());
++        assert(it->lower == 10);
++        assert(it->upper == 12);
++      }
++    }
++
++    // lower_bound
++    {
++      std::set<Interval, ExclusiveLess> intervals = {
++          right_open(0, 2),
++          right_open(3, 5),
++          right_open(6, 9),
++          right_open(10, 12),
++      };
++      // non-const
++      {
++        auto it = intervals.lower_bound(right_open(1, 4));
++        assert(it != intervals.end());
++        assert(it->lower == 0);
++        assert(it->upper == 2);
++      }
++
++      // const
++      {
++        auto it = std::as_const(intervals).lower_bound(right_open(1, 4));
++        assert(it != intervals.end());
++        assert(it->lower == 0);
++        assert(it->upper == 2);
++      }
++    }
++  }
++
++  // std::map
++  {
++    using X   = int;
++    X const x = 99;
++
++    // upper_bound
++    {
++      std::map<Interval, X, ExclusiveLess> intervals = {
++          {right_open(0, 2), x},
++          {right_open(3, 5), x},
++          {right_open(6, 9), x},
++          {right_open(10, 12), x},
++      };
++      // non-const
++      {
++        auto it = intervals.upper_bound(right_open(4, 7));
++        assert(it != intervals.end());
++        assert(it->first.lower == 10);
++        assert(it->first.upper == 12);
++      }
++
++      // const
++      {
++        auto it = std::as_const(intervals).upper_bound(right_open(4, 7));
++        assert(it != intervals.end());
++        assert(it->first.lower == 10);
++        assert(it->first.upper == 12);
++      }
++    }
++
++    // lower_bound
++    {
++      std::map<Interval, X, ExclusiveLess> intervals = {
++          {right_open(0, 2), x},
++          {right_open(3, 5), x},
++          {right_open(6, 9), x},
++          {right_open(10, 12), x},
++      };
++      // non-const
++      {
++        auto it = intervals.lower_bound(right_open(1, 4));
++        assert(it != intervals.end());
++        assert(it->first.lower == 0);
++        assert(it->first.upper == 2);
++      }
++
++      // const
++      {
++        auto it = std::as_const(intervals).lower_bound(right_open(1, 4));
++        assert(it != intervals.end());
++        assert(it->first.lower == 0);
++        assert(it->first.upper == 2);
++      }
++    }
++  }
++}
+diff --git a/libcxx/test/std/containers/sequences/vector/vector.modifiers/append_range.pass.cpp b/libcxx/test/std/containers/sequences/vector/vector.modifiers/append_range.pass.cpp
+index 3b4bbf642809..78dd44482b2b 100644
+--- a/libcxx/test/std/containers/sequences/vector/vector.modifiers/append_range.pass.cpp
++++ b/libcxx/test/std/containers/sequences/vector/vector.modifiers/append_range.pass.cpp
+@@ -46,14 +46,25 @@ constexpr bool test() {
+       assert(std::ranges::equal(v, std::array{1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}));
+     }
+ 
+-    { // Ensure no reallocation happens.
++    { // Ensure no reallocation happens, and that we don't invalidate iterators-
+       int in[]           = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10};
+       std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8};
+       v.reserve(v.size() + std::ranges::size(in));
+-      assert(v.capacity() >= v.size() + std::ranges::size(in));
++
++      auto ptr     = v.data();
++      auto old_cap = v.capacity();
+ 
+       v.append_range(in);
++      assert(v.capacity() == old_cap);
+       assert(std::ranges::equal(v, std::array{1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}));
++
++      // vector is allowed to overallocate. Make sure it doesn't reallocate until the new capacity is reached.
++      while (v.size() < old_cap) {
++        int in2[] = {0};
++        v.append_range(in2);
++        assert(v.capacity() == old_cap);
++      }
++      assert(v.data() == ptr);
+     }
+   }
+ 
+diff --git a/lld/ELF/Arch/Hexagon.cpp b/lld/ELF/Arch/Hexagon.cpp
+index d6495e12668d..09dee664589b 100644
+--- a/lld/ELF/Arch/Hexagon.cpp
++++ b/lld/ELF/Arch/Hexagon.cpp
+@@ -217,6 +217,8 @@ static uint32_t findMaskR6(Ctx &ctx, uint32_t insn) {
+ }
+ 
+ static uint32_t findMaskR8(uint32_t insn) {
++  if (isDuplex(insn))
++    return 0x03f00000;
+   if ((0xff000000 & insn) == 0xde000000)
+     return 0x00e020e8;
+   if ((0xff000000 & insn) == 0x3c000000)
+diff --git a/lld/ELF/Arch/X86_64.cpp b/lld/ELF/Arch/X86_64.cpp
+index 9083b5b9ff25..2c34a193140e 100644
+--- a/lld/ELF/Arch/X86_64.cpp
++++ b/lld/ELF/Arch/X86_64.cpp
+@@ -80,7 +80,7 @@ X86_64::X86_64(Ctx &ctx) : TargetInfo(ctx) {
+   pltRel = R_X86_64_JUMP_SLOT;
+   relativeRel = R_X86_64_RELATIVE;
+   iRelativeRel = R_X86_64_IRELATIVE;
+-  symbolicRel = R_X86_64_64;
++  symbolicRel = ctx.arg.is64 ? R_X86_64_64 : R_X86_64_32;
+   tlsDescRel = R_X86_64_TLSDESC;
+   tlsGotRel = R_X86_64_TPOFF64;
+   tlsModuleIndexRel = R_X86_64_DTPMOD64;
+@@ -469,8 +469,7 @@ void X86_64::writePlt(uint8_t *buf, const Symbol &sym,
+ }
+ 
+ RelType X86_64::getDynRel(RelType type) const {
+-  if (type == R_X86_64_64 || type == R_X86_64_PC64 || type == R_X86_64_SIZE32 ||
+-      type == R_X86_64_SIZE64)
++  if (type == symbolicRel || type == R_X86_64_SIZE32 || type == R_X86_64_SIZE64)
+     return type;
+   return R_X86_64_NONE;
+ }
+diff --git a/lld/test/ELF/Inputs/ztext.s b/lld/test/ELF/Inputs/ztext.s
+deleted file mode 100644
+index f66b3ee1e29b..000000000000
+--- a/lld/test/ELF/Inputs/ztext.s
++++ /dev/null
+@@ -1,10 +0,0 @@
+-        .global bar
+-        .type bar, @object
+-        .size bar, 8
+-bar:
+-        .quad 0
+-
+-        .global zed
+-        .type zed, @function
+-zed:
+-        nop
+diff --git a/lld/test/ELF/hexagon-duplex-relocs.s b/lld/test/ELF/hexagon-duplex-relocs.s
+new file mode 100644
+index 000000000000..8d7705517cb3
+--- /dev/null
++++ b/lld/test/ELF/hexagon-duplex-relocs.s
+@@ -0,0 +1,40 @@
++# REQUIRES: hexagon
++# RUN: llvm-mc -filetype=obj -triple=hexagon-unknown-elf %s -o %t.o
++# RUN: llvm-readobj -r %t.o | FileCheck --check-prefix=RELOC %s
++# RUN: ld.lld %t.o -o %t
++# RUN: llvm-objdump -d --no-show-raw-insn --print-imm-hex %t | FileCheck %s
++
++## Test R_HEX_8_X relocation on duplex instructions (SA1_addi).
++## findMaskR8() must use the duplex mask 0x03f00000 when parse bits [15:14]
++## are zero.  Pair a non-duplex form with a duplex form using the same symbol
++## and verify both resolve to the same address.
++##
++## Duplex paths for the other findMask functions are already covered:
++##   findMaskR6:  hexagon.s (R_HEX_6_X duplex)
++##   findMaskR11: hexagon-tls-ie.s (R_HEX_TPREL_11_X duplex)
++##   findMaskR16: hexagon-shared.s (R_HEX_GOT_16_X duplex)
++
++	.globl	_start, target
++	.type	_start, @function
++_start:
++
++# Non-duplex reference (R_HEX_16_X, via findMaskR16)
++# RELOC:      R_HEX_32_6_X target 0x0
++# RELOC-NEXT: R_HEX_16_X target 0x0
++# CHECK:      { immext(#
++# CHECK-NEXT:   r0 = add(r0,##[[ADDR:0x[0-9a-f]+]]) }
++	r0 = add(r0, ##target)
++
++# Duplex form (R_HEX_8_X, via findMaskR8)
++# RELOC-NEXT: R_HEX_32_6_X target 0x0
++# RELOC-NEXT: R_HEX_8_X target 0x0
++# CHECK-NEXT: { immext(#
++# CHECK-NEXT:   r0 = add(r0,##[[ADDR]]); memw(r1+#0x0) = r2 }
++	{ r0 = add(r0, ##target)
++	  memw(r1+#0) = r2 }
++
++	jumpr r31
++
++target:
++	nop
++	jumpr r31
+diff --git a/lld/test/ELF/x86-x32-abs.s b/lld/test/ELF/x86-x32-abs.s
+new file mode 100644
+index 000000000000..01fd3b7a5c56
+--- /dev/null
++++ b/lld/test/ELF/x86-x32-abs.s
+@@ -0,0 +1,34 @@
++# REQUIRES: x86
++## Test R_X86_64_32 relocations in x32 (ILP32) mode.
++## In x32, R_X86_64_32 is the pointer-sized absolute relocation.
++
++# RUN: rm -rf %t && split-file %s %t && cd %t
++# RUN: llvm-mc -filetype=obj -triple=x86_64-gnux32 a.s -o a.o
++# RUN: ld.lld -shared a.o -o a.so
++# RUN: llvm-readelf -r a.so | FileCheck %s
++
++## Non-resolved non-preemptible R_X86_64_32 get R_X86_64_RELATIVE.
++# CHECK:      Relocation section '.rela.dyn' at offset {{.*}} contains 2 entries:
++# CHECK:      R_X86_64_RELATIVE
++# CHECK-NEXT: {{.*}} R_X86_64_32 {{.*}} und + 0
++
++## R_X86_64_64 is not a supported dynamic relocation in x32 mode.
++# RUN: llvm-mc -filetype=obj -triple=x86_64-gnux32 b.s -o b.o
++# RUN: not ld.lld -shared b.o -o /dev/null 2>&1 | FileCheck %s --check-prefix=ERR
++
++# ERR:      error: relocation R_X86_64_64 cannot be used against symbol 'und'; recompile with -fPIC
++# ERR-NEXT: >>> defined in b.o
++# ERR-NEXT: >>> referenced by b.o:(.data+0x0)
++
++#--- a.s
++.globl hid
++.hidden hid
++
++.data
++hid:
++  .long und
++  .long hid
++
++#--- b.s
++.data
++  .quad und
+diff --git a/lld/test/ELF/ztext.s b/lld/test/ELF/ztext.s
+index 11e89e025e06..1aa4987ccc40 100644
+--- a/lld/test/ELF/ztext.s
++++ b/lld/test/ELF/ztext.s
+@@ -1,20 +1,34 @@
+ # REQUIRES: x86
+-# RUN: llvm-mc -filetype=obj -triple=x86_64-pc-linux %s -o %t.o
+-# RUN: llvm-mc -filetype=obj -triple=x86_64-pc-linux %p/Inputs/ztext.s -o %t2.o
+-# RUN: ld.lld %t2.o -o %t2.so -shared -soname=so
++# RUN: rm -rf %t && split-file %s %t && cd %t
++# RUN: llvm-mc -filetype=obj -triple=x86_64 a.s -o a.o
++# RUN: llvm-mc -filetype=obj -triple=x86_64 b.s -o b.o
++# RUN: ld.lld b.o -o b.so -shared -soname=so
+ 
+-# RUN: ld.lld -z notext %t.o %t2.so -o %t -shared
+-# RUN: llvm-readobj  --dynamic-table -r %t | FileCheck %s
+-# RUN: ld.lld -z notext %t.o %t2.so -o %t2 -pie
+-# RUN: llvm-readobj  --dynamic-table -r %t2 | FileCheck %s
+-# RUN: ld.lld -z notext %t.o %t2.so -o %t3
+-# RUN: llvm-readobj  --dynamic-table -r %t3 | FileCheck --check-prefix=STATIC %s
++## -z notext allows text relocations for certain relocation types.
++# RUN: ld.lld -z notext a.o b.so -o out -shared
++# RUN: llvm-readobj --dynamic-table -r out | FileCheck %s
++# RUN: ld.lld -z notext a.o b.so -o out.pie -pie
++# RUN: llvm-readobj --dynamic-table -r out.pie | FileCheck %s
++# RUN: ld.lld -z notext a.o b.so -o out.exe
++# RUN: llvm-readobj --dynamic-table -r out.exe | FileCheck --check-prefix=STATIC %s
+ 
+-# RUN: not ld.lld %t.o %t2.so -o /dev/null -shared 2>&1 | FileCheck --check-prefix=ERR %s
+-# RUN: not ld.lld -z text %t.o %t2.so -o /dev/null -shared 2>&1 | FileCheck --check-prefix=ERR %s
+-# ERR: error: relocation R_X86_64_64 cannot be used against symbol 'bar'; recompile with -fPIC
++# RUN: not ld.lld a.o b.so -shared 2>&1 | FileCheck --check-prefix=ERR %s --implicit-check-not=error:
++# RUN: not ld.lld -z text a.o b.so -shared 2>&1 | FileCheck --check-prefix=ERR %s --implicit-check-not=error:
+ 
+-# If the preference is to have text relocations, don't create plt of copy relocations.
++# ERR:      error: relocation R_X86_64_64 cannot be used against local symbol; recompile with -fPIC
++# ERR-NEXT: >>> defined in a.o
++# ERR-NEXT: >>> referenced by a.o:(.text+0x0)
++# ERR:      error: relocation R_X86_64_64 cannot be used against symbol 'bar'; recompile with -fPIC
++# ERR-NEXT: >>> defined in b.so
++# ERR-NEXT: >>> referenced by a.o:(.text+0x8)
++
++## R_X86_64_PC64 is not a supported dynamic relocation. It errors even with -z notext.
++# RUN: llvm-mc -filetype=obj -triple=x86_64 pc64.s -o pc64.o
++# RUN: not ld.lld -z notext pc64.o b.so -shared 2>&1 | FileCheck --check-prefix=ERR-PC64 %s
++
++# ERR-PC64: error: relocation R_X86_64_PC64 cannot be used against symbol 'bar'; recompile with -fPIC
++# ERR-PC64-NEXT: >>> defined in b.so
++# ERR-PC64-NEXT: >>> referenced by pc64.o:(.text+0x0)
+ 
+ # CHECK: DynamicSection [
+ # CHECK:   FLAGS TEXTREL
+@@ -22,9 +36,8 @@
+ 
+ # CHECK:      Relocations [
+ # CHECK-NEXT:   Section {{.*}} .rela.dyn {
+-# CHECK-NEXT:     0x12A0 R_X86_64_RELATIVE - 0x12A0
+-# CHECK-NEXT:     0x12A8 R_X86_64_64 bar 0x0
+-# CHECK-NEXT:     0x12B0 R_X86_64_PC64 zed 0x0
++# CHECK-NEXT:     0x1268 R_X86_64_RELATIVE - 0x1268
++# CHECK-NEXT:     0x1270 R_X86_64_64 bar 0x0
+ # CHECK-NEXT:   }
+ # CHECK-NEXT: ]
+ 
+@@ -34,12 +47,21 @@
+ 
+ # STATIC:      Relocations [
+ # STATIC-NEXT:   Section {{.*}} .rela.dyn {
+-# STATIC-NEXT:     0x201290 R_X86_64_64 bar 0x0
+-# STATIC-NEXT:     0x201298 R_X86_64_PC64 zed 0x0
++# STATIC-NEXT:     0x201258 R_X86_64_64 bar 0x0
+ # STATIC-NEXT:   }
+ # STATIC-NEXT: ]
+ 
++#--- a.s
+ foo:
+ .quad foo
+ .quad bar
+-.quad zed - .
++
++#--- b.s
++.global bar
++.type bar, @object
++.size bar, 8
++bar:
++.quad 0
++
++#--- pc64.s
++.quad bar - .
+diff --git a/lldb/source/Target/StackFrameList.cpp b/lldb/source/Target/StackFrameList.cpp
+index 94329e77460d..da54120c6793 100644
+--- a/lldb/source/Target/StackFrameList.cpp
++++ b/lldb/source/Target/StackFrameList.cpp
+@@ -71,25 +71,14 @@ bool SyntheticStackFrameList::FetchFramesUpTo(
+   size_t num_synthetic_frames = 0;
+   // Use the provider to generate frames lazily.
+   if (m_provider) {
+-    // Get starting index under lock.
+-    uint32_t start_idx = 0;
+-    {
+-      std::shared_lock<std::shared_mutex> guard(m_list_mutex);
+-      start_idx = m_frames.size();
+-    }
+-
+     // Keep fetching until we reach end_idx or the provider returns an error.
+-    for (uint32_t idx = start_idx; idx <= end_idx; idx++) {
++    for (uint32_t idx = m_frames.size(); idx <= end_idx; idx++) {
+       if (allow_interrupt &&
+           m_thread.GetProcess()->GetTarget().GetDebugger().InterruptRequested())
+         return true;
+ 
+-      // Call Python WITHOUT holding lock - prevents deadlock.
+       auto frame_or_err = m_provider->GetFrameAtIndex(idx);
+ 
+-      // Acquire lock to modify m_frames.
+-      std::unique_lock<std::shared_mutex> guard(m_list_mutex);
+-
+       if (!frame_or_err) {
+         // Provider returned error - we've reached the end.
+         LLDB_LOG_ERROR(GetLog(LLDBLog::Thread), frame_or_err.takeError(),
+@@ -424,10 +413,6 @@ bool StackFrameList::GetFramesUpTo(uint32_t end_idx,
+     return false;
+   }
+ 
+-  // Release lock before FetchFramesUpTo which may call Python.
+-  // FetchFramesUpTo will acquire locks as needed.
+-  guard.unlock();
+-
+   // We're adding concrete and inlined frames now:
+   was_interrupted = FetchFramesUpTo(end_idx, allow_interrupt);
+ 
+diff --git a/lldb/source/Target/Target.cpp b/lldb/source/Target/Target.cpp
+index 1ff115e980cf..bba630636e52 100644
+--- a/lldb/source/Target/Target.cpp
++++ b/lldb/source/Target/Target.cpp
+@@ -2618,7 +2618,8 @@ Target::GetScratchTypeSystemForLanguage(lldb::LanguageType language,
+ 
+   if (language == eLanguageTypeMipsAssembler // GNU AS and LLVM use it for all
+                                              // assembly code
+-      || language == eLanguageTypeUnknown) {
++      || language == eLanguageTypeAssembly ||
++      language == eLanguageTypeUnknown) {
+     LanguageSet languages_for_expressions =
+         Language::GetLanguagesSupportingTypeSystemsForExpressions();
+ 
+diff --git a/lldb/unittests/Target/CMakeLists.txt b/lldb/unittests/Target/CMakeLists.txt
+index 83eec3b1117b..bf08a8f015ba 100644
+--- a/lldb/unittests/Target/CMakeLists.txt
++++ b/lldb/unittests/Target/CMakeLists.txt
+@@ -11,6 +11,7 @@ add_lldb_unittest(TargetTests
+   PathMappingListTest.cpp
+   RegisterFlagsTest.cpp
+   RemoteAwarePlatformTest.cpp
++  ScratchTypeSystemTest.cpp
+   StackFrameRecognizerTest.cpp
+   SummaryStatisticsTest.cpp
+   FindFileTest.cpp
+@@ -31,6 +32,7 @@ add_lldb_unittest(TargetTests
+       lldbSymbol
+       lldbUtility
+       lldbUtilityHelpers
++      LLVMTestingSupport
+   )
+ 
+ set(test_inputs
+diff --git a/lldb/unittests/Target/ScratchTypeSystemTest.cpp b/lldb/unittests/Target/ScratchTypeSystemTest.cpp
+new file mode 100644
+index 000000000000..b86cab80293a
+--- /dev/null
++++ b/lldb/unittests/Target/ScratchTypeSystemTest.cpp
+@@ -0,0 +1,59 @@
++//===-- TestTypeSystem.cpp -------------------------------------------===//
++//
++// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
++// See https://llvm.org/LICENSE.txt for license information.
++// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
++//
++//===----------------------------------------------------------------------===//
++
++#include "Plugins/Platform/MacOSX/PlatformMacOSX.h"
++#include "Plugins/Platform/MacOSX/PlatformRemoteMacOSX.h"
++#include "TestingSupport/SubsystemRAII.h"
++#include "TestingSupport/TestUtilities.h"
++#include "lldb/Core/Debugger.h"
++#include "lldb/Core/Module.h"
++#include "lldb/Host/FileSystem.h"
++#include "lldb/Host/HostInfo.h"
++#include "lldb/lldb-enumerations.h"
++#include "llvm/Testing/Support/Error.h"
++#include "gtest/gtest.h"
++
++using namespace lldb;
++using namespace lldb_private;
++
++class TestTypeSystemMap : public testing::Test {
++public:
++  SubsystemRAII<FileSystem, HostInfo, PlatformMacOSX> subsystems;
++
++protected:
++  void SetUp() override {
++    std::call_once(TestUtilities::g_debugger_initialize_flag,
++                   []() { Debugger::Initialize(nullptr); });
++  };
++
++  DebuggerSP m_debugger_sp;
++  PlatformSP m_platform_sp;
++};
++
++TEST_F(TestTypeSystemMap, GetScratchTypeSystemForLanguage) {
++  // Set up the debugger, make sure that was done properly.
++  TargetSP target_sp;
++  ArchSpec arch("x86_64-apple-macosx-");
++  Platform::SetHostPlatform(PlatformRemoteMacOSX::CreateInstance(true, &arch));
++
++  m_debugger_sp = Debugger::CreateInstance();
++
++  auto &target = m_debugger_sp->GetDummyTarget();
++  EXPECT_THAT_EXPECTED(
++      target.GetScratchTypeSystemForLanguage(lldb::eLanguageTypeMipsAssembler),
++      llvm::FailedWithMessage("No expression support for any languages"));
++  EXPECT_THAT_EXPECTED(
++      target.GetScratchTypeSystemForLanguage(lldb::eLanguageTypeAssembly),
++      llvm::FailedWithMessage("No expression support for any languages"));
++  EXPECT_THAT_EXPECTED(
++      target.GetScratchTypeSystemForLanguage(lldb::eLanguageTypeUnknown),
++      llvm::FailedWithMessage("No expression support for any languages"));
++  EXPECT_THAT_EXPECTED(
++      target.GetScratchTypeSystemForLanguage(lldb::eLanguageTypeModula2),
++      llvm::FailedWithMessage("TypeSystem for language modula2 doesn't exist"));
++}
+diff --git a/llvm/lib/Analysis/BasicAliasAnalysis.cpp b/llvm/lib/Analysis/BasicAliasAnalysis.cpp
+index 1d5f9ac46580..64e035436a41 100644
+--- a/llvm/lib/Analysis/BasicAliasAnalysis.cpp
++++ b/llvm/lib/Analysis/BasicAliasAnalysis.cpp
+@@ -86,7 +86,8 @@ bool BasicAAResult::invalidate(Function &Fn, const PreservedAnalyses &PA,
+   // may be created without handles to some analyses and in that case don't
+   // depend on them.
+   if (Inv.invalidate<AssumptionAnalysis>(Fn, PA) ||
+-      (DT_ && Inv.invalidate<DominatorTreeAnalysis>(Fn, PA)))
++      (DT_ && Inv.invalidate<DominatorTreeAnalysis>(Fn, PA)) ||
++      Inv.invalidate<TargetLibraryAnalysis>(Fn, PA))
+     return true;
+ 
+   // Otherwise this analysis result remains valid.
+diff --git a/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp b/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp
+index 5dfa65fca4f4..a55b1facb103 100644
+--- a/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp
++++ b/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp
+@@ -27658,10 +27658,10 @@ performSignExtendInRegCombine(SDNode *N, TargetLowering::DAGCombinerInfo &DCI,
+     SDValue ExtOp = Src->getOperand(0);
+     auto VT = cast<VTSDNode>(N->getOperand(1))->getVT();
+     EVT EltTy = VT.getVectorElementType();
+-    (void)EltTy;
+ 
+-    assert((EltTy == MVT::i8 || EltTy == MVT::i16 || EltTy == MVT::i32) &&
+-           "Sign extending from an invalid type");
++    if (EltTy.getSizeInBits() >
++        ExtOp.getValueType().getScalarType().getSizeInBits())
++      return SDValue();
+ 
+     EVT ExtVT = VT.getDoubleNumVectorElementsVT(*DAG.getContext());
+ 
+diff --git a/llvm/lib/Target/AMDGPU/VOP2Instructions.td b/llvm/lib/Target/AMDGPU/VOP2Instructions.td
+index 799bdb8b18c9..2ccf39224a27 100644
+--- a/llvm/lib/Target/AMDGPU/VOP2Instructions.td
++++ b/llvm/lib/Target/AMDGPU/VOP2Instructions.td
+@@ -15,8 +15,8 @@ class VOP2e <bits<6> op, VOPProfile P> : Enc32 {
+   bits<9> src0;
+   bits<8> src1;
+ 
+-  let Inst{8-0}   = !if(P.HasSrc0, src0, 0);
+-  let Inst{16-9}  = !if(P.HasSrc1, src1, 0);
++  let Inst{8-0}   = !if(P.HasSrc0, src0, ?);
++  let Inst{16-9}  = !if(P.HasSrc1, src1, ?);
+   let Inst{24-17} = !if(P.EmitDst, vdst, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0; //encoding
+@@ -28,8 +28,8 @@ class VOP2_MADKe <bits<6> op, VOPProfile P> : Enc64 {
+   bits<8>  src1;
+   bits<32> imm;
+ 
+-  let Inst{8-0}   = !if(P.HasSrc0, src0, 0);
+-  let Inst{16-9}  = !if(P.HasSrc1, src1, 0);
++  let Inst{8-0}   = !if(P.HasSrc0, src0, ?);
++  let Inst{16-9}  = !if(P.HasSrc1, src1, ?);
+   let Inst{24-17} = !if(P.EmitDst, vdst, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0; // encoding
+@@ -42,8 +42,8 @@ class VOP2_MADK64e <bits<6> op, VOPProfile P> : Enc96 {
+   bits<8>  src1;
+   bits<64> imm;
+ 
+-  let Inst{8-0}   = !if(P.HasSrc0, src0, 0);
+-  let Inst{16-9}  = !if(P.HasSrc1, src1, 0);
++  let Inst{8-0}   = !if(P.HasSrc0, src0, ?);
++  let Inst{16-9}  = !if(P.HasSrc1, src1, ?);
+   let Inst{24-17} = !if(P.EmitDst, vdst, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0; // encoding
+@@ -55,7 +55,7 @@ class VOP2_SDWAe <bits<6> op, VOPProfile P> : VOP_SDWAe <P> {
+   bits<8> src1;
+ 
+   let Inst{8-0}   = 0xf9; // sdwa
+-  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = !if(P.EmitDst, vdst{7-0}, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0; // encoding
+@@ -66,11 +66,11 @@ class VOP2_SDWA9Ae <bits<6> op, VOPProfile P> : VOP_SDWA9Ae <P> {
+   bits<9> src1;
+ 
+   let Inst{8-0}   = 0xf9; // sdwa
+-  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = !if(P.EmitDst, vdst{7-0}, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0; // encoding
+-  let Inst{63}    = !if(P.HasSrc1, src1{8}, 0); // src1_sgpr
++  let Inst{63}    = !if(P.HasSrc1, src1{8}, ?); // src1_sgpr
+ }
+ 
+ class VOP2_Pseudo <string opName, VOPProfile P, list<dag> pattern=[], string suffix = "_e32"> :
+@@ -1507,7 +1507,7 @@ class VOP2_DPP<bits<6> op, VOP2_DPP_Pseudo ps,
+   bits<8> vdst;
+   bits<8> src1;
+   let Inst{8-0}   = 0xfa;
+-  let Inst{16-9}  = !if(p.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(p.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = !if(p.EmitDst, vdst{7-0}, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0;
+@@ -1549,7 +1549,7 @@ class VOP2_DPP8<bits<6> op, VOP2_Pseudo ps,
+   bits<8> src1;
+ 
+   let Inst{8-0}   = fi;
+-  let Inst{16-9}  = !if(p.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(p.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = !if(p.EmitDst, vdst{7-0}, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0;
+@@ -2351,7 +2351,7 @@ class VOP2_DPPe <bits<6> op, VOP2_DPP_Pseudo ps, VOPProfile P = ps.Pfl> :
+   bits<8> vdst;
+   bits<8> src1;
+   let Inst{8-0}   = 0xfa; //dpp
+-  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = !if(P.EmitDst, vdst{7-0}, 0);
+   let Inst{30-25} = op;
+   let Inst{31}    = 0x0; //encoding
+diff --git a/llvm/lib/Target/AMDGPU/VOP3PInstructions.td b/llvm/lib/Target/AMDGPU/VOP3PInstructions.td
+index 3ddf7a8a9382..a96d54a8210c 100644
+--- a/llvm/lib/Target/AMDGPU/VOP3PInstructions.td
++++ b/llvm/lib/Target/AMDGPU/VOP3PInstructions.td
+@@ -2276,9 +2276,9 @@ class VOP3PX2e <bits<8> op, bits<8> LdScaleOp, VOP3PWMMA_Profile P> : Enc128, VO
+ 
+   let Inst{87-80} = op;
+   let Inst{95-88} = 0xcc; //encoding
+-  let Inst{104-96} = !if(P.HasSrc0, src0, 0);
+-  let Inst{113-105} = !if(P.HasSrc1, src1, 0);
+-  let Inst{122-114} = !if(P.HasSrc2, src2, 0);
++  let Inst{104-96} = !if(P.HasSrc0, src0, ?);
++  let Inst{113-105} = !if(P.HasSrc1, src1, ?);
++  let Inst{122-114} = !if(P.HasSrc2, src2, ?);
+ 
+   // neg_lo
+   let Inst{125} = !if(P.NegLo01, src0_modifiers{0}, 0);
+diff --git a/llvm/lib/Target/AMDGPU/VOPCInstructions.td b/llvm/lib/Target/AMDGPU/VOPCInstructions.td
+index c15bc0b66a0f..95e40dd8e99d 100644
+--- a/llvm/lib/Target/AMDGPU/VOPCInstructions.td
++++ b/llvm/lib/Target/AMDGPU/VOPCInstructions.td
+@@ -24,7 +24,7 @@ class VOPC_SDWAe <bits<8> op, VOPProfile P> : VOP_SDWAe <P> {
+   bits<8> src1;
+ 
+   let Inst{8-0}   = 0xf9; // sdwa
+-  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = op;
+   let Inst{31-25} = 0x3e; // encoding
+ }
+@@ -33,10 +33,10 @@ class VOPC_SDWA9e <bits<8> op, VOPProfile P> : VOP_SDWA9Be <P> {
+   bits<9> src1;
+ 
+   let Inst{8-0}   = 0xf9; // sdwa
+-  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, 0);
++  let Inst{16-9}  = !if(P.HasSrc1, src1{7-0}, ?);
+   let Inst{24-17} = op;
+   let Inst{31-25} = 0x3e; // encoding
+-  let Inst{63}    = !if(P.HasSrc1, src1{8}, 0); // src1_sgpr
++  let Inst{63}    = !if(P.HasSrc1, src1{8}, ?); // src1_sgpr
+ }
+ 
+ 
+@@ -1460,7 +1460,7 @@ class VOPC_DPP_Base<bits<8> op, string OpName, VOPProfile P>
+ 
+   let Inst{8-0} = 0xfa;
+ 
+-  let Inst{39-32} = !if (P.HasSrc0, src0{7-0}, 0);
++  let Inst{39-32} = !if (P.HasSrc0, src0{7-0}, ?);
+   let Inst{48-40} = dpp_ctrl;
+   let Inst{50} = fi;
+   let Inst{51} = bound_ctrl;
+@@ -1486,7 +1486,7 @@ class VOPC_DPP8_Base<bits<8> op, string OpName, VOPProfile P>
+ 
+   let Inst{8-0} = fi;
+ 
+-  let Inst{39-32} = !if (P.HasSrc0, src0{7-0}, 0);
++  let Inst{39-32} = !if (P.HasSrc0, src0{7-0}, ?);
+   let Inst{63-40} = dpp8{23-0};
+ 
+   let AsmMatchConverter = "cvtDPP8";
+diff --git a/llvm/lib/Target/AMDGPU/VOPInstructions.td b/llvm/lib/Target/AMDGPU/VOPInstructions.td
+index 91aa754986bf..6056cd22875a 100644
+--- a/llvm/lib/Target/AMDGPU/VOPInstructions.td
++++ b/llvm/lib/Target/AMDGPU/VOPInstructions.td
+@@ -242,9 +242,9 @@ class VOP3a<VOPProfile P> : Enc64 {
+   let Inst{10}    = !if(P.HasSrc2Mods, src2_modifiers{1}, 0);
+ 
+   let Inst{31-26} = 0x34; //encoding
+-  let Inst{40-32} = !if(P.HasSrc0, src0, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2, 0);
++  let Inst{40-32} = !if(P.HasSrc0, src0, ?);
++  let Inst{49-41} = !if(P.HasSrc1, src1, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2, ?);
+   let Inst{60-59} = !if(P.HasOMod, omod, 0);
+   let Inst{61}    = !if(P.HasSrc0Mods, src0_modifiers{0}, 0);
+   let Inst{62}    = !if(P.HasSrc1Mods, src1_modifiers{0}, 0);
+@@ -277,9 +277,9 @@ class VOP3a_t16<VOPProfile P> : Enc64 {
+   let Inst{15} = !if(P.HasClamp, clamp{0}, 0);
+ 
+   let Inst{31-26} = 0x35;
+-  let Inst{40-32} = !if(P.HasSrc0, src0{8-0}, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2{8-0}, 0);
++  let Inst{40-32} = !if(P.HasSrc0, src0{8-0}, ?);
++  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2{8-0}, ?);
+   let Inst{60-59} = !if(P.HasOMod, omod, 0);
+   let Inst{61}    = !if(P.HasSrc0Mods, src0_modifiers{0}, 0);
+   let Inst{62}    = !if(P.HasSrc1Mods, src1_modifiers{0}, 0);
+@@ -461,9 +461,9 @@ class VOP3be <VOPProfile P> : Enc64 {
+   let Inst{7-0}   = vdst;
+   let Inst{14-8}  = sdst;
+   let Inst{31-26} = 0x34; //encoding
+-  let Inst{40-32} = !if(P.HasSrc0, src0, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2, 0);
++  let Inst{40-32} = !if(P.HasSrc0, src0, ?);
++  let Inst{49-41} = !if(P.HasSrc1, src1, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2, ?);
+   let Inst{60-59} = !if(P.HasOMod, omod, 0);
+   let Inst{61}    = !if(P.HasSrc0Mods, src0_modifiers{0}, 0);
+   let Inst{62}    = !if(P.HasSrc1Mods, src1_modifiers{0}, 0);
+@@ -513,9 +513,9 @@ class VOP3Pe <VOPProfile P> : Enc64, VOP3Pe_Base {
+ 
+   let Inst{15} = !if(P.HasClamp, clamp{0}, 0);
+ 
+-  let Inst{40-32} = !if(P.HasSrc0, src0, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2, 0);
++  let Inst{40-32} = !if(P.HasSrc0, src0, ?);
++  let Inst{49-41} = !if(P.HasSrc1, src1, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2, ?);
+   let Inst{59}    = !cond(!and(P.HasSrc0, P.HasOpSel) : src0_modifiers{3},
+                           P.IsDOT : 1,
+                           P.HasMatrixScale : matrix_b_scale{0},
+@@ -550,12 +550,12 @@ class VOP3Pe_MAI <bits<7> op, VOPProfile P, bit acc_cd = 0> : Enc64, VOP3Pe_MAI_
+ 
+   let Inst{22-16} = op;
+   let Inst{31-23} = 0x1a7; //encoding
+-  let Inst{40-32} = !if(P.HasSrc0, src0{8-0}, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2, 0);
++  let Inst{40-32} = !if(P.HasSrc0, src0{8-0}, ?);
++  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2, ?);
+ 
+-  let Inst{59}    = !if(P.HasSrc0, src0{9}, 0); // acc(0)
+-  let Inst{60}    = !if(P.HasSrc1, src1{9}, 0); // acc(1)
++  let Inst{59}    = !if(P.HasSrc0, src0{9}, ?); // acc(0)
++  let Inst{60}    = !if(P.HasSrc1, src1{9}, ?); // acc(1)
+ 
+   let Inst{63-61} = !if(P.HasSrc1, blgp, 0);
+ }
+@@ -635,12 +635,12 @@ class VOP3PXe <bits<7> op, VOPProfile MFMAPfl, bit acc_cd = 0> : Enc128, VOP3Pe_
+ 
+   let Inst{86-80} = op;
+   let Inst{95-87} = 0x1a7; //encoding
+-  let Inst{104-96} = !if(MFMAPfl.HasSrc0, src0{8-0}, 0);
+-  let Inst{113-105} = !if(MFMAPfl.HasSrc1, src1{8-0}, 0);
+-  let Inst{122-114} = !if(MFMAPfl.HasSrc2, src2, 0);
++  let Inst{104-96} = !if(MFMAPfl.HasSrc0, src0{8-0}, ?);
++  let Inst{113-105} = !if(MFMAPfl.HasSrc1, src1{8-0}, ?);
++  let Inst{122-114} = !if(MFMAPfl.HasSrc2, src2, ?);
+ 
+-  let Inst{123}    = !if(MFMAPfl.HasSrc0, src0{9}, 0); // acc(0)
+-  let Inst{124}    = !if(MFMAPfl.HasSrc1, src1{9}, 0); // acc(1)
++  let Inst{123}    = !if(MFMAPfl.HasSrc0, src0{9}, ?); // acc(0)
++  let Inst{124}    = !if(MFMAPfl.HasSrc1, src1{9}, ?); // acc(1)
+ 
+   let Inst{127-125} = !if(MFMAPfl.HasSrc1, blgp, 0);
+ }
+@@ -702,7 +702,7 @@ class VOP_SDWAe<VOPProfile P> : Enc64 {
+   bits<2> dst_unused;
+   bits<1> clamp;
+ 
+-  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{42-40} = !if(P.EmitDstSel, dst_sel{2-0}, ?);
+   let Inst{44-43} = !if(P.EmitDstSel, dst_unused{1-0}, ?);
+   let Inst{45}    = !if(P.HasSDWAClamp, clamp{0}, 0);
+@@ -736,11 +736,11 @@ class VOP_SDWA9e<VOPProfile P> : Enc64 {
+   bits<5> src1_modifiers;
+   bits<1> src1_sgpr;
+ 
+-  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{50-48} = !if(P.HasSrc0, src0_sel{2-0}, 0);
+   let Inst{51}    = !if(P.HasSrc0IntMods, src0_modifiers{4}, 0);
+   let Inst{53-52} = !if(P.HasSrc0FloatMods, src0_modifiers{1-0}, 0);
+-  let Inst{55}    = !if(P.HasSrc0, src0{8}, 0);
++  let Inst{55}    = !if(P.HasSrc0, src0{8}, ?);
+   let Inst{58-56} = !if(P.HasSrc1, src1_sel{2-0}, 0);
+   let Inst{59}    = !if(P.HasSrc1IntMods, src1_modifiers{4}, 0);
+   let Inst{61-60} = !if(P.HasSrc1FloatMods, src1_modifiers{1-0}, 0);
+@@ -893,7 +893,7 @@ class VOP_DPPe<VOPProfile P, bit IsDPP16=0> : Enc64 {
+   bits<4> row_mask;
+   bit     fi;
+ 
+-  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{48-40} = dpp_ctrl;
+   let Inst{50}    = !if(IsDPP16, fi, ?);
+   let Inst{51}    = bound_ctrl;
+@@ -958,8 +958,8 @@ class VOP3_DPPe_Common<bits<10> op, VOPProfile P> : VOP3_DPPe_Common_Base<op, P>
+   bits<9> src2;
+ 
+   let Inst{7-0}   = !if(P.EmitDst, vdst{7-0}, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2, 0);
++  let Inst{49-41} = !if(P.HasSrc1, src1, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2, ?);
+ }
+ 
+ class VOP3_DPPe_Common_t16<bits<10> op, VOPProfile P> : VOP3_DPPe_Common_Base<op, P> {
+@@ -968,8 +968,8 @@ class VOP3_DPPe_Common_t16<bits<10> op, VOPProfile P> : VOP3_DPPe_Common_Base<op
+   bits<11> src2;
+ 
+   let Inst{7-0}   = !if(P.EmitDst, vdst{7-0}, 0);
+-  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2{8-0}, 0);
++  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2{8-0}, ?);
+ }
+ 
+ class VOP3P_DPPe_Common_Base<bits<8> op, VOPProfile P> : Enc96 {
+@@ -1002,8 +1002,8 @@ class VOP3P_DPPe_Common<bits<8> op, VOPProfile P> : VOP3P_DPPe_Common_Base<op, P
+   bits<9> src2;
+ 
+   let Inst{7-0} = vdst;
+-  let Inst{49-41} = !if(P.HasSrc1, src1, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2, 0);
++  let Inst{49-41} = !if(P.HasSrc1, src1, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2, ?);
+ }
+ 
+ class VOP3P_DPPe_Common_t16<bits<8> op, VOPProfile P> : VOP3P_DPPe_Common_Base<op, P> {
+@@ -1012,8 +1012,8 @@ class VOP3P_DPPe_Common_t16<bits<8> op, VOPProfile P> : VOP3P_DPPe_Common_Base<o
+   bits<11> src2;
+ 
+   let Inst{7-0} = vdst{7-0};
+-  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, 0);
+-  let Inst{58-50} = !if(P.HasSrc2, src2{8-0}, 0);
++  let Inst{49-41} = !if(P.HasSrc1, src1{8-0}, ?);
++  let Inst{58-50} = !if(P.HasSrc2, src2{8-0}, ?);
+ }
+ 
+ class VOP_DPP_Pseudo <string OpName, VOPProfile P, list<dag> pattern=[],
+@@ -1138,7 +1138,7 @@ class VOP3_DPP_Enc <bits<10> op, VOPProfile P, bit IsDPP16> :
+   VOP3_DPPe_Fields {
+ 
+   let Inst{40-32} = 0xfa;
+-  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{80-72} = dpp_ctrl;
+   let Inst{82}    = !if(IsDPP16, fi, ?);
+   let Inst{83}    = bound_ctrl;
+@@ -1158,7 +1158,7 @@ class VOP3_DPP_Enc_t16<bits<10> op, VOPProfile P, bit IsDPP16 >
+       VOP3_DPPe_Fields_t16 {
+ 
+   let Inst{40-32} = 0xfa;
+-  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{80-72} = dpp_ctrl;
+   let Inst{82}    = !if(IsDPP16, fi, ?);
+   let Inst{83}    = bound_ctrl;
+@@ -1184,7 +1184,7 @@ class VOP3P_DPP <bits<8> op, string OpName, VOPProfile P, bit IsDPP16,
+   let VOP3P = 1;
+ 
+   let Inst{40-32} = 0xfa;
+-  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{80-72} = dpp_ctrl;
+   let Inst{82}    = !if(IsDPP16, fi, ?);
+   let Inst{83}    = bound_ctrl;
+@@ -1199,7 +1199,7 @@ class VOP_DPP8e<VOPProfile P> : Enc64 {
+   bits<24> dpp8;
+   bits<9> fi;
+ 
+-  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{39-32} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{63-40} = dpp8{23-0};
+ }
+ 
+@@ -1250,7 +1250,7 @@ class VOP3_DPP8_Enc <bits<10> op, VOPProfile P> :
+   VOP3_DPPe_Common<op, P>,
+   VOP3_DPP8e_Fields {
+   let Inst{40-32} = fi;
+-  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{95-72} = dpp8{23-0};
+ }
+ 
+@@ -1261,7 +1261,7 @@ class VOP3_DPP8_Enc_t16 <bits<10> op, VOPProfile P> :
+   VOP3_DPPe_Common_t16<op, P>,
+   VOP3_DPP8e_Fields_t16 {
+   let Inst{40-32} = fi;
+-  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{95-72} = dpp8{23-0};
+ }
+ 
+@@ -1274,7 +1274,7 @@ class VOP3P_DPP8<bits<8> op, string OpName, VOPProfile P> :
+ 
+   let VOP3P = 1;
+   let Inst{40-32} = fi;
+-  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, 0);
++  let Inst{71-64} = !if(P.HasSrc0, src0{7-0}, ?);
+   let Inst{95-72} = dpp8{23-0};
+ }
+ 
+diff --git a/llvm/lib/Target/Hexagon/Hexagon.td b/llvm/lib/Target/Hexagon/Hexagon.td
+index 17c72c393b43..6532cbd085c2 100644
+--- a/llvm/lib/Target/Hexagon/Hexagon.td
++++ b/llvm/lib/Target/Hexagon/Hexagon.td
+@@ -499,8 +499,8 @@ def : Proc<"hexagonv79", HexagonModelV79,
+            FeatureCompound, FeatureDuplex, FeatureMemNoShuf, FeatureMemops,
+            FeatureNVJ, FeatureNVS, FeaturePackets, FeatureSmallData]>;
+ def : Proc<"hexagonv81", HexagonModelV81,
+-           [ArchV65, ArchV66, ArchV67, ArchV68, ArchV69, ArchV71, ArchV73,
+-            ArchV75, ArchV79, ArchV81,
++           [ArchV5, ArchV55, ArchV60, ArchV62, ArchV65, ArchV66, ArchV67,
++            ArchV68, ArchV69, ArchV71, ArchV73, ArchV75, ArchV79, ArchV81,
+             FeatureCompound, FeatureDuplex, FeatureMemNoShuf, FeatureMemops,
+             FeatureNVJ, FeatureNVS, FeaturePackets, FeatureSmallData]>;
+ 
+diff --git a/llvm/lib/Target/Hexagon/HexagonISelLowering.h b/llvm/lib/Target/Hexagon/HexagonISelLowering.h
+index 3ef43ae7ad83..f42840cd284d 100644
+--- a/llvm/lib/Target/Hexagon/HexagonISelLowering.h
++++ b/llvm/lib/Target/Hexagon/HexagonISelLowering.h
+@@ -515,6 +515,10 @@ private:
+                              SelectionDAG &DAG) const;
+ 
+   SDValue combineTruncateBeforeLegal(SDValue Op, DAGCombinerInfo &DCI) const;
++
++  SDValue combineConcatOfShuffles(SDValue Op, SelectionDAG &DAG) const;
++  SDValue combineConcatOfScalarPreds(SDValue Op, unsigned BitBytes,
++                                     SelectionDAG &DAG) const;
+   SDValue combineConcatVectorsBeforeLegal(SDValue Op, DAGCombinerInfo & DCI)
+       const;
+   SDValue combineVectorShuffleBeforeLegal(SDValue Op, DAGCombinerInfo & DCI)
+diff --git a/llvm/lib/Target/Hexagon/HexagonISelLoweringHVX.cpp b/llvm/lib/Target/Hexagon/HexagonISelLoweringHVX.cpp
+index 9a0e5cc684b6..ea0ad78c70bc 100644
+--- a/llvm/lib/Target/Hexagon/HexagonISelLoweringHVX.cpp
++++ b/llvm/lib/Target/Hexagon/HexagonISelLoweringHVX.cpp
+@@ -1106,11 +1106,8 @@ HexagonTargetLowering::createHvxPrefixPred(SDValue PredV, const SDLoc &dl,
+   SDValue W0 = isUndef(PredV)
+                   ? DAG.getUNDEF(MVT::i64)
+                   : DAG.getNode(HexagonISD::P2D, dl, MVT::i64, PredV);
+-  if (Bytes < BitBytes) {
+-    Words[IdxW].push_back(HiHalf(W0, DAG));
+-    Words[IdxW].push_back(LoHalf(W0, DAG));
+-  } else
+-    Words[IdxW].push_back(W0);
++  Words[IdxW].push_back(HiHalf(W0, DAG));
++  Words[IdxW].push_back(LoHalf(W0, DAG));
+ 
+   while (Bytes < BitBytes) {
+     IdxW ^= 1;
+@@ -1131,27 +1128,7 @@ HexagonTargetLowering::createHvxPrefixPred(SDValue PredV, const SDLoc &dl,
+     Bytes *= 2;
+   }
+ 
+-  while (Bytes > BitBytes) {
+-    IdxW ^= 1;
+-    Words[IdxW].clear();
+-
+-    if (Bytes <= 4) {
+-      for (const SDValue &W : Words[IdxW ^ 1]) {
+-        SDValue T = contractPredicate(W, dl, DAG);
+-        Words[IdxW].push_back(T);
+-      }
+-    } else {
+-      for (const SDValue &W : Words[IdxW ^ 1]) {
+-        Words[IdxW].push_back(W);
+-      }
+-    }
+-    Bytes /= 2;
+-  }
+-
+   assert(Bytes == BitBytes);
+-  if (BitBytes == 1 && PredTy == MVT::v2i1)
+-    ByteTy = MVT::getVectorVT(MVT::i16, HwLen);
+-
+   SDValue Vec = ZeroFill ? getZero(dl, ByteTy, DAG) : DAG.getUNDEF(ByteTy);
+   SDValue S4 = DAG.getConstant(HwLen-4, dl, MVT::i32);
+   for (const SDValue &W : Words[IdxW]) {
+@@ -1428,7 +1405,7 @@ HexagonTargetLowering::extractHvxSubvectorPred(SDValue VecV, SDValue IdxV,
+   unsigned Rep = 8 / ResLen;
+   // Make sure the output fill the entire vector register, so repeat the
+   // 8-byte groups as many times as necessary.
+-  for (unsigned r = 0; r != HwLen/ResLen; ++r) {
++  for (unsigned r = 0; r != HwLen / 8; ++r) {
+     // This will generate the indexes of the 8 interesting bytes.
+     for (unsigned i = 0; i != ResLen; ++i) {
+       for (unsigned j = 0; j != Rep; ++j)
+@@ -1835,13 +1812,17 @@ HexagonTargetLowering::LowerHvxConcatVectors(SDValue Op, SelectionDAG &DAG)
+   // corresponds to.
+   unsigned BitBytes = HwLen / VecTy.getVectorNumElements();
+ 
++  // Make sure that createHvxPrefixPred will only ever need to expand
++  // the predicate, i.e. bytes-per-bit in the input is not greater than
++  // the target bytes-per-bit in the result.
++  SDValue Combined = combineConcatOfScalarPreds(Op, BitBytes, DAG);
+   SmallVector<SDValue,8> Prefixes;
+-  for (SDValue V : Op.getNode()->op_values()) {
++  for (SDValue V : Combined.getNode()->op_values()) {
+     SDValue P = createHvxPrefixPred(V, dl, BitBytes, true, DAG);
+     Prefixes.push_back(P);
+   }
+ 
+-  unsigned InpLen = ty(Op.getOperand(0)).getVectorNumElements();
++  unsigned InpLen = ty(Combined.getOperand(0)).getVectorNumElements();
+   MVT ByteTy = MVT::getVectorVT(MVT::i8, HwLen);
+   SDValue S = DAG.getConstant(HwLen - InpLen*BitBytes, dl, MVT::i32);
+   SDValue Res = getZero(dl, ByteTy, DAG);
+@@ -3834,8 +3815,8 @@ HexagonTargetLowering::combineTruncateBeforeLegal(SDValue Op,
+ }
+ 
+ SDValue
+-HexagonTargetLowering::combineConcatVectorsBeforeLegal(
+-    SDValue Op, DAGCombinerInfo &DCI) const {
++HexagonTargetLowering::combineConcatOfShuffles(SDValue Op,
++                                               SelectionDAG &DAG) const {
+   // Fold
+   //   concat (shuffle x, y, m1), (shuffle x, y, m2)
+   // into
+@@ -3843,7 +3824,6 @@ HexagonTargetLowering::combineConcatVectorsBeforeLegal(
+   if (Op.getNumOperands() != 2)
+     return SDValue();
+ 
+-  SelectionDAG &DAG = DCI.DAG;
+   const SDLoc &dl(Op);
+   SDValue V0 = Op.getOperand(0);
+   SDValue V1 = Op.getOperand(1);
+@@ -3899,6 +3879,54 @@ HexagonTargetLowering::combineConcatVectorsBeforeLegal(
+   return DAG.getVectorShuffle(LongTy, dl, Cat, DAG.getUNDEF(LongTy), LongMask);
+ }
+ 
++// Reassociate concat(p1, p2, ...) into
++//   concat(concat(p1, ...), concat(pi, ...), ...)
++// where each inner concat produces a predicate where each bit corresponds
++// to at most BitBytes bytes.
++// Concatenating predicates decreases the number of bytes per each predicate
++// bit.
++SDValue
++HexagonTargetLowering::combineConcatOfScalarPreds(SDValue Op, unsigned BitBytes,
++                                                  SelectionDAG &DAG) const {
++  const SDLoc &dl(Op);
++  SmallVector<SDValue> Ops(Op->ops());
++  MVT ResTy = ty(Op);
++  MVT InpTy = ty(Ops[0]);
++  unsigned InpLen = InpTy.getVectorNumElements(); // Scalar predicate
++  unsigned ResLen = ResTy.getVectorNumElements(); // HVX vector predicate
++  assert(InpLen <= 8 && "Too long for scalar predicate");
++  assert(ResLen > 8 && "Too short for HVX vector predicate");
++
++  unsigned Bytes = 8 / InpLen; // Bytes-per-bit in input
++
++  // Already in the right form?
++  if (Bytes <= BitBytes)
++    return Op;
++
++  ArrayRef<SDValue> Inputs(Ops);
++  unsigned SliceLen = Bytes / BitBytes;
++
++  SmallVector<SDValue> Cats;
++  // (8 / BitBytes) is the desired length of the result of the inner concat.
++  for (unsigned i = 0; i != ResLen / (8 / BitBytes); ++i) {
++    SDValue Cat = DAG.getNode(ISD::CONCAT_VECTORS, dl, MVT::v8i1,
++                              Inputs.slice(SliceLen * i, SliceLen));
++    Cats.push_back(Cat);
++  }
++
++  return DAG.getNode(ISD::CONCAT_VECTORS, dl, ResTy, Cats);
++}
++
++SDValue HexagonTargetLowering::combineConcatVectorsBeforeLegal(
++    SDValue Op, DAGCombinerInfo &DCI) const {
++  MVT ResTy = ty(Op);
++  MVT ElemTy = ResTy.getVectorElementType();
++
++  if (ElemTy != MVT::i1) {
++    return combineConcatOfShuffles(Op, DCI.DAG);
++  }
++  return SDValue();
++}
+ SDValue
+ HexagonTargetLowering::PerformHvxDAGCombine(SDNode *N, DAGCombinerInfo &DCI)
+       const {
+diff --git a/llvm/lib/Target/Hexagon/HexagonNewValueJump.cpp b/llvm/lib/Target/Hexagon/HexagonNewValueJump.cpp
+index 5a1d5bc66916..b237f11d926a 100644
+--- a/llvm/lib/Target/Hexagon/HexagonNewValueJump.cpp
++++ b/llvm/lib/Target/Hexagon/HexagonNewValueJump.cpp
+@@ -63,6 +63,8 @@ static cl::opt<int> DbgNVJCount("nvj-count", cl::init(-1), cl::Hidden,
+ static cl::opt<bool> DisableNewValueJumps("disable-nvjump", cl::Hidden,
+                                           cl::desc("Disable New Value Jumps"));
+ 
++extern cl::opt<bool> DisablePacketizer;
++
+ namespace {
+ 
+   struct HexagonNewValueJump : public MachineFunctionPass {
+@@ -453,7 +455,9 @@ bool HexagonNewValueJump::runOnMachineFunction(MachineFunction &MF) {
+       MF.getSubtarget().getRegisterInfo());
+   MBPI = &getAnalysis<MachineBranchProbabilityInfoWrapperPass>().getMBPI();
+ 
+-  if (DisableNewValueJumps ||
++  // New value jumps require the feeder instruction to be in the same packet.
++  // If packetization is disabled, we cannot generate new value jumps.
++  if (DisableNewValueJumps || DisablePacketizer ||
+       !MF.getSubtarget<HexagonSubtarget>().useNewValueJumps())
+     return false;
+ 
+diff --git a/llvm/lib/Target/Hexagon/HexagonVLIWPacketizer.cpp b/llvm/lib/Target/Hexagon/HexagonVLIWPacketizer.cpp
+index d39b79a86753..8d1c17ca9742 100644
+--- a/llvm/lib/Target/Hexagon/HexagonVLIWPacketizer.cpp
++++ b/llvm/lib/Target/Hexagon/HexagonVLIWPacketizer.cpp
+@@ -55,9 +55,8 @@ using namespace llvm;
+ 
+ #define DEBUG_TYPE "packets"
+ 
+-static cl::opt<bool>
+-    DisablePacketizer("disable-packetizer", cl::Hidden,
+-                      cl::desc("Disable Hexagon packetizer pass"));
++cl::opt<bool> DisablePacketizer("disable-packetizer", cl::Hidden,
++                                cl::desc("Disable Hexagon packetizer pass"));
+ 
+ static cl::opt<bool> Slot1Store("slot1-store-slot0-load", cl::Hidden,
+                                 cl::init(true),
+diff --git a/llvm/test/CodeGen/AArch64/sve-sext-zext.ll b/llvm/test/CodeGen/AArch64/sve-sext-zext.ll
+index 845628a91498..54dd83eaec50 100644
+--- a/llvm/test/CodeGen/AArch64/sve-sext-zext.ll
++++ b/llvm/test/CodeGen/AArch64/sve-sext-zext.ll
+@@ -584,3 +584,31 @@ define <vscale x 2 x i64> @zext_inreg_i64_from_i32(<vscale x 4 x i32> %a) {
+   %zext = zext <vscale x 2 x i32> %subvec to <vscale x 2 x i64>
+   ret <vscale x 2 x i64> %zext
+ }
++
++; Sign-extend-inreg from i8 -> i1 -> i16
++define <vscale x 16 x i16> @sext_inreg_i1_to_i16_from_i8(<vscale x 16 x i8> %a) {
++; CHECK-LABEL: sext_inreg_i1_to_i16_from_i8:
++; CHECK:       // %bb.0:
++; CHECK-NEXT:    lsl z0.b, z0.b, #7
++; CHECK-NEXT:    asr z1.b, z0.b, #7
++; CHECK-NEXT:    sunpklo z0.h, z1.b
++; CHECK-NEXT:    sunpkhi z1.h, z1.b
++; CHECK-NEXT:    ret
++  %a.trunc = trunc <vscale x 16 x i8> %a to <vscale x 16 x i1>
++  %a.sextinreg = sext <vscale x 16 x i1> %a.trunc to <vscale x 16 x i16>
++  ret <vscale x 16 x i16> %a.sextinreg
++}
++
++; Sign-extend-inreg from i8 -> i2 -> i16
++define <vscale x 16 x i16> @sext_inreg_i2_to_i16_from_i8(<vscale x 16 x i8> %a) {
++; CHECK-LABEL: sext_inreg_i2_to_i16_from_i8:
++; CHECK:       // %bb.0:
++; CHECK-NEXT:    lsl z0.b, z0.b, #6
++; CHECK-NEXT:    asr z1.b, z0.b, #6
++; CHECK-NEXT:    sunpklo z0.h, z1.b
++; CHECK-NEXT:    sunpkhi z1.h, z1.b
++; CHECK-NEXT:    ret
++  %a.trunc = trunc <vscale x 16 x i8> %a to <vscale x 16 x i2>
++  %a.sextinreg = sext <vscale x 16 x i2> %a.trunc to <vscale x 16 x i16>
++  ret <vscale x 16 x i16> %a.sextinreg
++}
+diff --git a/llvm/test/CodeGen/Hexagon/autohvx/isel-hvx-rescale-predicate.ll b/llvm/test/CodeGen/Hexagon/autohvx/isel-hvx-rescale-predicate.ll
+new file mode 100644
+index 000000000000..057c9cdee5b7
+--- /dev/null
++++ b/llvm/test/CodeGen/Hexagon/autohvx/isel-hvx-rescale-predicate.ll
+@@ -0,0 +1,14 @@
++; REQUIRES: asserts
++; RUN: llc -mtriple=hexagon < %s | FileCheck %s
++
++; Check that this doesn't crash.
++; CHECK: vror
++
++define <128 x i8> @foo(<128 x i8> %a0, <128 x i8> %a1, <2 x i16> %a2) #0 {
++  %v1 = icmp sge <2 x i16> %a2, zeroinitializer
++  %v2 = shufflevector <2 x i1> %v1, <2 x i1> poison, <128 x i32> <i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1, i32 0, i32 1>
++  %v3 = select <128 x i1> %v2, <128 x i8> %a0, <128 x i8> %a1
++  ret <128 x i8> %v3
++}
++
++attributes #0 = { "target-cpu"="hexagonv68" "target-features"="+hvxv68,+hvx-length128b" }
+diff --git a/llvm/test/CodeGen/Hexagon/disable-packetizer-nvj.ll b/llvm/test/CodeGen/Hexagon/disable-packetizer-nvj.ll
+new file mode 100644
+index 000000000000..c2fac38625d7
+--- /dev/null
++++ b/llvm/test/CodeGen/Hexagon/disable-packetizer-nvj.ll
+@@ -0,0 +1,34 @@
++; RUN: llc -mtriple=hexagon -mcpu=hexagonv68 -O2 --disable-packetizer -filetype=obj -o /dev/null %s
++; RUN: llc -mtriple=hexagon -mcpu=hexagonv68 -O2 -mattr=-nvj -filetype=obj -o /dev/null %s
++; REQUIRES: asserts
++
++; Check that compiling with --disable-packetizer does not crash.
++; New value jumps require the feeder instruction to be in the same packet
++; as the consumer (.new) instruction. When packetization is disabled, the
++; NVJ pass must be skipped to avoid an assertion in the MCCodeEmitter
++; ("Couldn't find producer").
++;
++; The branches here are non-if-convertible (due to calls), ensuring the
++; compare+branch pattern survives to the NVJ pass regardless of the
++; optimization pipeline used.
++
++declare void @do_work(i32)
++declare void @do_other(i32)
++
++define void @test_nvj(ptr %p, i32 %threshold) {
++entry:
++  %val = load i32, ptr %p, align 4
++  %cmp = icmp eq i32 %val, %threshold
++  br i1 %cmp, label %if.then, label %if.else
++
++if.then:
++  call void @do_work(i32 %val)
++  br label %exit
++
++if.else:
++  call void @do_other(i32 %val)
++  br label %exit
++
++exit:
++  ret void
++}
+diff --git a/llvm/test/CodeGen/Hexagon/extract-hvx-subvector-pred-small.ll b/llvm/test/CodeGen/Hexagon/extract-hvx-subvector-pred-small.ll
+new file mode 100644
+index 000000000000..2e88dab7e496
+--- /dev/null
++++ b/llvm/test/CodeGen/Hexagon/extract-hvx-subvector-pred-small.ll
+@@ -0,0 +1,28 @@
++; RUN: llc -mtriple=hexagon -mcpu=hexagonv73 -mattr=+hvxv73,+hvx-length128b \
++; RUN:   < %s | FileCheck %s
++;
++; Check that extracting a small predicate subvector (<8 x i1) from an HVX
++; predicate compiles correctly. The bug was in extractHvxSubvectorPred where
++; the loop generating the shuffle mask used HwLen/ResLen instead of HwLen/8,
++; producing a mask of wrong size for ResLen < 8.
++
++target datalayout = "e-m:e-p:32:32:32-a:0-n16:32-i64:64:64-i32:32:32-i16:16:16-i1:8:8-f32:32:32-f64:64:64-v32:32:32-v64:64:64-v512:512:512-v1024:1024:1024-v2048:2048:2048"
++target triple = "hexagon-unknown-linux-musl"
++
++; CHECK-LABEL: test_extract_v4i1:
++; CHECK-DAG:   vand(v{{[0-9]+}},r{{[0-9]+}})
++; CHECK-DAG:   vdelta(v{{[0-9]+}},v{{[0-9]+}})
++; CHECK:       dealloc_return
++define <4 x i1> @test_extract_v4i1(<128 x i1> %pred) {
++  %r = shufflevector <128 x i1> %pred, <128 x i1> poison, <4 x i32> <i32 0, i32 1, i32 2, i32 3>
++  ret <4 x i1> %r
++}
++
++; CHECK-LABEL: test_extract_v2i1:
++; CHECK-DAG:   vand(v{{[0-9]+}},r{{[0-9]+}})
++; CHECK-DAG:   vdelta(v{{[0-9]+}},v{{[0-9]+}})
++; CHECK:       dealloc_return
++define <2 x i1> @test_extract_v2i1(<128 x i1> %pred) {
++  %r = shufflevector <128 x i1> %pred, <128 x i1> poison, <2 x i32> <i32 0, i32 1>
++  ret <2 x i1> %r
++}
+diff --git a/llvm/test/CodeGen/Hexagon/v81-early-arch-features.ll b/llvm/test/CodeGen/Hexagon/v81-early-arch-features.ll
+new file mode 100644
+index 000000000000..697374ab2c02
+--- /dev/null
++++ b/llvm/test/CodeGen/Hexagon/v81-early-arch-features.ll
+@@ -0,0 +1,16 @@
++; RUN: llc -mtriple=hexagon -mcpu=hexagonv81 -mattr=+hvxv81,+hvx-length128b,+hvx-ieee-fp,-packets < %s | FileCheck %s
++
++; Before the fix, V81 processor definition in Hexagon.td was missing early
++; architecture features (ArchV5, ArchV55, ArchV60, ArchV62), causing compilation
++; to fail with:
++;   "fatal error: Attempting to emit S6_vsplatrbp instruction but the
++;    Feature_HasV62 predicate(s) are not met"
++
++; CHECK-LABEL: test_hvx_v16i8_return:
++; CHECK: vsplatb
++
++define <16 x i8> @test_hvx_v16i8_return() {
++entry:
++  ret <16 x i8> zeroinitializer
++}
++
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx10_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx10_vop1.txt
+index d574d139df46..f4ed5990fa0f 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx10_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx10_vop1.txt
+@@ -2559,6 +2559,9 @@
+ 0x00,0x00,0x00,0x7e
+ # GFX10: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
+ 
++0xff,0x01,0x00,0x7e
++# GFX10: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
++
+ 0x01,0x6f,0xfe,0x7f
+ # GFX10: v_not_b32_e32 v255, v1                  ; encoding: [0x01,0x6f,0xfe,0x7f]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop1.txt
+index e87bc397894c..a7d17316eaee 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop1.txt
+@@ -2758,6 +2758,9 @@
+ 0x00,0x00,0x00,0x7e
+ # GFX11: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
+ 
++0xff,0x01,0x00,0x7e
++# GFX11: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
++
+ 0x01,0xd3,0x0a,0x7e
+ # GFX11-FAKE16: v_not_b16_e32 v5, v1                    ; encoding: [0x01,0xd3,0x0a,0x7e]
+ # GFX11-REAL16: v_not_b16_e32 v5.l, v1.l                ; encoding: [0x01,0xd3,0x0a,0x7e]
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp16_from_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp16_from_vop1.txt
+index a291d5d55259..7bd85e2ca631 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp16_from_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp16_from_vop1.txt
+@@ -5,6 +5,10 @@
+ 0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0x1b,0x00,0xff
+ # GFX11: v_bfrev_b32_e64_dpp v5, v1 quad_perm:[3,2,1,0] row_mask:0xf bank_mask:0xf ; encoding: [0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0x1b,0x00,0xff]
+ 
++# Check that src1 and src2 are ignored.
++0x05,0x00,0xb8,0xd5,0xfa,0xfe,0xff,0x07,0x01,0x1b,0x00,0xff
++# GFX11: v_bfrev_b32_e64_dpp v5, v1 quad_perm:[3,2,1,0] row_mask:0xf bank_mask:0xf ; encoding: [0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0x1b,0x00,0xff]
++
+ 0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0xe4,0x00,0xff
+ # GFX11: v_bfrev_b32_e64_dpp v5, v1 quad_perm:[0,1,2,3] row_mask:0xf bank_mask:0xf ; encoding: [0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0xe4,0x00,0xff]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp8_from_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp8_from_vop1.txt
+index 69c3cd859e56..a9f0a2cac0d2 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp8_from_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_dpp8_from_vop1.txt
+@@ -5,6 +5,10 @@
+ 0x05,0x00,0xb8,0xd5,0xe9,0x00,0x00,0x00,0x01,0x77,0x39,0x05
+ # GFX11: v_bfrev_b32_e64_dpp v5, v1 dpp8:[7,6,5,4,3,2,1,0] ; encoding: [0x05,0x00,0xb8,0xd5,0xe9,0x00,0x00,0x00,0x01,0x77,0x39,0x05]
+ 
++# Check that src1 and src2 are ignored.
++0x05,0x00,0xb8,0xd5,0xe9,0xfe,0xff,0x07,0x01,0x77,0x39,0x05
++# GFX11: v_bfrev_b32_e64_dpp v5, v1 dpp8:[7,6,5,4,3,2,1,0] ; encoding: [0x05,0x00,0xb8,0xd5,0xe9,0x00,0x00,0x00,0x01,0x77,0x39,0x05]
++
+ 0xff,0x00,0xb8,0xd5,0xea,0x00,0x00,0x00,0xff,0x00,0x00,0x00
+ # GFX11: v_bfrev_b32_e64_dpp v255, v255 dpp8:[0,0,0,0,0,0,0,0] fi:1 ; encoding: [0xff,0x00,0xb8,0xd5,0xea,0x00,0x00,0x00,0xff,0x00,0x00,0x00]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_from_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_from_vop1.txt
+index f08cbcf0da9e..b83721265e42 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_from_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx11_dasm_vop3_from_vop1.txt
+@@ -2750,6 +2750,9 @@
+ 0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00
+ # GFX11: v_nop                                   ; encoding: [0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00]
+ 
++0x00,0x00,0x80,0xd5,0xff,0xff,0xff,0x07
++# GFX11: v_nop                                   ; encoding: [0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00]
++
+ 0x05,0x00,0xe9,0xd5,0x01,0x01,0x00,0x00
+ # GFX11-FAKE16: v_not_b16_e64 v5, v1                    ; encoding: [0x05,0x00,0xe9,0xd5,0x01,0x01,0x00,0x00]
+ # GFX11-REAL16: v_not_b16_e64 v5.l, v1.l                ; encoding: [0x05,0x00,0xe9,0xd5,0x01,0x01,0x00,0x00]
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx1250_dasm_vop3_from_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx1250_dasm_vop3_from_vop1.txt
+index c2ff03eed3e4..5e428c8066f0 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx1250_dasm_vop3_from_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx1250_dasm_vop3_from_vop1.txt
+@@ -2927,6 +2927,9 @@
+ 0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00
+ # GFX1250: v_nop                                   ; encoding: [0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00]
+ 
++0x00,0x00,0x80,0xd5,0xff,0xff,0xff,0x07
++# GFX1250: v_nop                                   ; encoding: [0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00]
++
+ 0xff,0x00,0xe9,0xd5,0xff,0x00,0x00,0x00,0x0b,0xfe,0x00,0x00
+ # GFX1250-FAKE16: v_not_b16_e64 v255, 0xfe0b              ; encoding: [0xff,0x00,0xe9,0xd5,0xff,0x00,0x00,0x00,0x0b,0xfe,0x00,0x00]
+ # GFX1250-REAL16: v_not_b16_e64 v255.l, 0xfe0b            ; encoding: [0xff,0x00,0xe9,0xd5,0xff,0x00,0x00,0x00,0x0b,0xfe,0x00,0x00]
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3.txt
+index caad79daccc2..49e2f893ef1f 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3.txt
+@@ -6575,6 +6575,9 @@
+ 0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00
+ # GFX12: v_nop                                   ; encoding: [0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00]
+ 
++0x00,0x00,0x80,0xd5,0xff,0xff,0xff,0x07
++# GFX12: v_nop                                   ; encoding: [0x00,0x00,0x80,0xd5,0x00,0x00,0x00,0x00]
++
+ 0x05,0x00,0x58,0xd6,0x01,0x05,0x0e,0x00
+ # GFX12: v_or3_b32 v5, v1, v2, s3                ; encoding: [0x05,0x00,0x58,0xd6,0x01,0x05,0x0e,0x00]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp16.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp16.txt
+index f7359660daa1..71c2f0c4ac20 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp16.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp16.txt
+@@ -7,6 +7,10 @@
+ 0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0x1b,0x00,0xff
+ # GFX12: v_bfrev_b32_e64_dpp v5, v1 quad_perm:[3,2,1,0] row_mask:0xf bank_mask:0xf ; encoding: [0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0x1b,0x00,0xff]
+ 
++# Check that src1 and src2 are ignored.
++0x05,0x00,0xb8,0xd5,0xfa,0xfe,0xff,0x07,0x01,0x1b,0x00,0xff
++# GFX12: v_bfrev_b32_e64_dpp v5, v1 quad_perm:[3,2,1,0] row_mask:0xf bank_mask:0xf ; encoding: [0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0x1b,0x00,0xff]
++
+ 0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0xe4,0x00,0xff
+ # GFX12: v_bfrev_b32_e64_dpp v5, v1 quad_perm:[0,1,2,3] row_mask:0xf bank_mask:0xf ; encoding: [0x05,0x00,0xb8,0xd5,0xfa,0x00,0x00,0x00,0x01,0xe4,0x00,0xff]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp8.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp8.txt
+index 1b2d51b350f8..e3b8a3ba6887 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp8.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx12_dasm_vop3_from_vop1_dpp8.txt
+@@ -7,7 +7,8 @@
+ 0x05,0x00,0xb8,0xd5,0xe9,0x00,0x00,0x00,0x01,0x77,0x39,0x05
+ # GFX12: v_bfrev_b32_e64_dpp v5, v1 dpp8:[7,6,5,4,3,2,1,0] ; encoding: [0x05,0x00,0xb8,0xd5,0xe9,0x00,0x00,0x00,0x01,0x77,0x39,0x05]
+ 
+-0xff,0x00,0xb8,0xd5,0xea,0x00,0x00,0x00,0xff,0x00,0x00,0x00
++# Check that src1 and src2 are ignored.
++0xff,0x00,0xb8,0xd5,0xea,0xfe,0xff,0x07,0xff,0x00,0x00,0x00
+ # GFX12: v_bfrev_b32_e64_dpp v255, v255 dpp8:[0,0,0,0,0,0,0,0] fi:1 ; encoding: [0xff,0x00,0xb8,0xd5,0xea,0x00,0x00,0x00,0xff,0x00,0x00,0x00]
+ 
+ 0x05,0x00,0xdc,0xd5,0xe9,0x00,0x00,0x00,0x01,0x77,0x39,0x05
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop1.txt
+index b979828fc0d2..88a53b953a7f 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop1.txt
+@@ -3448,6 +3448,9 @@
+ 0x00,0x00,0x00,0x7e
+ # CHECK: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
+ 
++0xff,0x01,0x00,0x7e
++# CHECK: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
++
+ 0x01,0x57,0xfe,0x7f
+ # CHECK: v_not_b32_e32 v255, v1                  ; encoding: [0x01,0x57,0xfe,0x7f]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop3.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop3.txt
+index 689d92f785af..7a1c5f3b42be 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop3.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx8_vop3.txt
+@@ -18793,6 +18793,9 @@
+ 0x00,0x00,0x40,0xd1,0x00,0x00,0x00,0x00
+ # CHECK: v_nop                                   ; encoding: [0x00,0x00,0x40,0xd1,0x00,0x00,0x00,0x00]
+ 
++0x00,0x00,0x40,0xd1,0xff,0xff,0xff,0x07
++# CHECK: v_nop                                   ; encoding: [0x00,0x00,0x40,0xd1,0x00,0x00,0x00,0x00]
++
+ 0xff,0x00,0x6b,0xd1,0x01,0x01,0x00,0x00
+ # CHECK: v_not_b32_e64 v255, v1                  ; encoding: [0xff,0x00,0x6b,0xd1,0x01,0x01,0x00,0x00]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx908_mai.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx908_mai.txt
+index 2f3de6dc2823..da0de7c3bb75 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx908_mai.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx908_mai.txt
+@@ -3,6 +3,10 @@
+ # GFX908: v_accvgpr_read_b32 v2, a0 ; encoding: [0x02,0x40,0xd8,0xd3,0x00,0x01,0x00,0x18]
+ 0x02,0x40,0xd8,0xd3,0x00,0x01,0x00,0x18
+ 
++# Check that src1 and src2 are ignored.
++# GFX908: v_accvgpr_read_b32 v2, a0 ; encoding: [0x02,0x40,0xd8,0xd3,0x00,0x01,0x00,0x18]
++0x02,0x40,0xd8,0xd3,0x00,0xff,0xff,0x1f
++
+ # Check the alternative encoding with unused op_sel_hi bits set to zero
+ # and not to default 1 is accepted.
+ #
+@@ -27,6 +31,10 @@
+ # GFX908: v_accvgpr_write_b32 a2, v1 ; encoding: [0x02,0x40,0xd9,0xd3,0x01,0x01,0x00,0x18]
+ 0x02,0x40,0xd9,0xd3,0x01,0x01,0x00,0x18
+ 
++# Check that src1 and src2 are ignored.
++# GFX908: v_accvgpr_write_b32 a2, v1 ; encoding: [0x02,0x40,0xd9,0xd3,0x01,0x01,0x00,0x18]
++0x02,0x40,0xd9,0xd3,0x01,0xff,0xff,0x1f
++
+ # Check the alternative encoding with unused op_sel_hi bits set to zero
+ # and not to default 1 is accepted.
+ #
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop1.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop1.txt
+index d3575d414264..5cd317320096 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop1.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop1.txt
+@@ -2701,6 +2701,9 @@
+ 0x00,0x00,0x00,0x7e
+ # CHECK: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
+ 
++0xff,0x01,0x00,0x7e
++# CHECK: v_nop                                   ; encoding: [0x00,0x00,0x00,0x7e]
++
+ 0x01,0x57,0xfe,0x7f
+ # CHECK: v_not_b32_e32 v255, v1                  ; encoding: [0x01,0x57,0xfe,0x7f]
+ 
+diff --git a/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop3.txt b/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop3.txt
+index 0bbb50e88bd2..3c1534717b8b 100644
+--- a/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop3.txt
++++ b/llvm/test/MC/Disassembler/AMDGPU/gfx9_vop3.txt
+@@ -18778,6 +18778,9 @@
+ 0x00,0x00,0x40,0xd1,0x00,0x00,0x00,0x00
+ # CHECK: v_nop                                   ; encoding: [0x00,0x00,0x40,0xd1,0x00,0x00,0x00,0x00]
+ 
++0x00,0x00,0x40,0xd1,0xff,0xff,0xff,0x07
++# CHECK: v_nop                                   ; encoding: [0x00,0x00,0x40,0xd1,0x00,0x00,0x00,0x00]
++
+ 0xff,0x00,0x6b,0xd1,0x01,0x01,0x00,0x00
+ # CHECK: v_not_b32_e64 v255, v1                  ; encoding: [0xff,0x00,0x6b,0xd1,0x01,0x01,0x00,0x00]
+ 
+diff --git a/llvm/utils/gn/secondary/llvm/version.gni b/llvm/utils/gn/secondary/llvm/version.gni
+index eb34b1d95308..6f6300c529f3 100644
+--- a/llvm/utils/gn/secondary/llvm/version.gni
++++ b/llvm/utils/gn/secondary/llvm/version.gni
+@@ -1,4 +1,4 @@
+ llvm_version_major = 22
+ llvm_version_minor = 1
+-llvm_version_patch = 0
++llvm_version_patch = 1
+ llvm_version = "$llvm_version_major.$llvm_version_minor.$llvm_version_patch"
+diff --git a/llvm/utils/lit/lit/__init__.py b/llvm/utils/lit/lit/__init__.py
+index fe8817e9048d..af1e2a2972c4 100644
+--- a/llvm/utils/lit/lit/__init__.py
++++ b/llvm/utils/lit/lit/__init__.py
+@@ -2,7 +2,7 @@
+ 
+ __author__ = "Daniel Dunbar"
+ __email__ = "daniel@minormatter.com"
+-__versioninfo__ = (22, 1, 0)
++__versioninfo__ = (22, 1, 1)
+ __version__ = ".".join(str(v) for v in __versioninfo__) + "dev"
+ 
+ __all__ = []
+diff --git a/llvm/utils/mlgo-utils/mlgo/__init__.py b/llvm/utils/mlgo-utils/mlgo/__init__.py
+index 3e01c7155143..2064cf4f9830 100644
+--- a/llvm/utils/mlgo-utils/mlgo/__init__.py
++++ b/llvm/utils/mlgo-utils/mlgo/__init__.py
+@@ -4,7 +4,7 @@
+ 
+ from datetime import timezone, datetime
+ 
+-__versioninfo__ = (22, 1, 0)
++__versioninfo__ = (22, 1, 1)
+ __version__ = (
+     ".".join(str(v) for v in __versioninfo__)
+     + "dev"
+diff --git a/llvm/utils/release/github-upload-release.py b/llvm/utils/release/github-upload-release.py
+index 2d8fb4531eb5..3eb592bb2746 100755
+--- a/llvm/utils/release/github-upload-release.py
++++ b/llvm/utils/release/github-upload-release.py
+@@ -102,9 +102,9 @@ release_links = (
+             "* Windows x64 (64-bit): [installer]({0}) ([signature]({1})), [archive]({2}) ([signature]({3}))",
+             (
+                 "LLVM-{release}-win64.exe",
+-                "LLVM-{release}-win64.exe.sig",
++                "LLVM-{release}-win64.exe.jsonl",
+                 "clang+llvm-{release}-x86_64-pc-windows-msvc.tar.xz",
+-                "clang+llvm-{release}-x86_64-pc-windows-msvc.tar.xz.sig",
++                "clang+llvm-{release}-x86_64-pc-windows-msvc.tar.xz.jsonl",
+             ),
+         ),
+         (
+@@ -117,9 +117,9 @@ release_links = (
+             "* Windows on Arm (ARM64): [installer]({0}) ([signature]({1})), [archive]({2}) ([signature]({3}))",
+             (
+                 "LLVM-{release}-woa64.exe",
+-                "LLVM-{release}-woa64.exe.sig",
++                "LLVM-{release}-woa64.exe.jsonl",
+                 "clang+llvm-{release}-aarch64-pc-windows-msvc.tar.xz",
+-                "clang+llvm-{release}-aarch64-pc-windows-msvc.tar.xz.sig",
++                "clang+llvm-{release}-aarch64-pc-windows-msvc.tar.xz.jsonl",
+             ),
+         ),
+     ),
+@@ -180,7 +180,7 @@ In addition, source archives are available:
+ 
+ ## Verifying Packages
+ 
+-All packages come with a matching `.sig` or `.jsonl` file. You should use these to verify the integrity of the packages.
++All packages come with a matching `.sig` and/or `.jsonl` file. You should use these to verify the integrity of the packages.
+ 
+ If it has a `.sig` file, it should have been signed by the release managers using GPG. Download the keys from the [LLVM website](https://releases.llvm.org/release-keys.asc), import them into your keyring and use them to verify the file:
+ ```
+diff --git a/openmp/CMakeLists.txt b/openmp/CMakeLists.txt
+index df568419824a..cfe01daaa80d 100644
+--- a/openmp/CMakeLists.txt
++++ b/openmp/CMakeLists.txt
+@@ -71,13 +71,26 @@ else()
+         "Path where built OpenMP libraries should be installed.")
+   endif()
+ 
+-  if (NOT MSVC)
+-    set(OPENMP_TEST_C_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang)
+-    set(OPENMP_TEST_CXX_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang++)
+-  else()
+-    set(OPENMP_TEST_C_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang.exe)
+-    set(OPENMP_TEST_CXX_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang++.exe)
++  set(OPENMP_TEST_C_COMPILER_default "${LLVM_TOOLS_BINARY_DIR}/clang${CMAKE_EXECUTABLE_SUFFIX}")
++  set(OPENMP_TEST_CXX_COMPILER_default "${LLVM_TOOLS_BINARY_DIR}/clang++${CMAKE_EXECUTABLE_SUFFIX}")
++  set(OPENMP_TEST_Fortran_COMPILER_default "${LLVM_TOOLS_BINARY_DIR}/flang${CMAKE_EXECUTABLE_SUFFIX}")
++  if (NOT TARGET "clang")
++    set(OPENMP_TEST_C_COMPILER_default "${CMAKE_C_COMPILER}")
++    set(OPENMP_TEST_CXX_COMPILER_default "${CMAKE_CXX_COMPILER}")
++  endif()
++  if (NOT TARGET "flang")
++    if (CMAKE_Fortran_COMPILER)
++      set(OPENMP_TEST_Fortran_COMPILER_default "${CMAKE_Fortran_COMPILER}")
++    else()
++      unset(OPENMP_TEST_Fortran_COMPILER_default)
++    endif()
+   endif()
++  set(OPENMP_TEST_C_COMPILER "${OPENMP_TEST_C_COMPILER_default}" CACHE STRING
++    "C compiler to use for testing OpenMP runtime libraries.")
++  set(OPENMP_TEST_CXX_COMPILER "${OPENMP_TEST_CXX_COMPILER_default}" CACHE STRING
++    "C++ compiler to use for testing OpenMP runtime libraries.")
++  set(OPENMP_TEST_Fortran_COMPILER "${OPENMP_TEST_Fortran_COMPILER_default}" CACHE STRING
++    "Fortran compiler to use for testing OpenMP runtime libraries.")
+ 
+   # Set fortran test compiler if flang is found
+   if (EXISTS "${OPENMP_TEST_Fortran_COMPILER}")
+@@ -116,14 +129,6 @@ math(EXPR LIBOMP_VERSION_BUILD_MONTH_DAY "${LIBOMP_VERSION_BUILD}%10000")
+ set(LIBOMP_BUILD_DATE "No_Timestamp")
+ 
+ 
+-# Check for flang
+-set(OPENMP_TEST_Fortran_COMPILER_default "")
+-if (CMAKE_Fortran_COMPILER)
+-  set(OPENMP_TEST_Fortran_COMPILER_default "${CMAKE_Fortran_COMPILER}")
+-endif ()
+-set(OPENMP_TEST_Fortran_COMPILER "${OPENMP_TEST_Fortran_COMPILER_default}" CACHE STRING
+-  "Fortran compiler to use for testing OpenMP runtime libraries.")
+-
+ set(LIBOMP_FORTRAN_MODULES FALSE CACHE BOOL
+   "Create Fortran module files? (requires fortran compiler)")
+ 
+diff --git a/openmp/cmake/OpenMPTesting.cmake b/openmp/cmake/OpenMPTesting.cmake
+index 262ea968c835..f46ff4268b73 100644
+--- a/openmp/cmake/OpenMPTesting.cmake
++++ b/openmp/cmake/OpenMPTesting.cmake
+@@ -221,19 +221,23 @@ function(add_openmp_testsuite target comment)
+       USES_TERMINAL
+     )
+   else()
++    set(EXTRA_CHECK_DEPENDS "")
++    if (TARGET "clang")
++      list(APPEND EXTRA_CHECK_DEPENDS clang)
++    endif()
+     if (ARG_EXCLUDE_FROM_CHECK_ALL)
+       add_lit_testsuite(${target}
+         ${comment}
+         ${ARG_UNPARSED_ARGUMENTS}
+         EXCLUDE_FROM_CHECK_ALL
+-        DEPENDS clang FileCheck not ${ARG_DEPENDS}
++        DEPENDS ${EXTRA_CHECK_DEPENDS} FileCheck not ${ARG_DEPENDS}
+         ARGS ${ARG_ARGS}
+       )
+     else()
+       add_lit_testsuite(${target}
+         ${comment}
+         ${ARG_UNPARSED_ARGUMENTS}
+-        DEPENDS clang FileCheck not ${ARG_DEPENDS}
++        DEPENDS ${EXTRA_CHECK_DEPENDS} FileCheck not ${ARG_DEPENDS}
+         ARGS ${ARG_ARGS}
+       )
+     endif()
+diff --git a/openmp/runtime/src/CMakeLists.txt b/openmp/runtime/src/CMakeLists.txt
+index 53f83c006b04..81fa9f0f2aaf 100644
+--- a/openmp/runtime/src/CMakeLists.txt
++++ b/openmp/runtime/src/CMakeLists.txt
+@@ -189,11 +189,17 @@ else()
+   set(LIBOMP_LINKER_LANGUAGE CXX)
+ endif()
+ if(${LIBOMP_USE_HWLOC})
++  # Since we are using an OBJECT library, the PRIVATE and INTERFACE options are split
++  # (instead of using PUBLIC): obj.omp for compiling itself, omp for propagating
++  # the options to other libraries that depend on it, e.g. libompd.
++  target_include_directories(obj.omp
++    PRIVATE
++    "$<BUILD_INTERFACE:${LIBOMP_HWLOC_INCLUDE_DIR}>"
++    "$<INSTALL_INTERFACE:${LIBOMP_HWLOC_INCLUDE_DIR}>")
+   target_include_directories(omp
+-                             PUBLIC
+-			     "$<BUILD_INTERFACE:${LIBOMP_HWLOC_INCLUDE_DIR}>"
+-			     "$<INSTALL_INTERFACE:${LIBOMP_HWLOC_INCLUDE_DIR}>"
+-  )
++    INTERFACE
++    "$<BUILD_INTERFACE:${LIBOMP_HWLOC_INCLUDE_DIR}>"
++    "$<INSTALL_INTERFACE:${LIBOMP_HWLOC_INCLUDE_DIR}>")
+ endif()
+ 
+ if(OPENMP_MSVC_NAME_SCHEME)
+diff --git a/openmp/runtime/test/parallel/bug63197.c b/openmp/runtime/test/parallel/bug63197.c
+index c60f400b19a8..ac4c196d5374 100644
+--- a/openmp/runtime/test/parallel/bug63197.c
++++ b/openmp/runtime/test/parallel/bug63197.c
+@@ -3,15 +3,22 @@
+ #include <omp.h>
+ #include <stdio.h>
+ 
++/* This code tests that state pushed for the num_threads clause does not
++   reach the next parallel region. omp_get_max_threads() + 1 can never
++   be chosen as team size for the second parallel and could only be the
++   result of some left-over state from the first parallel.
++ */
++
+ int main(int argc, char *argv[]) {
+-#pragma omp parallel num_threads(3) if (0)
++  unsigned N = omp_get_max_threads();
++#pragma omp parallel num_threads(N + 1) if (0)
+ #pragma omp single
+   { printf("BBB %2d\n", omp_get_num_threads()); }
+ 
+ #pragma omp parallel
+ #pragma omp single
+   {
+-    if (omp_get_num_threads() != 3)
++    if (omp_get_num_threads() <= N)
+       printf("PASS\n");
+   }
+   return 0;
+diff --git a/openmp/tools/omptest/CMakeLists.txt b/openmp/tools/omptest/CMakeLists.txt
+index b313f223c354..98ca82236728 100644
+--- a/openmp/tools/omptest/CMakeLists.txt
++++ b/openmp/tools/omptest/CMakeLists.txt
+@@ -8,8 +8,7 @@ cmake_minimum_required(VERSION 3.20)
+ project(omptest LANGUAGES CXX)
+ 
+ option(LIBOMPTEST_BUILD_STANDALONE
+-       "Build ompTest 'standalone', i.e. w/o GoogleTest."
+-       ${OPENMP_STANDALONE_BUILD})
++       "Build ompTest 'standalone', i.e. w/o GoogleTest." OFF)
+ option(LIBOMPTEST_BUILD_UNITTESTS
+        "Build ompTest's unit tests, requires GoogleTest." OFF)
+ option(LIBOMPTEST_INSTALL_COMPONENTS
+@@ -20,6 +19,15 @@ if((NOT ${LIBOMP_OMPT_SUPPORT}) OR (NOT ${LLVM_INCLUDE_TESTS}))
+   return()
+ endif()
+ 
++# Only support OpenMP runtime 'bootstrap' build mode.
++# Check as seen in 'runtimes/CMakeLists.txt', due to passing HAVE_LLVM_LIT to
++# llvm_ExternalProject_Add() only.
++if (NOT HAVE_LLVM_LIT)
++  message(STATUS "Skipping omptest build. Reason: Only supported in bootstrap"
++                 " build mode of OpenMP runtime.")
++  return()
++endif()
++
+ include(CMakePackageConfigHelpers)
+ 
+ include_directories(${LIBOMP_INCLUDE_DIR})
+@@ -51,7 +59,7 @@ add_library(omptest
+ )
+ 
+ # Target: ompTest library
+-# On (implicit) request of GoogleTest, link against the one provided with LLVM.
++# On (implicit) request of GoogleTest, embed the sources provided with LLVM.
+ if ((NOT LIBOMPTEST_BUILD_STANDALONE) OR LIBOMPTEST_BUILD_UNITTESTS)
+   # Check if standalone build was requested together with unittests
+   if (LIBOMPTEST_BUILD_STANDALONE)
+@@ -65,34 +73,39 @@ if ((NOT LIBOMPTEST_BUILD_STANDALONE) OR LIBOMPTEST_BUILD_UNITTESTS)
+     set(LIBOMPTEST_BUILD_STANDALONE OFF)
+   endif()
+ 
+-  # Add dependency llvm_gtest; emits error if unavailable.
+-  add_dependencies(omptest llvm_gtest)
+-
+-  # Link llvm_gtest as whole-archive to expose required symbols
+-  set(GTEST_LINK_CMD "-Wl,--whole-archive" llvm_gtest
+-                     "-Wl,--no-whole-archive" LLVMSupport)
+-
+-  # Add GoogleTest-based header
+-  target_sources(omptest PRIVATE ./include/OmptTesterGoogleTest.h)
++  message(STATUS "omptest build mode: GTest-based")
+ 
+-  # Add LLVM-provided GoogleTest include directories.
+-  target_include_directories(omptest PRIVATE
+-    ${LLVM_THIRD_PARTY_DIR}/unittest/googletest/include)
+-
+-  # TODO: Re-visit ABI breaking checks, disable for now.
+-  target_compile_definitions(omptest PUBLIC
+-    -DLLVM_DISABLE_ABI_BREAKING_CHECKS_ENFORCING)
+-
+-  # Link against gtest and gtest_main
+-  target_link_libraries(omptest PRIVATE ${GTEST_LINK_CMD})
++  # Add GoogleTest-based header and embed GTest symbols into the shared lib.
++  # Merging of GTest is desired, such that omptest is self-contained and
++  # independent of external GTest installations.
++  target_sources(omptest PRIVATE
++    $<TARGET_OBJECTS:default_gtest>
++  )
++
++  # Link against the default GTest which at this point primarily pulls in the
++  # include directories and compile definitions. It is important to make these
++  # available to dependant targets, e.g. for unit tests.
++  target_link_libraries(omptest PUBLIC default_gtest)
++
++  # Link against Threads (recommended for GTest).
++  find_package(Threads REQUIRED)
++  target_link_libraries(omptest PUBLIC Threads::Threads)
++
++  # Ensure that embedded GTest symbols are exported from libomptest.so even in
++  # builds that default to hidden.
++  set_target_properties(omptest PROPERTIES
++    CXX_VISIBILITY_PRESET default
++    VISIBILITY_INLINES_HIDDEN OFF
++  )
+ else()
++  message(STATUS "omptest build mode: standalone")
++
+   # Add 'standalone' compile definitions
+   target_compile_definitions(omptest PRIVATE
+     -DOPENMP_LIBOMPTEST_BUILD_STANDALONE)
+ 
+   # Add 'standalone' source files
+   target_sources(omptest PRIVATE
+-    ./include/OmptTesterStandalone.h
+     ./src/OmptTesterStandalone.cpp)
+ endif()
+ 
+@@ -138,7 +151,7 @@ if(LIBOMPTEST_INSTALL_COMPONENTS)
+ 
+   # Install library and export targets.
+   # Note: find_package(omptest) may require setting of PATH_SUFFIXES
+-  #       Example: "lib/cmake/openmp/omptest", this is due to the install location
++  #       Example: "lib/cmake/openmp/omptest", due to the install location
+   install(TARGETS omptest
+           EXPORT OPENMPomptest
+           LIBRARY COMPONENT omptest
+diff --git a/openmp/tools/omptest/test/CMakeLists.txt b/openmp/tools/omptest/test/CMakeLists.txt
+index 2b4aa78b0bc1..1d043b0d8ea4 100644
+--- a/openmp/tools/omptest/test/CMakeLists.txt
++++ b/openmp/tools/omptest/test/CMakeLists.txt
+@@ -14,11 +14,8 @@ set(UNITTEST_SOURCES
+ )
+ add_executable(omptest-unittests ${UNITTEST_SOURCES})
+ 
+-# Add local and LLVM-provided GoogleTest include directories.
+-target_include_directories(omptest-unittests PRIVATE
+-  ../include
+-  ${LLVM_THIRD_PARTY_DIR}/unittest/googletest/include)
+-
++# Add local include directory and link omptest library
++target_include_directories(omptest-unittests PRIVATE ../include)
+ target_link_libraries(omptest-unittests PRIVATE omptest)
+ 
+ set_target_properties(omptest-unittests PROPERTIES
+diff --git a/third-party/benchmark/include/benchmark/benchmark.h b/third-party/benchmark/include/benchmark/benchmark.h
+index c2debb216d64..71399d030a84 100644
+--- a/third-party/benchmark/include/benchmark/benchmark.h
++++ b/third-party/benchmark/include/benchmark/benchmark.h
+@@ -250,10 +250,6 @@ BENCHMARK(BM_test)->Unit(benchmark::kMillisecond);
+   _Pragma("GCC diagnostic push")             \
+   _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+ #define BENCHMARK_RESTORE_DEPRECATED_WARNING _Pragma("GCC diagnostic pop")
+-#define BENCHMARK_DISABLE_PEDANTIC_WARNING \
+-  _Pragma("GCC diagnostic push")             \
+-  _Pragma("GCC diagnostic ignored \"-Wpedantic\"")
+-#define BENCHMARK_RESTORE_PEDANTIC_WARNING _Pragma("GCC diagnostic pop")
+ #elif defined(__NVCOMPILER)
+ #define BENCHMARK_BUILTIN_EXPECT(x, y) __builtin_expect(x, y)
+ #define BENCHMARK_DEPRECATED_MSG(msg) __attribute__((deprecated(msg)))
+@@ -261,8 +257,6 @@ BENCHMARK(BM_test)->Unit(benchmark::kMillisecond);
+   _Pragma("diagnostic push") \
+   _Pragma("diag_suppress deprecated_entity_with_custom_message")
+ #define BENCHMARK_RESTORE_DEPRECATED_WARNING _Pragma("diagnostic pop")
+-#define BENCHMARK_DISABLE_PEDANTIC_WARNING
+-#define BENCHMARK_RESTORE_PEDANTIC_WARNING
+ #else
+ #define BENCHMARK_BUILTIN_EXPECT(x, y) x
+ #define BENCHMARK_DEPRECATED_MSG(msg)
+@@ -271,8 +265,6 @@ BENCHMARK(BM_test)->Unit(benchmark::kMillisecond);
+       __LINE__) ") : warning note: " msg))
+ #define BENCHMARK_DISABLE_DEPRECATED_WARNING
+ #define BENCHMARK_RESTORE_DEPRECATED_WARNING
+-#define BENCHMARK_DISABLE_PEDANTIC_WARNING
+-#define BENCHMARK_RESTORE_PEDANTIC_WARNING
+ #endif
+ // clang-format on
+ 
+@@ -1467,16 +1459,29 @@ class Fixture : public internal::Benchmark {
+ // ------------------------------------------------------
+ // Macro to register benchmarks
+ 
++// clang-format off
++#if defined(__clang__)
++#define BENCHMARK_DISABLE_COUNTER_WARNING                        \
++  _Pragma("GCC diagnostic push")                                 \
++  _Pragma("GCC diagnostic ignored \"-Wunknown-warning-option\"") \
++  _Pragma("GCC diagnostic ignored \"-Wc2y-extensions\"")
++#define BENCHMARK_RESTORE_COUNTER_WARNING _Pragma("GCC diagnostic pop")
++#else
++#define BENCHMARK_DISABLE_COUNTER_WARNING
++#define BENCHMARK_RESTORE_COUNTER_WARNING
++#endif
++// clang-format on
++
+ // Check that __COUNTER__ is defined and that __COUNTER__ increases by 1
+ // every time it is expanded. X + 1 == X + 0 is used in case X is defined to be
+ // empty. If X is empty the expression becomes (+1 == +0).
+-BENCHMARK_DISABLE_PEDANTIC_WARNING
++BENCHMARK_DISABLE_COUNTER_WARNING
+ #if defined(__COUNTER__) && (__COUNTER__ + 1 == __COUNTER__ + 0)
+ #define BENCHMARK_PRIVATE_UNIQUE_ID __COUNTER__
+ #else
+ #define BENCHMARK_PRIVATE_UNIQUE_ID __LINE__
+ #endif
+-BENCHMARK_RESTORE_PEDANTIC_WARNING
++BENCHMARK_RESTORE_COUNTER_WARNING
+ 
+ // Helpers for generating unique variable names
+ #ifdef BENCHMARK_HAS_CXX11
+@@ -1495,8 +1500,9 @@ BENCHMARK_RESTORE_PEDANTIC_WARNING
+   BaseClass##_##Method##_Benchmark
+ 
+ #define BENCHMARK_PRIVATE_DECLARE(n)                                 \
++  BENCHMARK_DISABLE_COUNTER_WARNING                                  \
+   static ::benchmark::internal::Benchmark* BENCHMARK_PRIVATE_NAME(n) \
+-      BENCHMARK_UNUSED
++      BENCHMARK_RESTORE_COUNTER_WARNING BENCHMARK_UNUSED
+ 
+ #ifdef BENCHMARK_HAS_CXX11
+ #define BENCHMARK(...)                                               \
+-- 
+2.50.1 (Apple Git-155)
+

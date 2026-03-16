@@ -94,6 +94,25 @@ STRG_LOC_CONST(aStrHelp[])		  = "This is a romable C application\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
+#if (defined(ROMABLE_S))
+
+// Prototypes
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+
+MODULE(
+	Rpn,								// Module name (the first letter has to be upper case)
+	KID_FAM_CLI,						// Family (defined in the module.h)
+	KNUM_ROMABLE_0,						// Module identifier (defined in the module.h)
+	nullptr,							// Address of the initialisation code (early pre-init)
+	prgm,								// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,							// Address of the clean code (clean the module)
+	" 1.0",								// Revision string (major . minor)
+	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
+	0									// Execution cores
+);
+
+#else
 MODULE(
 	UserAppl,							// Module name (the first letter has to be upper case)
 	KID_FAM_APPLICATIONS,				// Family (defined in the module.h)
@@ -105,6 +124,7 @@ MODULE(
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),	// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0									// Execution cores
 );
+#endif
 
 // Application specific
 // ====================
@@ -169,9 +189,9 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 		  char_t **parameters = (char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "parameters");
 	const char_t **argv		  = (const char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "argv");
 
-	if (commandLine == nullptr) { LOG(KFATAL_USER, "memo_malloc commandLine"); exit(EXIT_OS_FAILURE); }
-	if (parameters == nullptr)	 { LOG(KFATAL_USER, "memo_malloc parameters");	exit(EXIT_OS_FAILURE); }
-	if (argv == nullptr)		 { LOG(KFATAL_USER, "memo_malloc argv");		exit(EXIT_OS_FAILURE); }
+	if (commandLine == nullptr) { LOG(KFATAL_USER, "memo_malloc commandLine"); exit(EXIT_OS_FAILURE);  }
+	if (parameters == nullptr)	{ LOG(KFATAL_USER, "memo_malloc parameters");	exit(EXIT_OS_FAILURE); }
+	if (argv == nullptr)		{ LOG(KFATAL_USER, "memo_malloc argv");		exit(EXIT_OS_FAILURE);	   }
 
 	UNUSED(argument);
 
@@ -224,7 +244,7 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
  * - Kill the "main". At this moment only the launched processes are executed
  *
  */
-int		main(int argc, const char *argv[]) {
+MAIN_ENTRY(argc, argv[]) {
 	proc_t	*process;
 
 // -------------------------------I-----------------------------------------I--------------I

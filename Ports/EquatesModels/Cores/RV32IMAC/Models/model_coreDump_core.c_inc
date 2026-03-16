@@ -52,10 +52,10 @@ static	uint32_t	vExceptionNb[KNB_CORES];
 
 // Prototypes
 
-static	void		local_processException(uintptr_t *stackBefore, uintptr_t *stackAfter);
-static	void		local_printException(const char_t **vectorName);
-static	void		local_printCore(void);
-static	void		local_printStackFrame(void);
+static	void	local_processException(uintptr_t *stackBefore, uintptr_t *stackAfter);
+static	void	local_printException(const char_t **vectorName);
+static	void	local_printCore(void);
+static	void	local_printStackFrame(void);
 
 /*
  * \brief model_coreDump_displayExceptions
@@ -290,7 +290,7 @@ static	void	local_printStackFrame(void) {
 
 	offset = 0u;
 
-	stack = vStackBefore[core];
+	stack = &vStackBefore[core][sp];
 
 	(void)snprintf(&string[0], 80u, "Stack content before the fault: offset = 0x%08"PRIXPTR"\n", offset); 													cmns_send(KDEF0, string);
 	(void)snprintf(&string[0], 80u, "stack[+31] = 0x%08"PRIXPTR"\n",   stack[offset + 31u]);			   													cmns_send(KDEF0, string);

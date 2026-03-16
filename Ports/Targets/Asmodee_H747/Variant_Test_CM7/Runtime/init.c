@@ -250,24 +250,24 @@ static	void	local_GPIO_Configuration(void) {
 
 // Init all the GPIO A, B, C, D, E, F, G, H, I, J, K
 
-// PA00, IN,  50-MHz, Pull-up	PUSH0		AF0		PUSH0
-// PA01, AN,  50-MHz, Pull-up	ADC			AF0		A1
-// PA02, IN,  50-MHz, Pull-up	MDIO		AF0		Ethernet
+// PA00, IN,  50-MHz, Pull-up	PUSH0		AF00	PUSH0
+// PA01, AN,  50-MHz, Pull-up	ADC			AF00	A1
+// PA02, IN,  50-MHz, Pull-up	MDIO		AF00	Ethernet
 // PA03, AL,  99-MHz, Push-pull	D0			AF10	USB3320C
 // PA04, AL,  50-MHz, Pull-up	HSYNC		AF13
 // PA05, AL,  99-MHz, Push-pull	CKOUT		AF10	USB3320C
 // PA06, AL,  50-MHz, Pull-up	PIXCLK		AF13
-// PA07, IN,  50-MHz, Pull-up	CRS_DIV		AF0		Ethernet
-// PA08, OU,  50-MHz, Push-pull	PWM0		AF0
-// PA09, AL,  50-MHz, Push-pull	LPUART1_TX	AF3
-// PA10, AL,  50-MHz, Pull-up	LPUART1_RX	AF3
+// PA07, IN,  50-MHz, Pull-up	CRS_DIV		AF00	Ethernet
+// PA08, OU,  50-MHz, Push-pull	PWM0		AF00
+// PA09, AL,  50-MHz, Push-pull	LPUART1_TX	AF03
+// PA10, AL,  50-MHz, Pull-up	LPUART1_RX	AF03
 // PA11, AL,  99-MHz, -			OTG_FS_N	AF10
 // PA12, AL,  99-MHz, -			OTG_FS_P	AF10
-// PA13, AL,  50-MHz, Pull-up 	TMS			AF0
-// PA14, AL,  50-MHz, Pull-down TCK			AF0
+// PA13, AL,  50-MHz, Pull-up 	TMS			AF00
+// PA14, AL,  50-MHz, Pull-down TCK			AF00
 
 #if (defined(FULL_JTAG_S))
-// PA15, AL,  50-MHz, Pull-up 	TDI			AF0
+// PA15, AL,  50-MHz, Pull-up 	TDI			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(A,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KOU,KIN,KAL,KAL,KAL,KAL,KIN,KAN,KIN,
@@ -291,22 +291,22 @@ static	void	local_GPIO_Configuration(void) {
 
 // PB00, AL,  99-MHz, Push-pull	D1			AF10	USB3320C
 // PB01, AL,  99-MHz, Push-pull	D2			AF10	USB3320C
-// PB02, IN,  50-MHz, Pull-up	SW3			AF0		SW3
+// PB02, IN,  50-MHz, Pull-up	SW3			AF00	SW3
 // PB05, AL,  99-MHz, Push-pull	D7			AF10	USB3320C
-// PB06, AL,  50-MHz, Open DU	I2C1_SCL	AF4
-// PB07, AL,  50-MHz, Open DU	I2C1_SDA	AF4
-// PB08, IN,  50-MHz, Pull-up	SW0			AF0		SW0
-// PB09, OU,  50-MHz, Push-pull	SPI2_NSS	AF0		SELMAGNETO
+// PB06, AL,  50-MHz, Open DU	I2C1_SCL	AF04
+// PB07, AL,  50-MHz, Open DU	I2C1_SDA	AF04
+// PB08, IN,  50-MHz, Pull-up	SW0			AF00	SW0
+// PB09, OU,  50-MHz, Push-pull	SPI2_NSS	AF00	SELMAGNETO
 // PB10, AL,  99-MHz, Push-pull	D3			AF10	USB3320C
 // PB11, AL,  99-MHz, Push-pull	D4			AF10	USB3320C
 // PB12, AL,  99-MHz, Push-pull	D5			AF10	USB3320C
 // PB13, AL,  99-MHz, Push-pull	D6			AF10	USB3320C
-// PB14, IN,  50-MHz, Pull-up	SW1			AF0		SW1
-// PB15, IN,  50-MHz, Pull-up	SW2			AF0		SW2
+// PB14, IN,  50-MHz, Pull-up	SW1			AF00	SW1
+// PB15, IN,  50-MHz, Pull-up	SW2			AF00	SW2
 
 #if (defined(FULL_JTAG_Ss))
-// PB03, AL,  50-MHz, Push-pull	TDO			AF0
-// PB04, AL,  50-MHz, Pull-up	NJTRST		AF0
+// PB03, AL,  50-MHz, Push-pull	TDO			AF00
+// PB04, AL,  50-MHz, Pull-up	NJTRST		AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(B,KIN,KIN,KAL,KAL,KAL,KAL,KOU,KIN,KAL,KAL,KAL,KAL,KAL,KIN,KAL,KAL,
@@ -317,8 +317,8 @@ static	void	local_GPIO_Configuration(void) {
 			  0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
 #else
-// PB03, AL,  50-MHz, Pull-up	SPI1_SCK	AF5		SPI SLAVE Xfer
-// PB04, AL,  50-MHz, Push-pull	SPI1_MISO	AF5		SPI SLAVE Xfer
+// PB03, AL,  50-MHz, Pull-up	SPI1_SCK	AF05	SPI SLAVE Xfer
+// PB04, AL,  50-MHz, Push-pull	SPI1_MISO	AF05	SPI SLAVE Xfer
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(B,KIN,KIN,KAL,KAL,KAL,KAL,KOU,KIN,KAL,KAL,KAL,KAL,KAL,KIN,KAL,KAL,
@@ -330,21 +330,21 @@ static	void	local_GPIO_Configuration(void) {
 #endif
 
 // PC00, AL,  99-MHz, Push-pull	STP			AF10	USB3320C
-// PC01, IN,  50-MHz, Pull-up	MDC			AF0		Ethernet
-// PC02, AN,  50-MHz, Pull-up	ADC			AF0		A2
-// PC03, AN,  50-MHz, Pull-up	ADC			AF0		A3
-// PC04, IN,  50-MHz, Pull-up	RXD0		AF0		Ethernet
-// PC05, IN,  50-MHz, Pull-up	RXD1		AF0		Ethernet
-// PC06, OU,  50-MHz, Push-pull	PWM1		AF0
-// PC07, OU,  50-MHz, Push-pull	PWM2		AF0
+// PC01, IN,  50-MHz, Pull-up	MDC			AF00	Ethernet
+// PC02, AN,  50-MHz, Pull-up	ADC			AF00	A2
+// PC03, AN,  50-MHz, Pull-up	ADC			AF00	A3
+// PC04, IN,  50-MHz, Pull-up	RXD0		AF00	Ethernet
+// PC05, IN,  50-MHz, Pull-up	RXD1		AF00	Ethernet
+// PC06, OU,  50-MHz, Push-pull	PWM1		AF00
+// PC07, OU,  50-MHz, Push-pull	PWM2		AF00
 // PC08, AL,  50-MHz, Push-pull	SDMMC1_D0	AF12
 // PC09, AL,  50-MHz, Push-pull	SDMMC1_D1	AF12
 // PC10, AL,  50-MHz, Push-pull	SDMMC1_D2	AF12
 // PC11, AL,  50-MHz, Push-pull	SDMMC1_D3	AF12
 // PC12, AL,  50-MHz, Push-pull	SDMMC1_CLK	AF12
-// PC13, IN,  50-MHz, Pull-up	GPIO0		AF0
-// PC14, AL,  50-MHz, -			OSC			AF0		32KHz in
-// PC15, OU,  50-MHz, Push-pull	CAMERA_OI1	AF0		CAMERA_OI1 (DEN_AG)
+// PC13, IN,  50-MHz, Pull-up	GPIO0		AF00
+// PC14, AL,  50-MHz, -			OSC			AF00	32KHz in
+// PC15, OU,  50-MHz, Push-pull	CAMERA_OI1	AF00	CAMERA_OI1 (DEN_AG)
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(C,KOU,KAL,KIN,KAL,KAL,KAL,KAL,KAL,KOU,KOU,KIN,KIN,KAN,KAN,KIN,KAL,
@@ -357,17 +357,17 @@ static	void	local_GPIO_Configuration(void) {
 // PD00, AL,  99-MHz, Pull-up	FMC_D2		AF12
 // PD01, AL,  99-MHz, Pull-up	FMC_D3		AF12
 // PD02, AL,  50-MHz, Push-pull	SDMMC1_CMD	AF12
-// PD03, AL,  50-MHz, Push-pull	I2S2_CK		AF5
-// PD04, OU,  50-MHz, Push-pull	CAMERA_OI2	AF0		CAMERA_OI2 (Standby)
-// PD05, OU,  50-MHz, Push-pull	CAMERA_OI3	AF0		CAMERA_OI3 (Exposure)
-// PD06, OU,  50-MHz, Push-pull	LED6		AF0		LED6
-// PD07, AL,  50-MHz, Pull-up	SPI1_MOSI	AF5		SPI SLAVE Xfer
+// PD03, AL,  50-MHz, Push-pull	I2S2_CK		AF05
+// PD04, OU,  50-MHz, Push-pull	CAMERA_OI2	AF00	CAMERA_OI2 (Standby)
+// PD05, OU,  50-MHz, Push-pull	CAMERA_OI3	AF00	CAMERA_OI3 (Exposure)
+// PD06, OU,  50-MHz, Push-pull	LED6		AF00	LED6
+// PD07, AL,  50-MHz, Pull-up	SPI1_MOSI	AF05	SPI SLAVE Xfer
 // PD08, AL,  99-MHz, Push-pull	FMC_D13		AF12
 // PD09, AL,  99-MHz, Push-pull	FMC_D14		AF12
 // PD10, AL,  99-MHz, Push-pull	FMC_D15		AF12
-// PD11, AL,  50-MHz, Push-pull	QSPI1_IO0	AF9
-// PD12, AL,  50-MHz, Push-pull	QSPI1_IO1	AF9
-// PD13, AL,  50-MHz, Push-pull	QSPI1_IO3	AF9
+// PD11, AL,  50-MHz, Push-pull	QSPI1_IO0	AF09
+// PD12, AL,  50-MHz, Push-pull	QSPI1_IO1	AF09
+// PD13, AL,  50-MHz, Push-pull	QSPI1_IO3	AF09
 // PD14, AL,  99-MHz, Push-pull	FMC_D0		AF12
 // PD15, AL,  99-MHz, Push-pull	FMC_D1		AF12
 
@@ -381,11 +381,11 @@ static	void	local_GPIO_Configuration(void) {
 
 // PE00, AL,  99-MHz, Push-pull	FMC_NBL0	AF12
 // PE01, AL,  99-MHz, Push-pull	FMC_NBL1	AF12
-// PE02, OU,  50-MHz, Push-pull	LED7		AF0		LED7
-// PE03, IN,  50-MHz, Pull-up	CAMERA_OI4	AF0		CAMERA_OI4 (INTIMU)
-// PE04, AL,  50-MHz, Push-pull	SAI1_FS_A	AF6
-// PE05, AL,  50-MHz, Push-pull	SAI1_SCK_A	AF6
-// PE06, AL,  50-MHz, Push-pull	SAI1_SD_A	AF6
+// PE02, OU,  50-MHz, Push-pull	LED7		AF00	LED7
+// PE03, IN,  50-MHz, Pull-up	CAMERA_OI4	AF00	CAMERA_OI4 (INTIMU)
+// PE04, AL,  50-MHz, Push-pull	SAI1_FS_A	AF06
+// PE05, AL,  50-MHz, Push-pull	SAI1_SCK_A	AF06
+// PE06, AL,  50-MHz, Push-pull	SAI1_SD_A	AF06
 // PE07, AL,  99-MHz, Push-pull	FMC_D4		AF12
 // PE08, AL,  99-MHz, Push-pull	FMC_D5		AF12
 // PE09, AL,  99-MHz, Push-pull	FMC_D6		AF12
@@ -410,11 +410,11 @@ static	void	local_GPIO_Configuration(void) {
 // PF03, AL,  99-MHz, Push-pull	FMC_A3		AF12
 // PF04, AL,  99-MHz, Push-pull	FMC_A4		AF12
 // PF05, AL,  99-MHz, Push-pull	FMC_A5		AF12
-// PF06, AL,  50-MHz, Pull-up	UART7_RX	AF7
-// PF07, AL,  50-MHz, Push-pull	QSPI1_IO2	AF9
-// PF08, AL,  50-MHz, Push-pull	UART7_RTS	AF7
-// PF09, AL,  50-MHz, Pull-up	UART7_CTS	AF7
-// PF10, AL,  50-MHz, Push-pull	QSPI1_SCK	AF9
+// PF06, AL,  50-MHz, Pull-up	UART7_RX	AF07
+// PF07, AL,  50-MHz, Push-pull	QSPI1_IO2	AF09
+// PF08, AL,  50-MHz, Push-pull	UART7_RTS	AF07
+// PF09, AL,  50-MHz, Pull-up	UART7_CTS	AF07
+// PF10, AL,  50-MHz, Push-pull	QSPI1_SCK	AF09
 // PF11, AL,  99-MHz, Push-pull	FMC_RAS		AF12
 // PF12, AL,  99-MHz, Push-pull	FMC_A6		AF12
 // PF13, AL,  99-MHz, Push-pull	FMC_A7		AF12
@@ -432,18 +432,18 @@ static	void	local_GPIO_Configuration(void) {
 // PG00, AL,  99-MHz, Push-pull	FMC_A10		AF12
 // PG01, AL,  99-MHz, Push-pull	FMC_A11		AF12
 // PG02, AL,  99-MHz, Push-pull	FMC_A12		AF12
-// PG03, OU,  50-MHz, Push-pull	CAMERA_OI5	AF0		CAMERA_OI5 (SELACCELERO)
+// PG03, OU,  50-MHz, Push-pull	CAMERA_OI5	AF00	CAMERA_OI5 (SELACCELERO)
 // PG04, AL,  99-MHz, Push-pull	FMC_BA0		AF12
 // PG05, AL,  99-MHz, Push-pull	FMC_BA1		AF12
 // PG06, AL,  50-MHz, Push-pull	QSPI1_CS	AF10
-// PG07, OU,  50-MHz, Push-pull	PWM3		AF0
+// PG07, OU,  50-MHz, Push-pull	PWM3		AF00
 // PG08, AL,  99-MHz, Pull-up	FMC_CLK		AF12
-// PG09, AL,  50-MHz, Pull-up	UART6_RX	AF7		Console C
-// PG10, AL,  50-MHz, Pull-up	SPI1_NSS	AF5		SPI SLAVE Xfer
-// PG11, IN,  50-MHz, Pull-up	TXEN		AF0		Ethernet
-// PG12, IN,  50-MHz, Pull-up	TXD1		AF0		Ethernet
-// PG13, IN,  50-MHz, Pull-up	TXD0		AF0		Ethernet
-// PG14, AL,  50-MHz, Push-pull	USART6_TX	AF7		Console C
+// PG09, AL,  50-MHz, Pull-up	UART6_RX	AF07	Console C
+// PG10, AL,  50-MHz, Pull-up	SPI1_NSS	AF05	SPI SLAVE Xfer
+// PG11, IN,  50-MHz, Pull-up	TXEN		AF00	Ethernet
+// PG12, IN,  50-MHz, Pull-up	TXD1		AF00	Ethernet
+// PG13, IN,  50-MHz, Pull-up	TXD0		AF00	Ethernet
+// PG14, AL,  50-MHz, Push-pull	USART6_TX	AF07	Console C
 // PG15, AL,  99-MHz, Push-pull	FMC_CAS		AF12
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
@@ -454,22 +454,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 1u, 0u, 0u, 0u);
 
-// PH00, AL,  50-MHz, -			OSC			AF0		25-MHz in
-// PH01, OU,  50-MHz, Push-pull	OSCEN		AF0		Clock enable
+// PH00, AL,  50-MHz, -			OSC			AF00	25-MHz in
+// PH01, OU,  50-MHz, Push-pull	OSCEN		AF00	Clock enable
 // PH02, AL,  99-MHz, Push-pull	FMC_CKE		AF12
 // PH03, AL,  99-MHz, Push-pull	FMC_NE0		AF12
 // PH04, AL,  99-MHz, Pull-up	NXT			AF10	USB3320C
 // PH05, AL,  99-MHz, Push-pull	FMC_WE		AF12
-// PH06, OU,  50-MHz, Push-pull	PWM9		AF0
-// PH07, AL,  50-MHz, Open DU	I2C3_SCL	AF4
-// PH08, AL,  50-MHz, Open DU	I2C3_SDA	AF4
+// PH06, OU,  50-MHz, Push-pull	PWM9		AF00
+// PH07, AL,  50-MHz, Open DU	I2C3_SCL	AF04
+// PH08, AL,  50-MHz, Open DU	I2C3_SDA	AF04
 // PH09, AL,  50-MHz, Push-pull	DCMI_D0		AF13
 // PH10, AL,  50-MHz, Push-pull	DCMI_D1		AF13
 // PH11, AL,  50-MHz, Push-pull	DCMI_D2		AF13
 // PH12, AL,  50-MHz, Push-pull	DCMI_D3		AF13
-// PH13, OU,  50-MHz, Push-pull	LED5		AF0		LED5
+// PH13, OU,  50-MHz, Push-pull	LED5		AF00	LED5
 // PH14, AL,  50-MHz, Push-pull	DCMI_D4		AF13
-// PH15, OU,  50-MHz, Push-pull	PWM6		AF0
+// PH15, OU,  50-MHz, Push-pull	PWM6		AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(H,KOU,KAL,KOU,KAL,KAL,KAL,KAL,KAL,KAL,KOU,KAL,KAL,KAL,KAL,KOU,KAL,
@@ -479,22 +479,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KOD,KOD,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u);
 
-// PI00, OU,  50-MHz, Push-pull	SPI2_CS		AF0
-// PI01, AL,  50-MHz, Push-pull	SPI2_CLK	AF5
-// PI02, AL,  50-MHz, Pull-up	I2S2_SDI	AF5
-// PI03, AL,  50-MHz, Push-pull	I2S2_SDO	AF5
+// PI00, OU,  50-MHz, Push-pull	SPI2_CS		AF00
+// PI01, AL,  50-MHz, Push-pull	SPI2_CLK	AF05
+// PI02, AL,  50-MHz, Pull-up	I2S2_SDI	AF05
+// PI03, AL,  50-MHz, Push-pull	I2S2_SDO	AF05
 // PI04, AL,  50-MHz, Push-pull	DCMI_D5		AF13
 // PI05, AL,  50-MHz, Push-pull	VSYNC		AF13
 // PI06, AL,  50-MHz, Push-pull	DCMI_D6		AF13
 // PI07, AL,  50-MHz, Push-pull	DCMI_D7		AF13
-// PI08, OU,  50-MHz, Push-pull	BTSEL		AF0
-// PI09, OU,  50-MHz, Push-pull	LED0		AF0		LED0
-// PI10, OU,  50-MHz, Push-pull	LED1		AF0		LED1
+// PI08, OU,  50-MHz, Push-pull	BTSEL		AF00
+// PI09, OU,  50-MHz, Push-pull	LED0		AF00	LED0
+// PI10, OU,  50-MHz, Push-pull	LED1		AF00	LED1
 // PI11, AL,  99-MHz, Push-pull	DIR			AF10	USB3320C
-// PI12, OU,  50-MHz, Push-pull	CRYPTO_EN	AF0
-// PI13, OU,  50-MHz, Push-pull	LED2		AF0		LED2
-// PI14, OU,  50-MHz, Push-pull	LED3		AF0		LED3
-// PI15, OU,  50-MHz, Push-pull	LED4		AF0		LED4
+// PI12, OU,  50-MHz, Push-pull	CRYPTO_EN	AF00
+// PI13, OU,  50-MHz, Push-pull	LED2		AF00	LED2
+// PI14, OU,  50-MHz, Push-pull	LED3		AF00	LED3
+// PI15, OU,  50-MHz, Push-pull	LED4		AF00	LED4
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(I,KOU,KOU,KOU,KOU,KAL,KOU,KOU,KOU,KAL,KAL,KAL,KAL,KAL,KAL,KAL,KOU,
@@ -504,22 +504,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 1u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u);
 
-// PJ00, IN,  50-MHz, Pull-up	PF1550_STBY	AF0
-// PJ01, OU,  50-MHz, Push-pull	OSCEN		AF0
-// PJ02, IN,  50-MHz, Pull-up	-			AF0
-// PJ03, OU,  50-MHz, Push-pull	RSTN		AF0		Video Ctrl
-// PJ04, OU,  50-MHz, Push-pull	RESETB		AF0		USB3320C
-// PJ05, IN,  50-MHz, Pull-up	HOST_WAKE	AF0		Wifi Ctrl
-// PJ06, OU,  50-MHz, Push-pull	ID/OTG_EN	AF0		USB3320C / NX18P3001
-// PJ07, OU,  50-MHz, Push-pull	CAMERA_RZ	AF0		CAMERA_RZ
-// PJ08, AL,  50-MHz, Push-pull	UART8_TX	AF8		Console D
-// PJ09, AL,  50-MHz, Pull-up	UART8_RX	AF8		Console D
-// PJ10, OU,  50-MHz, Push-pull	CAMERA_OI0	AF0		CAMERA_OI0 (CLK_EN)
-// PJ11, OU,  50-MHz, Push-pull	PWM4		AF0
-// PJ12, OU,  50-MHz, Push-pull	ON			AF0		BLE Ctrl
-// PJ13, IN,  50-MHz, Pull-up	HOST_WAKE	AF0		BLE Ctrl
-// PJ14, IN,  50-MHz, Pull-up	DEVICE_WAKE	AF0		BLE Ctrl
-// PJ15, OU,  50-MHz, Push-pull	RST			AF0		Wifi
+// PJ00, IN,  50-MHz, Pull-up	PF1550_STBY	AF00
+// PJ01, OU,  50-MHz, Push-pull	OSCEN		AF00
+// PJ02, IN,  50-MHz, Pull-up	-			AF00
+// PJ03, OU,  50-MHz, Push-pull	RSTN		AF00	Video Ctrl
+// PJ04, OU,  50-MHz, Push-pull	RESETB		AF00	USB3320C
+// PJ05, IN,  50-MHz, Pull-up	HOST_WAKE	AF00	Wifi Ctrl
+// PJ06, OU,  50-MHz, Push-pull	ID/OTG_EN	AF00	USB3320C / NX18P3001
+// PJ07, OU,  50-MHz, Push-pull	CAMERA_RZ	AF00	CAMERA_RZ
+// PJ08, AL,  50-MHz, Push-pull	UART8_TX	AF08	Console D
+// PJ09, AL,  50-MHz, Pull-up	UART8_RX	AF08	Console D
+// PJ10, OU,  50-MHz, Push-pull	CAMERA_OI0	AF00	CAMERA_OI0 (CLK_EN)
+// PJ11, OU,  50-MHz, Push-pull	PWM4		AF00
+// PJ12, OU,  50-MHz, Push-pull	ON			AF00	BLE Ctrl
+// PJ13, IN,  50-MHz, Pull-up	HOST_WAKE	AF00	BLE Ctrl
+// PJ14, IN,  50-MHz, Pull-up	DEVICE_WAKE	AF00	BLE Ctrl
+// PJ15, OU,  50-MHz, Push-pull	RST			AF00	Wifi
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(J,KOU,KIN,KIN,KOU,KOU,KOU,KAL,KAL,KOU,KOU,KIN,KOU,KOU,KIN,KOU,KIN,
@@ -529,22 +529,22 @@ static	void	local_GPIO_Configuration(void) {
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  1u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 1u, 0u);
 
-// PK00, IN,  50-MHz, Pull-up	PF1550_INT	AF0
-// PK01, OU,  50-MHz, Push-pull	PWM5		AF0
-// PK02, OU,  50-MHz, Push-pull	EN			AF0		Video Ctrl
-// PK03, OU,  50-MHz, Push-pull	CABLE		AF0		Video Ctrl
-// PK04, OU,  50-MHz, Push-pull	ALT			AF0		Video Ctrl
-// PK05, OU,  50-MHz, Push-pull	LEDRed		AF0		LED red
-// PK06, OU,  50-MHz, Push-pull	LEDGreen	AF0		LED green
-// PK07, OU,  50-MHz, Push-pull	LEDBlue		AF0		LED blue
-// PK08, IN,  50-MHz, Pull-up	-			AF0
-// PK09, IN,  50-MHz, Pull-up	-			AF0
-// PK10, IN,  50-MHz, Pull-up	-			AF0
-// PK11, IN,  50-MHz, Pull-up	-			AF0
-// PK12, IN,  50-MHz, Pull-up	-			AF0
-// PK13, IN,  50-MHz, Pull-up	-			AF0
-// PK14, IN,  50-MHz, Pull-up	-			AF0
-// PK15, IN,  50-MHz, Pull-up	-			AF0
+// PK00, IN,  50-MHz, Pull-up	PF1550_INT	AF00
+// PK01, OU,  50-MHz, Push-pull	PWM5		AF00
+// PK02, OU,  50-MHz, Push-pull	EN			AF00	Video Ctrl
+// PK03, OU,  50-MHz, Push-pull	CABLE		AF00	Video Ctrl
+// PK04, OU,  50-MHz, Push-pull	ALT			AF00	Video Ctrl
+// PK05, OU,  50-MHz, Push-pull	LEDRed		AF00	LED red
+// PK06, OU,  50-MHz, Push-pull	LEDGreen	AF00	LED green
+// PK07, OU,  50-MHz, Push-pull	LEDBlue		AF00	LED blue
+// PK08, IN,  50-MHz, Pull-up	-			AF00
+// PK09, IN,  50-MHz, Pull-up	-			AF00
+// PK10, IN,  50-MHz, Pull-up	-			AF00
+// PK11, IN,  50-MHz, Pull-up	-			AF00
+// PK12, IN,  50-MHz, Pull-up	-			AF00
+// PK13, IN,  50-MHz, Pull-up	-			AF00
+// PK14, IN,  50-MHz, Pull-up	-			AF00
+// PK15, IN,  50-MHz, Pull-up	-			AF00
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(K,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KIN,KOU,KOU,KOU,KOU,KOU,KOU,KOU,KIN,

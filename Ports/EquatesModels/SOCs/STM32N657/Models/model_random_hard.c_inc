@@ -61,9 +61,10 @@ static	void	local_RNG_IRQHandler(void);
  */
 void	model_random_hard_init(void) {
 
-	REG(RCC)->AHB3ENR |= RCC_AHB3ENR_RNGEN;
+	REG(RCC)->AHB3ENR	|= RCC_AHB3ENR_RNGEN;
+	REG(RCC)->AHB3LPENR |= RCC_AHB3LPENR_RNGLPEN;
 
-	INTERRUPT_VECTOR(RNG_IRQn, local_RNG_IRQHandler);
+	INTERRUPT_VECTOR(RNG_C0_IRQn, local_RNG_IRQHandler);
 	NVIC_SetPriority(RNG_C0_IRQn, KINT_LEVEL_PERIPHERALS);
 	NVIC_EnableIRQ(RNG_C0_IRQn);
 }

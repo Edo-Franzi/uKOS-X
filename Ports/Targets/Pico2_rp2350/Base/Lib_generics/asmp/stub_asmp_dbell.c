@@ -113,9 +113,9 @@ int32_t	stub_asmp_init(void) {
 	identifierRX = (core == KCORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
 	identifierTX = (core == KCORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);
 
-	INTERRUPT_VECTOR(SIO_IRQ_BELL_IRQn, local_doorBell_IRQHandler);
-	NVIC_SetPriority(SIO_IRQ_BELL_IRQn, KINT_LEVEL_PERIPHERALS);
-	NVIC_EnableIRQ(SIO_IRQ_BELL_IRQn);
+	INTERRUPT_VECTOR(SIO_IRQ_BELL_C0_IRQn, local_doorBell_IRQHandler);
+	NVIC_SetPriority(SIO_IRQ_BELL_C0_IRQn, KINT_LEVEL_PERIPHERALS);
+	NVIC_EnableIRQ(SIO_IRQ_BELL_C0_IRQn);
 
 	local_initInterCore(core);
 

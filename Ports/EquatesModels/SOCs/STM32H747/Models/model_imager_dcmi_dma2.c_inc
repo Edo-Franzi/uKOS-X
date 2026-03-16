@@ -283,7 +283,7 @@ int32_t	model_imager_exposure(uint32_t time) {
  */
 static	int32_t	local_initDCMI(void) {
 
-	INTERRUPT_VECTOR(DCMI_IRQn, local_DCMI_IRQHandler);
+	INTERRUPT_VECTOR(DCMI_C0_IRQn, local_DCMI_IRQHandler);
 	NVIC_SetPriority(DCMI_C0_IRQn, KINT_LEVEL_PERIPHERALS);
 	NVIC_EnableIRQ(DCMI_C0_IRQn);
 

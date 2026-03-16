@@ -62,12 +62,12 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Devices
 PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
 PATH_INCLUDES		+= -I$(LIB_SYS_DIR)
 
-SRC					=   $(LIB_SYS_DIR)/headerFatFs.c
-SRC					+=  $(LIB_SYS_DIR)/diskio.c
-SRC					+=  $(shell find $(LIB_SRC_DIR) -name '*.c')
-OBJ					=   $(patsubst %.c,%.o,$(SRC))
+SRC					=  $(LIB_SYS_DIR)/headerFatFs.c
+SRC					+= $(LIB_SYS_DIR)/diskio.c
+SRC					+= $(shell find $(LIB_SRC_DIR) -name '*.c')
+OBJ					=  $(patsubst %.c,%.o,$(SRC))
 
-CFLAGS				+= -g3 $(OPTIMISATION)
+CFLAGS				+= $(OPTIMISATION)
 CFLAGS				+= -MMD
 CFLAGS				+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS				+= $(STANDARD)

@@ -365,8 +365,8 @@ static	void	local_GPIO_Configuration(void) {
 // PB07, IN,  50-MHz, Pull-down	--------	AF15
 // PB08, IN,  50-MHz, Pull-down	--------	AF15
 // PB09, IN,  50-MHz, Pull-down	--------	AF15
-// PB10, AL,  50-MHz, Open-D	I2C2_SCL	AF4
-// PB11, AL,  50-MHz, Open-D	I2C2_SDA	AF4
+// PB10, AL,  50-MHz, Open-D	I2C2_SCL	AF04
+// PB11, AL,  50-MHz, Open-D	I2C2_SDA	AF04
 // PB12, IN,  50-MHz, Pull-down	--------	AF15
 // PB13, IN,  50-MHz, Pull-down	--------	AF15
 // PB14, IN,  50-MHz, Pull-down	--------	AF15
@@ -381,7 +381,7 @@ static	void	local_GPIO_Configuration(void) {
 			  0u, 0u, 0u, 0u, 1u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
 // PC00, IN,  50-MHz, Pull-down	--------	AF15
-// PC01, AL,  50-MHz, Open-D	I2C1_SDA	AF4
+// PC01, AL,  50-MHz, Open-D	I2C1_SDA	AF04
 // PC02, IN,  50-MHz, Pull-down	--------	AF15
 // PC03, IN,  50-MHz, Pull-down	--------	AF15
 // PC04, IN,  50-MHz, Pull-down	--------	AF15
@@ -389,7 +389,7 @@ static	void	local_GPIO_Configuration(void) {
 // PC06, IN,  50-MHz, Pull-down	--------	AF15
 // PC07, IN,  50-MHz, Pull-down	--------	AF15
 // PC08, IN,  50-MHz, Pull-down	--------	AF15
-// PC09, AL,  50-MHz, Pull-down	MCO2		AF0
+// PC09, AL,  50-MHz, Pull-down	MCO2		AF00
 // PC10, IN,  50-MHz, Pull-down	--------	AF15
 // PC11, IN,  50-MHz, Pull-down	--------	AF15
 // PC12, IN,  50-MHz, Pull-down	--------	AF15
@@ -410,8 +410,8 @@ static	void	local_GPIO_Configuration(void) {
 // PE02, IN,  50-MHz, Pull-down	--------	AF15
 // PE03, IN,  50-MHz, Pull-down	--------	AF15
 // PE04, IN,  50-MHz, Pull-down	--------	AF15
-// PE05, AL,  50-MHz, Push-pull	USART1_TX	AF7
-// PE06, AL,  50-MHz, Pull-up	USART1_RX	AF7
+// PE05, AL,  50-MHz, Push-pull	USART1_TX	AF07
+// PE06, AL,  50-MHz, Pull-up	USART1_RX	AF07
 // PE07, IN,  50-MHz, Pull-down	--------	AF15
 // PE08, IN,  50-MHz, Pull-down	--------	AF15
 // PE09, OU,  50-MHz, Push_pull	GPIO_0		AF15	CN15	31
@@ -464,7 +464,7 @@ static	void	local_GPIO_Configuration(void) {
 // PH06, IN,  50-MHz, Pull-down	--------	AF15
 // PH07, IN,  50-MHz, Pull-down	--------	AF15
 // PH08, IN,  50-MHz, Pull-down	--------	AF15
-// PH09, AL,  50-MHz, Open-D	I2C2_SCL	AF4
+// PH09, AL,  50-MHz, Open-D	I2C2_SCL	AF04
 // PH10, IN,  50-MHz, Pull-down	--------	AF15
 // PH11, IN,  50-MHz, Pull-down	--------	AF15
 // PH12, IN,  50-MHz, Pull-down	--------	AF15

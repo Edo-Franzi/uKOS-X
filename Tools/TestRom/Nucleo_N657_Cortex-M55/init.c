@@ -211,8 +211,8 @@ static	void	local_GPIO_Configuration(void) {
 // PE02, IN,  50-MHz, Pull-down	--------	AF15
 // PE03, IN,  50-MHz, Pull-down	--------	AF15
 // PE04, IN,  50-MHz, Pull-down	--------	AF15
-// PE05, AL,  50-MHz, Push-pull	USART1_TX	AF7
-// PE06, AL,  50-MHz, Pull-up	USART1_RX	AF7
+// PE05, AL,  50-MHz, Push-pull	USART1_TX	AF07
+// PE06, AL,  50-MHz, Pull-up	USART1_RX	AF07
 // PE07, IN,  50-MHz, Pull-down	--------	AF15
 // PE08, IN,  50-MHz, Pull-down	--------	AF15
 // PE09, IN,  50-MHz, Pull-down	--------	AF15

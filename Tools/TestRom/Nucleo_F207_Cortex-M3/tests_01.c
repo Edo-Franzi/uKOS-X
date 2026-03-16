@@ -73,9 +73,9 @@ void	test_01(void) {
 
 // Initialise the TIM2 to generate an interruption every 500-ms
 
-	INTERRUPT_VECTOR(TIM2_IRQn, local_TIM2_IRQHandler);
-	NVIC_SetPriority(TIM2_IRQn, KINT_LEVEL_KERNEL_TIMERS);
-	NVIC_EnableIRQ(TIM2_IRQn);
+	INTERRUPT_VECTOR(TIM2_C0_IRQn, local_TIM2_IRQHandler);
+	NVIC_SetPriority(TIM2_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	NVIC_EnableIRQ(TIM2_C0_IRQn);
 
 	TIM2->PSC  = KPSCT2;
 	TIM2->ARR  = KARRT2;

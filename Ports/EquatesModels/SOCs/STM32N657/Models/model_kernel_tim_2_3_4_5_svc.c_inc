@@ -512,10 +512,18 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t
 
 // Verify the sanity of the stack
 
+	#if (defined(STUB_KERN_CHECK_XSP_LIMIT_S))
+	core_setPSPLIM(0u);
+	scheduler_callBackSlow();
+	local_timeStart();
+	core_setPSPLIM((uintptr_t)vKern_runProc[KCORE_0]->oSpecification.oStackStart & 0xFFFFFFF8u);
+
+	#else
 	CHECK_STACK_SANITY(KCORE_0);
 
 	scheduler_callBackSlow();
 	local_timeStart();
+	#endif
 
 // Statistics
 
@@ -619,10 +627,18 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t
 
 // Verify the sanity of the stack
 
+	#if (defined(STUB_KERN_CHECK_XSP_LIMIT_S))
+	core_setPSPLIM(0u);
+	scheduler_callBackSlow();
+	local_timeStart();
+	core_setPSPLIM((uintptr_t)vKern_runProc[KCORE_0]->oSpecification.oStackStart & 0xFFFFFFF8u);
+
+	#else
 	CHECK_STACK_SANITY(KCORE_0);
 
 	scheduler_callBackSlow();
 	local_timeStart();
+	#endif
 
 // Statistics
 
@@ -728,10 +744,18 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG(uintptr_t
 
 // Verify the sanity of the stack
 
+	#if (defined(STUB_KERN_CHECK_XSP_LIMIT_S))
+	core_setPSPLIM(0u);
+	scheduler_callBackTrap(message);
+	local_timeStart();
+	core_setPSPLIM((uintptr_t)vKern_runProc[KCORE_0]->oSpecification.oStackStart & 0xFFFFFFF8u);
+
+	#else
 	CHECK_STACK_SANITY(KCORE_0);
 
 	scheduler_callBackTrap(message);
 	local_timeStart();
+	#endif
 
 // Statistics
 

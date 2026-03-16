@@ -47,6 +47,36 @@
 extern	proc_t	*vKern_runProc[KNB_CORES];
 
 /*
+ * \brief local_readFunctionName
+ *
+ * - Return the function name that belong to a given PC
+ *
+ */
+void	local_readFunctionName(const uintptr_t pc, const char_t **function) {
+
+	UNUSED(pc);
+
+	#if ((uKOS_ARCHITECTURE == 0u) && (!defined(__clang__)))
+			intptr_t	offset, nameLen;
+	const	uintptr_t	*ptr;
+
+	ptr = (const uintptr_t *)((pc + 2u) & (~0x3u));
+
+	for (offset = 1; (offset < (intptr_t)(16u * 1024u)) && ((uintptr_t)&ptr[-offset] > (uintptr_t)0x0u); ++offset) {
+		if ((ptr[-offset] & (uintptr_t)0xFFFFFF00u) == (uintptr_t)0xFF000000u) {
+			nameLen = (intptr_t)(ptr[-offset] & (uintptr_t)0xFFu);
+			*function = &((const char_t *)&ptr[-offset])[-nameLen];
+			return;
+		}
+
+	}
+	*function = nullptr;
+	#endif
+
+	*function = nullptr;
+}
+
+/*
  * \brief local_printFunction
  *
  * - Display the function name
@@ -63,7 +93,7 @@ static	void	__attribute__ ((noinline)) local_printFunction(uintptr_t pc, const c
 		cmns_send(KDEF0, excepInter);	    cmns_send(KDEF0, vectorName);   cmns_send(KDEF0, "\n");
 	}
 	else {
-		machine_readFunctionName(pc, &functionName);
+		local_readFunctionName(pc, &functionName);
 		cmns_send(KDEF0, excepInter);	    cmns_send(KDEF0, vectorName);   cmns_send(KDEF0, "\n");
 		cmns_send(KDEF0, "Routine:      "); cmns_send(KDEF0, functionName); cmns_send(KDEF0, "\n");
 	}

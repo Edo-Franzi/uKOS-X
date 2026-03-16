@@ -83,8 +83,6 @@ void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 
 extern	void	cmns_send(serialManager_t serialManager, const char_t *ascii);
 extern	void	cmns_wait(uint32_t us);
-static	void	model_coreDump_displayExceptions(void);
-static	void	model_coreDump_displayInterruptions(void);
 static	void	local_setLEDs(uint8_t ledNb);
 static	void	local_clrLEDs(uint8_t ledNb);
 static	void	local_cpyLEDs(uint8_t value);
@@ -101,11 +99,11 @@ void	exce_init(void) {
 	uint8_t		nbExceptions, nbInterruptions;
 
 	for (nbExceptions = 0u; nbExceptions < KNB_EXCEPTIONS; nbExceptions++) {
-		vExce_indExcVectors[GET_RUNNING_CORE][nbExceptions] = model_coreDump_displayExceptions;
+		vExce_indExcVectors[GET_RUNNING_CORE][nbExceptions] = nullptr;
 	}
 
 	for (nbInterruptions = 0u; nbInterruptions < KNB_INTERRUPTIONS; nbInterruptions++) {
-		vExce_indIntVectors[GET_RUNNING_CORE][nbInterruptions] = model_coreDump_displayInterruptions;
+		vExce_indIntVectors[GET_RUNNING_CORE][nbInterruptions] = nullptr;
 	}
 
 	core_setBASEPRI((uint32_t)KINT_LEVEL_PERIPHERALS<<(uint32_t)KNVIC_PRIORITY_SHIFT);

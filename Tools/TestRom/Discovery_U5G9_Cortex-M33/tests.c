@@ -61,6 +61,22 @@
 			void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 volatile	bool	vPriv_insideException[KNB_CORES] = MCSET(false);
 
+void	__attribute__ ((noreturn)) model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp) {
+
+	UNUSED(lr);
+	UNUSED(msp);
+
+	while (true) { ; }
+}
+
+void	__attribute__ ((noreturn)) model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp) {
+
+	UNUSED(lr);
+	UNUSED(msp);
+
+	while (true) { ; }
+}
+
 /*
  * \brief main
  *

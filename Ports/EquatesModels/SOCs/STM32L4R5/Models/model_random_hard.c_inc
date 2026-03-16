@@ -63,7 +63,7 @@ void	model_random_hard_init(void) {
 
 	RCC->AHB2ENR |= RCC_AHB2ENR_RNGEN;
 
-	INTERRUPT_VECTOR(RNG_HASH_IRQn, local_RNG_IRQHandler);
+	INTERRUPT_VECTOR(RNG_HASH_C0_IRQn, local_RNG_IRQHandler);
 	NVIC_SetPriority(RNG_HASH_C0_IRQn, KINT_LEVEL_PERIPHERALS);
 	NVIC_EnableIRQ(RNG_HASH_C0_IRQn);
 }
