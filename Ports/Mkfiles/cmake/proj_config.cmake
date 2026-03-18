@@ -291,13 +291,55 @@ function(configure_arm_core)
 		set(HAS_CACHE TRUE)
 
 	elseif(${CORE} STREQUAL "CORTEX_M85")
-		set(LLVM_TARGET "thumbv8m.main-${TARGET_TRIPLE_MIDDLE}-eabi")
-		set(MCPU "cortex-m85")
-		set(MARCH "armv8-m.main")
-        # Hard float ABI (default)
-        set(LLVM_TARGET "${LLVM_TARGET}hf")
+        set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabihf")
+        set(MARCH "armv8.1-m.main")
         set(MFLOAT_ABI "hard")
-        set(MFPU "fpv5-sp-d16")
+        # Check for feature-based configuration
+        if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
+            # CORTEX_M85_VALID_FEATURES
+            #   "Helium|Helium M-Profile Vector Extension||MLPN_HAVE_HELIUM_FP_S|+mve"
+            #   "PACBTI|Pointer Authentication, Branch Target Identification|||+pacbti"
+            #   "Double|Double precision FP support||MLPN_HAVE_HELIUM_FP_S|+mve.fp"
+            #   "nofp|Disable floating point unit|||+nofp"
+            foreach(feature IN LISTS CPU_FEATURES)
+                if(${feature} STREQUAL "Helium")
+                    set(has_mve TRUE)
+                elseif(${feature} STREQUAL "PACBTI")
+                    set(has_pacbti TRUE)
+                elseif(${feature} STREQUAL "Double")
+                    set(has_dp TRUE)
+                elseif(${feature} STREQUAL "nofp")
+                    set(has_nofp TRUE)
+                endif()
+            endforeach()
+        endif()
+        # Check if MVE/Helium is requested
+        if(has_mve)
+            # Helium/MVE mode
+            unset(MFPU)  # MVE doesn't use -mfpu
+            # Build -march with MVE extensions
+            # GCC uses armv8.1-m.main, LLVM uses thumbv8.1m.main
+            if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+                set(MARCH "armv8.1-m.main")
+            endif()
+            set(MARCH "${MARCH}+mve.fp")
+            if(has_dp)
+                set(MARCH "${MARCH}+fp.dp")
+            endif()
+        elseif(has_dp)
+            set(MARCH "${MARCH}+fp.dp")
+        elseif(has_nofp)
+            # No floating point
+            set(LLVM_TARGET "${MARCH}-${TARGET_TRIPLE_MIDDLE}-eabi")
+            set(MFLOAT_ABI "soft")
+            unset(MFPU)
+        endif()
+        # PACBTI est orthogonal aux autres features : on l'ajoute en dernier
+        # Il est incompatible avec nofp car il nécessite la FPU pour PAC keys
+        if(has_pacbti AND NOT has_nofp)
+            set(MARCH "${MARCH}+pacbti")
+            set(EXTRA_COMPILE_FLAGS "-mbranch-protection=standard")
+        endif()
 		set(HAS_CACHE TRUE)
 
 	elseif(${CORE} STREQUAL "CORTEX_A7")
@@ -326,7 +368,7 @@ function(configure_arm_core)
 	if(DEFINED MCPU)
 		list(APPEND COMPILE_FLAGS "-mcpu=${MCPU}")
 	endif()
-	if(DEFINED MARCH AND (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR ${CORE} STREQUAL "CORTEX_M55"))
+	if(DEFINED MARCH AND (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR ${CORE} STREQUAL "CORTEX_M55" OR ${CORE} STREQUAL "CORTEX_M85"))
 		list(APPEND COMPILE_FLAGS "-march=${MARCH}")
 	endif()
 	if(DEFINED MFLOAT_ABI)

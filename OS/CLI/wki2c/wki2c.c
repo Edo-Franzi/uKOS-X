@@ -152,7 +152,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	if (i2c_reserve(i2cManager, KMODE_READ_WRITE, 2000u) == KERR_I2C_NOERR) {
 		i2c_configure(i2cManager, &aConfigure);
 
-		if (argc > 4u) {
+		if (argc > 5u) {
 			address = (uint8_t)strtoul(argv[3], &dummy, 16u);
 
 			text_checkAsciiBuffer(argv[2], "-W", &equals); if (equals == true) { mode = KWRITE; }
