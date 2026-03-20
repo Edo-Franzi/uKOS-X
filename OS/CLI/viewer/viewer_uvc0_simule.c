@@ -50,6 +50,11 @@
 #include	"uKOS.h"
 #include	<string.h>
 
+// Use weak to force nullptr if the symbol is not defined
+
+extern	uint8_t		linker_stUSB_V_BUFFER_0[] __attribute__((weak));
+extern	uint8_t		linker_stUSB_V_BUFFER_1[] __attribute__((weak));
+
 // uKOS-X specific (see the module.h)
 // ==================================
 
@@ -163,8 +168,20 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 	image_0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "video");
 	image_1 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "video");
 	if ((image_0 == nullptr) || (image_1 == nullptr)) {
-		LOG(KFATAL_USER, "viewer: out of memory");
-		exit(EXIT_OS_FAILURE);
+
+		memo_free(image_0);
+		memo_free(image_1);
+
+		if ((linker_stUSB_V_BUFFER_0 != nullptr) && (linker_stUSB_V_BUFFER_1 != nullptr)) {
+			image_0 = (uint8_t *)linker_stUSB_V_BUFFER_0;
+			image_1 = (uint8_t *)linker_stUSB_V_BUFFER_1;
+
+			LOG(KINFO_USER, "viewer: video buffers in PSRAm");
+		}
+		else {
+			LOG(KFATAL_USER, "viewer: out of memory");
+			exit(EXIT_OS_FAILURE);
+		}
 	}
 
 	kern_readTickCount(&time[1]);

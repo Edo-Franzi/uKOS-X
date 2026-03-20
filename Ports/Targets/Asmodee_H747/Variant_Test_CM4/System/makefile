@@ -181,7 +181,7 @@ LIBX_P			+=  											$(PATH_VARI)/Lib_peripherals/led/stub_led.c
 LIBX_P			+=  											$(PATH_VARI)/Lib_peripherals/switch/stub_switch.c
 LIBX_P			+= 												$(PATH_COMX)/Lib_generics/asmp/stub_asmp_hsem.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_uart8.c
+LIBX_P			+= 												$(PATH_VARI)/Lib_serials/urt0/stub_urt0_uart8.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 
 # The Lib_xxxx components (user)

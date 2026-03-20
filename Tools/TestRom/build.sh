@@ -105,7 +105,7 @@ print -P "%BBuilding all ...%b"
 
 # Parse YAML and iterate through all targets
 while read -r CURRENT_TARGET; do
-	print -n "$CURRENT_TARGET"
+	printf '%-40s' "${CURRENT_TARGET}"
 
 	cd "${PATH_PRG}/${CURRENT_TARGET}"
 	make --silent clean_all

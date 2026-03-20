@@ -160,7 +160,7 @@ PREFIX_VAR='PREFIX=llvm- COMPILER_FAMILY=llvm'
 printf "%bBuilding all the downloadable applications with '%s make %s %s'%b\n" "${BOLD}" "${PREFIX_VAR}" "${USER_MODE}" "${CANARY_MODE}" "${NC}"
 while IFS= read -r CURRENT_TARGET
 do
-	printf '%s ' "${CURRENT_TARGET}"
+	printf '%-40s ' "${CURRENT_TARGET}"
 	cd "${PATH_PRG}/${CURRENT_TARGET}"
 	make clean_all >/dev/null;
 

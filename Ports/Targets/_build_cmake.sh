@@ -220,7 +220,7 @@ printf "%bBuilding all the systems with --preset %s%b (USER_MODE=%s CANARY=%s)\n
 # Parse YAML and iterate through all build targets
 while IFS=$'\t' read -r family variant_name; do
 	CURRENT_VARIANT="${family}/Variant_${variant_name}"
-	printf "%s " "${CURRENT_VARIANT}"
+	printf "%-40s " "${CURRENT_VARIANT}"
 	cd "${PATH_PRG}/${CURRENT_VARIANT}"
 
 # Normal output on the stdout, error/warnings on comp.log

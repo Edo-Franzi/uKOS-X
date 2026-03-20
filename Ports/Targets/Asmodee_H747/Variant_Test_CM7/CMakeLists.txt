@@ -190,7 +190,7 @@ list(APPEND LIBX_P
 	${PATH_VARI}/Lib_peripherals/led/stub_led.c
 	${PATH_VARI}/Lib_peripherals/switch/stub_switch.c
 	${PATH_VARI}/Lib_peripherals/temperature/stub_temperature_lsm9ds1.c
-	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart6.c
+	${PATH_VARI}/Lib_serials/urt0/stub_urt0_usart6.c
 )
 add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
@@ -228,7 +228,7 @@ list(APPEND PROC_U
 	${PATH_UKOS}/OS/Processes/TinyUSB/TinyUSB.c
 	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
-	${PATH_VARI}/Processes/TinyUSB/stub_TinyUSB.c
+	${PATH_BASE}/Processes/TinyUSB/stub_TinyUSB.c
 )
 add_library(proc_u ${PROC_U})
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})

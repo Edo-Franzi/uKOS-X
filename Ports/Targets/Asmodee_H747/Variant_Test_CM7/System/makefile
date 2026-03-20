@@ -229,7 +229,7 @@ LIBX_P			+= 												$(PATH_VARI)/Lib_peripherals/imu/stub_imu_lsm9ds1.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
 LIBX_P			+= 												$(PATH_COMX)/Lib_generics/asmp/stub_asmp_hsem.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart6.c
+LIBX_P			+= 												$(PATH_VARI)/Lib_serials/urt0/stub_urt0_usart6.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 
 # The Lib_xxxx components (user)
@@ -268,7 +268,7 @@ PROC_U			+= $(PATH_UKOS)/OS/Processes/TinyUSB/TinyUSB.c
 PROC_U			+= $(PATH_UKOS)/OS/Processes/startUp/startUp.c
 PROC_U			+=  											$(PATH_BASE)/Processes/alive/stub_alive.c
 PROC_U			+= 												$(PATH_VARI)/Processes/startUp/stub_startUp.c
-PROC_U			+= 												$(PATH_VARI)/Processes/TinyUSB/stub_TinyUSB.c
+PROC_U			+= 												$(PATH_BASE)/Processes/TinyUSB/stub_TinyUSB.c
 
 # The CLI components (user)
 

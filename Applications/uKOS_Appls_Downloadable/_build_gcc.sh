@@ -159,7 +159,7 @@ readonly LOG_FILE='compilation.log'
 printf "%bBuilding all the downloadable applications with 'make %s %s'%b\n" "${BOLD}" "${USER_MODE}" "${CANARY_MODE}" "${NC}"
 while IFS= read -r CURRENT_TARGET
 do
-	printf '%s ' "${CURRENT_TARGET}"
+	printf '%-40s ' "${CURRENT_TARGET}"
 	cd "${PATH_PRG}/${CURRENT_TARGET}"
 	make clean_all >/dev/null;
 

@@ -155,7 +155,7 @@ list(APPEND LIBX_P
 	${PATH_COMX}/Lib_generics/asmp/stub_asmp_hsem.c
 	${PATH_VARI}/Lib_peripherals/led/stub_led.c
 	${PATH_VARI}/Lib_peripherals/switch/stub_switch.c
-	${PATH_BASE}/Lib_serials/urt0/stub_urt0_uart8.c
+	${PATH_VARI}/Lib_serials/urt0/stub_urt0_uart8.c
 )
 add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags)

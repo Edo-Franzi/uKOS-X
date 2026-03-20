@@ -243,7 +243,7 @@ PROC_U			+= $(PATH_UKOS)/OS/Processes/TinyUSB/TinyUSB.c
 PROC_U			+= $(PATH_UKOS)/OS/Processes/startUp/startUp.c
 PROC_U			+=  											$(PATH_BASE)/Processes/alive/stub_alive.c
 PROC_U			+= 												$(PATH_VARI)/Processes/startUp/stub_startUp.c
-PROC_U			+= 												$(PATH_VARI)/Processes/TinyUSB/stub_TinyUSB.c
+PROC_U			+= 												$(PATH_BASE)/Processes/TinyUSB/stub_TinyUSB.c
 
 # The CLI components (user)
 

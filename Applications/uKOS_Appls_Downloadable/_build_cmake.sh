@@ -184,7 +184,7 @@ readonly LOG_FILE='build/compilation.log'
 printf '%bBuilding all the downloadable applications with CMake options %s %s %s%b\n' "${BOLD}" "${TOOLCHAIN_VAR}" "${CMAKE_USER_MODE}" "${CMAKE_CANARY_MODE}" "${NC}"
 # Parse YAML and iterate through all build targets
 while IFS= read -r CURRENT_TARGET; do
-	printf '%s ' "${CURRENT_TARGET}"
+	printf '%-40s ' "${CURRENT_TARGET}"
 	cd "${PATH_PRG}/${CURRENT_TARGET}"
 	rm -fr build >/dev/null
 

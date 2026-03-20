@@ -213,7 +213,7 @@ list(APPEND PROC_U
 	${PATH_UKOS}/OS/Processes/TinyUSB/TinyUSB.c
 	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
-	${PATH_VARI}/Processes/TinyUSB/stub_TinyUSB.c
+	${PATH_BASE}/Processes/TinyUSB/stub_TinyUSB.c
 )
 add_library(proc_u ${PROC_U})
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})

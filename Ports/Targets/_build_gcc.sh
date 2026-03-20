@@ -169,7 +169,7 @@ printf "%bBuilding all the systems with 'make %s %s'%b\n" "${BOLD}" "${USER_MODE
 # Parse YAML and iterate through all build targets
 while IFS=$'\t' read -r family variant_name; do
 	CURRENT_VARIANT="${family}/Variant_${variant_name}"
-	printf "%s " "${CURRENT_VARIANT}"
+	printf "%-40s " "${CURRENT_VARIANT}"
 	cd "${PATH_PRG}"/"${CURRENT_VARIANT}"/System
 
 # Normal output on the stdout, error/warnings on comp.log

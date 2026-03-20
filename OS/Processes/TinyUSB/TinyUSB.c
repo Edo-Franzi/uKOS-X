@@ -126,7 +126,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		local_process,						// Code of the process
 		aStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)
-		KKERN_PRIORITY_HIGH_14				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
+		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
 	if (kern_createProcess(&specification, nullptr, &process) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "TinyUSB: create proc"); exit(EXIT_OS_PANIC); }
