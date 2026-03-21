@@ -80,7 +80,7 @@ MODE			=  _pu
 FLAGS_UKOS		+= -DPRIVILEGED_USER_S
 endif
 
-SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
+SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
 CPU_SPEC		?= -march=armv8.1-m.main+mve.fp+fp.dp -mthumb

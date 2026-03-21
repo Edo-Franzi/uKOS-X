@@ -62,9 +62,7 @@ endif
 
 MODE			=  _p
 
-# objdump buffer overflow with -D
-#SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
-SWTCH_OBJDUMP	=  -f -p -d -h -t -s
+SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mabi=lp64d
 CPU_SPEC		?= -march=rv64imafdc_zicsr_zifencei -mcmodel=medany

@@ -46,6 +46,7 @@
 */
 
 static	bool	vEjected[KNB_CORES] = MCSET(false);
+extern	mutx_t	*vTinyUSB_API[KNB_CORES];
 
 // Some MCU doesn't have enough 8KB SRAM to store the whole disk
 // We will use Flash as read-only disk with board that has
@@ -196,6 +197,7 @@ void	tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16
  *
  */
 bool	tud_msc_test_unit_ready_cb(uint8_t lun) {
+	bool		status = true;
 	uint32_t	core;
 
 	UNUSED(lun);
@@ -204,15 +206,17 @@ bool	tud_msc_test_unit_ready_cb(uint8_t lun) {
 
 // RAM disk is ready until vEjected
 
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	if (vEjected[core] == true) {
 
 // Additional Sense 3A-00 is NOT_FOUND
 
 		tud_msc_set_sense(lun, SCSI_SENSE_NOT_READY, 0x3Au, 0x00u);
-		return (false);
+		status = false;
 	}
 
-	return (true);
+	kern_unlockMutex(vTinyUSB_API[core]);
+	return (status);
 }
 
 /*
@@ -267,6 +271,7 @@ bool	tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition, bool start, boo
  *
  */
 int32_t	tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset, void *buffer, uint32_t bufsize) {
+	uint8_t		const	*addr = msc_disk[lba] + offset;
 
 	UNUSED(lun);
 
@@ -276,7 +281,6 @@ int32_t	tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset, void *buff
 		return (-1);
 	}
 
-	uint8_t	const *addr = msc_disk[lba] + offset;
 	memcpy(buffer, addr, bufsize);
 
 	return ((int32_t)bufsize);
@@ -336,13 +340,17 @@ int32_t	tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset, uint8_t *
  *
  */
 int32_t	tud_msc_scsi_cb(uint8_t lun, uint8_t const scsi_cmd[16], void *buffer, uint16_t bufsize) {
-			bool	in_xfer = true;
-			int32_t resplen = 0;
-	void	const	*response = nullptr;
+			uint32_t	core;
+			bool		in_xfer = true;
+			int32_t		resplen = 0;
+	void	const		*response = nullptr;
+
+	core = GET_RUNNING_CORE;
 
 // Read10 & write10 has their own callback and MUST not be handled here
 // most scsi handled is input
 
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	switch (scsi_cmd[0]) {
 		default:
 
@@ -372,5 +380,6 @@ int32_t	tud_msc_scsi_cb(uint8_t lun, uint8_t const scsi_cmd[16], void *buffer, u
 
 		}
 	}
+	kern_unlockMutex(vTinyUSB_API[core]);
 	return ((int32_t)resplen);
 }

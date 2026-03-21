@@ -72,7 +72,7 @@ MODE			=  _pu
 FLAGS_UKOS		+= -DPRIVILEGED_USER_S
 endif
 
-SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
+SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mfloat-abi=soft
 CPU_SPEC		?= -mcpu=cortex-m3 -mthumb

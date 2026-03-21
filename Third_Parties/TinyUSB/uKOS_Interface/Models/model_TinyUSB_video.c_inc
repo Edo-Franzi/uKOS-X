@@ -49,6 +49,7 @@
 #define	FRAME_HEIGHT		480u
 
 static	sema_t	*vSemaphore_Ready[KNB_CORES];
+extern	mutx_t	*vTinyUSB_API[KNB_CORES];
 
 STRG_LOC_CONST(aStrSemaphore_Ready[]) = "TinyUSB ready";
 
@@ -104,12 +105,15 @@ void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h) {
 
 // Try to send a frame
 
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	if (tud_video_n_streaming(0, 0) == true) {
 
 		tud_video_n_frame_xfer(0, 0, (void *)image, (w * h * 16u / 8u));
 		kern_waitSemaphore(vSemaphore_Ready[core], 1000u);
+		kern_unlockMutex(vTinyUSB_API[core]);
 	}
 	else {
+		kern_unlockMutex(vTinyUSB_API[core]);
 		kern_suspendProcess(10u);
 	}
 }

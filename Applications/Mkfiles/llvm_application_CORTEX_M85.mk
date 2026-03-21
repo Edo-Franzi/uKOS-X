@@ -73,7 +73,7 @@ ifneq ($(USER_MODE),0)
 FLAGS_UKOS		+= -DPRIVILEGED_USER_S
 endif
 
-SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
+SWTCH_OBJDUMP	= -d -S -h -t
 
 GPPCOMPILER		=  $(PATH_COMPILER)/bin/clang++
 GPPLDOPTION		=  -lc -lstdc++

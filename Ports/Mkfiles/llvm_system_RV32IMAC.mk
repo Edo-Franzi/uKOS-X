@@ -70,7 +70,7 @@ endif
 
 MODE			=  _p
 
-SWTCH_OBJDUMP	=  -f -p -D -d -h -t -s
+SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mabi=ilp32
 CPU_SPEC		?= -march=rv32imac

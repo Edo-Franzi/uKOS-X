@@ -48,6 +48,8 @@
 
 #include	"uKOS.h"
 
+#define	KTINYUSB_MUTEX_API		"Protect_TinyUSB_API"
+
 // Save the GCC diagnostic
 //
 #pragma GCC diagnostic	push
@@ -77,6 +79,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "TinyUSB process\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
+
 // Prototypes
 
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
@@ -99,6 +102,8 @@ MODULE(
 	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	KEXECUTION_CORE					// Execution cores
 );
+
+mutx_t	*vTinyUSB_API[KNB_CORES];
 
 // Process specific
 // ================
@@ -145,12 +150,17 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 static void __attribute__ ((noreturn)) local_process(const void *argument) {
+	uint32_t	core;
 
 	UNUSED(argument);
 
 // Initialise the device stack on configured roothub port
 
+	core = GET_RUNNING_CORE;
+	if (kern_createMutex(KTINYUSB_MUTEX_API, &vTinyUSB_API[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "cdc0: create mutx"); exit(EXIT_OS_PANIC); }
+
 	PRIVILEGE_ELEVATE;
+
 	stub_TinyUSB_init();
 
 	while (true) {
