@@ -165,8 +165,8 @@ static void __attribute__ ((noreturn)) aProcess(const void *argument) {
 	TinyUSB_video_init();
 	TinyUSB_video_getImageSize(&w, &h);
 
-	image_0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "video");
-	image_1 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "video");
+	image_0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (w * h * 2u), "video");
+	image_1 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (w * h * 2u), "video");
 	if ((image_0 == nullptr) || (image_1 == nullptr)) {
 
 		memo_free(image_0);

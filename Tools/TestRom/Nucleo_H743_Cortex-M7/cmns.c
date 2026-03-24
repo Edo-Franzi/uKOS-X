@@ -175,5 +175,6 @@ void	cmns_wait(uint32_t us) {
 	wkUs = (wkUs / 12u) * (KFREQUENCY_CORE / 1000000u);
 	#endif
 
+	wkUs = (wkUs == 0u) ? (1u) : (wkUs);
 	for (time = 0; time < wkUs; time++) { NOP; }
 }

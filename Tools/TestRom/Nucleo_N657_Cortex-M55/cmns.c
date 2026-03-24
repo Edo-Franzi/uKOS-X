@@ -147,6 +147,7 @@ void	cmns_wait(uint32_t us) {
 	wkUs = (wkUs / 12u) * (KFREQUENCY_CORE / 1000000u);
 	#endif
 
+	wkUs = (wkUs == 0u) ? (1u) : (wkUs);
 	for (uint32_t time = 0u; time < wkUs; time++) { NOP; }
 	__asm volatile ("" ::: "memory");
 }

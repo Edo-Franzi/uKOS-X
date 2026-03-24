@@ -516,7 +516,7 @@ static	void	local_MPU_Configuration(void) {
 /*
  * \brief local_CACHE_Enable
  *
- * - Enable the instruction cache
+ * - Enable the L1 instruction & the data caches
  *
  */
 static	void	local_CACHE_Enable(void) {
@@ -534,4 +534,4 @@ static	void	local_CACHE_Enable(void) {
 	#endif
 }
 
-#include	"model_cache.c_inc"
+#include	"model_I_D_cache.c_inc"

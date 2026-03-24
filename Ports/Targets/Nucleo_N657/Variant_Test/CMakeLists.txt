@@ -68,6 +68,11 @@ project(
 set(SOC STM32N657)
 set(CORE CORTEX_M55)
 
+# SOC has cache
+add_compile_definitions(
+	"CACHE_S"
+)
+
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="

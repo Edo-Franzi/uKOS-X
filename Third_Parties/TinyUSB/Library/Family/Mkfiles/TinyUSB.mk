@@ -79,6 +79,7 @@ ifeq ($(PROVIDER), st)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/CMSIS_5/CMSIS/Core/Include
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
+PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Models
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/uKOS_Interface/Includes/mcu/$(PROVIDER)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/st/cmsis_device_$(FAMILY)/Include

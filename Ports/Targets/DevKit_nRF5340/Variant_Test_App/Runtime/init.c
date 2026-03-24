@@ -81,6 +81,8 @@ MODULE(
 // Runtime specific
 // ================
 
+#define	CACHE_I_S							// With the instruction cache
+
 typedef	struct	gpio	gpio_t;
 
 struct	gpio {
@@ -91,14 +93,15 @@ struct	gpio {
 
 // Prototypes
 
-static	void	local_StackLimit_Configuration(void);
-static	void	local_SECU_Configuration(void);
-static	void	local_GPIO_Configuration(void);
-static	void	local_MPU_Configuration(void);
-static	void	local_FPE_Configuration(void);
-static	void	local_CLOCK_Configuration(void);
-static	void	local_RAM_SHARED_Configuration(void);
-static	void	local_CACHE_Enable(void);
+static			void	local_StackLimit_Configuration(void);
+static			void	local_SECU_Configuration(void);
+static			void	local_GPIO_Configuration(void);
+static			void	local_MPU_Configuration(void);
+static			void	local_FPE_Configuration(void);
+static			void	local_CLOCK_Configuration(void);
+static			void	local_RAM_SHARED_Configuration(void);
+static			void	local_CACHE_Enable(void);
+static	inline	void	cache_I_Enable(void);
 
 /*
  * \brief init_init
@@ -334,10 +337,14 @@ static	void	local_MPU_Configuration(void) {
 /*
  * \brief local_CACHE_Enable
  *
- * - Enable the L1 instruction & the data caches
+ * - Enable the instruction caches
  *
  */
 static	void	local_CACHE_Enable(void) {
 
-	REG(NCACHE)->ENABLE = CACHE_ENABLE_ENABLE;
+	#if (defined(CACHE_I_S))
+	cache_I_Enable();
+	#endif
 }
+
+#include	"model_I_cache.c_inc"

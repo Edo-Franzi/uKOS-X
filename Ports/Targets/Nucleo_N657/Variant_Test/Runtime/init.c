@@ -802,7 +802,7 @@ static	void	local_MCO2_Configuration(void) {
 /*
  * \brief local_CACHE_Enable
  *
- * - Enable the instruction cache
+ * - Enable the L1 instruction & the data caches
  *
  */
 static	void	local_CACHE_Enable(void) {
@@ -919,4 +919,4 @@ static	void	local_wait_us(uint32_t us) {
 	for (time = 0; time < us; time++) { NOP; }
 }
 
-#include	"model_cache.c_inc"
+#include	"model_I_D_cache.c_inc"

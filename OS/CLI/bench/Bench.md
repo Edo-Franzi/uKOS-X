@@ -2,11 +2,11 @@
 
 # Benchmarks
 
-(c) 2025-2026, Edo. Franzi, 2025-01-01
+(c) 2025-2026, Edo. Franzi, 2026-03-24
 
 
 
-### With µKOS-X and gcc-15.2.0
+### With µKOS-X V.0.2.34 and gcc-15.2.0
 
 ## Bench 00
 
@@ -33,7 +33,7 @@
 
 |                          | CoreMark/MHz     | _fill  [µs] | _projX  [µs] | _projY  [µs] | _histo  [µs] |
 | ------------------------ | ---------------- | ----------- | ------------ | ------------ | ------------ |
-| Nucleo_H743 @ 480-MHz    | 5.29             | 171         | 671          | 288          | 450          |
+| Nucleo_H743 @ 480-MHz    | 5.29             | 254         | 671          | 288          | 450          |
 | Nucleo_N657 @ 800-MHz    | 4.40             | 256         | 612          | 369          | 481          |
 | Discovery_U5G9 @ 160-MHz | 4.10             | 1519        | 1771         | 1522         | 2018         |
 | MAiXDUiNO_K210 @ 400-MHz | 1.7 (estimation) | 538         | 585          | 728          | 1230         |
@@ -49,8 +49,8 @@
 |                          | CoreMark/MHz     | _minMax  [µs] |
 | ------------------------ | ---------------- | ------------- |
 | Nucleo_H743 @ 480-MHz    | 5.29             | 1131          |
-| Nucleo_N657 @ 800-MHz    | 4.40             | 709           |
-| Discovery_U5G9 @ 160-MHz | 4.10             | 2052          |
+| Nucleo_N657 @ 800-MHz    | 4.40             | 690           |
+| Discovery_U5G9 @ 160-MHz | 4.10             | 2099          |
 | MAiXDUiNO_K210 @ 400-MHz | 1.7 (estimation) | 574           |
 
 ## Bench 03
@@ -64,8 +64,8 @@
 |                          | CoreMark/MHz     | _minMax  [µs] |
 | ------------------------ | ---------------- | ------------- |
 | Nucleo_H743 @ 480-MHz    | 5.29             | 117           |
-| Nucleo_N657 @ 800-MHz    | 4.40             | 66            |
-| Discovery_U5G9 @ 160-MHz | 4.10             | 203           |
+| Nucleo_N657 @ 800-MHz    | 4.40             | 79            |
+| Discovery_U5G9 @ 160-MHz | 4.10             | 215           |
 | MAiXDUiNO_K210 @ 400-MHz | 1.7 (estimation) | 62            |
 
 ## Bench 04
@@ -77,10 +77,10 @@
 
 |                          | CoreMark/MHz     | _atan2  [µs] |
 | ------------------------ | ---------------- | ------------ |
-| Nucleo_H743 @ 480-MHz    | 5.29             | 1129         |
-| Nucleo_N657 @ 800-MHz    | 4.40             | 659          |
-| Discovery_U5G9 @ 160-MHz | 4.10             | 2049         |
-| MAiXDUiNO_K210 @ 400-MHz | 1.7 (estimation) | 566          |
+| Nucleo_H743 @ 480-MHz    | 5.29             | 4152         |
+| Nucleo_N657 @ 800-MHz    | 4.40             | 1695         |
+| Discovery_U5G9 @ 160-MHz | 4.10             | 19866        |
+| MAiXDUiNO_K210 @ 400-MHz | 1.7 (estimation) | 1222         |
 
 ## Bench 05
 

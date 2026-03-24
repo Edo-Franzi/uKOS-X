@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-03-19
+(c) 2025-2026, Edo. Franzi, 2026-03-23
 
 
 
@@ -45,7 +45,7 @@ the third-party components shipped in this repository.
 ### 2.3) Doxygen-awesome
 - Location: `Third_Parties/Doxygen-awesome/`
 - Upstream: https://github.com/jothepro/doxygen-awesome-css.git
-- Version: 3.41
+- Version: 2.42
 - License: MIT
 - Copyright:
   -  Copyright (c) 2021 - 2023 jothepro
@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 8a9f44b
+- Version: 0.20.0 / commit 096458d
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

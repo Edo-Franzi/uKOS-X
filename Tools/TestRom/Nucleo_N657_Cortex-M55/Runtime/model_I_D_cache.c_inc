@@ -1,13 +1,13 @@
 /*
-; model_cache.
-; ============
+; model_I_D_cache.
+; ================
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Cortex M55 L1 cache management.
+; Goal:		Cortex N657 L1 cache management.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

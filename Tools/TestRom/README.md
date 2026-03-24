@@ -46,7 +46,7 @@ The following files need to be consolidated before moving in the µKOS-X porting
 | xyz.ld               | SoC ressource description                                 | Has to be written  |
 | systewm_p_.ld        | Generic linker script                                     | Available          |
 |                      |                                                           |                    |
-| model_cache.c_inc    | Cache model (if cpu with cache)                           | Has to be written  |
+| model_XXcache.c_inc  | Cache model (if cpu with cache)                           | Has to be written  |
 | clockTree.h          | Clock tree definitions                                    | Has to be written  |
 | cmns.c               | Minimal UART support (by polling)                         | Available template |
 | first.c              | SOC specific interruption handlers                        | Has to be written  |

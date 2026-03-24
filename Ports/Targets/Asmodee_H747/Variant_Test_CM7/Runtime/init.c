@@ -1030,4 +1030,4 @@ static	void	local_wait_us(uint32_t us) {
 	for (time = 0u; time < us; time++) { NOP; }
 }
 
-#include	"model_cache.c_inc"
+#include	"model_I_D_cache.c_inc"

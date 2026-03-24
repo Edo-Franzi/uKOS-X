@@ -194,11 +194,12 @@ void	cmns_wait(uint32_t us) {
 	// Adjust divisor based on actual timing measurements
 	#if (defined(CACHE_S))
 	wkUs = (wkUs / 7u) * (KFREQUENCY_CORE / 1000000u);
+
 	#else
 	wkUs = (wkUs / 12u) * (KFREQUENCY_CORE / 1000000u);
 	#endif
 
-	// Simple delay loop
+	wkUs = (wkUs == 0u) ? (1u) : (wkUs);
 	for (time = 0; time < wkUs; time++) {
 		__asm volatile ("nop");
 	}
