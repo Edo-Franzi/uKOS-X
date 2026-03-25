@@ -62,14 +62,11 @@ STRG_LOC_CONST(aStrHelp[])		  = "idle deamon\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
-
 // This process has to run on the following cores:
 
 #define	KEXECUTION_CORE		((1u<<BCORE_0) | (1u<<BCORE_1) | (1u<<BCORE_2) | (1u<<BCORE_3))
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
 	Idle,							// Module name (the first letter has to be upper case)
@@ -90,6 +87,10 @@ MODULE(
 
 STRG_LOC_CONST(aStrIden[]) = "Deamon_idle";
 STRG_LOC_CONST(aStrText[]) = "Daemon idle: run when the others are off. (c) EFr-2026";
+
+// Prototypes
+
+static	void	local_process(const void *argument);
 
 /*
  * \brief Main entry point

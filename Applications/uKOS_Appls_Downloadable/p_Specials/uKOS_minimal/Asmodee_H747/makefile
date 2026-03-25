@@ -61,6 +61,7 @@ BOARD			=  Asmodee_H747
 V				=  Variant_Test_CM7
 SOC				=  STM32H747
 CORE			=  CORTEX_M7
+FLAGS_UKOS		+= -DCACHE_S
 OPTIMISATION	=  -Os
 
 OBJ				+= $(PATH_MYPR)/process_actuator.o

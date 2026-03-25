@@ -68,12 +68,8 @@ STRG_LOC_CONST(aStrHelp[])		  = "cycle\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 static	int32_t		cycle_clean(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
-static	bool		local_getIndex(serialManager_t serialManager, uint16_t *index);
 
 MODULE(
 	Cycle,										// Module name (the first letter has to be upper case)
@@ -128,6 +124,11 @@ static	const	cycle_t		aTabCycle[] = {
 
 static	proc_t	*vProcess[KNB_CORES][KNB_CHANNELS];
 static	bool	vKillRequest[KNB_CORES] = MCSET(false);
+
+// Prototypes
+
+static	void	local_process(const void *argument);
+static	bool	local_getIndex(serialManager_t serialManager, uint16_t *index);
 
 /*
  * \brief Main entry point

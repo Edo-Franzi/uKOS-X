@@ -58,6 +58,7 @@ BOARD			=  MAiXDUiNO_K210
 V				=  Variant_Test
 SOC				=  K210
 CORE			=  RV64IMAFDC
+FLAGS_UKOS		+= -DCACHE_S
 OPTIMISATION	=  -Os
 
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)

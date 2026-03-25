@@ -72,13 +72,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "memo_malloc tests\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
-static	bool		local_reserve(uint32_t number, uint32_t nbSamples);
-static	bool		local_install(uint32_t number);
-static	void		local_getRND(uint32_t *number);
 
 MODULE(
 	Test_malloc,								// Module name (the first letter has to be upper case)
@@ -109,6 +103,13 @@ struct	testMallocPack {
 static	proc_t				*vProcess[KNB_PROC];
 static	spec_t				vSpecification[KNB_PROC];
 static	testMallocPack_t	vParameter[KNB_PROC];
+
+// Prototypes
+
+static	void	local_process(const void *argument);
+static	bool	local_reserve(uint32_t number, uint32_t nbSamples);
+static	bool	local_install(uint32_t number);
+static	void	local_getRND(uint32_t *number);
 
 /*
  * \brief Main entry point

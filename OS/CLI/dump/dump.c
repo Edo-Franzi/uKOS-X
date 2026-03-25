@@ -67,10 +67,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Dump a memory area\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_printLine(const uint8_t *memory, uint32_t nbBytes);
 
 MODULE(
 	Dump,										// Module name (the first letter has to be upper case)
@@ -88,6 +85,10 @@ MODULE(
 // =================
 
 #define	KLN_ASCII_BUF	96u
+
+// Prototypes
+
+static	void	local_printLine(const uint8_t *memory, uint32_t nbBytes);
 
 /*
  * \brief Main entry point

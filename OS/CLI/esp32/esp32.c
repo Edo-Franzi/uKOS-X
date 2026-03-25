@@ -66,12 +66,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Initial control of the ESP32 device\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	bool		local_getByte(serialManager_t serialManager, uint8_t *buffer, uint32_t *nbBytes);
-static	void		local_putByte(serialManager_t serialManager, const uint8_t *buffer, const uint32_t *nbBytes);
-static	bool		local_checkExit(const char_t *buffer);
 
 MODULE(
 	Esp32,										// Module name (the first letter has to be upper case)
@@ -89,6 +84,12 @@ MODULE(
 // =================
 
 #define	KSZ_BUFFER		128u
+
+// Prototypes
+
+static	bool	local_getByte(serialManager_t serialManager, uint8_t *buffer, uint32_t *nbBytes);
+static	void	local_putByte(serialManager_t serialManager, const uint8_t *buffer, const uint32_t *nbBytes);
+static	bool	local_checkExit(const char_t *buffer);
 
 /*
  * \brief Main entry point

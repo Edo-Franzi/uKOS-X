@@ -65,6 +65,9 @@ set(PATH_DECNUMBER ${PATH_UKOS}/Third_Parties/decnumber)
 set(SOC K210)
 set(CORE RV64IMAFDC)
 
+# SOC has cache
+add_compile_definitions(CACHE_S)
+
 # Target
 set(BOARD MAiXDUiNO_K210)
 set(VARIANT Variant_Test)

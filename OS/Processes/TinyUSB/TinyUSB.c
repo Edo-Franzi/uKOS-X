@@ -48,8 +48,6 @@
 
 #include	"uKOS.h"
 
-#define	KTINYUSB_MUTEX_API		"Protect_TinyUSB_API"
-
 // Save the GCC diagnostic
 //
 #pragma GCC diagnostic	push
@@ -79,17 +77,11 @@ STRG_LOC_CONST(aStrHelp[])		  = "TinyUSB process\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-
-// Prototypes
-
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
-extern	void		stub_TinyUSB_init(void);
-extern	void		stub_TinyUSB_cyclic(void);
-
 // This process has to run on the following cores:
 
 #define	KEXECUTION_CORE		(1u<<BCORE_0)
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
 	TinyUSB,						// Module name (the first letter has to be upper case)
@@ -103,15 +95,23 @@ MODULE(
 	KEXECUTION_CORE					// Execution cores
 );
 
-mutx_t	*vTinyUSB_API[KNB_CORES];
-
 // Process specific
 // ================
+
+#define	KTINYUSB_MUTEX_API	"Protect_TinyUSB_API"
 
 // ---------------------------I-----------------------------------------I--------------I
 
 STRG_LOC_CONST(aStrIden[]) = "Process_tinyusb";
 STRG_LOC_CONST(aStrText[]) = "Process TinyUSB: USB management.          (c) EFr-2026";
+
+mutx_t	*vTinyUSB_API[KNB_CORES];
+
+// Prototypes
+
+static	void	local_process(const void *argument);
+extern	void	stub_TinyUSB_init(void);
+extern	void	stub_TinyUSB_cyclic(void);
 
 /*
  * \brief Main entry point

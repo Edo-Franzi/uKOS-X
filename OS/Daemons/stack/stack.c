@@ -62,17 +62,11 @@ STRG_LOC_CONST(aStrHelp[])		  = "stack deamon\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-
-#if ((KKERN_WITH_STATISTICS_S == true) && (KDAEMONS_WITH_STACK_INT_S == true))
-static	void		local_process(const void *argument);
-#endif
-
 // This process has to run on the following cores:
 
 #define	KEXECUTION_CORE		((1u<<BCORE_0) | (1u<<BCORE_1) | (1u<<BCORE_2) | (1u<<BCORE_3))
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
 	Stack,							// Module name (the first letter has to be upper case)
@@ -95,6 +89,12 @@ MODULE(
 
 STRG_LOC_CONST(aStrIden[]) = "Deamon_stack";
 STRG_LOC_CONST(aStrText[]) = "Daemon stack: verify the stack integrity. (c) EFr-2026";
+
+// Prototypes
+
+#if ((KKERN_WITH_STATISTICS_S == true) && (KDAEMONS_WITH_STACK_INT_S == true))
+static	void	local_process(const void *argument);
+#endif
 
 /*
  * \brief Main entry point

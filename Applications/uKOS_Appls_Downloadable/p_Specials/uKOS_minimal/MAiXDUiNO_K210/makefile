@@ -55,6 +55,7 @@ BOARD			=  MAiXDUiNO_K210
 V				=  Variant_Test
 SOC				=  K210
 CORE			=  RV64IMAFDC
+FLAGS_UKOS		+= -DCACHE_S
 OPTIMISATION	=  -Os
 
 OBJ				+= $(PATH_MYPR)/process_actuator.o

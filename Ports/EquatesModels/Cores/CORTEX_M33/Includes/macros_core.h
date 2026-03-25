@@ -383,6 +383,12 @@ extern	void	__attribute__ ((noreturn)) model_coreDump_displayInterruptions(uintp
 								)
 #endif
 
+#if (!defined(STRONG_BARRIER))
+#define	STRONG_BARRIER			MEMO_SYNC_BARRIER;																				\
+								DATA_SYNC_BARRIER;																				\
+								INST_SYNC_BARRIER
+#endif
+
 #if (!defined(JUMP_FNCT))
 #define JUMP_FNCT(function)																										\
 								__asm volatile ("																			 \n \

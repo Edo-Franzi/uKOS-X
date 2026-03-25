@@ -148,12 +148,12 @@ uint32_t	osal_time_millis(void) {
  *
  */
 osal_semaphore_t	osal_semaphore_create(osal_semaphore_def_t *semdef) {
-	sema_t	*handle = nullptr;
+	sema_t	*semaphore = nullptr;
 
 	UNUSED(semdef);
 
-	if (kern_createSemaphore(nullptr, 0, 1, &handle) == KERR_KERN_NOERR) {
-		return ((osal_semaphore_t)(handle));
+	if (kern_createSemaphore(nullptr, 0, 1, &semaphore) == KERR_KERN_NOERR) {
+		return ((osal_semaphore_t)(semaphore));
 	}
 
 	return (nullptr);
@@ -207,12 +207,12 @@ void	osal_semaphore_reset(osal_semaphore_t sem_hdl) {
  *
  */
 osal_mutex_t osal_mutex_create(osal_mutex_def_t *mdef) {
-	mutx_t	*handle = nullptr;
+	mutx_t	*mutex = nullptr;
 
 	UNUSED(mdef);
 
-	if (kern_createMutex(nullptr, &handle) == KERR_KERN_NOERR) {
-	    return ((osal_mutex_t)(handle));
+	if (kern_createMutex(nullptr, &mutex) == KERR_KERN_NOERR) {
+	    return ((osal_mutex_t)(mutex));
 	}
 
 	return (nullptr);
@@ -267,14 +267,14 @@ osal_queue_t osal_queue_create(osal_queue_def_t *qdef) {
 						.oNbMaxPacks    = (uint32_t)qdef->depth,
 						.oDataEntrySize = (uint32_t)qdef->item_sz
 					};
-			mbox_t	*handle = nullptr;
+			mbox_t	*mailBox = nullptr;
 
-	if (kern_createMailbox(nullptr, &handle) == KERR_KERN_NOERR) {
-		if (kern_setMailbox(handle, &cnf) == KERR_KERN_NOERR) {
-	       return ((osal_queue_t)(handle));
+	if (kern_createMailbox(nullptr, &mailBox) == KERR_KERN_NOERR) {
+		if (kern_setMailbox(mailBox, &cnf) == KERR_KERN_NOERR) {
+	       return ((osal_queue_t)(mailBox));
 		}
 
-		kern_killMailbox(handle);
+		kern_killMailbox(mailBox);
 	}
 	return (nullptr);
 }
@@ -312,11 +312,11 @@ bool	osal_queue_receive(osal_queue_t qhdl, void *data, uint32_t msec) {
 #endif
 bool	osal_queue_send(osal_queue_t qhdl, void const *data, bool in_isr) {
 	bool	status;
-	mbox_t	*handle = (mbox_t *)qhdl;
+	mbox_t	*mailBox = (mbox_t *)qhdl;
 
 	UNUSED(in_isr);
 
-	status = (kern_writeMailbox((mbox_t *)qhdl, data, handle->oDataEntrySize, 0u) == KERR_KERN_NOERR) ? (true) : (false);
+	status = (kern_writeMailbox((mbox_t *)qhdl, data, mailBox->oDataEntrySize, 0u) == KERR_KERN_NOERR) ? (true) : (false);
 	return (status);
 }
 #pragma GCC diagnostic  pop
@@ -329,9 +329,9 @@ bool	osal_queue_send(osal_queue_t qhdl, void const *data, bool in_isr) {
  */
 bool	osal_queue_empty(osal_queue_t qhdl) {
 	bool	status;
-	mbox_t	*handle = (mbox_t *)qhdl;
+	mbox_t	*mailBox = (mbox_t *)qhdl;
 
-	status = ((handle->oState & (1u<<BMBOX_EMPTY)) != 0u) ? (true) : (false);
+	status = ((mailBox->oState & (1u<<BMBOX_EMPTY)) != 0u) ? (true) : (false);
 	return (status);
 }
 

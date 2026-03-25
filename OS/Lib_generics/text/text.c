@@ -75,6 +75,9 @@ MODULE(
 	0								// Execution cores
 );
 
+// Library specific
+// ================
+
 // Prototypes
 
 static	void	local_waitOrder(serialManager_t serialManager, char_t *ascii, uint32_t size);

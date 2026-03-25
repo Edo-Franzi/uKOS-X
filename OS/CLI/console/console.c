@@ -74,12 +74,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Console\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	int32_t		local_execute(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
-static	uint16_t	local_getIndex(serialManager_t serialManager);
 
 MODULE(
 	Console,												// Module name (the first letter has to be upper case)
@@ -129,6 +124,12 @@ static	const	console_t	aTabConsole[] = {
 #define	KLN_INIT_CMD_LINE_BUF	128u						// Length of the initial command line
 #define	KLN_CMD_LINE_BUF		2048u						// Length of the command line
 #define	KNB_PARAMETERS			(KLN_CMD_LINE_BUF / 2u)		// It is considered a minimum parameter of "x " (2-bytes)
+
+// Prototypes
+
+static	int32_t		local_execute(uint32_t argc, const char_t *argv[]);
+static	void		local_process(const void *argument);
+static	uint16_t	local_getIndex(serialManager_t serialManager);
 
 /*
  * \brief Main entry point

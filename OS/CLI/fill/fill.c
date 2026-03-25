@@ -67,8 +67,6 @@ STRG_LOC_CONST(aStrHelp[])		  = "Fill a memory area with a pattern\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -82,9 +80,6 @@ MODULE(
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
 );
-
-// CLI tool specific
-// =================
 
 /*
  * \brief Main entry point

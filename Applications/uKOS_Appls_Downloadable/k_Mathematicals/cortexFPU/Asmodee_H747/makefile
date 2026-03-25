@@ -61,6 +61,7 @@ BOARD			=  Asmodee_H747
 V				=  Variant_Test_CM7
 SOC				=  STM32H747
 CORE			=  CORTEX_M7
+FLAGS_UKOS		+= -DCACHE_S
 OPTIMISATION	=  -Os
 
 APPL_SRC		+= $(PATH_MYPR)/_math_algos

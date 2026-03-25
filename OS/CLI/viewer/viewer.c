@@ -49,13 +49,10 @@
 
 #include	"uKOS.h"
 
-extern	const	char_t		aStrApplication[];
-extern	const	char_t		aStrHelp[];
-
-// Prototypes
+extern	const	char_t	aStrApplication[];
+extern	const	char_t	aStrHelp[];
 
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-extern	int32_t		viewer_uvc0(uint32_t argc, const char_t *argv[]);
 extern	int32_t		viewer_uvc0_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -69,6 +66,13 @@ MODULE(
 	((1u<<BSHOW) | (1u<<BEXE_CONSOLE)),			// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
 	0											// Execution cores
 );
+
+// CLI tool specific
+// =================
+
+// Prototypes
+
+extern	int32_t		viewer_uvc0(uint32_t argc, const char_t *argv[]);
 
 /*
  * \brief main

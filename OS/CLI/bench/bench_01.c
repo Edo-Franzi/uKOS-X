@@ -63,12 +63,14 @@
 
 #include	"uKOS.h"
 
+// CLI tool specific
+// =================
+
 #define	KNB_X		200u
 #define	KNB_Y		200u
 #define	KMAX_BIT	256u
 
-// CLI tool specific
-// =================
+// Prototypes
 
 static	void	local_fill(uint8_t *array, uint64_t *time);
 static	void	local_prjX(const uint8_t *array, uint64_t *time, uint32_t *x);

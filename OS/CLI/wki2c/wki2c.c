@@ -81,8 +81,6 @@ STRG_LOC_CONST(aStrHelp[])		  = "Read/write on the i2c x device\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(

@@ -94,11 +94,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Operate with a communication device\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_setBaudRate(serialManager_t serialManager, uint8_t baudRate);
-static	void		local_getSerialManager(serialManager_t *serialManager, const char_t *string);
 
 MODULE(
 	Wkserial,									// Module name (the first letter has to be upper case)
@@ -114,6 +110,11 @@ MODULE(
 
 // CLI tool specific
 // =================
+
+// Prototypes
+
+static	void	local_setBaudRate(serialManager_t serialManager, uint8_t baudRate);
+static	void	local_getSerialManager(serialManager_t *serialManager, const char_t *string);
 
 /*
  * \brief Main entry point

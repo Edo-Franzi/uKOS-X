@@ -54,8 +54,8 @@
 extern				void		(*vExce_extIntVectors[KNB_CORES][KNB_EXT_INTERRUPTIONS])(uint32_t core, uint64_t parameter);
 static				uint16_t	*vImageE0 = nullptr;
 static				uint16_t	*vImageE1 = nullptr;
-static				sema_t		*vSeHandleAQ;
-static				sema_t		*vSeHandleIM;
+static				sema_t		*vSemaphore_AQ;
+static				sema_t		*vSemaphore_IM;
 static				mutx_t		*vMutex;
 static	volatile	uint8_t		vPage = 1u;
 
@@ -470,7 +470,7 @@ int32_t	imgk_acquisition(void) {
 	status = local_init();
 	if (status != KERR_IMGK_NOERR) { return (status); }
 
-	kern_signalSemaphore(vSeHandleAQ);
+	kern_signalSemaphore(vSemaphore_AQ);
 	return (KERR_IMGK_NOERR);
 }
 
@@ -518,7 +518,7 @@ void	local_DVP_IRQHandler(uint32_t core, uint64_t parameter) {
 		if (vPage == 0u) { dvp->rgb_addr = (uint32_t)((uintptr_t)vImageE0); vPage = 1u; }
 		else             { dvp->rgb_addr = (uint32_t)((uintptr_t)vImageE1); vPage = 0u; }
 
-		kern_signalSemaphore(vSeHandleIM);
+		kern_signalSemaphore(vSemaphore_IM);
 		dvp->sts = DVP_STS_FRAME_FINISH | DVP_STS_FRAME_FINISH_WE;
 	}
 
@@ -527,7 +527,7 @@ void	local_DVP_IRQHandler(uint32_t core, uint64_t parameter) {
 // interruption End-of-Start
 
 	if ((dvp->sts & DVP_STS_FRAME_START) != 0u) {
-		if (kern_waitSemaphore(vSeHandleAQ, 0u) == KERR_KERN_NOERR) {
+		if (kern_waitSemaphore(vSemaphore_AQ, 0u) == KERR_KERN_NOERR) {
 			dvp->sts = DVP_STS_DVP_EN | DVP_STS_DVP_EN_WE;
 		}
 		dvp->sts = DVP_STS_FRAME_START | DVP_STS_FRAME_START_WE;
@@ -551,9 +551,9 @@ static	int32_t	local_init(void) {
 	if (vInit == false) {
 		vInit = true;
 
-		if (kern_createMutex(KIMGK_MUTEX_RESERVE, &vMutex)				 != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "imgk: create mutx"); exit(EXIT_OS_PANIC); }
-		if (kern_createSemaphore(KIMGK_SEMAPHORE_IM, 0, 1, &vSeHandleIM) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "imgk: create sema"); exit(EXIT_OS_PANIC); }
-		if (kern_createSemaphore(KIMGK_SEMAPHORE_AQ, 0, 1, &vSeHandleAQ) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "imgk: create sema"); exit(EXIT_OS_PANIC); }
+		if (kern_createMutex(KIMGK_MUTEX_RESERVE, &vMutex)				   != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "imgk: create mutx"); exit(EXIT_OS_PANIC); }
+		if (kern_createSemaphore(KIMGK_SEMAPHORE_IM, 0, 1, &vSemaphore_IM) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "imgk: create sema"); exit(EXIT_OS_PANIC); }
+		if (kern_createSemaphore(KIMGK_SEMAPHORE_AQ, 0, 1, &vSemaphore_AQ) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "imgk: create sema"); exit(EXIT_OS_PANIC); }
 
 // Set the priority
 // Get current enable bit array by IRQ number

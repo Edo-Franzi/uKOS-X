@@ -82,10 +82,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "List the system modules\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	bool		local_listModule(uint8_t idFamily);
 
 MODULE(
 	List,										// Module name (the first letter has to be upper case)
@@ -101,6 +98,10 @@ MODULE(
 
 // CLI tool specific
 // =================
+
+// Prototypes
+
+static	bool	local_listModule(uint8_t idFamily);
 
 /*
  * \brief Main entry point

@@ -67,10 +67,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Minimal test of the hardware\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_display(int32_t error, void *add, uint32_t expe, uint32_t read);
 
 MODULE(
 	Test_ram,									// Module name (the first letter has to be upper case)
@@ -97,6 +94,10 @@ enum {
 
 #define	KSTART		0u
 #define	KEND		((uintptr_t)linker_lnEXRAM)
+
+// Prototypes
+
+static	void	local_display(int32_t error, void *add, uint32_t expe, uint32_t read);
 
 /*
  * \brief Main entry point

@@ -88,15 +88,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Motorola S1-9, S2-8, S3-7 loader\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	int32_t		local_getCounter(uint8_t *counter, uint8_t *checksum);
-static	int32_t		local_getAddress(uint8_t **address, uint8_t *counter, uint8_t *checksum, uint8_t sType);
-static	int32_t		local_getData(const uint8_t *counter, uint8_t *checksum, uint8_t *address, uint32_t *size);
-static	int32_t		local_getHexValue(uint8_t *value);
-static	int32_t		local_getByte(uint8_t *byte);
-static	bool		local_checkSignature(void);
 
 MODULE(
 	Sloader,									// Module name (the first letter has to be upper case)
@@ -129,6 +121,15 @@ enum {
 		KRUN = 0u,
 		KRUN_NO
 };
+
+// Prototypes
+
+static	int32_t		local_getCounter(uint8_t *counter, uint8_t *checksum);
+static	int32_t		local_getAddress(uint8_t **address, uint8_t *counter, uint8_t *checksum, uint8_t sType);
+static	int32_t		local_getData(const uint8_t *counter, uint8_t *checksum, uint8_t *address, uint32_t *size);
+static	int32_t		local_getHexValue(uint8_t *value);
+static	int32_t		local_getByte(uint8_t *byte);
+static	bool		local_checkSignature(void);
 
 /*
  * \brief Main entry point

@@ -62,15 +62,11 @@ STRG_LOC_CONST(aStrHelp[])		  = "mcore process\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process_SndX(const void *argument);
-static	void		local_process_RecX(const void *argument);
-
 // This process has to run on the following cores:
 
 #define	KEXECUTION_CORE		((1u<<BCORE_0) | (1u<<BCORE_1) | (1u<<BCORE_2) | (1u<<BCORE_3))
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
 	Mcore,							// Module name (the first letter has to be upper case)
@@ -93,6 +89,12 @@ STRG_LOC_CONST(aStrIden_RecX[]) = "Daemon_rec_from_core_x";
 STRG_LOC_CONST(aStrIden_SndX[]) = "Daemon_snd_to_core_x";
 STRG_LOC_CONST(aStrText_RecX[]) = "Daemon mcore: receive from core x.        (c) EFr-2026";
 STRG_LOC_CONST(aStrText_SndX[]) = "Daemon mcore: send to core x.             (c) EFr-2026";
+
+// Prototypes
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	void		local_process_SndX(const void *argument);
+static	void		local_process_RecX(const void *argument);
 
 /*
  * \brief Main entry point

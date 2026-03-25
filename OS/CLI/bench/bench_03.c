@@ -64,11 +64,13 @@
 
 #include	"uKOS.h"
 
+// CLI tool specific
+// =================
+
 #define	KNB_TESTS		100u
 #define	KNB_ELEMENTS	50000u
 
-// CLI tool specific
-// =================
+// Prototypes
 
 static	void	local_minMax(const uint32_t *array, uint64_t *time, uint32_t *min, uint32_t *max);
 

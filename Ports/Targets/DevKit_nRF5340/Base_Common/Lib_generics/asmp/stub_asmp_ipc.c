@@ -108,12 +108,12 @@ static	void	local_IPC_interruptionChannel(void);
  */
 int32_t	stub_asmp_init(void) {
 			uint32_t	core;
-			sema_t		*semaphoreRX, *semaphoreTX;
-	const	char_t		*identifierRX, *identifierTX;
+			sema_t		*semaphore_RX, *semaphore_TX;
+	const	char_t		*identifier_RX, *identifier_TX;
 
 	stub_asmp_getRunningCore(&core);
-	identifierRX = (core == KASMP_CORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
-	identifierTX = (core == KASMP_CORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);
+	identifier_RX = (core == KASMP_CORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
+	identifier_TX = (core == KASMP_CORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);
 
 	INTERRUPT_VECTOR(IPC_C0_IRQn, local_IPC_interruptionChannel);
 	NVIC_SetPriority(IPC_C0_IRQn, KINT_LEVEL_PERIPHERALS);
@@ -151,10 +151,10 @@ int32_t	stub_asmp_init(void) {
 // Create the message sent semaphore and signal message sent
 // Prepare the information indicating ASMP ready
 
-	kern_createSemaphore(identifierRX, 0, 1, &semaphoreRX);
-	kern_createSemaphore(identifierTX, 0, 1, &semaphoreTX);
+	kern_createSemaphore(identifier_RX, 0, 1, &semaphore_RX);
+	kern_createSemaphore(identifier_TX, 0, 1, &semaphore_TX);
 
-	kern_signalSemaphore(semaphoreTX);
+	kern_signalSemaphore(semaphore_TX);
 
 	INTERRUPTION_OFF;
 	vAsmp_InterCore->oASMPReady |= (core == KASMP_CORE_0) ? (1u<<(uint8_t)KASMP_CORE_0) : (1u<<(uint8_t)KASMP_CORE_1);
@@ -283,15 +283,15 @@ static	void	local_initInterCore(uint32_t core) {
  */
 static	void	local_IPC_interruptionChannel(void) {
 			uint32_t	core;
-			sema_t		*semaphoreRX, *semaphoreTX;
-	const	char_t		*identifierRX, *identifierTX;
+			sema_t		*semaphore_RX, *semaphore_TX;
+	const	char_t		*identifier_RX, *identifier_TX;
 
 	stub_asmp_getRunningCore(&core);
-	identifierRX = (core == KASMP_CORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
-	identifierTX = (core == KASMP_CORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);
+	identifier_RX = (core == KASMP_CORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
+	identifier_TX = (core == KASMP_CORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);
 
-	kern_getSemaphoreById(identifierRX, &semaphoreRX);
-	kern_getSemaphoreById(identifierTX, &semaphoreTX);
+	kern_getSemaphoreById(identifier_RX, &semaphore_RX);
+	kern_getSemaphoreById(identifier_TX, &semaphore_TX);
 
 // Interruption message sent
 // Interruption message read
@@ -301,16 +301,16 @@ static	void	local_IPC_interruptionChannel(void) {
 // core1 indicates to the core0 that there is a valid message in the buffer
 // core1 acknowledge the core0, get free the statusTX of the core1
 
-		if (REG(IPC)->EVENTS_RECEIVE[0] != 0u) { REG(IPC)->EVENTS_RECEIVE[0] = 0u; vAsmp_InterCore->oStatusRX[KASMP_CORE_0] = KASMP_LOCK; kern_signalSemaphore(semaphoreRX); }
-		if (REG(IPC)->EVENTS_RECEIVE[2] != 0u) { REG(IPC)->EVENTS_RECEIVE[2] = 0u; vAsmp_InterCore->oStatusTX[KASMP_CORE_1] = KASMP_FREE; kern_signalSemaphore(semaphoreTX); }
+		if (REG(IPC)->EVENTS_RECEIVE[0] != 0u) { REG(IPC)->EVENTS_RECEIVE[0] = 0u; vAsmp_InterCore->oStatusRX[KASMP_CORE_0] = KASMP_LOCK; kern_signalSemaphore(semaphore_RX); }
+		if (REG(IPC)->EVENTS_RECEIVE[2] != 0u) { REG(IPC)->EVENTS_RECEIVE[2] = 0u; vAsmp_InterCore->oStatusTX[KASMP_CORE_1] = KASMP_FREE; kern_signalSemaphore(semaphore_TX); }
 	}
 	else {
 
 // core0 indicates to the core1 that there is a valid message in the buffer
 // core0 acknowledge the core1, get free the statusTX of the core0
 
-		if (REG(IPC)->EVENTS_RECEIVE[1] != 0u) { REG(IPC)->EVENTS_RECEIVE[1] = 0u; vAsmp_InterCore->oStatusRX[KASMP_CORE_1] = KASMP_LOCK; kern_signalSemaphore(semaphoreRX); }
-		if (REG(IPC)->EVENTS_RECEIVE[3] != 0u) { REG(IPC)->EVENTS_RECEIVE[3] = 0u; vAsmp_InterCore->oStatusTX[KASMP_CORE_0] = KASMP_FREE; kern_signalSemaphore(semaphoreTX); }
+		if (REG(IPC)->EVENTS_RECEIVE[1] != 0u) { REG(IPC)->EVENTS_RECEIVE[1] = 0u; vAsmp_InterCore->oStatusRX[KASMP_CORE_1] = KASMP_LOCK; kern_signalSemaphore(semaphore_RX); }
+		if (REG(IPC)->EVENTS_RECEIVE[3] != 0u) { REG(IPC)->EVENTS_RECEIVE[3] = 0u; vAsmp_InterCore->oStatusTX[KASMP_CORE_0] = KASMP_FREE; kern_signalSemaphore(semaphore_TX); }
 	}
 
 	PREEMPTION_THRESHOLD(KCORE_0);

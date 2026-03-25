@@ -72,21 +72,21 @@ STRG_GLB_CONST(aStrHelp[])		  = "Acquire & send an image to the computer\n"
 
 STRG_LOC_CONST(aStrIden_acquisition[]) = "Process_Acquisition";
 STRG_LOC_CONST(aStrText_acquisition[]) = "Process Acquisition.                      (c) EFr-2026";
-STRG_LOC_CONST(aStrAcqu[])			   = "imager - Acquisition";
+STRG_LOC_CONST(aStrImageReady[])	   = "image - Ready";
+
+static	sema_t	*vSemaphore_IM[KNB_CORES];
+static	bool	vKillRequest[KNB_CORES] = MCSET(false);
 
 // Prototypes
 
 		void	TinyUSB_video_init(void);
 		void	TinyUSB_video_clean(void);
 		void	TinyUSB_video_getImageSize(uint32_t *w, uint32_t *h);
-		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h);
+		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h, void (*callBack)(const void *argument), const void *argument);
 static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_convertToYUY2(volatile const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_transfer(void);
 static	void	aProcess_acquisition(const void *argument);
-
-static	sema_t	*vSemaphore[KNB_CORES];
-static	bool	vKillRequest[KNB_CORES] = MCSET(false);
 
 /*
  * \brief viewer_uvc0
@@ -179,7 +179,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 		exit(EXIT_OS_FAILURE);
 	}
 
-	if (kern_createSemaphore(aStrAcqu, 0, 1, &vSemaphore[core]) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "viewer: create sema"); exit(EXIT_OS_FAILURE); }
+	if (kern_createSemaphore(aStrImageReady, 0, 1, &vSemaphore_IM[core]) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "viewer: create sema"); exit(EXIT_OS_FAILURE); }
 
 // Configurations for an imager APTINA
 
@@ -212,16 +212,16 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 
 	while (*killRequest == false) {
 
-// Waiting for the semaphore "vSemaphore"
+// Waiting for the semaphore "vSemaphore_IM"
 
-		kern_waitSemaphore(vSemaphore[core], KWAIT_INFINITY);
+		kern_waitSemaphore(vSemaphore_IM[core], KWAIT_INFINITY);
 		imager_read(&imageXX);
 
 		if (imageXX != imageOld) {
 			imageOld = imageXX;
 
 			local_convertToYUY2((volatile const uint8_t *)imageXX, imageYUY2, w, h);
-			TinyUSB_video_sendImage(imageYUY2, w, h);
+			TinyUSB_video_sendImage(imageYUY2, w, h, nullptr, nullptr);
 		}
 		imager_acquisition();
 	}
@@ -234,7 +234,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 	RELEASE(IMAGER, KMODE_READ_WRITE);
 
 	TinyUSB_video_clean();
-	kern_killSemaphore(vSemaphore[core]);
+	kern_killSemaphore(vSemaphore_IM[core]);
 	memo_free(imageYUY2);
 
 	exit(EXIT_OS_SUCCESS);
@@ -243,8 +243,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 /*
  * \brief local_transfer
  *
- * - waiting for the semaphore "vSemaphore"
- *		- Signal end of the acquisition
+ * - Signal end of the acquisition
  *
  * - !!! This is an interrupt call-back function
  *       Not all the system calls are allowed inside this portion of code
@@ -254,7 +253,7 @@ static	void	local_transfer(void) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
-	kern_signalSemaphore(vSemaphore[core]);
+	kern_signalSemaphore(vSemaphore_IM[core]);
 }
 
 /*

@@ -68,10 +68,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "MicroPython Embedded for uKOS-X\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
 
 MODULE(
 	MicroPython,										// Module name (the first letter has to be upper case)
@@ -96,12 +93,16 @@ STRG_LOC_CONST(aStrText[]) = "Process MicroPython (micropython.com)     (c) EFr-
 typedef	struct	microPythonPack	microPythonPack_t;
 
 struct	microPythonPack {
-			serialManager_t		oCLISerialManager;			// Serial Communication Manager (CLI process)
-			serialManager_t		oMPYSerialManager;			// Serial Communication Manager (MPY process)
-			uint32_t			oMPYSize;					// Size of the mpy memory
-			uint8_t				*oMPYMemory;				// Ptr on the memory location for mpy
-			bool				*oReleasePack;				// Release the pack
+			serialManager_t		oCLISerialManager;		// Serial Communication Manager (CLI process)
+			serialManager_t		oMPYSerialManager;		// Serial Communication Manager (MPY process)
+			uint32_t			oMPYSize;				// Size of the mpy memory
+			uint8_t				*oMPYMemory;			// Ptr on the memory location for mpy
+			bool				*oReleasePack;			// Release the pack
 		};
+
+// Prototypes
+
+static	void	local_process(const void *argument);
 
 /*
  * \brief Main entry point

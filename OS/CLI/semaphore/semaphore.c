@@ -66,10 +66,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Show all created semaphores\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_compose(const char_t *identifier, const char_t **idSpacer);
 
 MODULE(
 	Semaphore,									// Module name (the first letter has to be upper case)
@@ -85,6 +82,10 @@ MODULE(
 
 // CLI tool specific
 // =================
+
+// Prototypes
+
+static	void	local_compose(const char_t *identifier, const char_t **idSpacer);
 
 /*
  * \brief Main entry point

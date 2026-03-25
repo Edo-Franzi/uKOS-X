@@ -92,17 +92,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Intel hex+ (32-bit) loader\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	int32_t		local_getCounter(uint8_t *counter, uint8_t *checksum);
-static	int32_t		local_getType(uint8_t *type, uint8_t *checksum);
-static	int32_t		local_getOffset(uintptr_t *offset, uint8_t *checksum);
-static	int32_t		local_getExecAddress(uint8_t **address, uint8_t *checksum);
-static	int32_t		local_getData(const uint8_t *counter, uint8_t *checksum, uint8_t *address);
-static	int32_t		local_getHexValue(uint8_t *value);
-static	int32_t		local_getByte(uint8_t *byte);
-static	bool		local_checkSignature(void);
 
 MODULE(
 	Hexloader,									// Module name (the first letter has to be upper case)
@@ -134,6 +124,17 @@ enum {
 		KRUN = 0u,
 		KRUN_NO
 };
+
+// Prototypes
+
+static	int32_t		local_getCounter(uint8_t *counter, uint8_t *checksum);
+static	int32_t		local_getType(uint8_t *type, uint8_t *checksum);
+static	int32_t		local_getOffset(uintptr_t *offset, uint8_t *checksum);
+static	int32_t		local_getExecAddress(uint8_t **address, uint8_t *checksum);
+static	int32_t		local_getData(const uint8_t *counter, uint8_t *checksum, uint8_t *address);
+static	int32_t		local_getHexValue(uint8_t *value);
+static	int32_t		local_getByte(uint8_t *byte);
+static	bool		local_checkSignature(void);
 
 /*
  * \brief Main entry point

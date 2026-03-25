@@ -66,10 +66,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "gdb\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
 
 MODULE(
 	Gdb,										// Module name (the first letter has to be upper case)
@@ -90,6 +87,10 @@ MODULE(
 
 STRG_LOC_STATI(vStrText[]) = "GDB process.                              (c) EFr-2026";
 STRG_LOC_STATI(vStrIden[]) = "GDB_process";
+
+// Prototypes
+
+static	void	local_process(const void *argument);
 
 /*
  * \brief Main entry point

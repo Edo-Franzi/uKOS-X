@@ -53,29 +53,6 @@
 
 #if (defined(CONFIG_MAN_CALENDAR_S))
 
-#ifndef	TZ_UTC_SHIFT
-#define	TZ_UTC_SHIFT		"CET-1"
-#endif
-
-#ifndef	TZ_DST_SPEC
-#define	TZ_DST_SPEC			"CEST,M3.5.0/2,M10.5.0/2"
-#endif
-
-#define	KSZ_TZ_UTC_SHIFT	(16u + 1u)
-#define	KSZ_TZ_DST_SPEC		(32u + 1u)
-#define	KSZ_TZ_TIME_ZONE	(KSZ_TZ_UTC_SHIFT + KSZ_TZ_DST_SPEC)
-
-// UTC shift (e.g CET-1, GMT+12, etc.)
-// DST summer time sec
-// Time zone string for newlib (UTC + DST)
-
-static	char_t		calendar_tzUTCShift[KNB_CORES][KSZ_TZ_UTC_SHIFT];
-static	char_t		calendar_tzDSTSpec[KNB_CORES][KSZ_TZ_DST_SPEC];
-static	char_t		calendar_tzTimeZone[KNB_CORES][KSZ_TZ_TIME_ZONE];
-
-static	uint64_t	vUnixTime[KNB_CORES]	 =  MCSET(0u);						// Absolute Unix time
-static	uint64_t	vOldTickCount[KNB_CORES] =  MCSET(0u);						// Old tickCount
-
 // uKOS-X specific (see the module.h)
 // ==================================
 
@@ -103,6 +80,29 @@ MODULE(
 
 // Library specific
 // ================
+
+#ifndef	TZ_UTC_SHIFT
+#define	TZ_UTC_SHIFT		"CET-1"
+#endif
+
+#ifndef	TZ_DST_SPEC
+#define	TZ_DST_SPEC			"CEST,M3.5.0/2,M10.5.0/2"
+#endif
+
+#define	KSZ_TZ_UTC_SHIFT	(16u + 1u)
+#define	KSZ_TZ_DST_SPEC		(32u + 1u)
+#define	KSZ_TZ_TIME_ZONE	(KSZ_TZ_UTC_SHIFT + KSZ_TZ_DST_SPEC)
+
+// UTC shift (e.g CET-1, GMT+12, etc.)
+// DST summer time sec
+// Time zone string for newlib (UTC + DST)
+
+static	char_t		calendar_tzUTCShift[KNB_CORES][KSZ_TZ_UTC_SHIFT];
+static	char_t		calendar_tzDSTSpec[KNB_CORES][KSZ_TZ_DST_SPEC];
+static	char_t		calendar_tzTimeZone[KNB_CORES][KSZ_TZ_TIME_ZONE];
+
+static	uint64_t	vUnixTime[KNB_CORES]	 =  MCSET(0u);
+static	uint64_t	vOldTickCount[KNB_CORES] =  MCSET(0u);
 
 // Prototypes
 

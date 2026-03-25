@@ -66,35 +66,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "List the installed processes\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-typedef	struct	process	process_t;
-
-struct	process {
-			bool		oValid;					// Process valid
-			spec_t		oSpecification;			// Process specification
-			work_t		oInternal;				// Process internal stuff
-			stts_t		oStatistic;				// uKernel statistic
-			uintptr_t	oPC;					// Process PC
-		};
-
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	bool		local_getProcessByNb(uint8_t core, uint16_t number, proc_t **handle);
-static	void		local_compose(const char_t *identifier, const char_t **idSpacer);
-static	void		local_printParameter_P0(uint8_t core, uint16_t number, process_t *handle);
-static	void		local_printParameter_P1(uint8_t core, uint16_t number, process_t *handle);
-static	void		local_printParameter_N1(uint8_t core, uint16_t number, process_t *handle);
-static	void		local_printParameter_S2(uint8_t core, uint16_t number, process_t *handle);
-
-#if (KKERN_WITH_STATISTICS_S == true)
-static	void		local_printParameter_T1(uint8_t core, uint16_t number, process_t *handle);
-static	void		local_printParameter_T2(uint8_t core, uint16_t number, process_t *handle);
-static	void		local_printParameter_T3(uint8_t core, uint16_t number, process_t *handle);
-
-#if (KDAEMONS_WITH_STACK_INT_S == true)
-static	void		local_printParameter_S0(uint8_t core, uint16_t number, process_t *handle);
-#endif
-#endif
 
 MODULE(
 	Process,									// Module name (the first letter has to be upper case)
@@ -111,10 +83,39 @@ MODULE(
 // CLI tool specific
 // =================
 
+typedef	struct	process	process_t;
+
+struct	process {
+			bool		oValid;					// Process valid
+			spec_t		oSpecification;			// Process specification
+			work_t		oInternal;				// Process internal stuff
+			stts_t		oStatistic;				// uKernel statistic
+			uintptr_t	oPC;					// Process PC
+		};
+
 static	uint64_t	vTotalTimeCPU[KNB_CORES] = MCSET(0u);
 
 #if (KNB_CORES > 1)
 static	spinlock_t	vProcess = SPIN_LOCK_INIT;
+#endif
+
+// Prototypes
+
+static	bool	local_getProcessByNb(uint8_t core, uint16_t number, proc_t **handle);
+static	void	local_compose(const char_t *identifier, const char_t **idSpacer);
+static	void	local_printParameter_P0(uint8_t core, uint16_t number, process_t *handle);
+static	void	local_printParameter_P1(uint8_t core, uint16_t number, process_t *handle);
+static	void	local_printParameter_N1(uint8_t core, uint16_t number, process_t *handle);
+static	void	local_printParameter_S2(uint8_t core, uint16_t number, process_t *handle);
+
+#if (KKERN_WITH_STATISTICS_S == true)
+static	void	local_printParameter_T1(uint8_t core, uint16_t number, process_t *handle);
+static	void	local_printParameter_T2(uint8_t core, uint16_t number, process_t *handle);
+static	void	local_printParameter_T3(uint8_t core, uint16_t number, process_t *handle);
+
+#if (KDAEMONS_WITH_STACK_INT_S == true)
+static	void	local_printParameter_S0(uint8_t core, uint16_t number, process_t *handle);
+#endif
 #endif
 
 /*

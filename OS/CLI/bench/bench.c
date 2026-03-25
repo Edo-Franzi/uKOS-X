@@ -69,15 +69,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "The CPU cores benches\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-extern	bool		bench_00(void);
-extern	bool		bench_01(void);
-extern	bool		bench_02(void);
-extern	bool		bench_03(void);
-extern	bool		bench_04(void);
-extern	bool		bench_05(void);
 
 MODULE(
 	Bench,										// Module name (the first letter has to be upper case)
@@ -93,6 +85,15 @@ MODULE(
 
 // CLI tool specific
 // =================
+
+// Prototypes
+
+extern	bool		bench_00(void);
+extern	bool		bench_01(void);
+extern	bool		bench_02(void);
+extern	bool		bench_03(void);
+extern	bool		bench_04(void);
+extern	bool		bench_05(void);
 
 /*
  * \brief Main entry point

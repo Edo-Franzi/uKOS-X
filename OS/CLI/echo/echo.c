@@ -64,11 +64,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "echo\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	bool		local_getByte(serialManager_t serialManager, uint8_t *buffer, uint64_t timeout);
-static	void		local_putByte(serialManager_t serialManager, const uint8_t *buffer);
 
 MODULE(
 	Echo,										// Module name (the first letter has to be upper case)
@@ -87,6 +83,11 @@ MODULE(
 
 #define	KTIMEOUT_5S		5000000u
 #define	KTIMEOUT_10S	10000000u
+
+// Prototypes
+
+static	bool	local_getByte(serialManager_t serialManager, uint8_t *buffer, uint64_t timeout);
+static	void	local_putByte(serialManager_t serialManager, const uint8_t *buffer);
 
 /*
  * \brief Main entry point

@@ -117,7 +117,7 @@ MODULE(
 STRG_LOC_CONST(aStrAcquisition[]) = "imager - Acquisition";
 STRG_LOC_CONST(aStrShareBuffer[]) = "Share_Buffer";
 
-static	sema_t		*vSemaImgAcqu;
+static	sema_t		*vSemaphore_IM;
 static	uint8_t		*vImage = nullptr;
 static	uint32_t	vW, vH;
 
@@ -143,7 +143,7 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 
 	UNUSED(argument);
 
-	if (kern_createSemaphore(aStrAcquisition, 0, 1, &vSemaImgAcqu) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sema G"); exit(EXIT_OS_FAILURE); }
+	if (kern_createSemaphore(aStrAcquisition, 0, 1, &vSemaphore_IM) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sema G"); exit(EXIT_OS_FAILURE); }
 
 // Configurations for an imager APTINA
 
@@ -177,9 +177,9 @@ static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument
 
 	while (true) {
 
-// Waiting for the semaphore "vSemaImgAcqu"
+// Waiting for the semaphore "vSemaphore_IM"
 
-		kern_waitSemaphore(vSemaImgAcqu, KWAIT_INFINITY);
+		kern_waitSemaphore(vSemaphore_IM, KWAIT_INFINITY);
 
 		kern_lockMutex(mutex, KWAIT_INFINITY);
 		imager_read((volatile void **)&vImage);
@@ -296,7 +296,7 @@ MAIN_ENTRY(argc, argv[]) {
 /*
  * \brief local_transfer
  *
- * - waiting for the semaphore "vSemaImgAcqu"
+ * - waiting for the semaphore "vSemaphore_IM"
  *		- Signal end of the acquisition
  *
  * - !!! This is an interrupt call-back function
@@ -306,7 +306,7 @@ MAIN_ENTRY(argc, argv[]) {
 static	void	local_transfer(void) {
 
 	led_toggle(3);
-	kern_signalSemaphore(vSemaImgAcqu);
+	kern_signalSemaphore(vSemaphore_IM);
 }
 
 /*

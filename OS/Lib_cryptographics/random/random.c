@@ -79,7 +79,7 @@ MODULE(
 // ================
 
 STRG_LOC_CONST(aStrIdSRandom[]) = "Critical_random";
-static	mutx_t		*vMutex_Reserve_Random[KNB_CORES];
+static	mutx_t	*vMutex_Reserve_Random[KNB_CORES];
 
 // Prototypes
 

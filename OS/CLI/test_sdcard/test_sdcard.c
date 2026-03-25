@@ -64,12 +64,8 @@ STRG_LOC_CONST(aStrHelp[])		  = "sdcard R/W tests\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 static	int32_t		test_sdcard_clean(uint32_t argc, const char_t *argv[]);
-static	void		local_process(const void *argument);
-static	void		local_error(uint8_t error, int32_t status, uint32_t sector, uint8_t *wBuffer, uint8_t *rBuffer);
 
 MODULE(
 	Test_sdcard,								// Module name (the first letter has to be upper case)
@@ -96,12 +92,17 @@ enum {
 		KERR_MISMATCH
 };
 
-static	bool	vKillRequest[KNB_CORES] = MCSET(false);
-
 // ---------------------------I-----------------------------------------I--------------I
 
 STRG_LOC_CONST(aStrIden[]) = "Process_SDCard";
 STRG_LOC_CONST(aStrText[]) = "Process sdcard; R/W 100 sectors.          (c) EFr-2026";
+
+static	bool	vKillRequest[KNB_CORES] = MCSET(false);
+
+// Prototypes
+
+static	void	local_process(const void *argument);
+static	void	local_error(uint8_t error, int32_t status, uint32_t sector, uint8_t *wBuffer, uint8_t *rBuffer);
 
 /*
  * \brief Main entry point

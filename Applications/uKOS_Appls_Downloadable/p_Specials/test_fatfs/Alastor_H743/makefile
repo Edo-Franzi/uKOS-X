@@ -59,6 +59,7 @@ BOARD			=  Alastor_H743
 V				=  Variant_Test
 SOC				=  STM32H743
 CORE			=  CORTEX_M7
+FLAGS_UKOS		+= -DCACHE_S
 OPTIMISATION	=  -Os
 
 include ../../../../Mkfiles/common.mk

@@ -96,10 +96,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Give the memory information\n"
 
 #endif
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_displayHeap(uint8_t *stHeap, uint32_t blocks, uint32_t used, intptr_t heapSize);
 
 MODULE(
 	Memory,										// Module name (the first letter has to be upper case)
@@ -131,6 +128,10 @@ size_t	size_system_C1	= (size_t)linker_sizeStackSystem_C1;
 #else
 #error	"*** The number of cores (KNB_CORES) exceed 2"
 #endif
+
+// Prototypes
+
+static	void	local_displayHeap(uint8_t *stHeap, uint32_t blocks, uint32_t used, intptr_t heapSize);
 
 /*
  * \brief Main entry point

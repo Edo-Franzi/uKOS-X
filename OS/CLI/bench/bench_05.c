@@ -61,10 +61,10 @@
 
 #include	"uKOS.h"
 
-#define	KNB_TESTS			1000000u
-
 // CLI tool specific
 // =================
+
+#define	KNB_TESTS	1000000u
 
 /*
  * \brief bench_05

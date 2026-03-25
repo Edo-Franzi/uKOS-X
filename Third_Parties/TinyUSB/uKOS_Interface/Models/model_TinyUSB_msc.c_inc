@@ -179,15 +179,20 @@ void	TinyUSB_msc_clean(void) {
  *
  */
 void	tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16], uint8_t product_rev[4]) {
-	const	char_t	vid[] = "TinyUSB";
-	const	char_t	pid[] = "Mass Storage";
-	const	char_t	rev[] = "1.0";
+			uint32_t	core;
+	const	char_t		vid[] = "TinyUSB";
+	const	char_t		pid[] = "Mass Storage";
+	const	char_t		rev[] = "1.0";
 
 	UNUSED(lun);
 
+	core = GET_RUNNING_CORE;
+
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	memcpy(vendor_id  , vid, strlen(vid));
 	memcpy(product_id , pid, strlen(pid));
 	memcpy(product_rev, rev, strlen(rev));
+	kern_unlockMutex(vTinyUSB_API[core]);
 }
 
 /*
@@ -227,11 +232,16 @@ bool	tud_msc_test_unit_ready_cb(uint8_t lun) {
  *
  */
 void	tud_msc_capacity_cb(uint8_t lun, uint32_t *block_count, uint16_t *block_size) {
+	uint32_t	core;
 
 	UNUSED(lun);
 
+	core = GET_RUNNING_CORE;
+
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	*block_count = DISK_BLOCK_NUM;
 	*block_size  = DISK_BLOCK_SIZE;
+	kern_unlockMutex(vTinyUSB_API[core]);
 }
 
 /*
@@ -248,6 +258,7 @@ bool	tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition, bool start, boo
 
 	core = GET_RUNNING_CORE;
 
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	if (load_eject == true ) {
 		if (start == true) {
 
@@ -261,6 +272,7 @@ bool	tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition, bool start, boo
 			vEjected[core] = true;
 		}
 	}
+	kern_unlockMutex(vTinyUSB_API[core]);
 	return (true);
 }
 
@@ -271,18 +283,24 @@ bool	tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition, bool start, boo
  *
  */
 int32_t	tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset, void *buffer, uint32_t bufsize) {
+	uint32_t	core;
 	uint8_t		const	*addr = msc_disk[lba] + offset;
 
 	UNUSED(lun);
 
+	core = GET_RUNNING_CORE;
+
 // Out of ramdisk
 
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	if (lba >= DISK_BLOCK_NUM ) {
+		kern_unlockMutex(vTinyUSB_API[core]);
 		return (-1);
 	}
 
 	memcpy(buffer, addr, bufsize);
 
+	kern_unlockMutex(vTinyUSB_API[core]);
 	return ((int32_t)bufsize);
 }
 
@@ -311,12 +329,17 @@ bool	tud_msc_is_writable_cb(uint8_t lun) {
  *
  */
 int32_t	tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset, uint8_t *buffer, uint32_t bufsize) {
+	uint32_t	core;
 
 	UNUSED(lun);
 
+	core = GET_RUNNING_CORE;
+
 // Out of ramdisk
 
+	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
 	if (lba >= DISK_BLOCK_NUM ) {
+		kern_unlockMutex(vTinyUSB_API[core]);
 		return (-1);
 	}
 
@@ -330,6 +353,7 @@ int32_t	tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset, uint8_t *
 	UNUSED(buffer);
 	#endif
 
+	kern_unlockMutex(vTinyUSB_API[core]);
 	return ((int32_t)bufsize);
 }
 

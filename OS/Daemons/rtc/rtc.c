@@ -64,17 +64,11 @@ STRG_LOC_CONST(aStrHelp[])		  = "rtc deamon\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-
-#if (KCALENDAR_WITH_HW_RTC_S == true)
-static	void		local_process(const void *argument);
-#endif
-
 // This process has to run on the following cores:
 
 #define	KEXECUTION_CORE		((1u<<BCORE_0) | (1u<<BCORE_1) | (1u<<BCORE_2) | (1u<<BCORE_3))
+
+static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
 	Rtc,									// Module name (the first letter has to be upper case)
@@ -88,8 +82,8 @@ MODULE(
 	KEXECUTION_CORE							// Execution cores
 );
 
-// Process specific
-// ================
+// Daemon specific
+// ===============
 
 #if (KCALENDAR_WITH_HW_RTC_S == true)
 
@@ -99,6 +93,12 @@ MODULE(
 
 STRG_LOC_CONST(aStrIden[]) = "Deamon_rtc";
 STRG_LOC_CONST(aStrText[]) = "Daemon rtc: update the Unix time Timer.   (c) EFr-2026";
+
+// Prototypes
+
+#if (KCALENDAR_WITH_HW_RTC_S == true)
+static	void	local_process(const void *argument);
+#endif
 
 /*
  * \brief Main entry point

@@ -66,6 +66,9 @@ set(PATH_LVGL ${PATH_UKOS}/Third_Parties/LVGL)
 set(SOC STM32N657)
 set(CORE CORTEX_M55)
 
+# SOC has cache
+add_compile_definitions(CACHE_S)
+
 # Target
 set(BOARD Nucleo_N657)
 set(VARIANT Variant_Test)

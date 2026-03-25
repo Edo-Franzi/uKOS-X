@@ -48,10 +48,10 @@
 #define	FRAME_WIDTH			752u
 #define	FRAME_HEIGHT		480u
 
-static	sema_t	*vSemaphore_Ready[KNB_CORES];
+static	sema_t	*vSemaphore_ACK[KNB_CORES];
 extern	mutx_t	*vTinyUSB_API[KNB_CORES];
 
-STRG_LOC_CONST(aStrSemaphore_Ready[]) = "TinyUSB ready";
+STRG_LOC_CONST(aStrSemaphore_ACK[]) = "Video ACK";
 
 /*
  * \brief TinyUSB_video_init
@@ -64,7 +64,7 @@ void	TinyUSB_video_init(void) {
 
 	core = GET_RUNNING_CORE;
 
-	if (kern_createSemaphore(aStrSemaphore_Ready, 0, 1, &vSemaphore_Ready[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "model_TinyUSB_video: create sema"); exit(EXIT_OS_PANIC); }
+	if (kern_createSemaphore(aStrSemaphore_ACK, 0, 1, &vSemaphore_ACK[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "model_TinyUSB_video: create sema"); exit(EXIT_OS_PANIC); }
 }
 
 /*
@@ -77,7 +77,7 @@ void	TinyUSB_video_clean(void) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
-	kern_killSemaphore(vSemaphore_Ready[core]);
+	kern_killSemaphore(vSemaphore_ACK[core]);
 }
 
 /*
@@ -98,7 +98,7 @@ void	TinyUSB_video_getImageSize(uint32_t *w, uint32_t *h) {
  * - Send a complete video frame
  *
  */
-void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h) {
+void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h, void (*callBack)(const void *argument), const void *argument) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
@@ -109,7 +109,12 @@ void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h) {
 	if (tud_video_n_streaming(0, 0) == true) {
 
 		tud_video_n_frame_xfer(0, 0, (void *)image, (w * h * 16u / 8u));
-		kern_waitSemaphore(vSemaphore_Ready[core], 1000u);
+		if (callBack != nullptr) {
+			STRONG_BARRIER;
+			callBack(argument);
+		}
+
+		kern_waitSemaphore(vSemaphore_ACK[core], 1000u);
 		kern_unlockMutex(vTinyUSB_API[core]);
 	}
 	else {
@@ -134,7 +139,7 @@ void	tud_video_frame_xfer_complete_cb(uint_fast8_t ctl_idx, uint_fast8_t stm_idx
 	UNUSED(stm_idx);
 
 	core = GET_RUNNING_CORE;
-	kern_signalSemaphore(vSemaphore_Ready[core]);
+	kern_signalSemaphore(vSemaphore_ACK[core]);
 }
 
 /*

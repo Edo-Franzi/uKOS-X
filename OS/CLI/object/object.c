@@ -73,23 +73,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Display the structure of an object\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_printObjects(void);
-static	void		local_printProcess(uint32_t core, uint16_t number);
-static	void		local_printSemaphore(uint32_t core, uint16_t number);
-static	void		local_printMutex(uint32_t core, uint16_t number);
-static	void		local_printMailBox(uint32_t core, uint16_t number);
-static	void		local_printSignalGroup(uint32_t core, uint16_t number);
-
-#if (KKERN_NB_SOFTWARE_TIMERS > 0)
-static	void		local_printSoftwareTimer(uint32_t core, uint16_t number);
-#endif
-
-#if (KKERN_NB_PRECISE_SIGNALS > 0)
-static	void		local_printSPreciseSignal(uint32_t core, uint16_t number);
-#endif
 
 MODULE(
 	Object,										// Module name (the first letter has to be upper case)
@@ -105,6 +89,23 @@ MODULE(
 
 // CLI tool specific
 // =================
+
+// Prototypes
+
+static	void	local_printObjects(void);
+static	void	local_printProcess(uint32_t core, uint16_t number);
+static	void	local_printSemaphore(uint32_t core, uint16_t number);
+static	void	local_printMutex(uint32_t core, uint16_t number);
+static	void	local_printMailBox(uint32_t core, uint16_t number);
+static	void	local_printSignalGroup(uint32_t core, uint16_t number);
+
+#if (KKERN_NB_SOFTWARE_TIMERS > 0)
+static	void	local_printSoftwareTimer(uint32_t core, uint16_t number);
+#endif
+
+#if (KKERN_NB_PRECISE_SIGNALS > 0)
+static	void	local_printSPreciseSignal(uint32_t core, uint16_t number);
+#endif
 
 /*
  * \brief Main entry point

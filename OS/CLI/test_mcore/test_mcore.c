@@ -64,12 +64,8 @@ STRG_LOC_CONST(aStrHelp[])		  = "Test of the multi-core communications\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 static	int32_t		test_mcore_clean(uint32_t argc, const char_t *argv[]);
-static	void		local_process_RX(const void *argument);
-static	void		local_process_TX(const void *argument);
 
 MODULE(
 	Test_mcore,									// Module name (the first letter has to be upper case)
@@ -91,8 +87,6 @@ MODULE(
 #define	KLED_TX			KLED_0					// TX led
 #define	KLED_RX			KLED_1					// RX led
 
-static	bool	vKillRequest[KNB_CORES] = MCSET(false);
-
 // -------------------------------I-----------------------------------------I--------------I
 
 STRG_LOC_CONST(aStrIden_TX[])  = "Process_Send_Mcore";
@@ -102,6 +96,13 @@ STRG_LOC_CONST(aStrText_RX[])  = "Process Receive Mcore.                    (c) 
 
 STRG_LOC_CONST(message_0to1[]) = "The old dreams were good dreams. They didn't work out, but I'm glad I had them.";
 STRG_LOC_CONST(message_1to0[]) = "The quick brown fox jumps over the lazy dog.";
+
+static	bool	vKillRequest[KNB_CORES] = MCSET(false);
+
+// Prototypes
+
+static	void	local_process_RX(const void *argument);
+static	void	local_process_TX(const void *argument);
 
 /*
  * \brief Main entry point

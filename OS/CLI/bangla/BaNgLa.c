@@ -67,8 +67,6 @@ STRG_LOC_CONST(aStrHelp[])		  = "The Bangla group\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(

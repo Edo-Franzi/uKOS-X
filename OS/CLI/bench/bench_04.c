@@ -63,16 +63,17 @@
 
 #include	"uKOS.h"
 
-#define	KNB_TESTS			1000u
+// CLI tool specific
+// =================
 
+#define	KNB_TESTS			1000u
 #define	KMAX_ITERATIONS		32u
 
 #define KPI					(float64_t)(3.14159265358979f)
 #define K180				(float64_t)(180.0f)
 #define KRAD_TO_DEG			(K180 / KPI)
 
-// CLI tool specific
-// =================
+// Prototypes
 
 static	void	 local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x);
 
