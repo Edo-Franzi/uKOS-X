@@ -10,32 +10,33 @@
 ;
 ; Project:	uKOS-X
 ; Goal:		Commun Linker description for uKOS-X applications.
-;			Privileged only support
+;			User only support
 ;
-;                       CODE
-; linker_stTEXT		+-----------------+
-;					|                 |
-;					| .header         |
-;					| .text           |
-;					| .ctor           |
-;					| .dtor           |
-; linker_enCTOR		|                 |
-; linker_enDTOR		|                 |
-; linker_enTEXT		|                 |
-; linker_stRODATA	+-----------------+
-;					|                 |
-;					| .rodata         |
-; linker_enRODATA	|                 |
-; linker_stDATA		+-----------------+
-;					|                 |
-;					| .data           |
-; linker_enDATA		|                 |
-; linker_stBSS		+-----------------+
-;					|                 |
-;					| .bss            |
-; linker_enBSS		| COMMON          |
-;					|                 |
-; _end				+-----------------+
+;                   	CODE
+; linker_stTEXT			+-----------------+
+;						|                 |
+;						| .header         |
+;						| .text           |
+; linker_stInitArray	+-----------------+
+;						| .init_array     |
+; linker_enInitArray	+-----------------+
+; linker_stFiniArray	+-----------------+
+;						| .fini_array     |
+; linker_enFiniArray	+-----------------+
+; linker_stRODATA		+-----------------+
+;						|                 |
+;						| .rodata         |
+; linker_enRODATA		|                 |
+; linker_stDATA			+-----------------+
+;						|                 |
+;						| .data           |
+; linker_enDATA			|                 |
+; linker_stBSS			+-----------------+
+;						|                 |
+;						| .bss            |
+; linker_enBSS			| COMMON          |
+;						|                 |
+; _end					+-----------------+
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -79,64 +80,90 @@ SECTIONS {
 		linker_stTEXT = ABSOLUTE(.);
 		KEEP(*(.header))
 		*(.text .text.*)
+        *(.gnu.linkonce.t.*)
 		linker_enTEXT = ABSOLUTE(.);
-
-		_stCTOR = ABSOLUTE(.);
-		KEEP(*(SORT(.init_array.*)))
-		KEEP(*(.init_array))
-		linker_enCTOR = ABSOLUTE(.);
-
-		_stDTOR = ABSOLUTE(.);
-		KEEP(*(SORT(.fini_array.*)))
-		KEEP(*(.fini_array))
-		linker_enDTOR = ABSOLUTE(.);
 	} > prgm_code
 
 	.init_array : {
 		. = ALIGN(8);
 		linker_stInitArray = ABSOLUTE(.);
-		KEEP(*(.init .init.* .init*))
+		KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)))
+		KEEP(*(.init_array))
 		linker_enInitArray = ABSOLUTE(.);
 	} > prgm_code
 
 	.fini_array : {
 		. = ALIGN(8);
 		linker_stFiniArray = ABSOLUTE(.);
-		KEEP(*(.fini .fini.* .fini*))
+		KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*)))
+		KEEP(*(.fini_array))
 		linker_enFiniArray = ABSOLUTE(.);
 	} > prgm_code
 
 	.rodata : {
 		. = ALIGN(8);
 		linker_stRODATA = ABSOLUTE(.);
-		linker_stRODATA = ABSOLUTE(.);
 		*(.rodata .rodata.*)
+		*(.rdata .rdata.*)
 		*(.srodata .srodata.*)
+		*(.gnu.linkonce.r.*)
 		. = ALIGN(8);
 		linker_enRODATA = ABSOLUTE(.);
+	} > prgm_code
+
+/* C++ / unwind support for RISC-V */
+
+	.eh_frame_hdr : {
+		. = ALIGN(8);
+		*(.eh_frame_hdr)
+		*(.eh_frame_hdr.*)
+		. = ALIGN(8);
+	} > prgm_code
+
+	.eh_frame : {
+		. = ALIGN(8);
+		KEEP(*(.eh_frame))
+		KEEP(*(.eh_frame.*))
+		. = ALIGN(8);
+	} > prgm_code
+
+	.gcc_except_table : {
+		. = ALIGN(8);
+		*(.gcc_except_table)
+		*(.gcc_except_table.*)
+		. = ALIGN(8);
 	} > prgm_code
 
 	.data : {
 		. = ALIGN(8);
 		linker_stDATA = ABSOLUTE(.);
-		*(.rdata)
-		*(.sdata .sdata.*)
 		*(.data .data.*)
+		*(.sdata .sdata.*)
+		*(.gnu.linkonce.d.*)
 		. = ALIGN(8);
-		KEEP(*(.eh_frame))
 		linker_enDATA = ABSOLUTE(.);
 	} > prgm_code
 
-	.bss : {
+	.bss (NOLOAD) : {
 		. = ALIGN(8);
 		linker_stBSS = ABSOLUTE(.);
 		KEEP(*(.user))
-		_bss = ABSOLUTE(.);
-		*(.sbss*)
 		*(.bss .bss.*)
+		*(.sbss .sbss.*)
+		*(.scommon)
+		. = ALIGN(8);
 		*(COMMON)
 		. = ALIGN(8);
 		linker_enBSS = ABSOLUTE(.);
 	} > prgm_data
+
+	_end = ABSOLUTE(.);
+
+	/DISCARD/ : {
+		*(.note .note.*)
+		*(.comment)
+		*(.comment.*)
+		*(.riscv.attributes)
+	}
 
 }

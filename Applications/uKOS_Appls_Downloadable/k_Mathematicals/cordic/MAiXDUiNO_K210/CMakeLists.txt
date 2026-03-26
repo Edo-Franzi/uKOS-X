@@ -64,7 +64,7 @@ set(SOC K210)
 set(CORE RV64IMAFDC)
 
 # SOC has cache
-add_compile_definitions(CACHE_S)
+add_compile_definitions(CACHE_D_S)
 
 # Target
 set(BOARD MAiXDUiNO_K210)

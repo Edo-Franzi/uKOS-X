@@ -107,7 +107,7 @@ extern	uintptr_t	__stack_chk_guard;
 #define	KSTACK_GARD_VALUE	0xDeadBeefu
 
 #else
-#define	KSTACK_GARD_VALUE	0xDeadBeeffeeBdaeDu;
+#define	KSTACK_GARD_VALUE	0xDeadBeeffeeBdaeDu
 #endif
 
 // Prototypes
@@ -144,9 +144,7 @@ void	crt0(void) {
 
 	if (core == KCORE_0) {
 
-		#if (defined(CONFIG_MAN_SERIAL_S))
 		cmns_init();
-		#endif
 
 // Before to initialise the system RAM, we use its random content
 // @ the power-on for generating a random seed usable for the software
@@ -157,7 +155,7 @@ void	crt0(void) {
 		#if (defined(PRIVILEGED_USER_S))
 		regionSeed = ALIGNED_PTR(const uint32_t, linker_stPrgmData_u);
 
-		nbWords    = (intptr_t)(((uintptr_t)linker_lnPrgmData_u) / 4);
+		nbWords    = (intptr_t)(((uintptr_t)linker_lnPrgmData_u) / 4u);
 		seed       = 0u;
 		while (nbWords-- > 0) {
 			seed += *regionSeed;
@@ -176,7 +174,7 @@ void	crt0(void) {
 		regionSeed = ALIGNED_PTR(uint32_t, linker_stPrgmData);
 
 		nbWords    = (intptr_t)(((uintptr_t)linker_lnPrgmData) / 4);
-		seed       = 0;
+		seed       = 0u;
 		while (nbWords-- > 0) {
 			seed += *regionSeed;
 			regionSeed++;
@@ -313,21 +311,17 @@ static	void	__attribute__ ((noinline, noreturn)) local_killProcess(void) {
  *
  */
 static	void	__attribute__ ((noinline)) local_panicMallocBroken(void) {
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	uint32_t	core;
 	const		char_t	*identifier;
-	#endif
 
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	cmns_send(KSYST, "\nPanic: memo_malloc descriptor broken!\nCurrent process: ");
 	identifier = (vKern_runProc[core]->oSpecification.oIdentifier == nullptr) ? ("Anonymous") : (vKern_runProc[core]->oSpecification.oIdentifier);
 	cmns_send(KSYST, identifier); cmns_send(KSYST, "\n");
-	#endif
 }
 
 /*
@@ -335,18 +329,15 @@ static	void	__attribute__ ((noinline)) local_panicMallocBroken(void) {
  *
  */
 static	void	__attribute__ ((noinline)) local_panicStackUnderflow(void) {
-	#if (defined(CONFIG_MAN_SERIAL_S))
 			uint32_t	core;
 			char_t		string[200 + 1];
 	const	char_t		*identifier;
-	#endif
 
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	cmns_send(KDEF0, "\nPanic: process stack underflow detected!\n");
 
 	identifier = (vKern_runProc[core]->oSpecification.oIdentifier == nullptr) ? ("Anonymous") : (vKern_runProc[core]->oSpecification.oIdentifier);
@@ -370,7 +361,6 @@ static	void	__attribute__ ((noinline)) local_panicStackUnderflow(void) {
 	(void)snprintf(&string[0], 200u, "Current Stack MSP:  0x%016"PRIXPTR"\n", value);
 	cmns_send(KDEF0, &string[0]);
 	#endif
-	#endif
 }
 
 /*
@@ -378,21 +368,17 @@ static	void	__attribute__ ((noinline)) local_panicStackUnderflow(void) {
  *
  */
 static	void	__attribute__ ((noinline)) local_panicNoSystemCall(void) {
-	#if (defined(CONFIG_MAN_SERIAL_S))
 			uint32_t	core;
 	const	char_t		*identifier;
-	#endif
 
 	core = GET_RUNNING_CORE;
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	cmns_send(KSYST, "\nPanic: The system call does not exist!\nCurrent process: ");
 	identifier = (vKern_runProc[core]->oSpecification.oIdentifier == nullptr) ? ("Anonymous") : (vKern_runProc[core]->oSpecification.oIdentifier);
 	cmns_send(KSYST, identifier); cmns_send(KSYST, "\n");
-	#endif
 }
 
 /*
@@ -404,9 +390,7 @@ static	void	__attribute__ ((noinline)) local_panicElevation(void) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	cmns_send(KSYST, "\nPanic: Elevation not allowed!\n");
-	#endif
 }
 
 /*
@@ -418,9 +402,7 @@ static	void	__attribute__ ((noinline)) local_panicGeneral(void) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	cmns_send(KSYST, "\nPanic: system stopped!\n");
-	#endif
 }
 
 #include	"model_coreDump_tracing.c_inc"

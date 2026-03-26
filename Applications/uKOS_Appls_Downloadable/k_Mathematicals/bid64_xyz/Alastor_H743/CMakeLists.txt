@@ -66,7 +66,7 @@ set(SOC STM32H743)
 set(CORE CORTEX_M7)
 
 # SOC has cache
-add_compile_definitions(CACHE_S)
+add_compile_definitions(CACHE_D_S)
 
 # Target
 set(BOARD Alastor_H743)

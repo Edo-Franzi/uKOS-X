@@ -84,7 +84,7 @@ CFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS			+= -c -g -Os
 CFLAGS			+= $(PATH_INCLUDES)
 CFLAGS			+= -MMD
-CFLAGS			+= -DCACHE_S
+CFLAGS			+= -DCACHE_D_S
 
 CFLAGS			+= -Wall
 CFLAGS			+= -fstrict-volatile-bitfields

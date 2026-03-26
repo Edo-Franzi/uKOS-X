@@ -58,7 +58,7 @@ BOARD			=  MAiXDUiNO_K210
 V				=  Variant_Test
 SOC				=  K210
 CORE			=  RV64IMAFDC
-FLAGS_UKOS		+= -DCACHE_S
+FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include

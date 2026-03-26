@@ -125,7 +125,7 @@ set_source_files_properties(tests.c
 
 target_compile_definitions(${TARGET_NAME}.elf PRIVATE
     USING_CMAKE
-    CACHE_S
+    CACHE_D_S
     SECURE_S
     BOARD_${BOARD}
 )

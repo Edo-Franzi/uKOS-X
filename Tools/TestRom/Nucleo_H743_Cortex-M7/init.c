@@ -56,9 +56,6 @@
 // Runtime specific
 // ================
 
-#define	CACHE_I_S					// With the instruction cache
-#define	CACHE_D_S					// With the data cache
-
 // Prototypes
 
 static			void	local_GPIO_Configuration(void);
@@ -601,15 +598,11 @@ static	void	local_MPU_Configuration(void) {
  */
 static	void	local_CACHE_Enable(void) {
 
-	#if (defined(CACHE_I_S))
 	cache_I_Invalidate();
 	cache_I_Enable();
-	#endif
 
-	#if (defined(CACHE_D_S))
 	cache_D_Invalidate();
 	cache_D_Enable();
-	#endif
 }
 
 #include	"model_I_D_cache.c_inc"

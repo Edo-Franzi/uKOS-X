@@ -58,7 +58,7 @@ BOARD			=  Nucleo_H743
 V				=  Variant_Test
 SOC				=  STM32H743
 CORE			=  CORTEX_M7
-FLAGS_UKOS		+= -DCACHE_S
+FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include

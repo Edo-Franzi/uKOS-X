@@ -177,5 +177,5 @@ CONF_SYSTEM += -DKGLOBAL_WITH_MMX1_S=true
 | -DLITTLE_ENDIAN_S | Endianness "little"                     |
 | -DBIG_ENDIAN_S    | Endianness "big"                        |
 | -DROMABLE_S       | To allows romable applications          |
-| -DCACHE_S         | To indicate a core with the cache       |
+| -DCACHE_D_S       | To indicate a core with the cache       |
 |                   |                                         |

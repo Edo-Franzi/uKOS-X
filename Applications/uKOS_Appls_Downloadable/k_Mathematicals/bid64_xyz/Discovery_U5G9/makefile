@@ -58,7 +58,7 @@ BOARD			=  Discovery_U5G9
 V				=  Variant_Test
 SOC				=  STM32U5G9
 CORE			=  CORTEX_M33
-FLAGS_UKOS		+= -DCACHE_S
+FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include

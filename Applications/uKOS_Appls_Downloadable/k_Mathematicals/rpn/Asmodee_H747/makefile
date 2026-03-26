@@ -64,7 +64,7 @@ BOARD			=  Asmodee_H747
 V				=  Variant_Test_CM7
 SOC				=  STM32H747
 CORE			=  CORTEX_M7
-FLAGS_UKOS		+= -DCACHE_S
+FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include

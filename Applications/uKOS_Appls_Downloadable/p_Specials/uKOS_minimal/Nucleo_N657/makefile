@@ -55,7 +55,7 @@ BOARD			=  Nucleo_N657
 V				=  Variant_Test
 SOC				=  STM32N657
 CORE			=  CORTEX_M55
-FLAGS_UKOS		+= -DCACHE_S
+FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 OBJ				+= $(PATH_MYPR)/process_actuator.o

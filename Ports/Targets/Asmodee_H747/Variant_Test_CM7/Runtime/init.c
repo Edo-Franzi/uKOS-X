@@ -83,8 +83,6 @@ MODULE(
 // ================
 
 #define	FULL_JTAG_S					// With the full JTAG available
-#define	CACHE_I_S					// With the instruction cache
-#define	CACHE_D_S					// With the data cache
 
 // SDRAM macro
 
@@ -858,15 +856,11 @@ static	void	local_RAM_SHARED_Configuration(void) {
  */
 static	void	local_CACHE_Enable(void) {
 
-	#if (defined(CACHE_I_S))
 	cache_I_Invalidate();
 	cache_I_Enable();
-	#endif
 
-	#if (defined(CACHE_D_S))
 	cache_D_Invalidate();
 	cache_D_Enable();
-	#endif
 }
 
 /*

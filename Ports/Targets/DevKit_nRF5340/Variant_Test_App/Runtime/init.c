@@ -81,8 +81,6 @@ MODULE(
 // Runtime specific
 // ================
 
-#define	CACHE_I_S							// With the instruction cache
-
 typedef	struct	gpio	gpio_t;
 
 struct	gpio {
@@ -342,9 +340,7 @@ static	void	local_MPU_Configuration(void) {
  */
 static	void	local_CACHE_Enable(void) {
 
-	#if (defined(CACHE_I_S))
 	cache_I_Enable();
-	#endif
 }
 
 #include	"model_I_cache.c_inc"

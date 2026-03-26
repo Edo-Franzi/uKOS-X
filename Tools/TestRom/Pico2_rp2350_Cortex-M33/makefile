@@ -84,7 +84,7 @@ CFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS			+= -c -g -Os
 CFLAGS			+= $(PATH_INCLUDES)
 CFLAGS			+= -MMD
-CFLAGS			+= -DCACHE_S -DSECURE_S
+CFLAGS			+= -DCACHE_D_S -DSECURE_S
 
 CFLAGS			+= -Wall
 CFLAGS			+= -Wlogical-op
