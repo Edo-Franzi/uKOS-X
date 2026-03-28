@@ -9,7 +9,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Commun Linker description for uKOS-X systems.
+; Goal:		Common Linker description for uKOS-X systems.
 ;			Privileged only support
 ;
 ;                       CODE

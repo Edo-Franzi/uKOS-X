@@ -55,7 +55,6 @@ BOARD			=  Nucleo_N657
 V				=  Variant_Test
 SOC				=  STM32N657
 CORE			=  CORTEX_M55
-FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 APPL_SRC		+= $(PATH_MYPR)/_math_algos

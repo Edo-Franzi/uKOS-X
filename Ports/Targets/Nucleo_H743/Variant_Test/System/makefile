@@ -107,9 +107,11 @@ SOC				=  STM32H743
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os
 VERSIONING		=  GIT
-FLAGS_UKOS		+= -DCACHE_D_S
 FLAGS_USER		+= -DuKOS_NAME=''
 FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
+
+# With the DATA cache
+CONF_SYSTEM		+= -DCACHE_D_S
 
 BURN			?= stlink
 

@@ -129,7 +129,7 @@ CXXFLAGS		+= -fno-rtti
 CXXFLAGS		+= -fno-exceptions
 CXXFLAGS		+= $(C_CXX_FLAGS)
 
-LINKS_LD		?= $(PATH_MAPP)/link${MODE}.lld
+LINKS_LD		?= $(PATH_MAPP)/link${MODE}.ld
 
 LDFLAGS			+= -L$(PATH_SOC)/Runtime
 LDFLAGS			+= -L$(PATH_CORE)/Runtime

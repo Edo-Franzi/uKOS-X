@@ -68,8 +68,12 @@ project(
 set(SOC STM32H743)
 set(CORE CORTEX_M7)
 
+# Apply project settings
+include(proj_config)
+
 # SOC has cache
 add_compile_definitions(CACHE_D_S)
+file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCACHE_D_S ")
 
 # Customisation of firmware copyright text
 add_compile_definitions(
@@ -79,9 +83,6 @@ add_compile_definitions(
 
 # Flash programming script selection
 set(BURN stm32programmer)
-
-# Apply project settings
-include(proj_config)
 
 # Derive PROVIDER and FAMILY from SOC (eliminates redundant information)
 derive_soc_properties(${SOC})

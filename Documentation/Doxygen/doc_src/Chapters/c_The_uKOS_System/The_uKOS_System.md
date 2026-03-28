@@ -475,10 +475,10 @@ extern uint32_t     vKern_nbIntImbrications;
 extern uintptr_t    __stack_chk_guard;
 
 #if (UINTPTR_MAX == 0xFFFFFFFFu)
-#define KSTACK_GARD_VALUE    0xDeadBeefu
+#define KSTACK_GUARD_VALUE    0xDeadBeefu
 
 #else
-#define KSTACK_GARD_VALUE    0xDeadBeeffeeBdaeDu;
+#define KSTACK_GUARD_VALUE    0xDeadBeeffeeBdaeDu
 #endif
 
 /*
@@ -533,7 +533,7 @@ int32_t aStart(uint32_t argc, const char_t *argv[]) {
     ptrStInitArray++;
     }
 
-    __stack_chk_guard = KSTACK_GARD_VALUE;
+    __stack_chk_guard = KSTACK_GUARD_VALUE;
     PRIVILEGE_RESTORE;
 
     RESERVE(SYSTEM, KMODE_READ_WRITE);

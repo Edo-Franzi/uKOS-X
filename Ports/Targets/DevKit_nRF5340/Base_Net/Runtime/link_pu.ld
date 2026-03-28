@@ -125,10 +125,10 @@ linker_stPrgmCode			= nrf_stINTFLASH_NET;									/* 0x01000000: PrgmCode, start
 linker_lnPrgmCode			= nrf_lnINTFLASH_NET;									/* Length of the the Flash									*/
 
 linker_stPrgmData_p			= nrf_stSRAM_NET;										/* 0x21000000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_p			= (24K);												/* Length_p of the RAM										*/
+linker_lnPrgmData_p			= (32K);												/* Length_p of the RAM										*/
 
-linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);			/* 0x21006000: PrgmData_p, start of the RAM					*/
-linker_lnPrgmData_u			= (40K);												/* Length_p of the RAM										*/
+linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);			/* 0x21008000: PrgmData_p, start of the RAM					*/
+linker_lnPrgmData_u			= (32K);												/* Length_p of the RAM										*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
@@ -138,10 +138,10 @@ linker_ST_FLASH_INT_0		= nrf_stINTFLASH_NET;									/* 0x01000000: Privileged/U
 linker_EN_FLASH_INT_0		= (nrf_stINTFLASH_NET + nrf_lnINTFLASH_NET - 1);		/* 0x01040000: 256-M										*/
 
 linker_ST_RAM_INT_0_OS		= nrf_stSRAM_NET;										/* 0x21000000: Privileged RAM								*/
-linker_EN_RAM_INT_0_OS		= (nrf_stSRAM_NET + 24K - 1);							/* 0x21005FFF: 24-K											*/
+linker_EN_RAM_INT_0_OS		= (nrf_stSRAM_NET + 32K - 1);							/* 0x21007FFF: 32-K											*/
 
-linker_ST_RAM_INT_0			= linker_stPrgmData_u;									/* 0x21006000: Privileged/User RAM							*/
-linker_EN_RAM_INT_0			= (linker_stPrgmData_u + linker_lnPrgmData_u - 1);		/* 0x2100FFFF: 40-K											*/
+linker_ST_RAM_INT_0			= linker_stPrgmData_u;									/* 0x21008000: Privileged/User RAM							*/
+linker_EN_RAM_INT_0			= (linker_stPrgmData_u + linker_lnPrgmData_u - 1);		/* 0x2100FFFF: 32-K											*/
 
 linker_ST_RAM_INT_1			= linker_stFoNet;										/* 0x20070000: Privileged/User RAM							*/
 linker_EN_RAM_INT_1			= linker_lnFNet;										/* 0x20077FFF: 32-K											*/

@@ -9,7 +9,7 @@
 ; Modifs:	Edo. Franzi		The 2025-01-01	Added the directory section
 ;
 ; Project:	uKOS-X
-; Goal:		Commun Linker description for uKOS-X systems.
+; Goal:		Common Linker description for uKOS-X systems.
 ;			Privileged only support
 ;
 ;                       CODE
@@ -78,27 +78,32 @@ SECTIONS {
 		libkern_p.a:*(.text .text.* .text*)
 		linker_enTEXT_KERN_p = ABSOLUTE(.);
 		*(.text .text.*)
+		. = ALIGN(8);
 		linker_enTEXT = ABSOLUTE(.);
 	} > prgm_code
 
 	.directory : {
+		. = ALIGN(8);
 		linker_stDirectory = ABSOLUTE(.);
 		KEEP(*(.directory))
-		QUAD(0x00000000)
-		QUAD(0x00000000)
+		QUAD(0x0000000000000000)
+		QUAD(0x0000000000000000)
+		. = ALIGN(8);
 	} > prgm_code
 
 	.init_array : {
 		. = ALIGN(8);
 		linker_stInitArray = ABSOLUTE(.);
-		KEEP(*(.init .init.* .init*))
+		KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)))
+		KEEP(*(.init_array))
 		linker_enInitArray = ABSOLUTE(.);
 	} > prgm_code
 
 	.fini_array : {
 		. = ALIGN(8);
 		linker_stFiniArray = ABSOLUTE(.);
-		KEEP(*(.fini .fini.* .fini*))
+		KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*)))
+		KEEP(*(.fini_array))
 		linker_enFiniArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -110,6 +115,9 @@ SECTIONS {
 		linker_enRODATA_KERN_p = ABSOLUTE(.);
 		*(.rodata .rodata.*)
 		*(.srodata .srodata.*)
+		*(.rdata .rdata.*)
+		KEEP(*(.eh_frame))
+		. = ALIGN(8);
 		linker_enRODATA = ABSOLUTE(.);
 	} > prgm_code
 
@@ -145,11 +153,9 @@ SECTIONS {
 		linker_stDATA_KERN_p = ABSOLUTE(.);
 		libkern_p.a:*(.data .data.* .data*)
 		linker_enDATA_KERN_p = ABSOLUTE(.);
-		*(.rdata)
 		*(.sdata .sdata.*)
 		*(.data .data.*)
 		. = ALIGN(8);
-		KEEP(*(.eh_frame))
 		linker_enDATA = ABSOLUTE(.);
 	} > prgm_code
 
@@ -157,18 +163,21 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stSignature = ABSOLUTE(.);
 		KEEP(*(.signature))
+		. = ALIGN(8);
 	} > prgm_code
 
 	.bss : {
 		. = ALIGN(8);
 		linker_stBSS = ABSOLUTE(.);
 		linker_stBSS_KERN_p = ABSOLUTE(.);
-		libkern_p.a:*(.bss .bss.* COMMON)
+		libkern_p.a:*(.bss .bss.*)
 		linker_enBSS_KERN_p = ABSOLUTE(.);
 		*(.sbss*)
 		*(.bss .bss.*)
 		*(COMMON)
+		. = ALIGN(8);
 		linker_enBSS = ABSOLUTE(.);
 	} > prgm_data
 
+	_end = ABSOLUTE(.);
 }

@@ -532,11 +532,6 @@ void	__attribute__ ((noreturn)) _exit(int number) {
 // Newlib allocator functions
 // --------------------------
 
-// Make happy the linker.
-// sbrk is not used but "end" sometimes need to be defined
-
-uint32_t	end;
-
 /*
  * \brief _sbrk_r
  *

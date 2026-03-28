@@ -55,7 +55,6 @@ BOARD			=  Nucleo_H743
 V				=  Variant_Test
 SOC				=  STM32H743
 CORE			=  CORTEX_M7
-FLAGS_UKOS		+= -DCACHE_D_S
 OPTIMISATION	=  -Os
 
 APPL_SRC		+= $(PATH_MYPR)/_math_algos

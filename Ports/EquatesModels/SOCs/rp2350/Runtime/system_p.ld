@@ -10,7 +10,7 @@
 ; Modifs:	Edo. Franzi			The 2025-01-01	Added the directory section
 ;
 ; Project:	uKOS-X
-; Goal:		Commun Linker description for uKOS-X systems.
+; Goal:		Common Linker description for uKOS-X systems.
 ;			Privileged only support.
 ;			Special version for rp2350
 ;

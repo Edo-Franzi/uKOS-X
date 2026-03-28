@@ -68,8 +68,12 @@ project(
 set(SOC STM32H743)
 set(CORE CORTEX_M7)
 
+# Apply project settings
+include(proj_config)
+
 # SOC has cache
 add_compile_definitions(CACHE_D_S)
+file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCACHE_D_S ")
 
 # Customisation of firmware copyright text
 add_compile_definitions(
@@ -79,9 +83,6 @@ add_compile_definitions(
 
 # Flash programming script selection
 set(BURN jtag_FT4232_b)
-
-# Apply project settings
-include(proj_config)
 
 # Extra compilation options
 add_compile_options(

@@ -68,6 +68,9 @@ project(
 set(SOC STM32F207)
 set(CORE CORTEX_M3)
 
+# Apply project settings
+include(proj_config)
+
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
@@ -76,9 +79,6 @@ add_compile_definitions(
 
 # Flash programming script selection
 set(BURN stlink)
-
-# Apply project settings
-include(proj_config)
 
 # Derive PROVIDER and FAMILY from SOC (eliminates redundant information)
 derive_soc_properties(${SOC})

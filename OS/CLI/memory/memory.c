@@ -144,6 +144,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	UNUSED(argc);
 	UNUSED(argv);
 
+	PRIVILEGE_ELEVATE;
+
 	(void)dprintf(KSYST, "Memory information.\n");
 
 // This because of a gcc bug
@@ -237,6 +239,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	#endif
 
 	local_displayHeap(linker_stHeap, nbBlocks, usdMemory, length);
+
+	PRIVILEGE_RESTORE;
 	return (EXIT_OS_SUCCESS_CLI);
 }
 

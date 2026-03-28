@@ -68,6 +68,9 @@ project(
 set(SOC nRF5340)
 set(CORE CORTEX_M33)
 
+# Apply project settings
+include(proj_config)
+
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
@@ -83,9 +86,6 @@ set(CPU_FEATURES "nodsp;nofp")
 
 # Flash programming script selection
 set(BURN jlinkexe)
-
-# Apply project settings
-include(proj_config)
 
 # Extra compilation options
 add_compile_options(

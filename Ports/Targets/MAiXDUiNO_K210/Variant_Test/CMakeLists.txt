@@ -68,6 +68,9 @@ project(
 set(SOC K210)
 set(CORE RV64IMAFDC)
 
+# Apply project settings
+include(proj_config)
+
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
@@ -76,9 +79,6 @@ add_compile_definitions(
 
 # Flash programming script selection
 set(BURN kflash_maixduino)
-
-# Apply project settings
-include(proj_config)
 
 # Extra compilation options
 add_compile_options(

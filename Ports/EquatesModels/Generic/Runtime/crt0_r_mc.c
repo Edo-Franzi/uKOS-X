@@ -105,10 +105,10 @@ uint32_t	vCrt0_randomSeed;
 extern	uintptr_t	__stack_chk_guard;
 
 #if (UINTPTR_MAX == 0xFFFFFFFFu)
-#define	KSTACK_GARD_VALUE	0xDeadBeefu
+#define	KSTACK_GUARD_VALUE	0xDeadBeefu
 
 #else
-#define	KSTACK_GARD_VALUE	0xDeadBeeffeeBdaeDu
+#define	KSTACK_GUARD_VALUE	0xDeadBeeffeeBdaeDu
 #endif
 
 // Prototypes
@@ -174,7 +174,7 @@ void	crt0(void) {
 		vCrt0_randomSeed = seed;
 	}
 
-	__stack_chk_guard = KSTACK_GARD_VALUE;
+	__stack_chk_guard = KSTACK_GUARD_VALUE;
 
 // Initialise the interruption and exception vectors
 // Go to the main

@@ -9,7 +9,7 @@
 ; Modifs:	Laurent von Allmen	The 2025-01-01	libkern_p.a*(...) to libkern_p.a(...)
 ;
 ; Project:	uKOS-X
-; Goal:		Commun Linker description for uKOS-X systems.
+; Goal:		Common Linker description for uKOS-X systems.
 ;			Privileged only support
 ;
 ;                       CODE
