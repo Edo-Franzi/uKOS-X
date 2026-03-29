@@ -72,7 +72,7 @@ static	void	local_UART_IRQHandler_C1(void);
  * - Initialise the manager
  *
  */
-void	model_uart_init_C1(void) {
+int32_t	model_uart_init_C1(void) {
 
 	cb_enable_C1();
 
@@ -106,6 +106,7 @@ void	model_uart_init_C1(void) {
 	UART_C1->UARTCR	   = UART_UARTCR_UARTEN | UART_UARTCR_RXE | UART_UARTCR_TXE;
 
 	cb_init_C1();
+	return (KERR_SERIAL_NOERR);
 }
 
 /*

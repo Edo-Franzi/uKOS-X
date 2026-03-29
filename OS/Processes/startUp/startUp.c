@@ -104,7 +104,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		0,									// Index
 		specification,						// Specifications (just use specification_x)
 		aStrText,							// Info string (nullptr if anonymous)
-		KKERN_SZ_STACK_MM,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
+		KKERN_SZ_STACK_LL,					// KKERN_SZ_STACK_xx Stack size (number of words (machine size). _XL Extra large, _LL Large, _MM Medium, _SS Small)
 		local_process,						// Code of the process
 		aStrIden,							// Identifier (nullptr if anonymous)
 		KSYST,								// Default Serial Communication Manager (KDEF0, KURTx, KSYST, ...)

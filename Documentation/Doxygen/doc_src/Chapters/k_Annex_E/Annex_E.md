@@ -67,8 +67,6 @@ A) ./Base/Runtime/cmns.c
 A) ./Base/Runtime/exce.c
 A) ./Base/Runtime/link_p.ld
 A) ./Base/Runtime/link_pu.ld
-A) ./Base/Runtime/link_p.lld
-A) ./Base/Runtime/link_pu.lld
 A) ./Base/Runtime/link_App.ld
 
 -- The Variant

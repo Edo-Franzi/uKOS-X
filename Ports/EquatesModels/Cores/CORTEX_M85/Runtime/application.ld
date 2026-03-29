@@ -100,11 +100,11 @@ SECTIONS {
 	} > prgm_code
 
 	.ARM.extab : {
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
+		*(.ARM.extab*)
 	} > prgm_code
 
 	.ARM.exidx : {
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
+		*(.ARM.exidx*)
 	} > prgm_code
 
 	.rodata : {

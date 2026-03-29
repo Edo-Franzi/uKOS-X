@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-03-28
+(c) 2025-2026, Edo. Franzi, 2026-03-29
 
 
 

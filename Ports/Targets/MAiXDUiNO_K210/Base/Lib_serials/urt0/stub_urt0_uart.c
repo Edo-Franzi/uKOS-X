@@ -126,13 +126,15 @@ static	void	cb_init_C1(void) {
 #include	"model_usart_C0.c_inc"
 #include	"model_usart_C1.c_inc"
 
-void	stub_urt0_init(void) {
+int32_t	stub_urt0_init(void) {
 	uint32_t	core;
+	int32_t		status;
 
 	core = GET_RUNNING_CORE;
 
-	if (core == KCORE_0) { model_usart_init_C0(); }
-	else				 { model_usart_init_C1(); }
+	if (core == KCORE_0) { status = model_usart_init_C0(); }
+	else				 { status = model_usart_init_C1(); }
+	return (status);
 }
 
 int32_t	stub_urt0_configure(const urtxCnf_t *configure) {

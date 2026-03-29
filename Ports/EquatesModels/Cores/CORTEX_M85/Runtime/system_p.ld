@@ -110,13 +110,13 @@ SECTIONS {
 
 	.ARM.extab : {
 		. = ALIGN(4);
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
+		*(.ARM.extab*)
 	} > prgm_code
 
 	.ARM.exidx : {
 		. = ALIGN(4);
 		__exidx_start = ABSOLUTE(.);
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
+		*(.ARM.exidx*)
 		__exidx_end = ABSOLUTE(.);
 	} > prgm_code
 

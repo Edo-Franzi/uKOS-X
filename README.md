@@ -18,7 +18,7 @@ This challenge laid the conceptual foundation for what would later become the **
 In 1996, I undertook a complete rewrite of µKOS-I in the C programming language, resulting in **µKOS-II**. Development was carried out on a Macintosh running Mac OS 9, using the MPW (Macintosh Programmer’s Workshop) environment, which offered a robust platform for embedded development at the time.
 In 2002, following Apple’s transition to Mac OS X and the broader UNIX ecosystem, I chose to revive, modernise, and extend the µKOS project. This effort culminated in the creation of **µKOS-X**, a fully updated, feature-rich version of the operating system. My goal was to consolidate the ideas, insights, and experience accumulated over nearly three decades of embedded system design, and to make them available to others working in the same domain.
 I consider this project to be open source, licensed under the MIT license.
-The **µKOS** project is described and distributed with full support for a wide range of **ARM Cortex** microcontrollers — covering both single-core and multi-core architectures — including the M3, M4, M7, M33, and M55 families, as well as for **RISC-V** architectures, specifically RV32 and RV64.
+The **µKOS** project is described and distributed with full support for a wide range of **ARM Cortex** microcontrollers — covering both single-core and multi-core architectures — including the M3, M4, M7, M33, M55 and M85 families, as well as for **RISC-V** architectures, specifically RV32 and RV64.
 
 ## The proposed package
 
