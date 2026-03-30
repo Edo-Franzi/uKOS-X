@@ -1,6 +1,6 @@
 // uKOS-X
 // TFLite MLP dump (pip-only) - float32
-// Model: mlp_TFL_test.tflite
+// Model: mlp_model.tflite
 // Number of layerss (FULLY_CONNECTED): 3
 // NB_IN contains 1 input to 1 for the bias à 1 ; last weight column = bias
 #define	KMLPN_NB_LAYERS	3

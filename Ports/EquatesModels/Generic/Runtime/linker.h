@@ -140,9 +140,6 @@ extern	uint8_t	linker_enDATA_KERN_p[];
 extern	uint8_t	linker_stBSS_KERN_p[];
 extern	uint8_t	linker_enBSS_KERN_p[];
 
-extern	uint8_t	linker_stPRIV[];
-extern	uint8_t	linker_enPRIV[];
-
 // Necessary for all the stacks
 // ----------------------------
 

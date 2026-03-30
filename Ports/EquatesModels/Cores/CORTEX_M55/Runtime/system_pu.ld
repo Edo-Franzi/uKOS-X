@@ -77,7 +77,6 @@
 SECTIONS {
 	.text : {
 		linker_stCODE = ABSOLUTE(.);
-		linker_stPRIV = ABSOLUTE(.);
 		linker_stVECTORS = ABSOLUTE(.);
 		KEEP(*(.isr_vector))
 		linker_enVECTORS = ABSOLUTE(.);
@@ -88,7 +87,6 @@ SECTIONS {
 		linker_stTEXT_KERN_p = ABSOLUTE(.);
 		libkern_p.a:*(.text .text.* .text*)
 		linker_enTEXT_KERN_p = ABSOLUTE(.);
-		linker_enPRIV = ABSOLUTE(.);
 		*(.text .text.*)
 		. = ALIGN(4);
 		linker_enTEXT = ABSOLUTE(.);

@@ -96,6 +96,7 @@ enum {
 			KMLPN_TAN2,											// Ultrafast tanh approximation
 			KMLPN_RELU,											// Ultrafast relu
 			KMLPN_LINE,											// Ultrafast linear
+			KMLPN_SMAX,											// Ultrafast softmax
 };
 
 // Prototypes
