@@ -90,6 +90,7 @@ SECTIONS {
 		LONG(0x00000000)
 		LONG(0x00000000)
 		. = ALIGN(4);
+		linker_enDirectory = ABSOLUTE(.);
 	} > prgm_code
 
 	.init_array : {

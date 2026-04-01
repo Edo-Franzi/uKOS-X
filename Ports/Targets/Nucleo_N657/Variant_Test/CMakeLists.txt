@@ -293,9 +293,6 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${MI
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
 
-# Hardware RTC support
-add_compile_definitions(KCALENDAR_WITH_HW_RTC_S=true)
-
 # Stack integrity monitoring
 add_compile_definitions(
 	KDAEMONS_ALERT_STACK_INT_S=false

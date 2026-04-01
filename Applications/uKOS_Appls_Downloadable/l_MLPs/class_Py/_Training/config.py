@@ -13,7 +13,8 @@ KNB_OUTPUTS		= 3
 
 # KMLPN_TAN0 = libm tanh
 # KMLPN_TAN1 = Lambert's tanh approximation
-# KMLPN_TAN2 = Ultrafast tanh approximation
+# KMLPN_TAN2 = Ultrafast tanh approximation (~2% precision)
+# KMLPN_TAN3 = Fastest tanh approximation (less precise)
 # KMLPN_RELU = Ultrafast relu
 # KMLPN_LINE = Ultrafast linear
 # KMLPN_SMAX = Ultrafast softmax

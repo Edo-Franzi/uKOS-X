@@ -89,6 +89,7 @@ SECTIONS {
 		QUAD(0x0000000000000000)
 		QUAD(0x0000000000000000)
 		. = ALIGN(8);
+		linker_enDirectory = ABSOLUTE(.);
 	} > prgm_code
 
 	.init_array : {

@@ -222,16 +222,17 @@ def main() -> int:
 				next_op = sg.Operators(i + 1)
 				next_opcode = builtin_ops[int(next_op.OpcodeIndex())]
 
-			activation_ops = {
-				int(BuiltinOperator.TANH): "TANH",
-				int(BuiltinOperator.RELU): "RELU",
-				int(BuiltinOperator.RELU6): "RELU6",
-				int(BuiltinOperator.LOGISTIC): "SIGMOID",
-				int(BuiltinOperator.HARD_SWISH): "HARD_SWISH",
-			}
+				activation_ops = {
+					int(BuiltinOperator.TANH): "TANH",
+					int(BuiltinOperator.RELU): "RELU",
+					int(BuiltinOperator.RELU6): "RELU6",
+					int(BuiltinOperator.LOGISTIC): "SIGMOID",
+					int(BuiltinOperator.HARD_SWISH): "HARD_SWISH",
+					int(BuiltinOperator.SOFTMAX): "SOFTMAX",
+				}
 
-			if next_opcode in activation_ops:
-				act = activation_ops[next_opcode]
+				if next_opcode in activation_ops:
+					act = activation_ops[next_opcode]
 
 			# Verify if transposed W en (out, in)
 			nb_out = int(b.shape[0])

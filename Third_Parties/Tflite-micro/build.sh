@@ -80,7 +80,7 @@ fi
 # Packages
 # --------
 
-readonly hash=f5302ed
+readonly hash=f97216c
 
 printf '\n%bDownload the Tflite-micro package ...%b\n\n' "${BOLD}" "${NC}"
 

@@ -73,7 +73,17 @@ def load_data(file_path):
 	try:
 
 		# Use genfromtxt (more flexible than loadtxt)
-		data = np.genfromtxt(file_path, delimiter = '\t')
+		print(f"Read the fle : {file_path}")
+		data = np.genfromtxt(file_path, delimiter = '\t', dtype = np.float32)
+		data = np.atleast_2d(data)
+
+		# Remove invalid rows containing NaN or Inf
+		data = data[~np.isnan(data).any(axis = 1)]
+		data = data[~np.isinf(data).any(axis = 1)]
+
+		print("Data read from the file :")
+		print(data)
+
 		if data.shape[1] != 5:
 			raise ValueError("The file needs exactly 4 columns (x1, x2, y1, y2, y3) per line.")
 
@@ -100,7 +110,11 @@ def build_model():
 	])
 
 	# Compile the model
-	model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['accuracy'])
+	model.compile(
+		optimizer = 'adam',
+		loss = 'mean_squared_error',
+		metrics = ['accuracy']
+	)
 	return model
 
 # Main
@@ -120,6 +134,12 @@ def main():
 		print("Data cannot be loaded!")
 		return
 
+	# Shuffle the dataset
+	indices = np.arange(X.shape[0])
+	np.random.shuffle(indices)
+	X = X[indices]
+	Y = Y[indices]
+
 	# Build the model
 	# Train the model
 	# Evaluate the model
@@ -129,7 +149,7 @@ def main():
 	print(f'Loss of the model : {loss}')
 
 	# Test the model with TensorFlow
-	output = model(np.array([[0.5, -0.8], [0, 0], [0, 0.4]]))
+	output = model(np.array([[-0.347817, 362439], [-0.834222, 0.808548], [0.850443, 0.620829]], dtype = np.float32))
 	print("Output TF", output)
 
 	# Convert the model to TFLite format
@@ -146,7 +166,7 @@ def main():
 	input_details = interpreter.get_input_details()
 	output_details = interpreter.get_output_details()
 
-	for input_data in [[0.5, -0.8], [0, 0], [0, 0.4], [0.8, 0.8]]:
+	for input_data in [[-0.347817, 362439], [-0.834222, 0.808548], [0.850443, 0.620829]]:
 		interpreter.set_tensor(input_details[0]['index'], np.array([input_data], dtype = np.float32))
 		interpreter.invoke()
 		output = interpreter.get_tensor(output_details[0]['index'])

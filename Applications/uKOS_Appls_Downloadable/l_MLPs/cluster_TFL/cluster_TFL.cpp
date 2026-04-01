@@ -277,7 +277,7 @@ namespace {
 /*
  * \brief main
  *
- * - Initialize the used libraries
+ * - Initialise the used libraries
  * - Launch all the processes
  * - Kill the "main". At this moment only the launched processes are executed
  *

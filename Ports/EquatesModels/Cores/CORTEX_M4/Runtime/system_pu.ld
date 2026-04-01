@@ -99,6 +99,7 @@ SECTIONS {
 		LONG(0x00000000)
 		LONG(0x00000000)
 		. = ALIGN(4);
+		linker_enDirectory = ABSOLUTE(.);
 	} > prgm_code
 
 	.init_array : {
@@ -174,10 +175,10 @@ SECTIONS {
 		. = ALIGN(4);
 		linker_stBSS_p = ABSOLUTE(.);
 		KEEP(*(.privileged))
-		lib*_p.a:*(.bss .bss.*)
 		linker_stBSS_KERN_p = ABSOLUTE(.);
 		libkern_p.a:*(.bss .bss.*)
 		linker_enBSS_KERN_p = ABSOLUTE(.);
+		lib*_p.a:*(.bss .bss.*)
 		. = ALIGN(4);
 		linker_enBSS_p = ABSOLUTE(.);
 	} > prgm_data_p AT> prgm_data_p
@@ -212,7 +213,7 @@ SECTIONS {
 /* COMMON cannot be split reliably between _p and _u here. */
 
 		*(COMMON)
-		. = ALIGN(8);
+		. = ALIGN(4);
 		linker_enBSS_u = ABSOLUTE(.);
 	} > prgm_data_u AT> prgm_data_u
 
