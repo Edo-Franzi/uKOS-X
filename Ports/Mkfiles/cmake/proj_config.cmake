@@ -44,56 +44,8 @@
 #
 #------------------------------------------------------------------------
 
-# Function to derive SoC properties from SoC name
-#
-# This function automatically determines the PROVIDER and FAMILY from a SoC name,
-# eliminating redundant information in project CMakeLists.txt files.
-#
-# Arguments:
-#	SOC_NAME - Name of the SoC (e.g., STM32L4R5, STM32H743, nRF5340)
-#
-# Sets in parent scope:
-#	PROVIDER - Hardware provider (e.g., "st", "nordic")
-#	FAMILY	 - Processor family (e.g., "l4", "h7", "nrf")
-#
-# Usage example:
-#	set(SOC STM32L4R5)
-#	derive_soc_properties(${SOC})
-#	# Now PROVIDER="st" and FAMILY="l4" are available
-function(derive_soc_properties SOC_NAME)
-	# STMicroelectronics processors
-	# Pattern: STM32[FGHLUWP][0-9]...
-	if(SOC_NAME MATCHES "^STM32([FGHLNUWP][0-9])")
-		set(PROVIDER "st" PARENT_SCOPE)
-		# Extract family letter and first digit (e.g., "L4" -> "l4")
-		string(TOLOWER "${CMAKE_MATCH_1}" FAMILY_LOWER)
-		set(FAMILY "${FAMILY_LOWER}" PARENT_SCOPE)
-		message(STATUS "Derived properties for ${SOC_NAME}: PROVIDER=st, FAMILY=${FAMILY_LOWER}")
-		return()
-	endif()
-
-	# Nordic Semiconductor processors
-	# Pattern: nRF[0-9]...
-	if(SOC_NAME MATCHES "^nRF([0-9]+)")
-		set(PROVIDER "nordic" PARENT_SCOPE)
-		set(FAMILY "nrf" PARENT_SCOPE)
-		message(STATUS "Derived properties for ${SOC_NAME}: PROVIDER=nordic, FAMILY=nrf")
-		return()
-	endif()
-
-	# Raspberry Pi
-	# Pattern: rp[0-9]...
-	if(SOC_NAME MATCHES "^rp([0-9]+)")
-		set(PROVIDER "raspberrypi" PARENT_SCOPE)
-		set(FAMILY "pico2" PARENT_SCOPE)
-		message(STATUS "Derived properties for ${SOC_NAME}: PROVIDER=raspberrypi, FAMILY=pico2")
-		return()
-	endif()
-
-	# If no match found, issue a warning
-	message(WARNING "Could not derive PROVIDER and FAMILY from SOC name: ${SOC_NAME}")
-	message(WARNING "Please set PROVIDER and FAMILY manually, or extend derive_soc_properties()")
-endfunction()
+# TinyUSB integration (derive_soc_properties, add_TinyUSB)
+include(tinyusb)
 
 set(CMAKE_C_OUTPUT_EXTENSION_REPLACE 1)
 set(CMAKE_ASM_OUTPUT_EXTENSION_REPLACE 1)
@@ -105,7 +57,6 @@ option(WITH_LISTING "Control generation of dis and lst files" OFF)
 option(CANARY "Canary stack protection" ON)
 
 # Set default mode to privileged
-
 option(USER_MODE "User mode activated" ON)
 
 add_library(core_compiler_flags INTERFACE)
@@ -134,6 +85,16 @@ set(TARGET_TRIPLE_MIDDLE unknown-none)
 #
 # VALID FEATURES BY CORE:
 #
+#	CORTEX_M3:
+#	  (No configurable features)
+#
+#	CORTEX_M4:
+#	  nofp			  - Disable floating point unit
+#
+#	CORTEX_M7:
+#	  Double		  - Enable double-precision FPU (fpv5-d16 instead of fpv5-sp-d16)
+#	  nofp			  - Disable floating point unit
+#
 #	CORTEX_M33:
 #	  nodsp			  - Disable DSP instructions
 #	  nofp			  - Disable floating point unit
@@ -143,6 +104,24 @@ set(TARGET_TRIPLE_MIDDLE unknown-none)
 #						(integer and floating-point vector processing)
 #	  mve.fp		  - Enable Helium with explicit FP support
 #	  nofp			  - Disable floating point unit
+#
+#	CORTEX_M85:
+#	  mve			  - Enable Arm Helium M-Profile Vector Extension
+#						(integer and floating-point vector processing)
+#	  mve.fp		  - Enable Helium with explicit FP support
+#	  nofp			  - Disable floating point unit
+#	  pacbti		  - Enable Pointer Authentication, Branch Target Identification
+#
+#	CORTEX_A7:
+#	  (No optional features)
+#
+#	RV32IMAC:
+#	  zicsr			  - Control and Status Register instructions
+#	  zifencei		  - Instruction-Fetch Fence instructions
+#
+#	RV64IMAFDC:
+#	  zicsr			  - Control and Status Register instructions
+#	  zifencei		  - Instruction-Fetch Fence instructions
 #
 # EXAMPLES:
 #
@@ -196,65 +175,101 @@ function(configure_arm_core)
 	target_compile_definitions(core_compiler_flags INTERFACE _MACHTIME_H_ _CLOCKS_PER_SEC_=1000000)
 
 	# ARM Cortex-M core configurations
+	# All cores use -mcpu= with feature extensions (not -march=).
+	# -mcpu= implies -march= and additionally enables CPU-specific scheduling.
 	if(${CORE} STREQUAL "CORTEX_M3")
 		set(LLVM_TARGET "thumbv7m-${TARGET_TRIPLE_MIDDLE}-eabi")
 		set(MCPU "cortex-m3")
-		set(MARCH "armv7-m")
 		set(MFLOAT_ABI "soft")
-		set(EXTRA_COMPILE_FLAGS "$<$<C_COMPILER_ID:Clang>:-mfpu=none>")
 
 	elseif(${CORE} STREQUAL "CORTEX_M4")
-		set(LLVM_TARGET "thumbv7em-${TARGET_TRIPLE_MIDDLE}-eabihf")
+		set(LLVM_TARGET "thumbv7em-${TARGET_TRIPLE_MIDDLE}-eabi")
 		set(MCPU "cortex-m4")
-		set(MARCH "armv7e-m")
-		set(MFLOAT_ABI "hard")
-		set(MFPU "fpv4-sp-d16")
-
-	elseif(${CORE} STREQUAL "CORTEX_M7")
-		set(LLVM_TARGET "thumbv7em-${TARGET_TRIPLE_MIDDLE}-eabihf")
-		set(MCPU "cortex-m7")
-		set(MARCH "armv7e-m")
-		set(MFLOAT_ABI "hard")
-		set(MFPU "fpv5-sp-d16")
-
-	elseif(${CORE} STREQUAL "CORTEX_M33")
-		set(LLVM_TARGET "thumbv8m.main-${TARGET_TRIPLE_MIDDLE}-eabi")
-		set(MCPU "cortex-m33")
-		set(MARCH "armv8-m.main")
-		# Check for feature-based configuration
 		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
-			# CORTEX_M33_VALID_FEATURES
-			#	"nodsp|Disable DSP instructions|||+nodsp"
-			#	"nofp|Disable floating point unit|||+nofp"
+			# CORTEX_M4_VALID_FEATURES
+			#	"nofp|Disable floating point unit||"
 			foreach(feature IN LISTS CPU_FEATURES)
-				if(${feature} STREQUAL "nodsp")
-					set(MCPU "${MCPU}+nodsp")
-					set(MARCH "${MARCH}+nodsp")
-				elseif(${feature} STREQUAL "nofp")
+				if(${feature} STREQUAL "nofp")
 					set(MCPU "${MCPU}+nofp")
-					set(MARCH "${MARCH}+nofp")
-					# Soft float ABI when FP disabled
 					set(MFLOAT_ABI "soft")
-					unset(MFPU)
 				endif()
 			endforeach()
+		endif()
+		if(NOT DEFINED MFLOAT_ABI)
+			# Default: hard float SP
+			set(LLVM_TARGET "${LLVM_TARGET}hf")
+			set(MFLOAT_ABI "hard")
+			set(MFPU "fpv4-sp-d16")		 # GCC only via filter further down
+		endif()
+
+	elseif(${CORE} STREQUAL "CORTEX_M7")
+		set(LLVM_TARGET "thumbv7em-${TARGET_TRIPLE_MIDDLE}-eabi")
+		set(MCPU "cortex-m7")
+		# Check for feature-based configuration
+		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
+			# CORTEX_M7_VALID_FEATURES
+			#	"Double|Double-precision FPU||"
+			#	"nofp|Disable floating point unit||"
+			foreach(feature IN LISTS CPU_FEATURES)
+				if(${feature} STREQUAL "Double")
+					set(has_dp TRUE)
+				elseif(${feature} STREQUAL "nofp")
+					set(has_nofp TRUE)
+				endif()
+			endforeach()
+			if(has_nofp)
+				set(MCPU "${MCPU}+nofp")
+				set(MFLOAT_ABI "soft")
+			elseif(has_dp)
+				set(LLVM_TARGET "${LLVM_TARGET}hf")
+				set(MFLOAT_ABI "hard")
+				set(MFPU "fpv5-d16")
+			else()
+				# Single-precision FPU (default when features are set but not Double/nofp)
+				set(LLVM_TARGET "${LLVM_TARGET}hf")
+				set(MFLOAT_ABI "hard")
+				set(MFPU "fpv5-sp-d16")
+			endif()
 		else()
-			# Hard float ABI (default)
+			# Hard float ABI with single-precision FPU (default)
 			set(LLVM_TARGET "${LLVM_TARGET}hf")
 			set(MFLOAT_ABI "hard")
 			set(MFPU "fpv5-sp-d16")
 		endif()
 
+	elseif(${CORE} STREQUAL "CORTEX_M33")
+		set(LLVM_TARGET "thumbv8m.main-${TARGET_TRIPLE_MIDDLE}-eabihf")
+		set(MCPU "cortex-m33")
+		set(MFLOAT_ABI "hard")
+		set(MFPU "fpv5-sp-d16")
+		# Check for feature-based configuration
+		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
+			# CORTEX_M33_VALID_FEATURES
+			#	"nodsp|Disable DSP instructions||+nodsp"
+			#	"nofp|Disable floating point unit||+nofp"
+			foreach(feature IN LISTS CPU_FEATURES)
+				if(${feature} STREQUAL "nodsp")
+					set(MCPU "${MCPU}+nodsp")
+				elseif(${feature} STREQUAL "nofp")
+					set(MCPU "${MCPU}+nofp")
+					set(MFLOAT_ABI "soft")
+					unset(MFPU)
+				endif()
+			endforeach()
+		endif()
+
 	elseif(${CORE} STREQUAL "CORTEX_M55")
 		set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabihf")
+		# M55/M85 use -march= only (no -mcpu=) because GCC and Clang have
+		# incompatible -mcpu= feature syntax (GCC subtractive, Clang additive).
 		set(MARCH "armv8.1-m.main")
 		set(MFLOAT_ABI "hard")
 		# Check for feature-based configuration
 		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
 			# CORTEX_M55_VALID_FEATURES
-			#	"Helium|Helium M-Profile Vector Extension||MLPN_HAVE_HELIUM_FP_S|+mve"
-			#	"Double|Double precision FP support||MLPN_HAVE_HELIUM_FP_S|+mve.fp"
-			#	"nofp|Disable floating point unit|||+nofp"
+			#	"Helium|Helium M-Profile Vector Extension|MLPN_HAVE_HELIUM_FP_S|+mve"
+			#	"Double|Double precision FP support|MLPN_HAVE_HELIUM_FP_S|+mve.fp"
+			#	"nofp|Disable floating point unit||+nofp"
 			foreach(feature IN LISTS CPU_FEATURES)
 				if(${feature} STREQUAL "Helium")
 					set(has_mve TRUE)
@@ -265,88 +280,76 @@ function(configure_arm_core)
 				endif()
 			endforeach()
 		endif()
-		# Check if MVE/Helium is requested
 		if(has_mve)
 			# Helium/MVE mode
 			unset(MFPU)	 # MVE doesn't use -mfpu
-			# Build -march with MVE extensions
-			# GCC uses armv8.1-m.main, LLVM uses thumbv8.1m.main
-			if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-				set(MARCH "armv8.1-m.main")
+			set(MARCH "${MARCH}+mve.fp")
+			if(has_dp)
+				set(MARCH "${MARCH}+fp.dp")
 			endif()
-            set(MARCH "${MARCH}+mve.fp")
-            if(has_dp)
-                set(MARCH "${MARCH}+fp.dp")
-            endif()
 		elseif(has_dp)
-            set(MARCH "${MARCH}+fp.dp")
+			set(MARCH "${MARCH}+fp.dp")
 		elseif(has_nofp)
-			# No floating point
-			set(LLVM_TARGET "${MARCH}-${TARGET_TRIPLE_MIDDLE}-eabi")
+			set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabi")
+			set(MARCH "${MARCH}+nofp")
 			set(MFLOAT_ABI "soft")
 			unset(MFPU)
 		endif()
 
 	elseif(${CORE} STREQUAL "CORTEX_M85")
-        set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabihf")
-        set(MARCH "armv8.1-m.main")
-        set(MFLOAT_ABI "hard")
-        # Check for feature-based configuration
-        if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
-            # CORTEX_M85_VALID_FEATURES
-            #   "Helium|Helium M-Profile Vector Extension||MLPN_HAVE_HELIUM_FP_S|+mve"
-            #   "PACBTI|Pointer Authentication, Branch Target Identification|||+pacbti"
-            #   "Double|Double precision FP support||MLPN_HAVE_HELIUM_FP_S|+mve.fp"
-            #   "nofp|Disable floating point unit|||+nofp"
-            foreach(feature IN LISTS CPU_FEATURES)
-                if(${feature} STREQUAL "Helium")
-                    set(has_mve TRUE)
-                elseif(${feature} STREQUAL "PACBTI")
-                    set(has_pacbti TRUE)
-                elseif(${feature} STREQUAL "Double")
-                    set(has_dp TRUE)
-                elseif(${feature} STREQUAL "nofp")
-                    set(has_nofp TRUE)
-                endif()
-            endforeach()
-        endif()
-        # Check if MVE/Helium is requested
-        if(has_mve)
-            # Helium/MVE mode
-            unset(MFPU)  # MVE doesn't use -mfpu
-            # Build -march with MVE extensions
-            # GCC uses armv8.1-m.main, LLVM uses thumbv8.1m.main
-            if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-                set(MARCH "armv8.1-m.main")
-            endif()
-            set(MARCH "${MARCH}+mve.fp")
-            if(has_dp)
-                set(MARCH "${MARCH}+fp.dp")
-            endif()
-        elseif(has_dp)
-            set(MARCH "${MARCH}+fp.dp")
-        elseif(has_nofp)
-            # No floating point
-            set(LLVM_TARGET "${MARCH}-${TARGET_TRIPLE_MIDDLE}-eabi")
-            set(MFLOAT_ABI "soft")
-            unset(MFPU)
-        endif()
-        # PACBTI est orthogonal aux autres features : on l'ajoute en dernier
-        # Il est incompatible avec nofp car il nécessite la FPU pour PAC keys
-        if(has_pacbti AND NOT has_nofp)
-            set(MARCH "${MARCH}+pacbti")
-            set(EXTRA_COMPILE_FLAGS "-mbranch-protection=standard")
-        endif()
+		set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabihf")
+		# Same -march= approach as M55 (see comment above)
+		set(MARCH "armv8.1-m.main")
+		set(MFLOAT_ABI "hard")
+		# Check for feature-based configuration
+		if(DEFINED CPU_FEATURES AND NOT "${CPU_FEATURES}" STREQUAL "")
+			# CORTEX_M85_VALID_FEATURES
+			#	"Helium|Helium M-Profile Vector Extension||MLPN_HAVE_HELIUM_FP_S|+mve"
+			#	"PACBTI|Pointer Authentication, Branch Target Identification||+pacbti"
+			#	"Double|Double precision FP support|MLPN_HAVE_HELIUM_FP_S|+mve.fp"
+			#	"nofp|Disable floating point unit||+nofp"
+			foreach(feature IN LISTS CPU_FEATURES)
+				if(${feature} STREQUAL "Helium")
+					set(has_mve TRUE)
+				elseif(${feature} STREQUAL "PACBTI")
+					set(has_pacbti TRUE)
+				elseif(${feature} STREQUAL "Double")
+					set(has_dp TRUE)
+				elseif(${feature} STREQUAL "nofp")
+					set(has_nofp TRUE)
+				endif()
+			endforeach()
+		endif()
+		if(has_mve)
+			# Helium/MVE mode
+			unset(MFPU)	 # MVE doesn't use -mfpu
+			set(MARCH "${MARCH}+mve.fp")
+			if(has_dp)
+				set(MARCH "${MARCH}+fp.dp")
+			endif()
+		elseif(has_dp)
+			set(MARCH "${MARCH}+fp.dp")
+		elseif(has_nofp)
+			set(LLVM_TARGET "thumbv8.1m.main-${TARGET_TRIPLE_MIDDLE}-eabi")
+			set(MARCH "${MARCH}+nofp")
+			set(MFLOAT_ABI "soft")
+			unset(MFPU)
+		endif()
+		# PACBTI is orthogonal to other features: appended last
+		# Incompatible with nofp as it requires the FPU for PAC keys
+		if(has_pacbti AND NOT has_nofp)
+			set(MARCH "${MARCH}+pacbti")
+			set(EXTRA_COMPILE_FLAGS "-mbranch-protection=standard")
+		endif()
 
 	elseif(${CORE} STREQUAL "CORTEX_A7")
 		if(${COMPILER_FAMILY} STREQUAL "llvm")
 			message(WARNING "LLVM target not defined for CORTEX_A7")
 		endif()
 		set(MCPU "cortex-a7")
-		set(MARCH "armv7ve")
 		# A7 uses different flags, handle separately
-		target_compile_options(core_compiler_flags INTERFACE -mcpu=${MCPU} -march=${MARCH})
-		add_link_options(-mcpu=${MCPU} -march=${MARCH})
+		target_compile_options(core_compiler_flags INTERFACE -mcpu=${MCPU})
+		add_link_options(-mcpu=${MCPU})
 		return()
 	else()
 		message(FATAL_ERROR "Unsupported ARM core: ${CORE}")
@@ -357,12 +360,13 @@ function(configure_arm_core)
 		set(CMAKE_C_COMPILER_TARGET ${LLVM_TARGET} PARENT_SCOPE)
 	endif()
 
-	# Build compile flags
+	# Build compile flags — -mcpu= for scheduling, -march= only for M55/M85
+	# (where GCC and Clang have incompatible -mcpu= feature syntax)
 	set(COMPILE_FLAGS "")
 	if(DEFINED MCPU)
 		list(APPEND COMPILE_FLAGS "-mcpu=${MCPU}")
 	endif()
-	if(DEFINED MARCH AND (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR ${CORE} STREQUAL "CORTEX_M55" OR ${CORE} STREQUAL "CORTEX_M85"))
+	if(DEFINED MARCH)
 		list(APPEND COMPILE_FLAGS "-march=${MARCH}")
 	endif()
 	if(DEFINED MFLOAT_ABI)
@@ -475,4 +479,28 @@ macro(add_source_with_define the_list source_file)
 		add_compile_definitions(${definition})
 		file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-D${definition} ")
 	endforeach()
+endmacro()
+
+# MicroPython Engine integration (MicroPython manager)
+macro(add_MicroPython)
+	add_compile_definitions(CONFIG_MAN_MICROPYTHON_S)
+	find_library(MICROPYTHON MicroPython ${PATH_UKOS}/Third_Parties/MicroPython/Library/${CORE})
+	file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_MICROPYTHON_S ")
+	list(APPEND UKOS_COMPONENTS ${MICROPYTHON})
+endmacro()
+
+# FATFS (File system) integration
+macro(add_FatFs)
+	add_compile_definitions(CONFIG_MAN_FATFS_S)
+	find_library(FATFS FatFs ${PATH_UKOS}/Third_Parties/FatFs/Library/${CORE})
+	file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_FATFS_S ")
+	list(APPEND UKOS_COMPONENTS ${FATFS})
+endmacro()
+
+# Graphic library integration (LVGL)
+macro(add_LVGL)
+	add_compile_definitions(SYSTEM_LVGL_S)
+	find_library(LVGL LVGL ${PATH_UKOS}/Third_Parties/LVGL/Library/${CORE}/${DISPLAY})
+	file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DSYSTEM_LVGL_S ")
+	list(APPEND UKOS_COMPONENTS ${LVGL})
 endmacro()

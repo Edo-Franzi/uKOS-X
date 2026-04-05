@@ -97,6 +97,7 @@ SECTIONS {
 		linker_stInitArray = ABSOLUTE(.);
 		KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)))
 		KEEP(*(.init_array))
+		. = ALIGN(8);
 		linker_enInitArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -105,6 +106,7 @@ SECTIONS {
 		linker_stFiniArray = ABSOLUTE(.);
 		KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*)))
 		KEEP(*(.fini_array))
+		. = ALIGN(8);
 		linker_enFiniArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -112,7 +114,7 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stRODATA = ABSOLUTE(.);
 		linker_stRODATA_KERN_p = ABSOLUTE(.);
-		libkern_p.a:*(.rodata .rodata.* .rodata*)
+		libkern_p.a(.rodata .rodata.* .rodata*)
 		linker_enRODATA_KERN_p = ABSOLUTE(.);
 		*(.rodata .rodata.*)
 		*(.srodata .srodata.*)
@@ -120,6 +122,14 @@ SECTIONS {
 		KEEP(*(.eh_frame))
 		. = ALIGN(8);
 		linker_enRODATA = ABSOLUTE(.);
+	} > prgm_code
+
+	.widget : {
+		. = ALIGN(8);
+		linker_stWIDGET = ABSOLUTE(.);
+		KEEP(*(.widget))
+		. = ALIGN(8);
+		linker_enWIDGET = ABSOLUTE(.);
 	} > prgm_code
 
 	.stacks (NOLOAD) : {
@@ -152,7 +162,7 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stDATA = ABSOLUTE(.);
 		linker_stDATA_KERN_p = ABSOLUTE(.);
-		libkern_p.a:*(.data .data.* .data*)
+		libkern_p.a(.data .data.* .data*)
 		linker_enDATA_KERN_p = ABSOLUTE(.);
 		*(.sdata .sdata.*)
 		*(.data .data.*)
@@ -171,7 +181,7 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stBSS = ABSOLUTE(.);
 		linker_stBSS_KERN_p = ABSOLUTE(.);
-		libkern_p.a:*(.bss .bss.*)
+		libkern_p.a(.bss .bss.*)
 		linker_enBSS_KERN_p = ABSOLUTE(.);
 		*(.sbss*)
 		*(.bss .bss.*)

@@ -92,9 +92,7 @@ STRG_LOC_CONST(aStrText[]) = "Daemon stack: verify the stack integrity. (c) EFr-
 
 // Prototypes
 
-#if ((KKERN_WITH_STATISTICS_S == true) && (KDAEMONS_WITH_STACK_INT_S == true))
 static	void	local_process(const void *argument);
-#endif
 
 /*
  * \brief Main entry point

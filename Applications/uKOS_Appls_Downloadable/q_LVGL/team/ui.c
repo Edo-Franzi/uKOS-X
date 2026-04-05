@@ -59,8 +59,12 @@ struct labeledBar {
 	lv_obj_t	*oBar;
 };
 
-static	labeledBar_t	vBar_1, vBar_2, vBar_3;
-static	lv_obj_t		*vImage, *vBar;
+extern	mutx_t			*vLVGL_API[KNB_CORES];
+static	labeledBar_t	vBar_1[KNB_CORES];
+static	labeledBar_t	vBar_2[KNB_CORES];
+static	labeledBar_t	vBar_3[KNB_CORES];
+static	lv_obj_t		*vImage[KNB_CORES];
+static	lv_obj_t		*vBar[KNB_CORES];
 
 // Prototypes
 
@@ -73,10 +77,7 @@ static	void	local_setBars(labeledBar_t *bar, uint32_t position);
 /*
  * \brief ui_draw
  *
- * - Draw all the objects
- *
- * - Draw the uKOS-X team picture
- * - Draw the process time usage bars
+ * - Draw all the widgets
  *
  */
 void	ui_draw(void) {
@@ -86,17 +87,65 @@ void	ui_draw(void) {
 }
 
 /*
+ * \brief ui_setBar_x
+ *
+ * - Set a value for a bar
+ *
+ */
+void	ui_setBar_1(uint32_t position) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+	local_setBars(&vBar_1[core], position);
+}
+
+void	ui_setBar_2(uint32_t position) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+	local_setBars(&vBar_2[core], position);
+}
+
+void	ui_setBar_3(uint32_t position) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+	local_setBars(&vBar_3[core], position);
+}
+
+static	void	local_setBars(labeledBar_t *bar, uint32_t position) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+
+	if ((bar == nullptr) || (bar->oBar == nullptr)) { return; }
+
+	position = (position < (KBAR_MIN_VALUE + 1u)) ? (KBAR_MIN_VALUE) : (position);
+	position = (position >  KBAR_MAX_VALUE)		  ? (KBAR_MAX_VALUE) : (position);
+
+	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
+	lv_bar_set_value(bar->oBar, (int32_t)position, LV_ANIM_OFF);
+	lv_obj_invalidate(bar->oBar);
+	kern_unlockMutex(vLVGL_API[core]);
+}
+
+/*
  * \brief local_DrawImage
  *
  * - Draw the uKOS-X team picture
  *
  */
 static	void	local_DrawImage(void) {
+	uint32_t	core;
 
-	vImage = lv_image_create(lv_screen_active());
-	lv_image_set_src(vImage, &Team);
-	lv_obj_align(vImage, LV_ALIGN_TOP_MID, 0, 15);
-    lv_obj_remove_flag(vImage, LV_OBJ_FLAG_HIDDEN);
+	core = GET_RUNNING_CORE;
+
+	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
+	vImage[core] = lv_image_create(lv_screen_active());
+	lv_image_set_src(vImage[core], &Team);
+	lv_obj_align(vImage[core], LV_ALIGN_TOP_MID, 0, 15);
+    lv_obj_remove_flag(vImage[core], LV_OBJ_FLAG_HIDDEN);
+	kern_unlockMutex(vLVGL_API[core]);
 }
 
 /*
@@ -106,11 +155,16 @@ static	void	local_DrawImage(void) {
  *
  */
 static	void	local_DrawBars(void) {
+	uint32_t	core;
 
-	vBar = lv_screen_active();
-	local_InitBars(&vBar_1, vBar, KBAR_POS_Y, KBAR_POS_X_1, "P idle", 0);
-	local_InitBars(&vBar_2, vBar, KBAR_POS_Y, KBAR_POS_X_2, "P tick", 0);
-	local_InitBars(&vBar_3, vBar, KBAR_POS_Y, KBAR_POS_X_3, "P lvgl", 0);
+	core = GET_RUNNING_CORE;
+
+	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
+	vBar[core] = lv_screen_active();
+	local_InitBars(&vBar_1[core], vBar[core], KBAR_POS_Y, KBAR_POS_X_1, "P idle", 0);
+	local_InitBars(&vBar_2[core], vBar[core], KBAR_POS_Y, KBAR_POS_X_2, "P tick", 0);
+	local_InitBars(&vBar_3[core], vBar[core], KBAR_POS_Y, KBAR_POS_X_3, "P lvgl", 0);
+	kern_unlockMutex(vLVGL_API[core]);
 }
 
 /*
@@ -176,25 +230,4 @@ static	void	local_BarEvent_cb(lv_event_t *event) {
 
 	layer = lv_event_get_layer(event);
 	lv_draw_label(layer, &dscLabel, &textArea);
-}
-
-/*
- * \brief ui_setBar_x
- *
- * - Set a value for a bar
- *
- */
-void	ui_setBar_1(uint32_t position) { local_setBars(&vBar_1, position); }
-void	ui_setBar_2(uint32_t position) { local_setBars(&vBar_2, position); }
-void	ui_setBar_3(uint32_t position) { local_setBars(&vBar_3, position); }
-
-static	void	local_setBars(labeledBar_t *bar, uint32_t position) {
-
-	if ((bar == nullptr) || (bar->oBar == nullptr)) { return; }
-
-	position = (position < (KBAR_MIN_VALUE + 1u)) ? (KBAR_MIN_VALUE) : (position);
-	position = (position >  KBAR_MAX_VALUE)		  ? (KBAR_MAX_VALUE) : (position);
-
-	lv_bar_set_value(bar->oBar, (int32_t)position, LV_ANIM_OFF);
-	lv_obj_invalidate(bar->oBar);
 }

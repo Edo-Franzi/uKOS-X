@@ -54,7 +54,7 @@ extern	void	kernel_message_C0(void);
 extern	void	kern_privilegeElevate(void);
 
 /*
- * \brief SVCall_C0_IRQHandler
+ * \brief SVCall_Cx_IRQHandler
  *
  * Stack frame after the SVC(x) instruction
  *
@@ -71,7 +71,7 @@ extern	void	kern_privilegeElevate(void);
 void	SVCall_C0_IRQHandler(void) __attribute__ ((naked));
 void	SVCall_C0_IRQHandler(void) {
 
-// Branch to 	 --> kernel_message
+// Branch to 	 --> kernel_message_C0
 // Branch to 	 --> kern_privilegeElevate
 
 	SVC_DISPATCHER_C0;

@@ -82,9 +82,6 @@ add_compile_definitions(
 # Flash programming script selection
 set(BURN picotool)
 
-# Derive PROVIDER and FAMILY from SOC (eliminates redundant information)
-derive_soc_properties(${SOC})
-
 # Extra compilation options
 add_compile_options(
 	-g3 # include extra information for debugger
@@ -92,21 +89,10 @@ add_compile_options(
 )
 
 # TinyUSB integration (must be before library definitions)
-# Note: PROVIDER and FAMILY are automatically derived from SOC via derive_soc_properties()
-set(SPEED FS)
-set(PROFILE cdc_cdc)
-
-set(PATH_TINYUSB ${PATH_UKOS}/Third_Parties/TinyUSB)
-
-# Find TinyUSB package config (automatically provides include paths and definitions)
-find_package(TinyUSB REQUIRED
-	PATHS ${PATH_TINYUSB}/Library/Family/${FAMILY}/${SOC}/${PROFILE}
-	NO_DEFAULT_PATH
+add_TinyUSB(
+	SPEED FS
+	PROFILE cdc_cdc
 )
-
-# Link against the appropriate speed variant
-# This automatically adds include paths and compile definitions
-set(TINYUSB TinyUSB::${SPEED})
 
 # Sources
 # -------
@@ -138,7 +124,7 @@ list(APPEND KERN_P
 	${PATH_UKOS}/OS/Lib_kernels/kern/mailboxes.c
 	${PATH_UKOS}/OS/Lib_kernels/kern/mutexes.c
 	${PATH_UKOS}/OS/Lib_kernels/kern/pools.c
-# 	${PATH_UKOS}/OS/Lib_kernels/kern/preciseSignals.c
+#	${PATH_UKOS}/OS/Lib_kernels/kern/preciseSignals.c
 	${PATH_UKOS}/OS/Lib_kernels/kern/processes.c
 	${PATH_UKOS}/OS/Lib_kernels/kern/scheduler.c
 	${PATH_UKOS}/OS/Lib_kernels/kern/semaphores.c
@@ -212,8 +198,8 @@ list(APPEND PROC_U
 	${PATH_UKOS}/OS/Processes/startUp/startUp.c
 	${PATH_UKOS}/OS/Processes/TinyUSB/TinyUSB.c
 	${PATH_BASE}/Processes/alive/stub_alive.c
-	${PATH_VARI}/Processes/startUp/stub_startUp.c
 	${PATH_BASE}/Processes/TinyUSB/stub_TinyUSB.c
+	${PATH_VARI}/Processes/startUp/stub_startUp.c
 )
 add_library(proc_u ${PROC_U})
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})
@@ -252,13 +238,11 @@ list(APPEND CLI_U
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
 
-# MicroPython Engine integration (MicroPython manager)
-add_compile_definitions(CONFIG_MAN_MICROPYTHON_S)
-find_library(MICROPYTHON MicroPython ${PATH_UKOS}/Third_Parties/MicroPython/Library/${CORE})
-file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_MICROPYTHON_S ")
-
 # All library components
-set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${MICROPYTHON} ${TINYUSB})
+set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TINYUSB})
+
+# Optional manager
+add_MicroPython()
 
 # System configuration flags
 

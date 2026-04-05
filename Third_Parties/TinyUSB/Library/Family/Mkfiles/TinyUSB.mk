@@ -161,10 +161,12 @@ SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/hcd_r
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/rp2040_usb.c
 SRC					+= $(PATH_TINYUSB)/uKOS_Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/claim.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_sync/critical_section.c
 SRC_A				+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq.c
-SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_panic/panic.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync/sync.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c
+SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_panic/panic.c
 SRC					+= $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
 
 CPPFLAGS			+= $(PATH_INCLUDES)

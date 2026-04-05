@@ -70,10 +70,15 @@ target_compile_definitions(system_compiler_flags INTERFACE
 
 # Common flags from *_application_CORTEX_M3.mk, *_application_CORTEX_M4.mk, *_application_CORTEX_M7.mk,
 # *_application_CORTEX_M33.mk, *_application_RV32IMAC.mk and *_application_RV64IMAFDC.mk
+
+# Read the system configuration flags from the file
+file(STRINGS ${SYSTEM_CNF_PATH} SYSTEM_CNF_RAW)
+separate_arguments(SYSTEM_CNF_FLAGS UNIX_COMMAND "${SYSTEM_CNF_RAW}")
+list(TRANSFORM SYSTEM_CNF_FLAGS REPLACE "^-D" "")
+target_compile_definitions(system_compiler_flags INTERFACE ${SYSTEM_CNF_FLAGS})
+
 # Compile options
 target_compile_options(system_compiler_flags BEFORE INTERFACE
-	# Load configuration from system build
-	\@${SYSTEM_CNF_PATH}
 	# Standards
 	$<$<COMPILE_LANGUAGE:C>:-std=${CSTANDARD}>
 	$<$<COMPILE_LANGUAGE:CXX>:-std=${CXXSTANDARD}>

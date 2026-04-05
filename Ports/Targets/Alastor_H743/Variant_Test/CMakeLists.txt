@@ -176,13 +176,10 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_peripherals/battery/stub_battery_bq27510g3.c
 	${PATH_BASE}/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
 	${PATH_BASE}/Lib_peripherals/i2c1/stub_i2c1_si2c1.c
-	${PATH_VARI}/Lib_peripherals/imager/stub_imager_mt9v03x.c
-	${PATH_VARI}/Lib_peripherals/imu/stub_imu_lsm9ds1.c
 	${PATH_BASE}/Lib_peripherals/led/stub_led.c
 	${PATH_BASE}/Lib_peripherals/spi0/stub_spi0_sspi2.c
 	${PATH_BASE}/Lib_peripherals/spi1/stub_spi1_sspi4.c
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
-	${PATH_VARI}/Lib_peripherals/temperature/stub_temperature_lsm9ds1.c
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart2.c
 	${PATH_BASE}/Lib_serials/urt1/stub_urt1_usart3.c
@@ -191,6 +188,9 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_serials/wfi0/stub_wfi0_usart1_esp32_wifi_AP.c
 	${PATH_BASE}/Lib_storages/sdcard/stub_sdcard.c
 	${PATH_BASE}/Lib_storages/serialFlash/stub_serialFlash.c
+	${PATH_VARI}/Lib_peripherals/imager/stub_imager_mt9v03x.c
+	${PATH_VARI}/Lib_peripherals/imu/stub_imu_lsm9ds1.c
+	${PATH_VARI}/Lib_peripherals/temperature/stub_temperature_lsm9ds1.c
 )
 add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags)
@@ -280,18 +280,12 @@ list(APPEND CLI_U
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
 
-# MicroPython Engine integration (MicroPython manager)
-add_compile_definitions(CONFIG_MAN_MICROPYTHON_S)
-find_library(MICROPYTHON MicroPython ${PATH_UKOS}/Third_Parties/MicroPython/Library/${CORE})
-file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_MICROPYTHON_S ")
-
-# FATFS (File system) integration
-add_compile_definitions(CONFIG_MAN_FATFS_S)
-find_library(FATFS FatFs ${PATH_UKOS}/Third_Parties/FatFs/Library/${CORE})
-file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_FATFS_S ")
-
 # All library components
-set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u shar_p proc_p proc_u tool_u ${MICROPYTHON} ${FATFS})
+set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u shar_p proc_p proc_u tool_u)
+
+# Optional managers
+add_MicroPython()
+add_FatFs()
 
 # System configuration flags
 

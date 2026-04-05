@@ -16,7 +16,8 @@
       "cacheVariables": {
         "USER_MODE": "ON",
         "CANARY": "ON",
-        "USE_LLVM": "OFF"
+        "USE_LLVM": "OFF",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {

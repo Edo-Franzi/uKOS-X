@@ -80,6 +80,7 @@ SECTIONS {
 		libkern_p.a(.text .text.* .text*)
 		linker_enTEXT_KERN_p = ABSOLUTE(.);
 		*(.text .text.*)
+		. = ALIGN(4);
 		linker_enTEXT = ABSOLUTE(.);
 	} > prgm_code
 
@@ -98,6 +99,7 @@ SECTIONS {
 		linker_stInitArray = ABSOLUTE(.);
 		KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)))
 		KEEP(*(.init_array))
+		. = ALIGN(4);
 		linker_enInitArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -106,6 +108,7 @@ SECTIONS {
 		linker_stFiniArray = ABSOLUTE(.);
 		KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*)))
 		KEEP(*(.fini_array))
+		. = ALIGN(4);
 		linker_enFiniArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -130,6 +133,14 @@ SECTIONS {
 		*(.rodata .rodata.*)
 		. = ALIGN(4);
 		linker_enRODATA = ABSOLUTE(.);
+	} > prgm_code
+
+	.widget : {
+		. = ALIGN(4);
+		linker_stWIDGET = ABSOLUTE(.);
+		KEEP(*(.widget))
+		. = ALIGN(4);
+		linker_enWIDGET = ABSOLUTE(.);
 	} > prgm_code
 
 	. = ALIGN(4);
