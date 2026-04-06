@@ -77,7 +77,7 @@ the third-party components shipped in this repository.
 ### 2.7) MicroPython
 - Location: `Third_Parties/MicroPython/`
 - Upstream: https://github.com/micropython/micropython.git
-- Version: 1.27.0
+- Version: 1.28.0
 - License: MIT
 - Copyright:
   -  Copyright (c) 2013-2019 Damien P. George
@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 6252448
+- Version: 0.20.0 / commit 7c3f597
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

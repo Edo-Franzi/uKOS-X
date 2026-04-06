@@ -1,9 +1,9 @@
 {
-  "spdxVersion": "SPDX-0.3.5",
+  "spdxVersion": "SPDX-0.3.6",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.3.5)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.3.5-2026-04-04",
+  "name": "uKOS-X SBOM (0.3.6)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.3.6-2026-04-06",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -34,7 +34,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.3.5",
+      "versionInfo": "0.3.6",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -44,7 +44,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.3.5",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.3.6",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -167,7 +167,7 @@
     {
       "name": "MicroPython",
       "SPDXID": "SPDXRef-Package-MicroPython",
-      "versionInfo": "1.27.0",
+      "versionInfo": "1.28.0",
       "downloadLocation": "https://github.com/micropython/micropython.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -177,7 +177,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/micropython/micropython@v1.27.0",
+          "referenceLocator": "pkg:github/micropython/micropython@v1.28.0",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -205,7 +205,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 (commit 6252448)",
+      "versionInfo": "0.20.0 (commit 7c3f597)",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
