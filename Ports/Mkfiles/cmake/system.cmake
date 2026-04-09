@@ -119,8 +119,8 @@ target_compile_options(system_compiler_flags BEFORE INTERFACE
 	-Wcast-align
 	-Wcast-qual
 	# C specific flags
-	-Wstrict-prototypes
-	-Wc++-compat
+	$<$<COMPILE_LANGUAGE:C>:-Wstrict-prototypes>
+	$<$<COMPILE_LANGUAGE:C>:-Wc++-compat>
 	# Additional flags
 	${CFLAGS_APPEND}
 )

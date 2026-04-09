@@ -266,8 +266,6 @@ PROC_U			+= 												$(PATH_BASE)/Processes/TinyUSB/stub_TinyUSB.c
 
 # The CLI components (user)
 
-PATH_APPL		=  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
-
 CLI_U			=
 CLI_U			+= $(PATH_UKOS)/OS/CLI/bangla/BaNgLa.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench.c
@@ -306,7 +304,6 @@ CLI_U			+= $(PATH_UKOS)/OS/CLI/viewer/viewer.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/viewer/viewer_uvc0_simule.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/wkserial/wkserial.c
 CLI_U			+= $(PATH_UKOS)/OS/CLI/wki2c/wki2c.c
-CLI_U			+= $(PATH_APPL)/b_MailBoxes/coherence/coherence.c
 
 # All the uKOS-X library components
 
@@ -321,6 +318,12 @@ CONF_SYSTEM		+= -DSYSTEM_TINYUSB_$(SPEED)_S
 UKOS_COMPONENTS	+= $(TINYUSB).a
 
 # The included makefiles
+
+ifneq ($(WITHAPP),)
+include	app_coherence.mk
+
+FLAGS_UKOS		+= -DWITHAPP_S
+endif
 
 include	$(PATH_PORT)/Mkfiles/system.mk
 include	$(PATH_PORT)/Mkfiles/$(COMPILER_FAMILY)_system_$(CORE).mk

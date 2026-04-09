@@ -57,6 +57,7 @@ CLANGVERS_GT_19 := $(shell [ $(CLANGVERS) -gt 19 ] && echo true)
 
 CLANG_CFG		=  --target=riscv32-unknown-elf
 CC				=  $(PATH_COMPILER)/bin/clang
+CXX				=  $(PATH_COMPILER)/bin/clang
 CFLAGS			+= $(CLANG_CFG)
 LDFLAGS			+= $(CLANG_CFG)
 

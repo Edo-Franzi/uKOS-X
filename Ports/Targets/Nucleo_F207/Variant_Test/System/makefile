@@ -107,7 +107,7 @@ VERSIONING		=  GIT
 FLAGS_USER		+= -DuKOS_NAME=''
 FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 
-BURN			?= stlink
+BURN			?= stm32programmer
 
 # The really first pcs of code (privileged)
 

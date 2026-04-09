@@ -58,6 +58,7 @@ TARGET_TRIPLE_MIDDLE = unknown-none
 
 CLANG_CFG		=  --target=thumbv7m-$(TARGET_TRIPLE_MIDDLE)-eabi -mfpu=none
 CC				=  $(PATH_COMPILER)/bin/clang
+CXX				=  $(PATH_COMPILER)/bin/clang
 CFLAGS			+= $(CLANG_CFG)
 LDFLAGS			+= $(CLANG_CFG)
 

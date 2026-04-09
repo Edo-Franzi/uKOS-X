@@ -114,7 +114,7 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stRODATA = ABSOLUTE(.);
 		linker_stRODATA_KERN_p = ABSOLUTE(.);
-		libkern_p.a(.rodata .rodata.* .rodata*)
+		libkern_p.a:*(.rodata .rodata.* .rodata*)
 		linker_enRODATA_KERN_p = ABSOLUTE(.);
 		*(.rodata .rodata.*)
 		*(.srodata .srodata.*)
@@ -162,7 +162,7 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stDATA = ABSOLUTE(.);
 		linker_stDATA_KERN_p = ABSOLUTE(.);
-		libkern_p.a(.data .data.* .data*)
+		libkern_p.a:*(.data .data.* .data*)
 		linker_enDATA_KERN_p = ABSOLUTE(.);
 		*(.sdata .sdata.*)
 		*(.data .data.*)
@@ -181,7 +181,7 @@ SECTIONS {
 		. = ALIGN(8);
 		linker_stBSS = ABSOLUTE(.);
 		linker_stBSS_KERN_p = ABSOLUTE(.);
-		libkern_p.a(.bss .bss.*)
+		libkern_p.a:*(.bss .bss.*)
 		linker_enBSS_KERN_p = ABSOLUTE(.);
 		*(.sbss*)
 		*(.bss .bss.*)

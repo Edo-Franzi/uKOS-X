@@ -72,7 +72,7 @@ extern	void		cmns_receive(serialManager_t serialManager, char_t *data);
 // Do not declare main in c++
 
 #else
-#if !(defined(__NO_EXTERN_MAIN))
+#if (!defined(__NO_EXTERN_MAIN))
 extern	int			main(int argc, const char *argv[]);
 #endif
 #endif

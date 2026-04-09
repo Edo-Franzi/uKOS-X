@@ -143,12 +143,32 @@ FLAGS_USER          += -DuKOS_OWNER='(c) Edo. Franzi'
 BURN                 =  jtag_FT4232_b
 
 ...
-CLI_U                =  $(PATH_UKOS)/OS/CLI/bangla/BaNgLa.c
-CLI_U               += $(PATH_UKOS)/OS/CLI/battery/battery.c
-CLI_U               += $(PATH_UKOS)/OS/CLI/console/console.c
-...
-CLI_U               += $(PATH_UKOS)/OS/CLI/uKOS/uKOS.c
-CLI_U               += $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/ \
-                       l_Neural/class_Py/class_Py.c
+# The included makefiles
+
+ifneq ($(WITHAPP),)
+include	app_coherence.mk
+
+FLAGS_UKOS		+= -DWITHAPP_S
+endif
+
+include	$(PATH_PORT)/Mkfiles/system.mk
+include	$(PATH_PORT)/Mkfiles/$(COMPILER_FAMILY)_system_$(CORE).mk
+-include $(wildcard *.d)
 ...
 ```
+
+Add the file /Target/Alastor_H743/Variant_Test/System/app_class_Py.mk.
+
+```makefile
+PATH_APPL		=  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
+
+CLI_U				+= $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/ \
+               l_MLPs/class_Py/class_Py.c
+```
+
+Build the system to include the app.
+
+```bash
+make -j USER_MODE=1 WITHAPP=1
+```
+

@@ -47,6 +47,9 @@
 # TinyUSB integration (derive_soc_properties, add_TinyUSB)
 include(tinyusb)
 
+# TensorFlow Lite Micro integration (add_Tflite)
+include(tflite)
+
 set(CMAKE_C_OUTPUT_EXTENSION_REPLACE 1)
 set(CMAKE_ASM_OUTPUT_EXTENSION_REPLACE 1)
 

@@ -355,6 +355,12 @@ UKOS_COMPONENTS	+= $(FATFS).a
 
 # The included makefiles
 
+ifneq ($(WITHAPP),)
+include	app_class_Py.mk
+
+FLAGS_UKOS		+= -DWITHAPP_S
+endif
+
 include	$(PATH_PORT)/Mkfiles/system.mk
 include	$(PATH_PORT)/Mkfiles/$(COMPILER_FAMILY)_system_$(CORE).mk
 -include $(wildcard *.d)

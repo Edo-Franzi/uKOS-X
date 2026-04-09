@@ -113,7 +113,7 @@ FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 # With the DATA cache
 CONF_SYSTEM		+= -DCACHE_D_S
 
-BURN			?= stlink
+BURN			?= stm32programmer
 
 # The really first pcs of code (privileged)
 

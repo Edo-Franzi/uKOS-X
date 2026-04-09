@@ -66,6 +66,7 @@ CLANG_CFG		=  --target=thumbv8m.main-$(TARGET_TRIPLE_MIDDLE)-eabihf
 endif
 
 CC				=  $(PATH_COMPILER)/bin/clang
+CXX				=  $(PATH_COMPILER)/bin/clang
 CFLAGS			+= $(CLANG_CFG)
 LDFLAGS			+= $(CLANG_CFG)
 

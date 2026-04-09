@@ -220,20 +220,19 @@ WHOLE_ARCHIVE_END	?= -Wl,-no-whole-archive
 
 $(TARGET).nosig.elf : $(LINKS_LD) $(patsubst %.c, %.o, $(notdir $(UKOS_FIRST_P))) $(UKOS_COMPONENTS) $(LIBS_FILES)
 	@echo "Linking $@"
-	$(HIDE)$(CC) $(LDFLAGS)																	\
+	$(HIDE)$(CXX) $(LDFLAGS)																\
 	$(patsubst %.c, %.o, $(notdir $(UKOS_FIRST_P)))											\
 	$(WHOLE_ARCHIVE_START) $(UKOS_COMPONENTS) $(WHOLE_ARCHIVE_END) $(LIBS)					\
 	-lm -o $@
 
 $(TARGET).elf : $(LINKS_LD) $(patsubst %.c, %.o, $(notdir $(UKOS_FIRST_P))) $(UKOS_COMPONENTS) $(LIBS_FILES) $(TARGET).sig $(TARGET).sig.o
 	@echo "Linking $@"
-	$(HIDE)$(CC) $(LDFLAGS)																	\
+	$(HIDE)$(CXX) $(LDFLAGS)																\
 	$(patsubst %.c, %.o, $(notdir $(UKOS_FIRST_P)))											\
 	$(WHOLE_ARCHIVE_START) $(UKOS_COMPONENTS) $(TARGET).sig.o $(WHOLE_ARCHIVE_END) $(LIBS)	\
 	-lm -o $@
 
-vpath %.S	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))
-vpath %.c	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))		\
+SRC_DIRS :=	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))		\
 			$(dir $(RTCB_P))	$(dir $(RTCB_HIDE_P))		\
 			$(dir $(KERN_P))	$(dir $(KERN_HIDE_P))		\
 			$(dir $(KERN_U))	$(dir $(KERN_HIDE_U))		\
@@ -242,7 +241,11 @@ vpath %.c	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))		\
 			$(dir $(SHAR_P))	$(dir $(SHAR_HIDE_P))		\
 			$(dir $(PROC_P))	$(dir $(PROC_HIDE_P))		\
 			$(dir $(PROC_U))	$(dir $(PROC_HIDE_U))		\
-			$(dir $(CLI_U))	$(dir $(CLI_HIDE_U))
+			$(dir $(CLI_U))		$(dir $(CLI_HIDE_U))
+
+vpath %.S	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))
+vpath %.c   $(SRC_DIRS)
+vpath %.cpp $(SRC_DIRS)
 
 %.o : %.S $(TARGET).cnf
 	@echo "Compiling $(notdir $<)"
@@ -251,6 +254,10 @@ vpath %.c	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))		\
 %.o : %.c $(TARGET).cnf
 	@echo "Compiling $(notdir $<)"
 	$(HIDE)$(CC) @$(TARGET).cnf -c -o $@ $(CFLAGS) $<
+
+%.o : %.cpp $(TARGET).cnf
+	@echo "Compiling $(notdir $<)"
+	$(HIDE)$(CXX) @$(TARGET).cnf -c -o $@ $(CXXFLAGS) $<
 
 %.nosig.bin : %.nosig.elf
 	$(HIDE)$(OBJCOPY) -O binary --strip-all --remove-section=.signature $< $@
@@ -269,31 +276,49 @@ vpath %.c	$(dir $(FIRST_P))	$(dir $(FIRST_HIDE_P))		\
 %.sig.o : %.sig
 	$(HIDE)$(CC) -c $(CFLAGS) -o $@ -x c $<
 
-librtcb_p.a : $(patsubst %.c, %.o, $(notdir $(RTCB_P))) $(patsubst %.c, %.o, $(notdir $(RTCB_HIDE_P)))
+librtcb_p.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(RTCB_P)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(RTCB_HIDE_P))))
 	$(HIDE)$(AR) rcs $@ $^
 
-libkern_p.a : $(patsubst %.c, %.o, $(notdir $(KERN_P))) $(patsubst %.c, %.o, $(notdir $(KERN_HIDE_P)))
+libkern_p.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(KERN_P)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(KERN_HIDE_P))))
 	$(HIDE)$(AR) rcs $@ $^
 
-libkern_u.a : $(patsubst %.c, %.o, $(notdir $(KERN_U))) $(patsubst %.c, %.o, $(notdir $(KERN_HIDE_U)))
+libkern_u.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(KERN_U)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(KERN_HIDE_U))))
 	$(HIDE)$(AR) rcs $@ $^
 
-liblibx_p.a : $(patsubst %.c, %.o, $(notdir $(LIBX_P))) $(patsubst %.c, %.o, $(notdir $(LIBX_HIDE_P)))
+liblibx_p.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(LIBX_P)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(LIBX_HIDE_P))))
 	$(HIDE)$(AR) rcs $@ $^
 
-liblibx_u.a : $(patsubst %.c, %.o, $(notdir $(LIBX_U))) $(patsubst %.c, %.o, $(notdir $(LIBX_HIDE_U)))
+liblibx_u.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(LIBX_U)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(LIBX_HIDE_U))))
 	$(HIDE)$(AR) rcs $@ $^
 
-libshar_p.a : $(patsubst %.c, %.o, $(notdir $(SHAR_P))) $(patsubst %.c, %.o, $(notdir $(SHAR_HIDE_P)))
+libshar_p.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(SHAR_P)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(SHAR_HIDE_P))))
 	$(HIDE)$(AR) rcs $@ $^
 
-libproc_p.a : $(patsubst %.c, %.o, $(notdir $(PROC_P))) $(patsubst %.c, %.o, $(notdir $(PROC_HIDE_P)))
+libproc_p.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(PROC_P)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(PROC_HIDE_P))))
 	$(HIDE)$(AR) rcs $@ $^
 
-libproc_u.a : $(patsubst %.c, %.o, $(notdir $(PROC_U))) $(patsubst %.c, %.o, $(notdir $(PROC_HIDE_U)))
+libproc_u.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(PROC_U)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(PROC_HIDE_U))))
 	$(HIDE)$(AR) rcs $@ $^
 
-libtool_u.a : $(patsubst %.c, %.o, $(notdir $(CLI_U))) $(patsubst %.c, %.o, $(notdir $(CLI_HIDE_U)))
+libtool_u.a : \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(CLI_U)))) \
+	$(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(notdir $(CLI_HIDE_U))))
 	$(HIDE)$(AR) rcs $@ $^
 
 # Build the TinyUSB, MicroPython & FatFs library rules
@@ -317,6 +342,11 @@ endif
 ifneq ($(LVGL),)
 $(LVGL).a :
 	cp -f $(PATH_LIB_LVGL)/$(LVGL).a $(LVGL).a
+endif
+
+ifneq ($(TFLITE),)
+$(TFLITE).a :
+	cp -f $(PATH_LIB_TFLITE)/$(TFLITE).a $(TFLITE).a
 endif
 
 # Build the additional useful file rules
@@ -360,6 +390,7 @@ help : help_core
 	@echo "VERBOSE=1              Display the compiler command line."
 	@echo "TARGET=name            Name is the final result name (i.e. name.bin, name.s3, name.elf, etc)."
 	@echo "NOCANARY=1             Suppress detection if a buffer overflow in stack"
+	@echo "WITHAPP=1              Integrate a user application into the system"
 
 ifeq ($(NOCLEAN),)
 burn :
