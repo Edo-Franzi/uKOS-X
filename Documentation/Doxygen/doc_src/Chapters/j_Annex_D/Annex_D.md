@@ -102,64 +102,11 @@ MAIN_ENTRY(argc, const char_t *argv[]) {
 
 ### Adaptation of the main µKOS-X makefile
 
-Adaptation of the file /Target/Alastor_H743/Variant_Test/System/makefile.
+Add the file /Target/Alastor_H743/Variant_Test/System/app.mk.
 
 ```makefile
-...
+FLAGS_UKOS  += -DWITHAPP_S
 
-SHELL                =  /bin/sh
-PATH_UKOS_X_PACKAGE  ?= $(abspath ../../../../..)
-
-ifndef PATH_UKOS_X_PACKAGE
-    $(error PATH_UKOS_X_PACKAGE is not defined)
-endif
-
-# Project paths
-...
-
-PATH_MKFILE          := $(abspath $(lastword $(MAKEFILE_LIST)))
-PATH_PORT            =  $(PATH_UKOS_X_PACKAGE)/Ports
-
-...
-
-# Target & Infrastructure
-
-# - VERSIONING    --> SVN
-# - VERSIONING    --> GIT
-# - VERSIONING    --> NONE
-
-PREFIX              ?=  arm-none-eabi-
-COMPILER_FAMILY     ?=  gcc
-
-BOARD                =  Alastor_H743
-V                    =  Variant_Test
-SOC                  =  STM32H743
-CORE                 =  CORTEX_M7
-OPTIMISATION         =  -Os
-VERSIONING           =  GIT
-FLAGS_USER          += -DuKOS_NAME=''
-FLAGS_USER          += -DuKOS_OWNER='(c) Edo. Franzi'
-
-BURN                 =  jtag_FT4232_b
-
-...
-# The included makefiles
-
-ifneq ($(WITHAPP),)
-include	app_coherence.mk
-
-FLAGS_UKOS		+= -DWITHAPP_S
-endif
-
-include	$(PATH_PORT)/Mkfiles/system.mk
-include	$(PATH_PORT)/Mkfiles/$(COMPILER_FAMILY)_system_$(CORE).mk
--include $(wildcard *.d)
-...
-```
-
-Add the file /Target/Alastor_H743/Variant_Test/System/app_class_Py.mk.
-
-```makefile
 PATH_APPL		=  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
 
 CLI_U				+= $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/ \

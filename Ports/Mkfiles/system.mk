@@ -151,6 +151,12 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/Third_Parties
 
 CFLAGS				+= $(CFLAGS_APPEND)
 
+# The included app makefile
+
+ifneq ($(WITHAPP),)
+	include	app.mk
+endif
+
 all :
 ifeq ($(NOCLEAN),)
 	$(MAKE)	clr_all

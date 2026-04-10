@@ -1,5 +1,5 @@
-# app_class_Py.
-# =============
+# app.
+# ====
 
 # SPDX-License-Identifier: MIT
 
@@ -43,6 +43,8 @@
 #   SOFTWARE.
 #
 #------------------------------------------------------------------------
+
+FLAGS_UKOS		+= -DWITHAPP_S
 
 PATH_APPL		=  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
 

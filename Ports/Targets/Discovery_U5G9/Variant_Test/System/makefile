@@ -319,12 +319,6 @@ UKOS_COMPONENTS	+= $(TINYUSB).a
 
 # The included makefiles
 
-ifneq ($(WITHAPP),)
-include	app_coherence.mk
-
-FLAGS_UKOS		+= -DWITHAPP_S
-endif
-
 include	$(PATH_PORT)/Mkfiles/system.mk
 include	$(PATH_PORT)/Mkfiles/$(COMPILER_FAMILY)_system_$(CORE).mk
 -include $(wildcard *.d)

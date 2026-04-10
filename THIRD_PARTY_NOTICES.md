@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-03-29
+(c) 2025-2026, Edo. Franzi, 2026-04-10
 
 
 
@@ -85,7 +85,7 @@ the third-party components shipped in this repository.
 ### 2.8) Tflite-micro
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/tensorflow/tflite-micro.git
-- Version: commit f97216c
+- Version: commit 51bee03
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2020 The TensorFlow Authors. All rights reserved.
@@ -93,7 +93,7 @@ the third-party components shipped in this repository.
 ### 2.9) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 7c3f597
+- Version: 0.20.0 / commit 470715a
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

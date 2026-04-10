@@ -62,6 +62,8 @@ option(CANARY "Canary stack protection" ON)
 # Set default mode to privileged
 option(USER_MODE "User mode activated" ON)
 
+option(WITHAPP "Integrate a user application into the system" OFF)
+
 add_library(core_compiler_flags INTERFACE)
 if(${USER_MODE} AND (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ARM"))
 	set(MODE _pu)

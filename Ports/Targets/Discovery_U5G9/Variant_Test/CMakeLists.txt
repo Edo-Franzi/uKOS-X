@@ -252,8 +252,11 @@ list(APPEND CLI_U
 	${PATH_UKOS}/OS/CLI/viewer/viewer.c
 	${PATH_UKOS}/OS/CLI/wki2c/wki2c.c
 	${PATH_UKOS}/OS/CLI/wkserial/wkserial.c
-	${PATH_UKOS}/Applications/uKOS_Appls_Downloadable/b_MailBoxes/coherence/coherence.c
 )
+if(WITHAPP)
+    list(APPEND CLI_U ${PATH_UKOS}/Applications/uKOS_Appls_Downloadable/b_MailBoxes/coherence/coherence.c)
+    add_compile_definitions(WITHAPP_S)
+endif()
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags ${TINYUSB})
 

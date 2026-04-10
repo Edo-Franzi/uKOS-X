@@ -277,6 +277,10 @@ list(APPEND CLI_U
 	${PATH_UKOS}/OS/CLI/wkspi/wkspi.c
 	${PATH_UKOS}/OS/CLI/X/X.c
 )
+if(WITHAPP)
+    list(APPEND CLI_U ${PATH_UKOS}/Applications/uKOS_Appls_Downloadable/l_MLPs/class_Py/class_Py.c)
+    add_compile_definitions(WITHAPP_S)
+endif()
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
 
