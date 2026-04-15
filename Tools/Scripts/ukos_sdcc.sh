@@ -18,7 +18,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -83,13 +83,13 @@ export	LDFLAGS
 cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 
 if [[ ! -f "sdcc-${SDCC_VER}.tar.gz" ]]; then
-	echo Downloading sdcc
+	echo "Downloading sdcc"
 	move_to_archive 'sdcc-*'
 	"${WGET[@]}" https://sourceforge.net/projects/sdcc/files/sdcc/"${SDCC_VER}"/sdcc-src-"${SDCC_VER}".tar.bz2
 fi
 
 cd ..
-echo Extracting sdcc sources
+echo "Extracting sdcc sources"
 tar xjf ,Sources/sdcc-src-"${SDCC_VER}".tar.bz2
 
 # Building the toolchain
@@ -117,5 +117,5 @@ cd "${PATH_TOOLS_GCC}"/cross
 rm -f sdcc-current
 ln -s sdcc-"${SDCC_VER}" sdcc-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/sdcc_ready.txt

@@ -17,7 +17,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Laurent von Allmen
 #   ---------------------------------
@@ -71,10 +71,10 @@ readonly LOG_FILE="${BUILD}"/cppcheck_temp.txt
 # -------------------
 
 if [[ ! -d "${PACKS}" ]]; then
-	echo Cloning cppcheck-${CPPCHECK_VER}
+	echo "Cloning cppcheck-${CPPCHECK_VER}"
 	git clone https://github.com/danmar/cppcheck.git "${PACKS}"
 else
-	echo Fetching cppcheck-${CPPCHECK_VER}
+	echo "Fetching cppcheck-${CPPCHECK_VER}"
 	git -C "${PACKS}" fetch --quiet
 fi
 git -C "${PACKS}" checkout "${CPPCHECK_VER}"
@@ -102,5 +102,5 @@ cd "${PATH_TOOLS_ROOT}"/cross
 rm -f cppcheck-current
 ln -s cppcheck-"${CPPCHECK_VER}" cppcheck-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/cppcheck_ready.txt

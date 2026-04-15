@@ -22,7 +22,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -90,38 +90,38 @@ readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
 cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 
 if [[ ! -f "libusb-${LIBUSB_VER}.tar.bz2" ]]; then
-	echo Downloading libusb
+	echo "Downloading libusb"
 	move_to_archive 'libusb-*'
 	"${WGET[@]}" https://github.com/libusb/libusb/releases/download/v"${LIBUSB_VER}"/libusb-"${LIBUSB_VER}".tar.bz2
 fi
 
 if [[ ! -f "confuse-${LIBCONFUSE_VER}.tar.gz" ]]; then
-	echo Downloading confuse
+	echo "Downloading confuse"
 	move_to_archive 'confuse-*'
 	"${WGET[@]}" https://github.com/martinh/libconfuse/releases/download/v"${LIBCONFUSE_VER}"/confuse-"${LIBCONFUSE_VER}".tar.gz
 fi
 
 if [[ ! -f "libftdi1-${LIBFTDI_VER}.tar.bz2" ]]; then
-	echo Downloading libftdi
+	echo "Downloading libftdi"
 	move_to_archive 'ibftdi1-*'
 	"${WGET[@]}" https://www.intra2net.com/en/developer/libftdi/download/libftdi1-"${LIBFTDI_VER}".tar.bz2
 fi
 
 cd ..
-echo Extracting libusb sources
+echo "Extracting libusb sources"
 tar xjf ,Sources/libusb-"${LIBUSB_VER}".tar.bz2
 
-echo Extracting confuse sources
+echo "Extracting confuse sources"
 tar xzf ,Sources/confuse-"${LIBCONFUSE_VER}".tar.gz
 
-echo Extracting libftdi1 sources
+echo "Extracting libftdi1 sources"
 tar xjf ,Sources/libftdi1-"${LIBFTDI_VER}".tar.bz2
 
 if [[ ! -d "${PACKS_LIBJAYLINK}" ]]; then
-	echo Cloning libjaylink-"${LIBJAYLINK_VER}"
+	echo "Cloning libjaylink-${LIBJAYLINK_VER}"
 	git clone --recurse-submodules --branch ${LIBJAYLINK_VER} https://gitlab.zapb.de/libjaylink/libjaylink.git "${PACKS_LIBJAYLINK}"
 else
-	echo Fetching libjaylink-${LIBJAYLINK_VER}
+	echo "Fetching libjaylink-${LIBJAYLINK_VER}"
 	git -C "${PACKS_LIBJAYLINK}" fetch --quiet
 fi
 git -C "${PACKS_LIBJAYLINK}" checkout ${LIBJAYLINK_VER}
@@ -221,5 +221,5 @@ case "$(uname)" in
 		;;
 esac
 
-echo "End of build:	  $(date)" >> "${LOG_FILE_LIBFTDI}"
+echo "End of build:   $(date)" >> "${LOG_FILE_LIBFTDI}"
 mv "${LOG_FILE_LIBFTDI}" "${BUILD_LIBFTDI}"/libftdi1_ready.txt

@@ -24,7 +24,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -104,7 +104,7 @@ readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
 
 cd "${PATH_TOOLS_ROOT}"/Packages
 if [[ ! -d openocd-"${OPENOCD_VER}"-stm ]]; then
-	echo Cloning openocd-${OPENOCD_VER} for stm
+	echo "Cloning openocd-${OPENOCD_VER} for stm"
 	git clone --recurse-submodules https://github.com/STMicroelectronics/OpenOCD openocd-"${OPENOCD_VER}"-stm
 fi
 
@@ -183,5 +183,5 @@ cd "${PATH_TOOLS_GCC}"/cross/openocd-current
 rm -f "${MACHINE}"
 ln -s ../openocd-"${OPENOCD_VER}"/"${MACHINE}" "${MACHINE}"
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/"${MACHINE}"/openocd_ready.txt

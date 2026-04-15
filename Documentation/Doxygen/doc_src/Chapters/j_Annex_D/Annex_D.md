@@ -107,9 +107,9 @@ Add the file /Target/Alastor_H743/Variant_Test/System/app.mk.
 ```makefile
 FLAGS_UKOS  += -DWITHAPP_S
 
-PATH_APPL		=  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
+PATH_APPL   =  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
 
-CLI_U				+= $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/ \
+CLI_U       += $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/ \
                l_MLPs/class_Py/class_Py.c
 ```
 

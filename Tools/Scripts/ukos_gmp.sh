@@ -18,7 +18,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -75,13 +75,13 @@ readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
 cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 
 if [[ ! -f "gmp-${GMP_VER}.tar.lz" ]]; then
-	echo Downloading gmp-${GMP_VER}
+	echo "Downloading gmp-${GMP_VER}"
 	move_to_archive 'gmp-*'
 	"${WGET[@]}" https://ftp.gnu.org/gnu/gmp/gmp-"${GMP_VER}".tar.lz
 fi
 
 cd ..
-echo Extracting gmp sources
+echo "Extracting gmp sources"
 tar --lzip -xf ,Sources/gmp-"${GMP_VER}".tar.lz
 
 # Building the library
@@ -103,5 +103,5 @@ make check		|| { echo "Error checking GMP";	   exit 1; }
 make install	|| { echo "Error installing GMP";  exit 1; }
 make clean		|| { echo "Error cleaning GMP";	   exit 1; }
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/gmp_ready.txt

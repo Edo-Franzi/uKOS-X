@@ -30,7 +30,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #	(c) 2025-2026, Laurent von Allmen
 #	---------------------------------
@@ -114,7 +114,7 @@ readonly LOG_FILE="${BUILD}"/clang_llvm_arm_temp.txt
 cd "${PATH_TOOLS_ROOT}"/Packages
 
 if [[ ! -d llvm-"${LLVM_ARM_VER}"/arm ]]; then
-	echo Downloading LLVM-${LLVM_ARM_VER} embedded for Arm
+	echo "Downloading LLVM-${LLVM_ARM_VER} embedded for Arm"
 	LLVM_ARM_MAJOR="${LLVM_ARM_VER%%.*}"
 	git clone --branch release/arm-software/${LLVM_ARM_MAJOR}.x https://github.com/arm/arm-toolchain.git "llvm-${LLVM_ARM_VER}/arm"
 	git -C llvm-"${LLVM_ARM_VER}"/arm checkout ${LLVM_ARM_COMMIT}
@@ -136,7 +136,7 @@ fi
 
 rm -rf "${BUILD}"
 mkdir -p "${BUILD}"
-echo "$(date) Start of build" > "${LOG_FILE}"
+echo "Start of build: $(date)" > "${LOG_FILE}"
 rm -rf "${CROSS}"
 
 echo "$(date) Start of CMake configuration" >> "${LOG_FILE}"
@@ -168,6 +168,6 @@ cd "${current_dir}"
 rm -f arm
 ln -s ../LLVM-ET-Arm-"${LLVM_ARM_VER}"N-Darwin-$(uname -m) arm
 
-echo "$(date) End of build" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${CROSS}"/clang_llvm_arm_ready"$(date -I)".txt
 rm -fr "${BUILD}"

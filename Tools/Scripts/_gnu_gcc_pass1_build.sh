@@ -14,7 +14,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -92,5 +92,5 @@ case "$(uname)" in
 		;;
 esac
 
-echo "End gcc pass 1:	$(date)" >> "${log_file}"
+echo "End gcc pass 1:   $(date)" >> "${log_file}"
 mv "${log_file}" "${build_machine}/gnu_gcc_pass1_ready.txt"

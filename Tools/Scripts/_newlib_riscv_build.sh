@@ -14,7 +14,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -70,5 +70,5 @@ make -j "${PARALLEL_JOBS}"	|| { echo "Error building newlib";		exit 1; }
 make install				|| { echo "Error installing newlib";	exit 1; }
 make clean					|| { echo "Error cleaning newlib";		exit 1; }
 
-echo "End building newlib:	 $(date)" >> "${log_file}"
+echo "End building newlib:   $(date)" >> "${log_file}"
 mv "${log_file}" "${build_machine}/newlib_ready.txt"

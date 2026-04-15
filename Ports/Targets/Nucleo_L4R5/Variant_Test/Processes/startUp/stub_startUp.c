@@ -149,9 +149,14 @@ void	stub_startUp_launch(void) {
 // The communication
 
 			switch (aFunction[i].oSerialManager) {
-				case KURT0: { configureURTx.oBaudRate = aFunction[i].oBaudrate; serial_configure(KURT0, &configureURTx); break; }
-				case KURT1: { configureURTx.oBaudRate = aFunction[i].oBaudrate; serial_configure(KURT1, &configureURTx); break; }
-				case KURT2: { configureURTx.oBaudRate = aFunction[i].oBaudrate; serial_configure(KURT2, &configureURTx); break; }
+
+// If the serial device is already configured,
+// do not reconfigure it again.
+// This avoids corrupting ongoing transfers.
+//
+//				case KURT0: { configureURTx.oBaudRate = aFunction[i].oBaudrate; serial_configure(KURT0, &configureURTx); break; }
+//				case KURT1: { configureURTx.oBaudRate = aFunction[i].oBaudrate; serial_configure(KURT1, &configureURTx); break; }
+//				case KURT2: { configureURTx.oBaudRate = aFunction[i].oBaudrate; serial_configure(KURT2, &configureURTx); break; }
 				default: {
 
 // Make MISRA happy :-)

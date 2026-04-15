@@ -1,0 +1,6 @@
+kflash
+numpy
+pyserial
+matplotlib
+pillow
+PyYAML

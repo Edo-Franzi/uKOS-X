@@ -16,7 +16,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -77,5 +77,5 @@ make -j "${PARALLEL_JOBS}"	|| { echo "Error building gdb";		exit 1; }
 make install				|| { echo "Error installing gdb";	exit 1; }
 make clean					|| { echo "Error cleaning gdb";		exit 1; }
 
-echo "End building gdb:	  $(date)" >> "${log_file}"
+echo "End building gdb:   $(date)" >> "${log_file}"
 mv "${log_file}" "${build_machine}/gnu_gdb_ready.txt"

@@ -18,7 +18,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Laurent von Allmen
 #   ---------------------------------
@@ -83,7 +83,7 @@ readonly LOG_FILE="${BUILD}"/clang_llvm_riscv_temp.txt
 cd "${PATH_TOOLS_ROOT}"/Packages
 
 if [[ ! -d llvm-"${LLVM_RVXX_VER}"/riscv ]]; then
-	echo Downloading LLVM-${LLVM_RVXX_VER} for RISC-V
+	echo "Downloading LLVM-${LLVM_RVXX_VER} for RISC-V"
 	git clone https://github.com/Laur59/RTfE.git "llvm-${LLVM_RVXX_VER}/riscv"
 	git -C llvm-"${LLVM_RVXX_VER}"/riscv checkout ${LLVM_RVXX_COMMIT}
 fi
@@ -96,7 +96,7 @@ mkdir -p "${BUILD}"
 rm -rf "${CROSS}"
 mkdir -p "${CROSS}"
 
-echo "$(date) Start of build" > "${LOG_FILE}"
+echo "Start of build: $(date)" > "${LOG_FILE}"
 
 cmake -S "${PACKS_LLVM}"/riscv-software/embedded -B "${BUILD}" -GNinja \
 	-DCMAKE_BUILD_TYPE=Release \

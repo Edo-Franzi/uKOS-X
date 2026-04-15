@@ -14,7 +14,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -59,5 +59,5 @@ rm -f "t-rmprofile"
 
 cp "${PATCH}/cortex/t-rmprofile" "."
 
-echo "End patch cortex:	 $(date)" >> "${log_file}"
+echo "End patch cortex:   $(date)" >> "${log_file}"
 mv "${log_file}" "${BUILD}/${MACHINE}/gnu_gcc_cortex_patch_ready.txt"

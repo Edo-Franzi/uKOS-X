@@ -85,7 +85,9 @@ STRG_LOC_CONST(aStrHelp[])        = "This is a romable C application\n"
 
 // Prototypes
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+namespace {
+int32_t		prgm(uint32_t argc, const char_t *argv[]);
+}
 
 MODULE(
 	Test_cpp,							// Module name (the first letter has to be upper case)
@@ -132,25 +134,25 @@ private:
  *
  */
 namespace {
-	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
+void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
-		UNUSED(argument);
+	UNUSED(argument);
 
 // Waiting from the uKOS-X prompt
 
-		kern_suspendProcess(100u);
-		(void)dprintf(KSYST, "\n");
+	kern_suspendProcess(100u);
+	(void)dprintf(KSYST, "\n");
 
-		{
-		const	TestClass titi;
-		titi.doit();
-		}
-
-		while (true) {
-			kern_suspendProcess(100u);
-			led_toggle(KLED_1);
-		}
+	{
+	const	TestClass titi;
+	titi.doit();
 	}
+
+	while (true) {
+		kern_suspendProcess(100u);
+		led_toggle(KLED_1);
+	}
+}
 }
 
 /*
@@ -161,6 +163,7 @@ namespace {
  * - Kill the "main". At this moment only the launched processes are executed
  *
  */
+CPP_INTERNAL_SCOPE_BEGIN
 MAIN_ENTRY(argc, argv[]) {
 	proc_t	*process_0;
 
@@ -191,9 +194,7 @@ MAIN_ENTRY(argc, argv[]) {
 		KKERN_PRIORITY_HIGH_02				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-// NOLINTEND(misc-const-correctness)
-//
-
 	if (kern_createProcess(&specification_0, nullptr, &process_0) != KERR_KERN_NOERR) { exit(EXIT_OS_FAILURE); }
 	return (EXIT_OS_SUCCESS_CLI);
 }
+CPP_INTERNAL_SCOPE_END

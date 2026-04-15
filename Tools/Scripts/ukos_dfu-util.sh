@@ -19,7 +19,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -76,10 +76,10 @@ readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
 # -------------------
 
 if [[ ! -d "${PACKS}" ]]; then
-	echo Cloning dfu-util-${DFUUTIL_VER}
+	echo "Cloning dfu-util-${DFUUTIL_VER}"
 	git clone --recurse-submodules git://git.code.sf.net/p/dfu-util/dfu-util "${PACKS}"
 else
-	echo Fetching dfu-util-${DFUUTIL_VER}
+	echo "Fetching dfu-util-${DFUUTIL_VER}"
 	git -C "${PACKS}" fetch --quiet
 fi
 git -C "${PACKS}" checkout master
@@ -112,6 +112,6 @@ cd "${PATH_TOOLS_GCC}"/cross
 rm -f dfu-util-current
 ln -s dfu-util-"${DFUUTIL_VER}" dfu-util-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/dfu-util_ready.txt
 

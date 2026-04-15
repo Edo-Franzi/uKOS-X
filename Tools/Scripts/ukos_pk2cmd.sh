@@ -17,7 +17,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -76,10 +76,10 @@ readonly LOG_FILE="${BUILD}"/pk2cmd.txt
 # -------------------
 
 if [[ ! -d "${PACKS}" ]]; then
-	echo Cloning cpk2cmd-${PK2CMD_VER}
+	echo "Cloning cpk2cmd-${PK2CMD_VER}"
 	git clone https://github.com/jaka-fi/pk2cmd.git "${PACKS}"
 else
-	echo Fetching cpk2cmd-${PK2CMD_VER}
+	echo "Fetching cpk2cmd-${PK2CMD_VER}"
 	git -C "${PACKS}" fetch --quiet
 fi
 git -C "${PACKS}" checkout "v${PK2CMD_VER}"
@@ -114,5 +114,5 @@ cd "${PATH_TOOLS_GCC}"/cross
 rm -f pk2cmd-current
 ln -s pk2cmd-"${PK2CMD_VER}" pk2cmd-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/pk2cmd_ready.txt

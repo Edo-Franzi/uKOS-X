@@ -17,7 +17,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -78,19 +78,19 @@ export	CMAKE_PREFIX_PATH="${DIRLOCAL}${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}
 # -------------------
 
 if [[ ! -d "${PACKS}" ]]; then
-	echo Cloning picotool
+	echo "Cloning picotool"
 	git clone --recurse-submodules --branch ${PICOTOOL_VER} https://github.com/raspberrypi/picotool.git "${PACKS}"
 else
-	echo Fetching picotool
+	echo "Fetching picotool"
 	git -C "${PACKS}" fetch --quiet
 fi
 git -C "${PACKS}" checkout master
 
 if [[ ! -d "${PACKS_PICO_SDK}" ]]; then
-	echo Cloning pico_sdk
+	echo "Cloning pico_sdk"
 	git clone --recurse-submodules --branch ${PICO_SDK_VER} https://github.com/raspberrypi/pico-sdk.git "${PACKS_PICO_SDK}"
 else
-	echo Fetching pico_sdk
+	echo "Fetching pico_sdk"
 	git -C "${PACKS_PICO_SDK}" fetch --quiet
 fi
 git -C "${PACKS_PICO_SDK}" checkout master
@@ -123,5 +123,5 @@ cd "${PATH_TOOLS_GCC}"/cross
 rm -f picotool-current
 ln -s picotool-"${PICOTOOL_VER}" picotool-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/picotool_ready.txt

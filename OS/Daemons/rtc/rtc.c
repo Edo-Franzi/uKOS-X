@@ -96,9 +96,7 @@ STRG_LOC_CONST(aStrText[]) = "Daemon rtc: update the Unix time Timer.   (c) EFr-
 
 // Prototypes
 
-#if (KCALENDAR_WITH_HW_RTC_S == true)
 static	void	local_process(const void *argument);
-#endif
 
 /*
  * \brief Main entry point

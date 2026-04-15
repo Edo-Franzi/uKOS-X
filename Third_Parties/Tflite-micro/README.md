@@ -91,7 +91,7 @@ A complete script for downloading, building and organising the libraries is avai
 ```bash
 # Build all the necessary libraries:
 # For RISC-V: rv32imac and rv64imafdc
-# For arm:    cortex-m3, -m4, -m7 -m33 and -m55
+# For arm:    cortex-m3, -m4, -m7 -m33 -m55 and -m85
 
 cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro
 ./build.sh

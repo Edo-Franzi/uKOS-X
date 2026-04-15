@@ -20,7 +20,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -263,5 +263,5 @@ cd "${current_dir}"
 rm -f "${MACHINE}"
 ln -s "../gcc-${GCC_VER}/${MACHINE}" "${MACHINE}"
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${build_machine}/gnu_gcc_arm_ready.txt"

@@ -26,8 +26,8 @@ Exemple for C source file:
 ; Author:    Edo. Franzi			     The 2025-01-01
 ; Modifs:    Laurent von Allmen    The 2025-01-01
 ;
-; Project:   uKOS-X
-; Goal:      Universal h file for uKOS-X systems.
+; Project:   µKOS-X
+; Goal:      Universal h file for µKOS-X systems.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -107,8 +107,8 @@ Last line of section is blank.
 ### Section 4
 
 ```
-; Project:   uKOS-X
-; Goal:      Universal h file for uKOS-X systems.
+; Project:   µKOS-X
+; Goal:      Universal h file for µKOS-X systems.
 ;
 ```
 

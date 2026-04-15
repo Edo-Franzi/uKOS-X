@@ -20,7 +20,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -74,10 +74,10 @@ readonly LOG_FILE="${BUILD}"/ImageMagick_temp.txt
 # -------------------
 
 if [[ ! -d "${PACKS}" ]]; then
-	echo Cloning ImageMagick-${IMAGEMAGICK_VER}
+	echo "Cloning ImageMagick-${IMAGEMAGICK_VER}"
 	git clone https://github.com/ImageMagick/ImageMagick.git "${PACKS}"
 else
-	echo Fetching ImageMagick-${IMAGEMAGICK_VER}
+	echo "Fetching ImageMagick-${IMAGEMAGICK_VER}"
 	git -C "${PACKS}" fetch --quiet
 fi
 git -C "${PACKS}" checkout ${IMAGEMAGICK_VER}
@@ -109,5 +109,5 @@ cd "${PATH_TOOLS_GCC}"/cross
 rm -f ImageMagick-current
 ln -s ImageMagick-"${IMAGEMAGICK_VER}" ImageMagick-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/ImageMagick_ready.txt

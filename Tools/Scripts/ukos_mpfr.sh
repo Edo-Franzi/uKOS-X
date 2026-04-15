@@ -20,7 +20,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -77,13 +77,13 @@ readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
 cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 
 if [[ ! -f "mpfr-${MPFR_VER}.tar.bz2" ]]; then
-	echo Downloading mpfr-${MPFR_VER}
+	echo "Downloading mpfr-${MPFR_VER}"
 	move_to_archive 'mpfr-*'
 	"${WGET[@]}" https://www.mpfr.org/mpfr-current/mpfr-"${MPFR_VER}".tar.bz2
 fi
 
 cd ..
-echo Extracting mpfr sources
+echo "Extracting mpfr sources"
 tar xjf ,Sources/mpfr-"${MPFR_VER}".tar.bz2
 
 # Building the library
@@ -103,5 +103,5 @@ make											|| { echo "Error building MPFR";	exit 1; }
 make install									|| { echo "Error installing MPFR";  exit 1; }
 make clean										|| { echo "Error cleaning MPFR";	exit 1; }
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/mpfr_ready.txt

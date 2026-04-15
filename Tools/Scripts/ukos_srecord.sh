@@ -26,7 +26,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -80,10 +80,10 @@ readonly LOG_FILE="${BUILD}"/srecord_temp.txt
 # -------------------
 
 if [[ ! -d "${PACKS}" ]]; then
-	echo Cloning srecord-${SRECORD_VER}
+	echo "Cloning srecord-${SRECORD_VER}"
 	git clone https://github.com/sierrafoxtrot/srecord.git "${PACKS}"
 else
-	echo Fetching srecord-${SRECORD_VER}
+	echo "Fetching srecord-${SRECORD_VER}"
 	git -C "${PACKS}" fetch --quiet
 fi
 git -C "${PACKS}" checkout "v${SRECORD_VER}"
@@ -101,20 +101,11 @@ mkdir "${CROSS}"
 mkdir "${CROSS}"/bin
 
 cd "${BUILD}"
-cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${CROSS}" "${PACKS}" \
-	|| { echo "Error configuring srecord";		 exit 1; }
+cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${CROSS}" "${PACKS}"	|| { echo "Error configuring srecord";		 exit 1; }
+cmake --build . --target srec_cat srec_cmp srec_info					|| { echo "Error building srecord binaries"; exit 1; }
+install -m 755 "srec_cat/srec_cat"	 "${CROSS}/bin/"					|| { echo "Error installing srec_cat";		 exit 1; }
+install -m 755 "srec_cmp/srec_cmp"	 "${CROSS}/bin/"					|| { echo "Error installing srec_cmp";		 exit 1; }
+install -m 755 "srec_info/srec_info" "${CROSS}/bin/"					|| { echo "Error installing srec_info";		 exit 1; }
 
-cmake --build . --target srec_cat srec_cmp srec_info \
-	|| { echo "Error building srecord binaries"; exit 1; }
-
-install -m 755 "srec_cat/srec_cat"	 "${CROSS}/bin/" \
-	|| { echo "Error installing srec_cat";		 exit 1; }
-
-install -m 755 "srec_cmp/srec_cmp"	 "${CROSS}/bin/" \
-	|| { echo "Error installing srec_cmp";		 exit 1; }
-
-install -m 755 "srec_info/srec_info" "${CROSS}/bin/" \
-	|| { echo "Error installing srec_info";		 exit 1; }
-
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/srecord_ready.txt

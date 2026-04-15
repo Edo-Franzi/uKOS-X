@@ -18,7 +18,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -74,13 +74,13 @@ readonly LOG_FILE="${BUILD}"/gputils_temp.txt
 cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 
 if [[ ! -f "gputils-${GPUTILS_VER}.tar.gz" ]]; then
-	echo Downloading gputils
+	echo "Downloading gputils"
 	move_to_archive 'gputils-*'
 	"${WGET[@]}" https://sourceforge.net/projects/gputils/files/gputils/1.5.0/gputils-"${GPUTILS_VER}".tar.gz
 fi
 
 cd ..
-echo Extracting gputils sources
+echo "Extracting gputils sources"
 tar xzf ,Sources/gputils-"${GPUTILS_VER}".tar.gz
 
 # Building the tool
@@ -110,5 +110,5 @@ cd "${PATH_TOOLS_GCC}"/cross
 rm -f gputils-current
 ln -s gputils-"${GPUTILS_VER}" gputils-current
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/gputils_ready.txt

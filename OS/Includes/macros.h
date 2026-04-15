@@ -141,9 +141,18 @@
 // If tool (romable application):
 // static	int32_t	prgm(uint32_t argc, const char_t *argv[]);
 
-#if (defined(ROMABLE_S))
-#define	MAIN_ENTRY(argc, argv)	static	int32_t prgm(uint32_t argc, const char_t *argv)
+#if defined(ROMABLE_S)
+#if defined(__cplusplus)
+#define	CPP_INTERNAL_SCOPE_BEGIN		namespace {
+#define	CPP_INTERNAL_SCOPE_END			}
+#define	MAIN_ENTRY(argc, argv)			int32_t	prgm(uint32_t argc, const char_t *argv)
 
 #else
-#define	MAIN_ENTRY(argc, argv)			int main(int argc, const char *argv)
+#define MAIN_ENTRY(argc, argv)	static	int32_t	prgm(uint32_t argc, const char_t *argv)
+#endif
+
+#else
+#define	CPP_INTERNAL_SCOPE_BEGIN
+#define	CPP_INTERNAL_SCOPE_END
+#define	MAIN_ENTRY(argc, argv)	int main(int argc, const char *argv)
 #endif

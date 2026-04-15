@@ -17,7 +17,7 @@
 #
 #			OS:
 #			OSX 26.xx			yes
-#			Ubuntu 24.04 LTS	yes
+#			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -72,11 +72,11 @@ readonly DIRLOCAL="${PATH_TOOLS_ROOT}"/local
 
 cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 
-echo Downloading FTDI D2xx
+echo "Downloading FTDI D2xx"
 case "$(uname)" in
 	"Darwin")
 		if [[ ! -f "D2XX${D2XX_OSX_VER}.zip" ]]; then
-			echo Downloading FTDI D2xx
+			echo "Downloading FTDI D2xx"
 			rm -fr ../D2XX
 			move_to_archive 'D2XX*'
 			curl -OL https://ftdichip.com/wp-content/uploads/2024/04/D2XX"${D2XX_OSX_VER}".dmg
@@ -87,7 +87,7 @@ case "$(uname)" in
 		fi
 		;;
 	*)
-		echo Downloading FTDI D2xx
+		echo "Downloading FTDI D2xx"
 		rm -fr ../D2XX
 		move_to_archive 'D2XX*'
 		wget "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz"
@@ -122,5 +122,5 @@ case "$(uname)" in
 		;;
 esac
 
-echo "End of build:	  $(date)" >> "${LOG_FILE}"
+echo "End of build:   $(date)" >> "${LOG_FILE}"
 mv "${LOG_FILE}" "${BUILD}"/ftdi_ready.txt
