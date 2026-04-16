@@ -69,14 +69,12 @@ else
 	exit 1
 fi
 
-STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_CLI:-$(find /Applications -type f -name 'STM32_Programmer_CLI' 2>/dev/null | sort | head -n 1)}"
-
-if [[ -z "${STM32_PROGRAMMER_CLI}" || ! -x "${STM32_PROGRAMMER_CLI}" ]]; then
-	print -u2 "Error: STM32_Programmer_CLI not found."
-	print -u2 "Searched under /Applications for 'STM32_Programmer_CLI'."
-	print -u2 "Install STM32CubeProgrammer, or set STM32_PROGRAMMER_CLI to its full path:"
-	print -u2 "  export STM32_PROGRAMMER_CLI=/path/to/STM32_Programmer_CLI"
-	exit 1
+STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_CLI:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin/STM32_Programmer_CLI}"
+if [[ ! -x "${STM32_PROGRAMMER_CLI}" ]]; then
+ print -u2 "Error: STM32_Programmer_CLI not found."
+ print -u2 "Install STM32CubeProgrammer, or set STM32_PROGRAMMER_CLI to its full path:"
+ print -u2 "  export STM32_PROGRAMMER_CLI=/path/to/STM32_Programmer_CLI"
+ exit 1
 fi
 
 STM32_PROGRAMMER_BIN=${STM32_PROGRAMMER_CLI:h}
