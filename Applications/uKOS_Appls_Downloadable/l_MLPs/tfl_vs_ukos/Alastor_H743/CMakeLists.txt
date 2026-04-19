@@ -79,9 +79,9 @@ add_compile_definitions(
 )
 
 set(PATH_INCLUDES
-	${PATH_UKOS}/Third_Parties/Tflite-micro/uKOS_Interface/CORTEX_M_generic
-	${PATH_UKOS}/Third_Parties/Tflite-micro/uKOS_Interface/CORTEX_M_generic/third_party/flatbuffers/include
-	${PATH_UKOS}/Third_Parties/Tflite-micro/uKOS_Interface/CORTEX_M_generic/third_party/gemmlowp
+	${PATH_UKOS}/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic
+	${PATH_UKOS}/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/flatbuffers/include
+	${PATH_UKOS}/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/gemmlowp
 )
 find_library(MYLIB TFLite ${PATH_UKOS}/Third_Parties/Tflite-micro/Library/${CORE})
 

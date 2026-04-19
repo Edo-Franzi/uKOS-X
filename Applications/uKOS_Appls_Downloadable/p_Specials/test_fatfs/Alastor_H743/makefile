@@ -49,7 +49,7 @@ PROJECT			=  test_fatfs
 # Target & Infrastructure
 
 PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/FatFs/FatFs-current/source
-PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/FatFs/uKOS_System
+PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/FatFs/Construction/System
 
 
 PREFIX			?=  arm-none-eabi-

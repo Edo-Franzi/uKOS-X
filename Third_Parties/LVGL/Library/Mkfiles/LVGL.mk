@@ -51,7 +51,7 @@ ifndef PATH_LVGL
 $(error PATH_LVGL is not defined)
 endif
 
-LIB_SYS_DIR			=  $(PATH_LVGL)/uKOS_System
+LIB_SYS_DIR			=  $(PATH_LVGL)/Construction/System
 LIB_SRC_DIR			= $(PATH_LVGL)/LVGL-current/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes

@@ -217,17 +217,16 @@ int32_t	model_usart_write(const uint8_t *buffer, uint32_t size) {
 // "AT+CIPSEND=0,nnnn\r\n\0"
 // len                  ^
 
-		do {
-			(void)snprintf(&string[0], 80u, "AT+CIPSEND=0,%"PRIu32"\r\n", (const int32_t)newSize);
-			len = strlen(&string[0]);
-			while (model_usart_writeTransparent((const uint8_t *)&string[0], (uint32_t)len) == KERR_SERIAL_SEPRO) { kern_suspendProcess(1u); }
+		(void)snprintf(&string[0], 80u, "AT+CIPSEND=0,%"PRIu32"\r\n", (const int32_t)newSize);
+		len = strlen(&string[0]);
+		while (model_usart_writeTransparent((const uint8_t *)&string[0], (uint32_t)len) == KERR_SERIAL_SEPRO) { kern_suspendProcess(10u); }
 
 // Waiting for the "Ready to send" under timeout
 // Send the "useful" data
 
-		} while (local_timeout(&vReadyToSend, 10000u) == false);
+		while (local_timeout(&vReadyToSend, 10000u) == false);
 
-		while (model_usart_writeTransparent(wkBuffer, (uint32_t)newSize) == KERR_SERIAL_SEPRO) { kern_suspendProcess(1u); }
+		while (model_usart_writeTransparent(wkBuffer, (uint32_t)newSize) == KERR_SERIAL_SEPRO) { kern_suspendProcess(10u); }
 		kern_suspendProcess(5);
 
 // Waiting for the "send acknowledge" under timeout
@@ -263,8 +262,8 @@ int32_t	model_usart_writeTransparent(const uint8_t *buffer, uint32_t size) {
 		vSndBuffer[i] = buffer[i];
 	}
 
-	vWSndBuffer  = (volatile uint8_t *)((uintptr_t)vSndBuffer + (uintptr_t)size);
-	vRSndBuffer  = vSndBuffer;
+	vWSndBuffer = (volatile uint8_t *)((uintptr_t)vSndBuffer + (uintptr_t)size);
+	vRSndBuffer = vSndBuffer;
 	USART->CR1 |= USART_CR1_TXEIE;
 	return (KERR_SERIAL_NOERR);
 }

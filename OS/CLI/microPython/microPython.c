@@ -49,7 +49,7 @@
 #if (defined(CONFIG_MAN_MICROPYTHON_S))
 
 #include	"uKOS.h"
-#include	"MicroPython/uKOS_System/microPython.h"
+#include	"MicroPython/Construction/System/microPython.h"
 
 // uKOS-X specific (see the module.h)
 // ==================================

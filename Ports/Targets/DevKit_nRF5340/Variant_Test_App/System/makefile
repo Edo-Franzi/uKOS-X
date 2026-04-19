@@ -90,7 +90,7 @@ SPEED					=  FS
 PROFILE					=  cdc_cdc
 
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
-PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/uKOS_Interface/OSAL
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Construction/Interface/OSAL
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src/device
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src/class

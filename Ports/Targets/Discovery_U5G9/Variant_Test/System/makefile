@@ -87,9 +87,9 @@ FAMILY					=  u5
 SPEED					=  HS
 PROFILE					=  cdc_video
 
-PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/uKOS_Interface/Includes/mcu/$(PROVIDER)
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Construction/Interface/Includes/mcu/$(PROVIDER)
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
-PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/uKOS_Interface/OSAL
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Construction/Interface/OSAL
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
 
 # Target & Infrastructure

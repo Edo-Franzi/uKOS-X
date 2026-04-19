@@ -52,7 +52,6 @@ setopt ERR_EXIT NO_UNSET PIPE_FAIL EXTENDED_GLOB
 # Determine script directory (works if executed via ./script.sh or zsh script.sh)
 
 readonly PATH_PRG=${0:a:h}
-readonly PATH_UKOS_X_PACKAGE="${PATH_PRG%/Third_Parties/Cppcheck}"
 
 # Colours for messages
 
@@ -119,7 +118,7 @@ cppcheck \
 	-D__GNUC__ \
 	-UEXCLUDE_CPPCHECK \
 	--max-configs=1 \
-	--suppressions-list="${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/uKOS_misra_rules.suppress" -rp="${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck" \
+	--suppressions-list="${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Rules/uKOS_misra_rules.suppress" -rp="${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Rules" \
 	--suppress=asctimeCalled \
 	--suppress=missingIncludeSystem \
 	--suppress=variableScope \
@@ -149,12 +148,12 @@ cppcheck \
 	--xml \
 	--output-file=ukos-analysis.xml
 
-if [[ -d "${PATH_PRG}/Cppcheck-env" ]]
+if [[ -d "${PATH_PRG}/Construction/Pyenv/Cppcheck_Pyenv" ]]
 then
-	source "${PATH_PRG}/Cppcheck-env/bin/activate"
+	source "${PATH_PRG}/Construction/Pyenv/Cppcheck_Pyenv/bin/activate"
 fi
 cppcheck-htmlreport --file=ukos-analysis.xml --report-dir=html &> /dev/null
-if [[ -d "${PATH_PRG}/Cppcheck-env" ]]
+if [[ -d "${PATH_PRG}/Construction/Pyenv/Cppcheck_Pyenv" ]]
 then
 	deactivate
 fi

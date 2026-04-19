@@ -51,7 +51,7 @@ ifndef PATH_FATFS
 $(error PATH_FATFS is not defined)
 endif
 
-LIB_SYS_DIR			=  $(PATH_FATFS)/uKOS_System
+LIB_SYS_DIR			=  $(PATH_FATFS)/Construction/System
 LIB_SRC_DIR			=  $(PATH_FATFS)/FatFs-current/source
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes

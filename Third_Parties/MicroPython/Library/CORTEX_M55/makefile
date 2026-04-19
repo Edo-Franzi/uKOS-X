@@ -77,13 +77,13 @@ INC				+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 # !!The paths have to be relative to MicroPyton_current
 # !!Mandatory: Place the object list before "include $(TOP)/py/py.mk"
 
-SRC_C			+= $(addprefix uKOS_System/, \
+SRC_C			+= $(addprefix Construction/System/, \
 					help.c \
 					headerMicroPython.c \
 					microPython.c \
 				)
 
-SRC_MODULE		+= $(addprefix uKOS_Interface/, \
+SRC_MODULE		+= $(addprefix Construction/Interface/, \
 					led/led.c \
 					switch/switch.c \
 					serial/serial.c \

@@ -75,7 +75,7 @@ add_compile_options(
 
 set(PATH_INCLUDES
 	${PATH_UKOS}/Third_Parties/FatFs/FatFs-current/source
-	${PATH_UKOS}/Third_Parties/FatFs/uKOS_System
+	${PATH_UKOS}/Third_Parties/FatFs/Construction/System
 )
 
 include(common)

@@ -51,8 +51,8 @@ ifndef PATH_DECNUMBER
 $(error PATH_DECNUMBER is not defined)
 endif
 
-LIB_SYS_DIR			=  $(PATH_DECNUMBER)/uKOS_System
-LIB_SYS_PAT			=  $(PATH_DECNUMBER)/uKOS_Interface/Patches
+LIB_SYS_DIR			=  $(PATH_DECNUMBER)/Construction/System
+LIB_SYS_PAT			=  $(PATH_DECNUMBER)/Construction/Interface/Patches
 LIB_SRC_DIR			=  $(PATH_DECNUMBER)/decnumber-current/src
 LIB_BID_DIR			=  $(PATH_DECNUMBER)/decnumber-current/src/bid
 LIB_PAK_INC			=  $(PATH_DECNUMBER)/decnumber-current/include

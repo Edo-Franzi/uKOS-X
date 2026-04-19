@@ -37,7 +37,7 @@ endif()
 
 # Build the list of interface include directories
 set(TINYUSB_INTERFACE_INCLUDES
-    ${PATH_TINYUSB}/uKOS_Interface/OSAL
+    ${PATH_TINYUSB}/Construction/Interface/OSAL
     ${PATH_TINYUSB}/TinyUSB-current/src
     ${PATH_TINYUSB}/TinyUSB-current/src/common
     ${PATH_TINYUSB}/TinyUSB-current/src/device

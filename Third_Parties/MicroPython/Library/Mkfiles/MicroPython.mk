@@ -45,7 +45,7 @@
 #------------------------------------------------------------------------
 
 ifneq ($(PREFIX),llvm-)
-ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55))
+ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55 CORTEX_M85))
 CFLAGS += -mpoke-function-name
 endif
 endif
@@ -73,12 +73,12 @@ archive : $(OBJ)
 remove :
 	$(ST) --strip-unneeded $(MICROPYTHON)
 
-$(BUILD)/uKOS_Interface/%.o : ../uKOS_Interface/%.c
+$(BUILD)/Construction/Interface/%.o : ../Construction/Interface/%.c
 		$(ECHO) "CC $<"
 		mkdir -p $(dir $@)
 		$(CC) $(INC) $(CFLAGS) -c -o $@ $<
 
-$(BUILD)/uKOS_System/%.o : ../uKOS_System/%.c
+$(BUILD)/Construction/System/%.o : ../Construction/System/%.c
 		$(ECHO) "CC $<"
 		mkdir -p $(dir $@)
 		$(CC) $(INC) $(CFLAGS) -c -o $@ $<

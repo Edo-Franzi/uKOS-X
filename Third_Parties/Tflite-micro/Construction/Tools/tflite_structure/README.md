@@ -1,6 +1,6 @@
 # tflite_structure usage
 
-(c) 2025-2026, Edo. Franzi, 2026-03-30
+(c) 2025-2026, Edo. Franzi, 2026-04-17
 
 This guide provides comprehensive instructions for converting a TensorFlow Lite model (.tflite) into a µKOS-X MLPn format, with the goal of accelerating neural network inference and improving overall runtime performance on embedded systems.
 
@@ -30,6 +30,6 @@ The simplest way to generate the information required for a µKOS-X MLPn is:
 # Example, go to the example application
 
 cd ${PATH_UKOS_X_PACKAGE}/Applications/uKOS_Appls_Downloadable/l_MLPs/class_TFL/_Training
-python3 ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/uKOS_Tools/tflite_structure/tflite_structure.py mlp_model.tflite -o structure.c
+python3 ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Construction/Tools/tflite_structure/tflite_structure.py mlp_model.tflite -o structure.c
 ```
 

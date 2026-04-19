@@ -1,4 +1,4 @@
-# TFLite for uKOS-X (v.1.6)
+# TFLite for uKOS-X (v.1.7)
 
 (c) 2025-2026, Edo. Franzi, Antonio José Restrepo Zea, Laurent von Allmen 
 
@@ -67,9 +67,9 @@ As TensorFlow Lite needs Python 3.13 to create a virtual environment.
 # To regenerate requirements.txt, just use pip freeze > requirements.txt
 # Use pip and not pip3 to be sure to use the virtual environment version
 
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro
-python3.13 -m venv Tflite-env
-source Tflite-env/bin/activate
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Construction/Pyenv
+python3.13 -m venv Tflite_Pyenv
+source Tflite_Pyenv/bin/activate
 
 pip install -r requirements.txt
 ```
@@ -78,8 +78,8 @@ pip install -r requirements.txt
 # To update the environmant
 # Use pip and not pip3 to be sure to use the virtual environment version
 
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro
-source Tflite-env/bin/activate
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Construction/Pyenv
+source Tflite_Pyenv/bin/activate
 
 pip install -r requirements.txt --upgrade
 ```

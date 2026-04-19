@@ -1,6 +1,6 @@
 # TinyUSB for uKOS-X (v.1.15)
 
-(c) 2025-2026, Edo. Franzi, 2025-01-01
+(c) 2025-2026, Edo. Franzi, 2026-04-17
 
 ## After each TinyUSB update
 
@@ -11,7 +11,7 @@
 TinyUSB-current/src/portable/raspberrypi/rp2040/dcd_rp2040.c
 
 # Patch
-uKOS_Interface/Patches/mcu/raspberrypi/pico2/dcd_rp2040.c
+Construction/Interface/Patches/mcu/raspberrypi/pico2/dcd_rp2040.c
 ```
 
 ## Trick

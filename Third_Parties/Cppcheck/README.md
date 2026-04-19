@@ -1,4 +1,4 @@
-# Cppcheck for uKOS-X (v.1.0)
+# Cppcheck for uKOS-X (v.1.1)
 
 (c) 2025-2026, Laurent von Allmen
 
@@ -12,9 +12,9 @@ module Pygments.
 Recommendation: install the following virtual environment.
 
 ```bash
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck
-python3 -m venv Cppcheck-env
-source Cppcheck-env/bin/activate
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Pyenv
+python3 -m venv Cppcheck_Pyenv
+source Cppcheck_Pyenv/bin/activate
 pip install Pygments
 deactivate
 ```
@@ -26,10 +26,10 @@ deactivate
 cd ${PATH_UKOS_X_PACKAGE}/Ports/Targets/Discovery_U5G9/Variant_Test
 
 # Open source version
-${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/code_analysis.sh
+${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Tools/code_analysis.sh
 
 # Premium version
-${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/code_analysis.sh -P
+${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Tools/code_analysis.sh -P
 ```
 
 ## Tricks

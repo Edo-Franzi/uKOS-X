@@ -73,8 +73,8 @@ readonly splash='
 '
 printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 
-if [[ -d 'Tflite-env/bin' ]]; then
-	source 'Tflite-env/bin/activate'
+if [[ -d 'Construction/Pyenv/Tflite_Pyenv/bin' ]]; then
+	source 'Construction/Pyenv/Tflite_Pyenv/bin/activate'
 fi
 
 # Packages
@@ -110,11 +110,11 @@ cd ./Tflite-micro-current/
 
 python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py \
 	--makefile_options='TARGET=cortex_m_generic OPTIMIZED_KERNEL_DIR=cmsis_nn TARGET_ARCH=project_generation' \
-	../uKOS_Interface/CORTEX_M_generic
+	../Library/Generic/CORTEX_M_generic
 
 python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py \
 	--makefile_options='TARGET=riscv32_generic TARGET_ARCH=project_generation' \
-	../uKOS_Interface/RISCV64_generic
+	../Library/Generic/RISCV64_generic
 
 printf '\n%bBuilding all the Tflite-micro libraries ...%b\n' "${BOLD}" "${NC}"
 

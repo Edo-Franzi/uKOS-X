@@ -53,11 +53,11 @@ if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
 	exit 1
 fi
 
-TFL_PYTHON_ENV="${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Tflite-env"
-MLPN_CONVERTER="${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/uKOS_Tools/tflite_structure"
+TFLITE_PYENV="${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Construction/Pyenv/Tflite_Pyenv"
+MLPN_CONVERTER="${PATH_UKOS_X_PACKAGE}/Third_Parties/Tflite-micro/Construction/Tools/tflite_structure"
 
-if [[ -d "${TFL_PYTHON_ENV:-}" ]]; then
-    source "${TFL_PYTHON_ENV}/bin/activate"
+if [[ -d "${TFLITE_PYENV:-}" ]]; then
+    source "${TFLITE_PYENV}/bin/activate"
 fi
 
 MODEL_FILE="mlp_model.tflite"

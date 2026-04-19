@@ -51,7 +51,7 @@ ifndef PATH_INTELRDFPMATH
 $(error PATH_INTELRDFPMATH is not defined)
 endif
 
-LIB_SYS_DIR			=  $(PATH_INTELRDFPMATH)/uKOS_System
+LIB_SYS_DIR			=  $(PATH_INTELRDFPMATH)/Construction/System
 LIB_SRC_DIR			=  $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes

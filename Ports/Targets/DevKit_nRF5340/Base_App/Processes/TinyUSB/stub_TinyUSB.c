@@ -71,17 +71,17 @@
 
 #if (CFG_TUD_CDC > 0)
 #include	"cdc/cdc_device.h"
-#include	"TinyUSB/uKOS_Interface/Models/model_TinyUSB_cdc.c_inc"
+#include	"TinyUSB/Construction/Interface/Models/model_TinyUSB_cdc.c_inc"
 #endif
 
 #if (CFG_TUD_MSC > 0)
 #include	"msc/msc_device.h"
-#include	"TinyUSB/uKOS_Interface/Models/model_TinyUSB_msc.c_inc"
+#include	"TinyUSB/Construction/Interface/Models/model_TinyUSB_msc.c_inc"
 #endif
 
 #if (CFG_TUD_VIDEO > 0)
 #include	"video/video_device.h"
-#include	"TinyUSB/uKOS_Interface/Models/model_TinyUSB_video.c_inc"
+#include	"TinyUSB/Construction/Interface/Models/model_TinyUSB_video.c_inc"
 #endif
 
 // Restore the GCC diagnostic

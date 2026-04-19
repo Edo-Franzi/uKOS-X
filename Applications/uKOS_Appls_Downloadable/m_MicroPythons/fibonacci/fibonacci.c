@@ -64,7 +64,7 @@
  */
 
 #include	"uKOS.h"
-#include	"MicroPython/uKOS_System/microPython.h"
+#include	"MicroPython/Construction/System/microPython.h"
 #include	<math.h>
 
 // uKOS-X specific (see the module.h)

@@ -65,7 +65,7 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_kernels
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_kernels/kern
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_kernels/kern/private
 
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/uKOS_Interface/OSAL
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/OSAL
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src
@@ -81,7 +81,7 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Models
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/uKOS_Interface/Includes/mcu/$(PROVIDER)
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/Includes/mcu/$(PROVIDER)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/st/cmsis_device_$(FAMILY)/Include
 endif
 
@@ -102,7 +102,7 @@ ifeq ($(PROVIDER), raspberrypi)
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/uKOS_Interface/Includes/mcu/raspberrypi
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/Includes/mcu/raspberrypi
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040
 
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_base_headers/include
@@ -131,9 +131,9 @@ PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_time/include
 endif
 
-SRC					=  $(PATH_TINYUSB)/uKOS_System/headerTusb.c
-SRC					+= $(PATH_TINYUSB)/uKOS_Interface/Descriptors/$(PROFILE)/usb_descriptors.c
-SRC					+= $(PATH_TINYUSB)/uKOS_Interface/OSAL/tusb_os_custom.c
+SRC					=  $(PATH_TINYUSB)/Construction/System/headerTusb.c
+SRC					+= $(PATH_TINYUSB)/Construction/Interface/Descriptors/$(PROFILE)/usb_descriptors.c
+SRC					+= $(PATH_TINYUSB)/Construction/Interface/OSAL/tusb_os_custom.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/tusb.c
 SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/class -name '*.c')
 SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/common -name '*.c')
@@ -159,7 +159,7 @@ ifeq ($(PROVIDER), raspberrypi)
 SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/pio_usb -name '*.c')
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/hcd_rp2040.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/rp2040_usb.c
-SRC					+= $(PATH_TINYUSB)/uKOS_Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
+SRC					+= $(PATH_TINYUSB)/Construction/Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/claim.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_sync/critical_section.c
 SRC_A				+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S

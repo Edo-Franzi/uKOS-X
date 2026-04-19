@@ -76,7 +76,7 @@ macro(add_Tflite)
 
 	# Public include paths for users of the library
 	set(_TFLITE_ROOT
-		${PATH_UKOS}/Third_Parties/Tflite-micro/uKOS_Interface/CORTEX_M_generic
+		${PATH_UKOS}/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic
 	)
 	list(APPEND PATH_INCLUDES
 		${_TFLITE_ROOT}
