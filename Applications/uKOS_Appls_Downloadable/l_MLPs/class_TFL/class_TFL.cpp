@@ -115,7 +115,9 @@ STRG_LOC_CONST(aStrHelp[])        = "This is a romable C application\n"
 
 // Prototypes
 
+namespace {
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+}
 
 MODULE(
 	Class_TFL,							// Module name (the first letter has to be upper case)
@@ -153,12 +155,12 @@ namespace {
 // Operators necessary for the model
 
 namespace {
-	void	RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
+void	RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
 
-		resolver.AddRelu();
-		resolver.AddTanh();
-		resolver.AddFullyConnected();
-	}
+	resolver.AddFullyConnected();
+	resolver.AddTanh();
+	resolver.AddSoftmax();
+}
 }
 
 #if (defined(RISCV))
@@ -172,10 +174,10 @@ extern "C"	char_t	putchar_(char_t ch) {
 
 #if (defined(CORTEX))
 namespace {
-	void	debuglog(const char *s) {
+void	debuglog(const char *s) {
 
-		(void)dprintf(KSYST, "%s\n", s);
-	}
+	(void)dprintf(KSYST, "%s\n", s);
+}
 }
 #endif
 
@@ -189,89 +191,90 @@ namespace {
  *
  */
 namespace {
-	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
-				TfLiteTensor	*input;
-				TfLiteTensor	*output;
-				uint64_t		time[2];
-				uint32_t		random[2], delta = 0u;
-				float32_t		x, y;
-		const	float32_t		gain = 2.0f;
-		const	char_t			*result;
+void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
+			TfLiteTensor	*input;
+			TfLiteTensor	*output;
+			uint64_t		time[2];
+			uint32_t		random[2], delta = 0u;
+			float32_t		x, y, result;
+	const	float32_t		gain = 2.0f;
+	const	char_t			*winner;
 
-		UNUSED(argument);
+	UNUSED(argument);
 
-		#if (defined(CORTEX))
-   	 	RegisterDebugLogCallback(debuglog);
-		#endif
+	#if (defined(CORTEX))
+	RegisterDebugLogCallback(debuglog);
+	#endif
 
-		while (true) {
-			kern_suspendProcess(1000u);
-			led_toggle(KLED_1);
+	while (true) {
+		kern_suspendProcess(1000u);
+		led_toggle(KLED_1);
 
 // Load the TFLite model
 
-			const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
-			if (model->version() != TFLITE_SCHEMA_VERSION) {
-				(void)dprintf(KSYST, "Error : Model version not compatible\n");
-				exit(EXIT_OS_FAILURE);
-   			 }
+		const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
+		if (model->version() != TFLITE_SCHEMA_VERSION) {
+			(void)dprintf(KSYST, "Error : Model version not compatible\n");
+			exit(EXIT_OS_FAILURE);
+		}
 
 // Create the resolver operator
 // Create the micro interpreter
 
-			tflite::MicroMutableOpResolver<3> resolver;
-			RegisterOps(resolver);
-			tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, KTENSOR_ARENA_SIZE);
+		tflite::MicroMutableOpResolver<3> resolver;
+		RegisterOps(resolver);
+		tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, KTENSOR_ARENA_SIZE);
 
 // Allocate for the tensors
 
-			if (interpreter.AllocateTensors() != kTfLiteOk) {
-				(void)dprintf(KSYST, "Error: Tensor allocation!\n");
-				exit(EXIT_OS_FAILURE);
-			}
+		if (interpreter.AllocateTensors() != kTfLiteOk) {
+			(void)dprintf(KSYST, "Error: Tensor allocation!\n");
+			exit(EXIT_OS_FAILURE);
+		}
 
 // Prepare the inputs
 
-			random_read(KRANDOM_SOFT, &random[0], 2u);
-			x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
-			y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		random_read(KRANDOM_SOFT, &random[0], 2u);
+		x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
 
-			input  = interpreter.input(0);
-			input->data.f[0] = x;
-			input->data.f[1] = y;
+		input  = interpreter.input(0);
+		input->data.f[0] = x;
+		input->data.f[1] = y;
 
-			kern_readTickCount(&time[0]);
-			if (interpreter.Invoke() != kTfLiteOk) {
-				(void)dprintf(KSYST, "Error: Excecution!\n");
-				exit(EXIT_OS_FAILURE);
-			}
+		kern_readTickCount(&time[0]);
+		if (interpreter.Invoke() != kTfLiteOk) {
+			(void)dprintf(KSYST, "Error: Excecution!\n");
+			exit(EXIT_OS_FAILURE);
+		}
 
-			kern_readTickCount(&time[1]);
-			delta = (uint32_t)(time[1] - time[0]);
+		kern_readTickCount(&time[1]);
+		delta = (uint32_t)(time[1] - time[0]);
 
 // Display the results
+// The output is the probability of the class
+// The winner takes all
 
-			output = interpreter.output(0);
-			result = "Undetermined           ";
-			result = ( (output->data.f[0] >  0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] < -0.2f)) ? ("Class C1 (ring)        ") : (result);
-			result = ( (output->data.f[0] < -0.2f) && (output->data.f[1] >  0.2f) && (output->data.f[2] < -0.2f)) ? ("Class C2 (inner-outer) ") : (result);
-			result = ( (output->data.f[0] < -0.2f) && (output->data.f[1] < -0.2f) && (output->data.f[2] >  0.2f)) ? ("Class C3 (square)      ") : (result);
-			result = (((output->data.f[0] > -0.2f) && (output->data.f[0] <  0.2f)) ||
-					  ((output->data.f[1] > -0.2f) && (output->data.f[1] <  0.2f)) ||
-					  ((output->data.f[2] > -0.2f) && (output->data.f[2] <  0.2f)))								  ? ("Not well classified    ") : (result);
+		output = interpreter.output(0);
 
-			(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
-								 "result: Out-0 %6.3f, Out-1 %6.3f, Out-2 %6.3f "
-								 "    %s "
-								 "Exec time %" PRIu32 " [us]\n", x,
-								 								 y,
-								 								 output->data.f[0],
-								 								 output->data.f[1],
-								 								 output->data.f[2],
-								 								 result,
-								 								 delta);
-		}
+										  result = output->data.f[0]; winner = "Class C1 (ring)        ";
+		if (output->data.f[1] > result) { result = output->data.f[1]; winner = "Class C2 (inner-outer) "; }
+		if (output->data.f[2] > result) { result = output->data.f[2]; winner = "Class C3 (square)      "; }
+
+		if (result < 0.3) {											  winner = "Not well classified    "; }
+
+		(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
+							 "result: Out-0 %6.1f%%, Out-1 %6.1f%%, Out-2 %6.1f%% "
+							 "    %s "
+							 "Exec time %" PRIu32" [us]\n", x,
+							 								y,
+							 								output->data.f[0] * 100,
+							 								output->data.f[1] * 100,
+							 								output->data.f[2] * 100,
+							 								winner,
+							 								delta);
 	}
+}
 }
 
 /*
@@ -282,6 +285,7 @@ namespace {
  * - Kill the "main". At this moment only the launched processes are executed
  *
  */
+CPP_INTERNAL_SCOPE_BEGIN
 MAIN_ENTRY(argc, argv[]) {
 	proc_t	*process_0;
 
@@ -320,3 +324,4 @@ MAIN_ENTRY(argc, argv[]) {
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS_CLI);
 }
+CPP_INTERNAL_SCOPE_END

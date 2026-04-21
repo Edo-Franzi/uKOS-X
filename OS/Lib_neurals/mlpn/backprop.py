@@ -88,6 +88,29 @@ def mlp_tanh(x):
 def mlp_dtanh(x):
 	return (1.0 - np.tanh(x) ** 2)
 
+def mlp_softmax(x):
+	x_shift = x - np.max(x, axis = 0, keepdims = True)
+	exp_x = np.exp(x_shift)
+	return (exp_x / np.sum(exp_x, axis = 0, keepdims = True))
+
+def mlp_outputActivation(x):
+	if config.KNON_LINEAR_OUT == "KMLPN_SMAX":
+		return (mlp_softmax(x))
+	return (mlp_tanh(x))
+
+def mlp_outputDelta(output, potential, y):
+	if config.KNON_LINEAR_OUT == "KMLPN_SMAX":
+		# Gradient for softmax output with quadratic error:
+		# delta = J_softmax(z) * (output - y)
+		#
+		# For one sample:
+		# J_softmax = diag(s) - s s^T
+		# delta     = s * ((output - y) - sum(s * (output - y)))
+		err = output - y
+		proj = np.sum(output * err, axis = 0, keepdims = True)
+		return (output * (err - proj))
+	return ((output - y) * mlp_dtanh(potential))
+
 # Compute the forward neural network
 # ----------------------------------
 
@@ -95,11 +118,15 @@ def mlp_forward(x, weights):
 	outputs	   = [x]
 	potentials = []
 
-	for w in weights:
+	for i, w in enumerate(weights):
 		a = np.vstack([outputs[-1], np.ones((1, x.shape[1]))])
 		z = np.dot(w, a)
 		potentials.append(z)
-		outputs.append(mlp_tanh(z))
+
+		if i == (len(weights) - 1):
+			outputs.append(mlp_outputActivation(z))
+		else:
+			outputs.append(mlp_tanh(z))
 	return (outputs, potentials)
 
 # Compute the back-propagation neural network
@@ -110,7 +137,7 @@ def mlp_backprop(weights, outputs, potentials, y, gain, momentum, previousDeltas
 	# For the last layer
 	gradients	  = [None] * len(weights)
 	deltas		  = [np.zeros_like(w) for w in weights]
-	delta		  = (outputs[-1] - y) * mlp_dtanh(potentials[-1])
+	delta		  = mlp_outputDelta(outputs[-1], potentials[-1], y)
 	gradients[-1] = delta
 
 	# From the last layer-1 to the first one
@@ -157,7 +184,10 @@ def mlp_exportNetwork(weights, layers, filename = "network.c_inc"):
 
 			# Layer structure
 			f.write(f"static\tmlpnLayer_t\taLayer_L{index} = {{\n")
-			f.write(f"\t\t\t\t\t\t\t{config.KNON_LINEAR},\n")
+			if index == len(weights):
+				f.write(f"\t\t\t\t\t\t\t{config.KNON_LINEAR_OUT},\n")
+			else:
+				f.write(f"\t\t\t\t\t\t\t{config.KNON_LINEAR},\n")
 			f.write(f"\t\t\t\t\t\t\tKMLPN_L{index}_NB_IN,\n")
 			f.write(f"\t\t\t\t\t\t\tKMLPN_L{index}_NB_OUT,\n")
 			if index == 1:

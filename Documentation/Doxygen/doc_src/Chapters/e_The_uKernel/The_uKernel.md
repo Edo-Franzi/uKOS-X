@@ -1237,7 +1237,7 @@ static void __attribute__ ((noreturn)) Process_C(const void *argument) {
     signal_alarm = 0x02000000u;
 
     while (true) {
-        kern_suspendProcess(1000);
+        kern_suspendProcess(1000u);
         kern_signalSignal(group_usb, signal_alarm, handle_PE, \
                           KSIGN_SIGNALE_WITH_CONTEXT_SWITCH);
     }

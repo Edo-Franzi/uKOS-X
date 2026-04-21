@@ -175,7 +175,7 @@ static void __attribute__ ((noreturn)) process_0(const void *argument) {
     UNUSED(argument);
 
     while (true) {
-        kern_suspendProcess(1000);
+        kern_suspendProcess(1000u);
         RESERVE_SERIAL(KDEF0, KMODE_WRITE);
         serial_write(KDEF0, “String of the process 0\n”, 24);
         RELEASE_SERIAL(KDEF0, KMODE_WRITE);
@@ -195,7 +195,7 @@ static void __attribute__ ((noreturn)) process_1(const void *argument) {
     UNUSED(argument);
 
     while (true) {
-        kern_suspendProcess(879);
+        kern_suspendProcess(879u);
         RESERVE_SERIAL(KSYST, KMODE_WRITE);
         serial_write(KSYST, “String of the process 1\n”, 24);
         RELEASE_SERIAL(KSYST, KMODE_WRITE);
@@ -420,9 +420,9 @@ The **config.py** file is utilised during the learning phase. It defines the arc
 # L3 - 73 input (the bias is automatically added)
 # L3 - 2 output
 #                 I1 O1  O2  O3
-KLAYERS        = [2, 52, 73, 2]
-KNB_INPUTS     = 2
-KNB_OUTPUTS    = 2
+KLAYERS         = [2, 52, 73, 2]
+KNB_INPUTS      = 2
+KNB_OUTPUTS     = 2
 
 # KMLPN_TAN0 = libm tanh
 # KMLPN_TAN1 = Lambert's tanh approximation
@@ -432,20 +432,21 @@ KNB_OUTPUTS    = 2
 # KMLPN_LINE = Ultrafast linear
 # KMLPN_SMAX = Ultrafast softmax
 #
-KNON_LINEAR    = "KMLPN_TAN2"
+KNON_LINEAR     = "KMLPN_TAN2"
+KNON_LINEAR_OUT = "KMLPN_SMAX"
 
-KGAIN          = 0.005
-KMOMENTUM      = 0.0
-KEPOCHS        = 1000000
+KGAIN           = 0.005
+KMOMENTUM       = 0.0
+KEPOCHS         = 1000000
 
 # Some Input/Output samples for rapid validation
 #
 #                      Input x     Input y      Class 1   Class 2
 KVALIDATION    = [
-                      [0.490344,    0.051584,    0.98,    -0.98],
-                      [0.458057,   -0.458232,    0.98,    -0.98],
-                      [0.266116,    0.944208,   -0.98,     0.98],
-                     [-0.002230,   -0.117944,   -0.98,     0.98]
+                      [0.490344,    0.051584,    0.98,    0.00],
+                      [0.458057,   -0.458232,    0.98,    0.00],
+                      [0.266116,    0.944208,    0.00,    0.98],
+                     [-0.002230,   -0.117944,    0.00,    0.98]
                  ]
 
 ```
@@ -528,7 +529,7 @@ static const    float32_t    vWeight_L3[KMLPN_L3_NB_OUT][KL3_NB_IN] = {
                              };
 
 static mlpnLayer_t     aLayer_L3 = {
-                           KMLPN_TAN2,
+                           KMLPN_SMAX,
                            KMLPN_L3_NB_IN,
                            KMLPN_L3_NB_OUT,
                            &vOutput_L2[0],
@@ -631,17 +632,17 @@ MODULE(
  *
  */
 static    void    __attribute__ ((noreturn)) aProcess_0(const void *argument) {
-    float32_t    x, y, gain = 2.0f;
+    float32_t    x, y, result, gain = 2.0f;
     uint64_t     time[2];
     uint32_t     delta = 0u;
-    char_t       *result;
+    char_t       *winner;
 
     UNUSED(argument);
 
     mlpn_configure(&aNetwork);
 
     while (true) {
-        kern_suspendProcess(1000);
+        kern_suspendProcess(1000u);
 
 // Prepare the inputs
 
@@ -657,23 +658,32 @@ static    void    __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 
 // Display the results
 
-        result = "Undetermined";
-        result = ( (vOutput_L3[0] >  0.2f) && (vOutput_L3[1] < -0.2f))    \
-               ? ("Class C1 (ring)")        : (result);
-        result = ( (vOutput_L3[0] < -0.2f) && (vOutput_L3[1] >  0.2f))    \
-               ? ("Class C2 (inner-outer)") : (result);
-        result = (((vOutput_L3[0] > -0.2f) && (vOutput_L3[0] <  0.2f)) || \
-                  ((vOutput_L3[1] > -0.2f) && (vOutput_L3[1] <  0.2f)))   \
-               ? ("Not well classified ")   : (result);
+// Display the results
+// The output is the probability of the class
+// The winner takes all
+
+            result = vOutput_L3[0];
+            winner = "Class C1 (ring)        ";
+        if (vOutput_L3[1] > result) {
+            result = vOutput_L3[1];
+            winner = "Class C2 (inner-outer) "; }
+        if (vOutput_L3[2] > result) {
+            result = vOutput_L3[2];
+            winner = "Class C3 (square)      "; }
+
+        if (result < 0.3) {
+            winner = "Not well classified    "; }
 
         (void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
-                             "result: Out-0 %6.3f, Out-1 %6.3f "
+                             "result: Out-0 %6.1f%%, Out-1 %6.1f%%, Out-2 %6.1f%% "
                              "    %s "
-                             "Exec time %"PRIu32" [us]\n”,
-                             x, y,
-                             vOutput_L3[0], vOutput_L3[1],
-                             result,
-                             delta);
+                             "Exec time %"PRIu32" [us]\n", x,
+                                                           y,
+                                                           vOutput_L3[0] * 100,
+                                                           vOutput_L3[1] * 100,
+                                                           vOutput_L3[2] * 100,
+                                                           winner,
+                                                           delta);
     }
 }
 

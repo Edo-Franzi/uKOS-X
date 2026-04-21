@@ -103,16 +103,16 @@ def load_data(file_path):
 
 def build_model():
 	model = tf.keras.Sequential([
-		tf.keras.layers.InputLayer(shape = (2,), dtype = tf.float32),	# Layer 1,  2 - 12
-		tf.keras.layers.Dense(12, activation = 'tanh'),					# Layer 2, 12 - 24
-		tf.keras.layers.Dense(24, activation = 'tanh'),					# Layer 3, 24 - 5
-		tf.keras.layers.Dense(5,  activation = 'tanh')					# Layer 4, 5
+		tf.keras.layers.InputLayer(shape = (2,), dtype = tf.float32),											# Layer 1,  2 - 12
+		tf.keras.layers.Dense(12, activation = 'tanh', kernel_regularizer = tf.keras.regularizers.l2(1e-4)),	# Layer 2, 12 - 24
+		tf.keras.layers.Dense(24, activation = 'tanh', kernel_regularizer = tf.keras.regularizers.l2(1e-4)),	# Layer 3, 24 - 5
+		tf.keras.layers.Dense(5,  activation = 'softmax')														# Layer 4, 5
 	])
 
 	# Compile the model
 	model.compile(
-		optimizer = 'adam',
-		loss = 'mean_squared_error',
+		optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-3),
+		loss = 'categorical_crossentropy',
 		metrics = ['accuracy']
 	)
 	return model
@@ -141,8 +141,6 @@ def main():
 	Y = Y[indices]
 
 	# Build the model
-	# Train the model
-	# Evaluate the model
 	model = build_model()
 	model.fit(X, Y, epochs = 100, batch_size = 32, validation_split = 0.2)
 	loss = model.evaluate(X, Y)

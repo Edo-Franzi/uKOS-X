@@ -14,8 +14,10 @@
 ;
 ;			Launch 1 processes in C++:
 ;
-;			- P0: Every 1000-ms
+;			- P0: Forever
+;				  Wait 500-ms
 ;				  Compute the inference for the TensorFlowLite model
+;				  Wait 500-ms
 ;				  Compute the inference for the uKOS-X model
 ;				  Display the inference execution times
 ;
@@ -61,8 +63,10 @@
  *
  *			Launch 1 processes:
  *
- *			- P0: Every 1000-ms
+ *			- P0: Forever
+ *				  	- Wait 500-ms
  *					- Compute the inference for the TensorFlowLite model
+ *				  	- Wait 500-ms
  *					- Compute the inference for the uKOS-X model
  *					- Display the inference execution times
  *
@@ -118,7 +122,9 @@ STRG_LOC_CONST(aStrHelp[])        = "This is a romable C application\n"
 
 // Prototypes
 
+namespace {
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+}
 
 MODULE(
 	Tfl_vs_ukos,						// Module name (the first letter has to be upper case)
@@ -156,12 +162,12 @@ namespace {
 // Operators necessary for the model
 
 namespace {
-	void	RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
+void	RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
 
-		resolver.AddRelu();
-		resolver.AddTanh();
-		resolver.AddFullyConnected();
-	}
+	resolver.AddFullyConnected();
+	resolver.AddTanh();
+	resolver.AddSoftmax();
+}
 }
 
 #if (defined(RISCV))
@@ -175,79 +181,105 @@ extern "C"	char_t	putchar_(char_t ch) {
 
 #if (defined(CORTEX))
 namespace {
-	void	debuglog(const char *s) {
+void	debuglog(const char *s) {
 
-		(void)dprintf(KSYST, "%s\n", s);
-	}
+	(void)dprintf(KSYST, "%s\n", s);
+}
 }
 #endif
 
 /*
  * \brief aProcess
  *
- * - P0:  Every 1000-ms
+ * - P0: Forever
+ *			- Wait 500-ms
  *			- Compute the inference for the TensorFlowLite model
+ *			- Wait 500-ms
  *			- Compute the inference for the uKOS-X model
  *			- Display the inference execution times
  *
  */
 namespace {
-	void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
-		uint32_t	delta;
-		uint64_t	time[2];
+void	__attribute__ ((noreturn)) aProcess_0(const void *argument) {
+	TfLiteTensor	*input;
+	uint64_t		time[2];
+	uint32_t		random[2], delta = 0u;
+	uint32_t		minUkos = 0xFFFFFFFFu, minTFL = 0xFFFFFFFFu;
+	uint32_t		maxUkos = 0u, maxTFL = 0u;
+	float32_t		x, y, gain = 2.0f;
 
-		UNUSED(argument);
+	UNUSED(argument);
 
-		#if (defined(CORTEX))
-   	 	RegisterDebugLogCallback(debuglog);
-		#endif
+	#if (defined(CORTEX))
+	RegisterDebugLogCallback(debuglog);
+	#endif
 
-		while (true) {
-			kern_suspendProcess(1000u);
-			led_toggle(KLED_1);
+	while (true) {
+		led_toggle(KLED_1);
 
 // Load the TFLite model
 
-			const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
-			if (model->version() != TFLITE_SCHEMA_VERSION) {
-				(void)dprintf(KSYST, "Error : Model version not compatible\n");
-				exit(EXIT_OS_FAILURE);
-   			}
+		const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
+		if (model->version() != TFLITE_SCHEMA_VERSION) {
+			(void)dprintf(KSYST, "Error : Model version not compatible\n");
+			exit(EXIT_OS_FAILURE);
+		}
 
 // Create the resolver operator
 // Create the micro interpreter
 
-			tflite::MicroMutableOpResolver<3> resolver;
-			RegisterOps(resolver);
-			tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, KTENSOR_ARENA_SIZE);
+		tflite::MicroMutableOpResolver<3> resolver;
+		RegisterOps(resolver);
+		tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, KTENSOR_ARENA_SIZE);
 
 // Allocate for the tensors
 
-			if (interpreter.AllocateTensors() != kTfLiteOk) {
-				(void)dprintf(KSYST, "Error: Tensor allocation!\n");
-				exit(EXIT_OS_FAILURE);
-			}
+		if (interpreter.AllocateTensors() != kTfLiteOk) {
+			(void)dprintf(KSYST, "Error: Tensor allocation!\n");
+			exit(EXIT_OS_FAILURE);
+		}
 
 // Measure the inference time
 // --------------------------
 
-// For TensorFlowLite
+		random_read(KRANDOM_SOFT, &random[0], 2u);
+		x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
 
-			kern_readTickCount(&time[0]);
-			interpreter.Invoke();
-			kern_readTickCount(&time[1]);
-			delta = (uint32_t)(time[1] - time[0]);
-			(void)dprintf(KSYST, "Exec time for TensorFlowLite = %" PRIu32 " [us]\n", delta);
+// For TensorFlowLite
+// Prepare the inputs
+
+		kern_suspendProcess(500u);
+		input = interpreter.input(0);
+		input->data.f[0] = x;
+		input->data.f[1] = y;
+
+		kern_readTickCount(&time[0]);
+		interpreter.Invoke();
+		kern_readTickCount(&time[1]);
+		delta = (uint32_t)(time[1] - time[0]);
+
+		if (delta < minTFL) { minTFL = delta; }
+		if (delta > maxTFL) { maxTFL = delta; }
+		(void)dprintf(KSYST, "Exec time for TensorFlowLite, min = %" PRIu32 " [us], max = %" PRIu32 " [us]\n", minTFL, maxTFL);
 
 // For MLPN uKOS-X
+// Prepare the inputs
 
-			kern_readTickCount(&time[0]);
-			mlpn_compute(&aNetwork);
-			kern_readTickCount(&time[1]);
-			delta = (uint32_t)(time[1] - time[0]);
-			(void)dprintf(KSYST, "Exec time for MLPN uKOS-X    = %" PRIu32 " [us]\n", delta);
-		}
+		kern_suspendProcess(500u);
+		vInput_L1[0] = x;
+		vInput_L1[1] = y;
+
+		kern_readTickCount(&time[0]);
+		mlpn_compute(&aNetwork);
+		kern_readTickCount(&time[1]);
+		delta = (uint32_t)(time[1] - time[0]);
+
+		if (delta < minUkos) { minUkos = delta; }
+		if (delta > maxUkos) { maxUkos = delta; }
+		(void)dprintf(KSYST, "Exec time for MLPN uKOS-X,    min = %" PRIu32 " [us], max = %" PRIu32 " [us]\n\n", minUkos, maxUkos);
 	}
+}
 }
 
 /*
@@ -258,6 +290,7 @@ namespace {
  * - Kill the "main". At this moment only the launched processes are executed
  *
  */
+CPP_INTERNAL_SCOPE_BEGIN
 MAIN_ENTRY(argc, argv[]) {
 	proc_t	*process_0;
 
@@ -296,3 +329,4 @@ MAIN_ENTRY(argc, argv[]) {
 	LOG(KINFO_USER, "Application launched");
 	return (EXIT_OS_SUCCESS_CLI);
 }
+CPP_INTERNAL_SCOPE_END

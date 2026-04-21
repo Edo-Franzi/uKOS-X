@@ -106,8 +106,8 @@ void	model_rtc_update(uint64_t unixTime) {
 // Wait for DBP bit to be actually set (synchronisation delay)
 
 	{
-		uint32_t timeout = 0x10000U;
-		while (((REG(PWR)->DBPR & PWR_DBPR_DBP) == 0U) && (timeout > 0U)) {
+		uint32_t timeout = 0x10000u;
+		while (((REG(PWR)->DBPR & PWR_DBPR_DBP) == 0u) && (timeout > 0u)) {
 			timeout--;
 		}
 	}
@@ -115,19 +115,19 @@ void	model_rtc_update(uint64_t unixTime) {
 // Ensure RTC is properly initialised and clocked
 // Check if RTC is enabled, if not configure it
 
-	if ((REG(RCC)->BDCR & RCC_BDCR_RTCEN) == 0U) {
+	if ((REG(RCC)->BDCR & RCC_BDCR_RTCEN) == 0u) {
 		// Enable LSI if not already enabled
-		if ((REG(RCC)->BDCR & RCC_BDCR_LSION) == 0U) {
+		if ((REG(RCC)->BDCR & RCC_BDCR_LSION) == 0u) {
 			REG(RCC)->BDCR |= RCC_BDCR_LSION;
 			// Wait for LSI to be ready
-			uint32_t timeout = 0x10000U;
-			while (((REG(RCC)->BDCR & RCC_BDCR_LSIRDY) == 0U) && (timeout > 0U)) {
+			uint32_t timeout = 0x10000u;
+			while (((REG(RCC)->BDCR & RCC_BDCR_LSIRDY) == 0u) && (timeout > 0u)) {
 				timeout--;
 			}
 		}
 
 		// Select LSI as RTC clock source (RTCSEL = 10b for LSI)
-		REG(RCC)->BDCR = (REG(RCC)->BDCR & ~RCC_BDCR_RTCSEL) | (2U * RCC_BDCR_RTCSEL_0);
+		REG(RCC)->BDCR = (REG(RCC)->BDCR & ~RCC_BDCR_RTCSEL) | (2u * RCC_BDCR_RTCSEL_0);
 
 		// Enable RTC
 		REG(RCC)->BDCR |= RCC_BDCR_RTCEN;
@@ -135,7 +135,7 @@ void	model_rtc_update(uint64_t unixTime) {
 		// Wait a bit for RTC to start
 		{
 			volatile uint32_t delay = 0x1000U;
-			while (delay > 0U) {
+			while (delay > 0u) {
 				delay--;
 			}
 		}
@@ -152,34 +152,34 @@ void	model_rtc_update(uint64_t unixTime) {
 // Wait for initialisation mode with timeout
 
 	{
-		uint32_t timeout = 0x10000U;
-		while (((REG(RTC)->ICSR & RTC_ICSR_INITF) == 0U) && (timeout > 0U)) {
+		uint32_t timeout = 0x10000u;
+		while (((REG(RTC)->ICSR & RTC_ICSR_INITF) == 0u) && (timeout > 0u)) {
 			timeout--;
 		}
-		if (timeout == 0U) {
+		if (timeout == 0u) {
 			// Timeout occurred, restore write protection and return
 			REG(RTC)->WPR = RTC_WPR_LOCK_KEY;
 			return;
 		}
 	}
 
-	kern_suspendProcess(1U);
-	REG(RTC)->TR = ((uint32_t)(absHours   /  16U)<<20U)
-				 | ((uint32_t)(absHours   & 0xFu)<<16U)
-				 | ((uint32_t)(absMinutes /  16U)<<12U)
-				 | ((uint32_t)(absMinutes & 0xFu)<<8U)
-				 | ((uint32_t)(absSeconds /  16U)<<4U)
-				 | ((uint32_t)(absSeconds & 0xFu)<<0U);
+	kern_suspendProcess(1u);
+	REG(RTC)->TR = ((uint32_t)(absHours   /  16u)<<20u)
+				 | ((uint32_t)(absHours   & 0xFu)<<16u)
+				 | ((uint32_t)(absMinutes /  16u)<<12u)
+				 | ((uint32_t)(absMinutes & 0xFu)<<8u)
+				 | ((uint32_t)(absSeconds /  16u)<<4u)
+				 | ((uint32_t)(absSeconds & 0xFu)<<0u);
 
-	kern_suspendProcess(1U);
-	REG(RTC)->DR = ((uint32_t)(absYears  / 16U )<<20U)
-				 | ((uint32_t)(absYears  & 0xFu)<<16U)
-				 | ((uint32_t)(absMonths / 16U )<<12U)
-				 | ((uint32_t)(absMonths & 0xFu)<<8U)
-				 | ((uint32_t)(absDays   / 16U )<<4U)
-				 | ((uint32_t)(absDays   & 0xFu)<<0U);
+	kern_suspendProcess(1u);
+	REG(RTC)->DR = ((uint32_t)(absYears  / 16U )<<20u)
+				 | ((uint32_t)(absYears  & 0xFu)<<16u)
+				 | ((uint32_t)(absMonths / 16U )<<12u)
+				 | ((uint32_t)(absMonths & 0xFu)<<8u)
+				 | ((uint32_t)(absDays   / 16U )<<4u)
+				 | ((uint32_t)(absDays   & 0xFu)<<0u);
 
-	kern_suspendProcess(1U);
+	kern_suspendProcess(1u);
 	REG(RTC)->ICSR &= (uint32_t)~RTC_ICSR_INIT;
 
 // Exit from the initialisation mode
@@ -216,12 +216,12 @@ void	model_rtc_readUnixTime(uint64_t *unixTime) {
 // Minutes:	0..59				0..59
 // Seconds:	0..59				0..59
 
-	localTime.tm_mday  = (int)((((date>>4)  & 0x3U) * 10U) + ((date>>0U)  & 0xFU));
-	localTime.tm_mon   = (int)((((date>>12) & 0x1U) * 10U) + ((date>>8U)  & 0xFU) - 1U);
-	localTime.tm_year  = (int)((((date>>20) & 0xFU) * 10U) + ((date>>16U) & 0xFU) + 100U);
-	localTime.tm_hour  = (int)((((time>>20) & 0x3U) * 10U) + ((time>>16U) & 0xFU));
-	localTime.tm_min   = (int)((((time>>12) & 0x7U) * 10U) + ((time>>8U)  & 0xFU));
-	localTime.tm_sec   = (int)((((time>>4)  & 0x7U) * 10U) + ((time>>0U)  & 0xFU));
+	localTime.tm_mday  = (int)((((date>>4)  & 0x3u) * 10u) + ((date>>0u)  & 0xFu));
+	localTime.tm_mon   = (int)((((date>>12) & 0x1u) * 10u) + ((date>>8u)  & 0xFu) - 1u);
+	localTime.tm_year  = (int)((((date>>20) & 0xFu) * 10u) + ((date>>16u) & 0xFu) + 100u);
+	localTime.tm_hour  = (int)((((time>>20) & 0x3u) * 10u) + ((time>>16u) & 0xFu));
+	localTime.tm_min   = (int)((((time>>12) & 0x7u) * 10u) + ((time>>8u)  & 0xFu));
+	localTime.tm_sec   = (int)((((time>>4)  & 0x7u) * 10u) + ((time>>0u)  & 0xFu));
 	localTime.tm_isdst = -1;
 
 	now = mktime(&localTime);
@@ -238,11 +238,11 @@ static	void	local_binToBCD(uint8_t *value) {
 	uint8_t		x = *value;
 	uint8_t		bcd = 0U, shift = 0U, digit;
 
-	while ((x > 0U) && (shift < 8U)) {
-		digit = (uint8_t)((uint32_t)x % 10U);
+	while ((x > 0u) && (shift < 8u)) {
+		digit = (uint8_t)((uint32_t)x % 10u);
 		bcd	  = (uint8_t)((uint32_t)bcd | ((uint32_t)digit<<(uint32_t)shift));
-		x	  = (uint8_t)((uint32_t)x / 10U);
-		shift = (uint8_t)(shift + 4U);
+		x	  = (uint8_t)((uint32_t)x / 10u);
+		shift = (uint8_t)(shift + 4u);
     }
     *value = bcd;
 }

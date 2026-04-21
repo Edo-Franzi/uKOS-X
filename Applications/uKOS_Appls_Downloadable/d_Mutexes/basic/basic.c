@@ -165,7 +165,7 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 	while (kern_getMutexById("Critical", &mutex) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
 	while (true) {
-		kern_suspendProcess(10);
+		kern_suspendProcess(10u);
 
 		led_toggle(KLED_1);
 		status = kern_lockMutex(mutex, 10000u);

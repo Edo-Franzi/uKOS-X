@@ -227,7 +227,7 @@ int32_t	model_usart_write(const uint8_t *buffer, uint32_t size) {
 		while (local_timeout(&vReadyToSend, 10000u) == false);
 
 		while (model_usart_writeTransparent(wkBuffer, (uint32_t)newSize) == KERR_SERIAL_SEPRO) { kern_suspendProcess(10u); }
-		kern_suspendProcess(5);
+		kern_suspendProcess(5u);
 
 // Waiting for the "send acknowledge" under timeout
 

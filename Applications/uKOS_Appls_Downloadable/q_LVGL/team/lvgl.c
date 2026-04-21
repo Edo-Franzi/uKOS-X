@@ -165,7 +165,7 @@ static void __attribute__ ((noreturn)) aProcess_lvgl(const void *argument) {
 		ui_setBar_1(usedTime_idle);
 		ui_setBar_2(usedTime_lvgl_tick);
 		ui_setBar_3(usedTime_lvgl);
-		kern_suspendProcess(2000);
+		kern_suspendProcess(2000u);
 	}
 }
 

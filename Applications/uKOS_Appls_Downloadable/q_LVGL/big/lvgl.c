@@ -145,7 +145,7 @@ static void __attribute__ ((noreturn)) aProcess_lvgl(const void *argument) {
 // Display the classification result
 
 	while (true) {
-		kern_suspendProcess(500);
+		kern_suspendProcess(500u);
 	}
 }
 

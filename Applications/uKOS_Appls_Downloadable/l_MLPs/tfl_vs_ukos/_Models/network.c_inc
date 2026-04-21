@@ -181,7 +181,7 @@ static	const	float32_t	vWeight_L3[KMLPN_L3_NB_OUT][KMLPN_L3_NB_IN] __attribute__
 							};
 
 static	mlpnLayer_t	aLayer_L3 = {
-							KMLPN_TAN2,
+							KMLPN_SMAX,
 							KMLPN_L3_NB_IN,
 							KMLPN_L3_NB_OUT,
 							&vOutput_L2[0],

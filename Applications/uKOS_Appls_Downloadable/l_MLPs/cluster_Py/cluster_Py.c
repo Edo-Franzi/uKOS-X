@@ -132,10 +132,10 @@ MODULE(
  *
  */
 static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
-			float32_t	x, y, gain = 2.0f;
+			float32_t	x, y, result, gain = 2.0f;
 			uint64_t	time[2];
 			uint32_t	random[2], delta = 0u;
-	const	char_t		*result;
+	const	char_t		*winner;
 
 	UNUSED(argument);
 
@@ -159,24 +159,28 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
 		delta = (uint32_t)(time[1] - time[0]);
 
 // Display the results
+// The output is the probability of the class
+// The winner takes all
 
-		result = "Inter-class area";
-		result = ((vOutput_L3[0] >  0.2f) && (vOutput_L3[1] < -0.2f) && (vOutput_L3[2] < -0.2f) && (vOutput_L3[3] < -0.2f) && (vOutput_L3[4] < -0.2f)) ? ("Class A         ") : (result);
-		result = ((vOutput_L3[1] >  0.2f) && (vOutput_L3[0] < -0.2f) && (vOutput_L3[2] < -0.2f) && (vOutput_L3[3] < -0.2f) && (vOutput_L3[4] < -0.2f)) ? ("Class B         ") : (result);
-		result = ((vOutput_L3[2] >  0.2f) && (vOutput_L3[0] < -0.2f) && (vOutput_L3[1] < -0.2f) && (vOutput_L3[3] < -0.2f) && (vOutput_L3[4] < -0.2f)) ? ("Class C         ") : (result);
-		result = ((vOutput_L3[3] >  0.2f) && (vOutput_L3[0] < -0.2f) && (vOutput_L3[1] < -0.2f) && (vOutput_L3[2] < -0.2f) && (vOutput_L3[4] < -0.2f)) ? ("Class D         ") : (result);
+									  result = vOutput_L3[0]; winner = "Class A                ";
+		if (vOutput_L3[1] > result) { result = vOutput_L3[1]; winner = "Class B                "; }
+		if (vOutput_L3[2] > result) { result = vOutput_L3[2]; winner = "Class C                "; }
+		if (vOutput_L3[3] > result) { result = vOutput_L3[3]; winner = "Class D                "; }
+		if (vOutput_L3[4] > result) { result = vOutput_L3[4]; winner = "Inter-class area       "; }
+
+		if (result < 0.3) {									  winner = "Not well classified    "; }
 
 		(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
-							 "result: Out-0 %6.3f, Out-1 %6.3f, Out-2 %6.3f, Out-3 %6.3f, Out-4 %6.3f "
+							 "result: Out-0 %6.1f%%, Out-1 %6.1f%%, Out-2 %6.1f%%, Out-3 %6.1f%%, Out-4 %6.1f%% "
 							 "    %s "
 							 "Exec time %"PRIu32" [us]\n", x,
 							 							   y,
-							 							   vOutput_L3[0],
-							 							   vOutput_L3[1],
-							 							   vOutput_L3[2],
-							 							   vOutput_L3[3],
-							 							   vOutput_L3[4],
-							 							   result,
+							 							   vOutput_L3[0] * 100,
+							 							   vOutput_L3[1] * 100,
+							 							   vOutput_L3[2] * 100,
+							 							   vOutput_L3[3] * 100,
+							 							   vOutput_L3[4] * 100,
+							 							   winner,
 							 							   delta);
 	}
 }

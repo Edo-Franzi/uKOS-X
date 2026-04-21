@@ -73,19 +73,25 @@ KRING_LIMITS_MAX		= (0.7 * KABS_MAX_FUNCTION)**2		# Max value for the ring
 KSQUARE_LIMITS			= (0.6 * KABS_MAX_FUNCTION)			# Corner size (top-right)
 KABS_MAX_OUTPUT			= 0.98								# Abs max of the expected output
 KGOOD					= KABS_MAX_OUTPUT					# Max value for "good" answers
-KBAD					= -KABS_MAX_OUTPUT					# Max value for "bad" answers
+KBAD					= 0.00								# Max value for "bad" answers
 
-# Return an x-Y random value
+# Return an X-Y random value
 # --------------------------
 
 def generate_randomValues():
 	return ((np.random.rand(2) - 0.5) * 2 * KABS_MAX_FUNCTION)
 
-# Return the x-Y squared norm
+# Return the X-Y squared norm
 # ---------------------------
 
 def norm_squared(x, y):
 	return ((x * x) + (y * y))
+
+# Normalize one point
+# -------------------
+
+def normalize_point(x, y):
+	return (x / KABS_MAX_FUNCTION, y / KABS_MAX_FUNCTION)
 
 # Generate the data set
 # ---------------------
@@ -95,14 +101,21 @@ def generate_dataSet(fd, ax, colors, title):
 	ax.set_aspect("equal")
 	ax.grid(True)
 
+	# Display normalized coordinates
+	ax.set_xlim(-1, 1)
+	ax.set_ylim(-1, 1)
+	ax.set_xticks(np.linspace(-1, 1, 5))
+	ax.set_yticks(np.linspace(-1, 1, 5))
+
 	# Class 1: KRING_LIMITS_MIN < data < KRING_LIMITS_MAX (ring)
 	count = 0
 	while count < KNB_SAMPLES_C1:
 		x, y = generate_randomValues()
 		r2 = norm_squared(x, y)
 		if (KRING_LIMITS_MIN < r2 < KRING_LIMITS_MAX):
-			ax.plot(x, y, colors[0])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KGOOD:.2f}\t{KBAD:.2f}\t{KBAD:.2f}\n")
+			xn, yn = normalize_point(x, y)
+			ax.plot(xn, yn, colors[0])
+			fd.write(f"{xn / KABS_MAX_FUNCTION:.6f}\t{yn / KABS_MAX_FUNCTION:.6f}\t{KGOOD:.2f}\t{KBAD:.2f}\t{KBAD:.2f}\n")
 			count += 1
 
 	# Class 2a: data > KRING_LIMITS_MAX (outer) & exclude the square corner Top-Right
@@ -115,8 +128,9 @@ def generate_dataSet(fd, ax, colors, title):
 		in_top_right_corner = (x > KSQUARE_LIMITS) and (y > KSQUARE_LIMITS)
 
 		if in_outer and (not in_top_right_corner):
-			ax.plot(x, y, colors[1])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
+			xn, yn = normalize_point(x, y)
+			ax.plot(xn, yn, colors[1])
+			fd.write(f"{xn / KABS_MAX_FUNCTION:.6f}\t{yn / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
 			count += 1
 
 	# Class 2b: data < KRING_LIMITS_MIN (inner)
@@ -125,8 +139,9 @@ def generate_dataSet(fd, ax, colors, title):
 		x, y = generate_randomValues()
 		r2 = norm_squared(x, y)
 		if (r2 < KRING_LIMITS_MIN):
-			ax.plot(x, y, colors[2])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
+			xn, yn = normalize_point(x, y)
+			ax.plot(xn, yn, colors[2])
+			fd.write(f"{xn / KABS_MAX_FUNCTION:.6f}\t{yn / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KGOOD:.2f}\t{KBAD:.2f}\n")
 			count += 1
 
 	# Class 3: x > KSQUARE_LIMITS & y > KSQUARE_LIMITS
@@ -135,8 +150,9 @@ def generate_dataSet(fd, ax, colors, title):
 		x, y = generate_randomValues()
 		in_top_right_corner = (x > KSQUARE_LIMITS) and (y > KSQUARE_LIMITS)
 		if in_top_right_corner:
-			ax.plot(x, y, colors[3])
-			fd.write(f"{x / KABS_MAX_FUNCTION:.6f}\t{y / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KBAD:.2f}\t{KGOOD:.2f}\n")
+			xn, yn = normalize_point(x, y)
+			ax.plot(xn, yn, colors[3])
+			fd.write(f"{xn / KABS_MAX_FUNCTION:.6f}\t{yn / KABS_MAX_FUNCTION:.6f}\t{KBAD:.2f}\t{KBAD:.2f}\t{KGOOD:.2f}\n")
 			count += 1
 
 # Main

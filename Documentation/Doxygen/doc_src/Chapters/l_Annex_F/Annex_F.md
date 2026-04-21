@@ -132,38 +132,24 @@ export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/ \
 
 ```
 
-#### Install the Macports and some additional packages
+#### Install the Macports and some additional Python packages
 
 ```bash
-# Follow the instructions: http://www.macports.org
+cd /opt
+sudo mkdir -p uKOS
+sudo chgrp admin uKOS
+sudo chmod g+w uKOS
 
-sudo port install automake
-sudo port install libtool
-sudo port install autoconf
-sudo port install pkgconfig
-sudo port install coreutils
-sudo port install md5sha1sum
-sudo port install ghostscript
-sudo port install texinfo
-sudo port install ctags
-sudo port install wget
-sudo port install hidapi
-sudo port install py313-pip
-sudo port install ninja
-sudo port install meson
-sudo port install bison
-sudo port install pandoc
-sudo port install gmake
-sudo port install zlib
-sudo port install yq
-pip3 install kflash
-pip3 install numpy
-pip3 install pyserial
-pip3 install matplotlib
-pip3 install pillow
+# Install all the necessary Macport libraries & tools
+cd ${PATH_UKOS_X_PACKAGE}/Tools/Scripts/macOS/Macport
+xargs sudo port install < requirements.txt
+
+# Install all the necessary Python3.13 libraries & tools
+cd ${PATH_UKOS_X_PACKAGE}/Tools/Scripts/macOS/Python
+pip3 install -r requirements.txt
 ```
 
-### Prerequisites for Ubuntu (25.04)
+### Prerequisites for Ubuntu (26.04)
 
 #### Configure the .zshrc
 
@@ -257,58 +243,42 @@ cd /opt
 sudo mkdir -p uKOS
 sudo chown -R user:group uKOS
 sudo chmod -R o+rw uKOS
-git config --global user.email "ukos@ukos.ch"
-git config --global user.name “uKOS"
 ```
 
-#### Install some additional packages
+#### Install the APT and some additional Python packages
 
 ```bash
-# Update the ready installed packages
-sudo apt update && sudo apt upgrade -y
+# Install all the necessary libraries & tools
+cd ${PATH_UKOS_X_PACKAGE}/Tools/Scripts/Ubuntu/APT
+xargs sudo apt-get install -y < requirements.txt
+exec zsh
 
-# Install the compilation tools
-sudo apt install -y \
-build-essential \
-libtool libtool-bin \
-bison flex gawk m4 texinfo automake \
-libncurses-dev \
-libusb-1.0-0-dev libusb-dev \
-zlib1g-dev \
-libpcre3 libpcre3-dev \
-libgl1-mesa-dev \
-libhidapi-dev \
-intltool \
-libgtk2.0-dev \
-libudev-dev \
-libjaylink-dev \
-ninja-build \
-meson \
-clang \
-cmake \
-git \
-gtkterm \
-curl \
-pandoc \
-lzip \
-zsh \
-python3-pip \
-python-is-python3 \
-python3.13-venv
+git config --global user.email "ukos@ukos.ch"
+git config --global user.name “uKOS"
 
-# Install additional fonts
-sudo apt install -y ttf-mscorefonts-installer culmus
+# Install all the necessary packages for using Python3.13
+curl -fsSL https://pyenv.run | bash
+pyenv install 3.13.3
+exec zsh
+
 # Un-install/install yq
 sudo apt remove -y yq || true
 sudo snap install yq
+
 # zsh by default
 chsh -s /usr/bin/zsh || true
+
 # Install venv-kflash
-apt install python3.13-venv
-python3 -m venv ~/uKOS_Soft/venv-uKOS
-source ~/uKOS_Soft/venv-uKOS/bin/activate
-pip install kflash
-pip3 install PyYAML
+cd ${PATH_UKOS_X_PACKAGE}/Tools/Scripts/Ubuntu/Python
+python3 -m venv ${HOME}/uKOS_Soft/venv-uKOS
+source ${HOME}/uKOS_Soft/venv-uKOS/bin/activate
+pip install -r requirements.txt
+
+# Disable BRLTTY
+for f in /usr/lib/udev/rules.d/*brltty*.rules; do
+    sudo ln -s /dev/null "/etc/udev/rules.d/$(basename "$f")"
+done
+sudo udevadm control --reload-rules
 ```
 
 #### Add a new rule for using the FTDI, the Silicon Lab chips & GD32DFU

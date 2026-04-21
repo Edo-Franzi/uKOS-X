@@ -70,7 +70,7 @@ KNB_SAMPLES_PER_CLASS	= (KNB_SAMPLES // KNB_CLASSES)	# Number of samples per cla
 KABS_MAX_FUNCTION		= 1								# Max of the function
 KABS_MAX_OUTPUT			= 0.98							# Abs max of the expected output
 KGOOD					= KABS_MAX_OUTPUT				# Max value for "good" answers
-KBAD					= -KABS_MAX_OUTPUT				# Max value for "bad" answers
+KBAD					= 0.00							# Max value for "bad" answers
 
 # Return an x-Y random value
 # --------------------------

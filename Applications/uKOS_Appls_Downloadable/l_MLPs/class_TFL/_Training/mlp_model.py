@@ -17,8 +17,9 @@
 #			Necessary packages:
 #			python3 -m pip install numpy tensorflow pillow
 #
-#			python3 mlp_model.py
-#			xxd -i  mlp_model.tflite > mlp_model.c_inc
+#			python3 mlp_model.py --model_file mlp_model.tflite --mode val
+#			python3 mlp_model.py --model_file mlp_model.tflite --mode full
+#			xxd -i mlp_model.tflite > mlp_model.c_inc
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -73,7 +74,7 @@ def load_data(file_path):
 	try:
 
 		# Use genfromtxt (more flexible than loadtxt)
-		print(f"Read the fle : {file_path}")
+		print(f"Read the file : {file_path}")
 		data = np.genfromtxt(file_path, delimiter = '\t', dtype = np.float32)
 		data = np.atleast_2d(data)
 
@@ -103,16 +104,16 @@ def load_data(file_path):
 
 def build_model():
 	model = tf.keras.Sequential([
-		tf.keras.layers.InputLayer(shape = (2,), dtype = tf.float32),	# Layer 1,  2 - 52
-		tf.keras.layers.Dense(52, activation = 'tanh'),					# Layer 2, 52 - 73
-		tf.keras.layers.Dense(73, activation = 'tanh'),					# Layer 3, 73 - 3
-		tf.keras.layers.Dense(3,  activation = 'tanh') 					# Layer 4, 3
+		tf.keras.layers.InputLayer(shape = (2,), dtype = tf.float32),											# Layer 1,  2 - 52
+		tf.keras.layers.Dense(52, activation = 'tanh', kernel_regularizer = tf.keras.regularizers.l2(1e-4)),	# Layer 2, 52 - 73
+		tf.keras.layers.Dense(73, activation = 'tanh', kernel_regularizer = tf.keras.regularizers.l2(1e-4)),	# Layer 3, 73 - 3
+		tf.keras.layers.Dense(3,  activation = 'softmax')														# Layer 4, 3
 	])
 
 	# Compile the model
 	model.compile(
-		optimizer = 'adam',
-		loss = 'mean_squared_error',
+		optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-3),
+		loss = 'categorical_crossentropy',
 		metrics = ['accuracy']
 	)
 	return model
@@ -141,15 +142,13 @@ def main():
 	Y = Y[indices]
 
 	# Build the model
-	# Train the model
-	# Evaluate the model
 	model = build_model()
 	model.fit(X, Y, epochs = 100, batch_size = 32, validation_split = 0.2)
 	loss = model.evaluate(X, Y)
 	print(f'Loss of the model : {loss}')
 
 	# Test the model with TensorFlow
-	output = model(np.array([[-0.347817, 362439], [-0.834222, 0.808548], [0.850443, 0.620829]], dtype = np.float32))
+	output = model(np.array([[0.912431, 0.719052], [-0.460302, -0.637331], [-0.626125, -0.250060]], dtype = np.float32))
 	print("Output TF", output)
 
 	# Convert the model to TFLite format
@@ -163,10 +162,10 @@ def main():
 	# Use the argument passed to the command line
 	interpreter = tf.lite.Interpreter(model_path = args.model_file)
 	interpreter.allocate_tensors()
-	input_details = interpreter.get_input_details()
+	input_details  = interpreter.get_input_details()
 	output_details = interpreter.get_output_details()
 
-	for input_data in [[-0.347817, 362439], [-0.834222, 0.808548], [0.850443, 0.620829]]:
+	for input_data in [[0.912431, 0.719052], [-0.460302, -0.637331], [-0.626125, -0.250060]]:
 		interpreter.set_tensor(input_details[0]['index'], np.array([input_data], dtype = np.float32))
 		interpreter.invoke()
 		output = interpreter.get_tensor(output_details[0]['index'])
