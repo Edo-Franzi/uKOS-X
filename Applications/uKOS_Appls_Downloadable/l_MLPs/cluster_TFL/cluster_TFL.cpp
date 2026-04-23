@@ -113,8 +113,6 @@ STRG_LOC_CONST(aStrHelp[])        = "This is a romable C application\n"
 
 #if (defined(ROMABLE_S))
 
-// Prototypes
-
 namespace {
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 }

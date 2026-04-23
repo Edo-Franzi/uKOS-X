@@ -65,14 +65,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Test of the lcd\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_process_0(const void *argument);
-static	void		local_process_1(const void *argument);
-static	void		local_process_2(const void *argument);
-static	void		local_process_3(const void *argument);
-static	void		local_process_4(const void *argument);
 
 MODULE(
 	Test_lcd,									// Module name (the first letter has to be upper case)
@@ -111,6 +104,14 @@ const	uint16_t	aTabColor[KNB_COLORS] = { KBLACK, KNAVY, KDARKGREEN, KDARKCYAN,
 											  KGREENYELLOW, KPINK };
 
 #define	KBACKGROUNG		KBLACK
+
+// Prototypes
+
+static	void	local_process_0(const void *argument);
+static	void	local_process_1(const void *argument);
+static	void	local_process_2(const void *argument);
+static	void	local_process_3(const void *argument);
+static	void	local_process_4(const void *argument);
 
 /*
  * \brief Main entry point

@@ -71,11 +71,8 @@ STRG_LOC_CONST(aStrHelp[])		  = "Test of the cores\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-// Prototypes
-
 static	int32_t		test_ipi_pre_init(uint32_t argc, const char_t *argv[]);
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
-static	void		local_machineSoftware_IRQHandler(uint32_t core, uint64_t parameter);
 
 MODULE(
 	Test_ipi,									// Module name (the first letter has to be upper case)
@@ -94,6 +91,10 @@ MODULE(
 
 volatile	uint8_t		vCounter[KNB_CORES] = MCSET(0u);
 volatile	bool		vDataAvailable[KNB_CORES] = MCSET(false);
+
+// Prototypes
+
+static	void	local_machineSoftware_IRQHandler(uint32_t core, uint64_t parameter);
 
 /*
  * \brief Main entry point
