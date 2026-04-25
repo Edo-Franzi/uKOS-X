@@ -56,12 +56,12 @@
 typedef	struct	boot	boot_t;
 
 struct	boot {
-				uint8_t				oSW;				// Switch value
 		const	char_t				*oFunction;			// Ptr on the function
-				uint8_t				oBaudrate;			// Baudrate
 				serialManager_t		oSerialManager;		// Default Serial Communication Manager
-				uint8_t				oArgC;				// Number of arguments
 		const	char_t				**oArgV;			// Ptr on the arguments
+				uint8_t				oArgC;				// Number of arguments
+				uint8_t				oSW;				// Switch value
+				uint8_t				oBaudrate;			// Baudrate
 		};
 
 static	const	char_t	*argv_cnsUrt0[] = { "console", "urt0" };
@@ -71,12 +71,12 @@ static	const	char_t	*argv_sloader[] = { "sloader", "-run" };
 static	const	char_t	*argv_userApp[] = { "userapp", "1234" };
 
 static	const	boot_t	aFunction[] = {
-							{ 0x00u, "console", KSERIAL_BAUDRATE_460800, KURT0, 2u, argv_cnsUrt0 },
-							{ 0x01u, "sloader", KSERIAL_BAUDRATE_460800, KURT0, 2u, argv_sloader },
-							{ 0x02u, "console", KSERIAL_BAUDRATE_460800, KURT1, 2u, argv_cnsUrt1 },
-							{ 0x03u, "sloader", KSERIAL_BAUDRATE_460800, KURT1, 2u, argv_sloader },
-							{ 0x04u, "userapp", KSERIAL_BAUDRATE_460800, KURT0, 2u, argv_userApp },
-							{ 0x05u, "console", KSERIAL_BAUDRATE_921600, KWFI0, 2u, argv_cnsWfi0 }
+							{ "console", KURT0, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 },
+							{ "sloader", KURT0, argv_sloader, 2u, 0x01u, KSERIAL_BAUDRATE_460800 },
+							{ "console", KURT1, argv_cnsUrt1, 2u, 0x02u, KSERIAL_BAUDRATE_460800 },
+							{ "sloader", KURT1, argv_sloader, 2u, 0x03u, KSERIAL_BAUDRATE_460800 },
+							{ "userapp", KURT0, argv_userApp, 2u, 0x04u, KSERIAL_BAUDRATE_460800 },
+							{ "console", KWFI0, argv_cnsWfi0, 2u, 0x05u, KSERIAL_BAUDRATE_921600 }
 						};
 
 #define	KDEF_COMM		KURT0
