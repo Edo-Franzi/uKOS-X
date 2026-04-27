@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: MIT
 
 #------------------------------------------------------------------------
-# Author:	Edo. Franzi		The 2025-01-01
+# Author:	Edo. Franzi		The 2026-04-26
 # Modifs:
 #
 # Project:	uKOS-X
@@ -48,6 +48,13 @@
 
 set -euo pipefail
 
+readonly PYTHON=/opt/local/bin/python3.11
+
+if [[ ! -x "${PYTHON}" ]]; then
+	echo "Python 3.11 not found: ${PYTHON}"
+	exit 1
+fi
+
 if [[ -z "${PATH_UKOS_X_PACKAGE:-}" ]]; then
 	echo 'Variable PATH_UKOS_X_PACKAGE is not set!'
 	exit 1
@@ -75,38 +82,68 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # Packages
 # --------
 
+readonly package="5.5.1"
+readonly idf_tag="v${package}"
 readonly URL="https://dl.espressif.com/esp-at/firmwares/esp32/ESP32-WROOM-32/ESP32-WROOM-32-AT-V4.1.1.0.zip"
 readonly ARCHIVE="ESP32-WROOM-32-AT-V4.1.1.0"
-readonly package=6.0
-readonly hash=338f341
+
+IDF_PATH="${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/esp-idf-current"
+IDF_TOOLS_PATH="${IDF_PATH}/espressif-tools"
+IDF_PYTHON_ENV_PATH="${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Pyenv/esp32_Pyenv"
+
+export IDF_PATH
+export IDF_TOOLS_PATH
+export IDF_PYTHON_ENV_PATH
 
 # Clone the right packages
 
 printf '\n%bDownload the esp-idf package ...%b\n\n' "${BOLD}" "${NC}"
 
 cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32"
-rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/esp-idf-${package}"
-git clone --recursive https://github.com/espressif/esp-idf.git "esp-idf-${package}"
+rm -rf "esp-idf-${package}"
+git clone https://github.com/espressif/esp-idf.git "esp-idf-${package}"
 cd "esp-idf-${package}"
-git checkout "${hash}"
+git checkout "${idf_tag}"
+git submodule update --init --recursive
 
 # Update path links
 
-cd ..
+cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32"
 rm -f esp-idf-current
 ln -s "esp-idf-${package}" esp-idf-current
+
+# Ignore tools in git
+
+touch "${IDF_PATH}/.git/info/exclude"
+grep -qxF "espressif-tools/" "${IDF_PATH}/.git/info/exclude" || echo "espressif-tools/" >> "${IDF_PATH}/.git/info/exclude"
+
+# Install ESP-IDF tools
+
+printf '\n%bInstall ESP-IDF tools...%b\n\n' "${BOLD}" "${NC}"
+
+mkdir -p "${IDF_TOOLS_PATH}"
+mkdir -p "$(dirname "${IDF_PYTHON_ENV_PATH}")"
+"${PYTHON}" "${IDF_PATH}/tools/idf_tools.py" install --targets=esp32,esp32s3
+rm -rf "${IDF_PYTHON_ENV_PATH}"
+mkdir -p "${IDF_PYTHON_ENV_PATH}"
+"${PYTHON}" "${IDF_PATH}/tools/idf_tools.py" install-python-env
+
+# Download AT firmware
 
 printf '\n%bDownload the AT firmware package ...%b\n\n' "${BOLD}" "${NC}"
 
 cd esp-idf-current
 mkdir -p AT_firmware
 
+rm -f "$ARCHIVE".zip
+rm -rf "$ARCHIVE"
 wget -O "$ARCHIVE".zip "$URL"
 unzip "$ARCHIVE".zip
 
 cd "$ARCHIVE"
+rm -rf "../AT_firmware/${ARCHIVE}"
 mv "$ARCHIVE" ../AT_firmware
-cd ..
+cd "${IDF_PATH}"
 rm "$ARCHIVE".zip
 rm -rf "$ARCHIVE"
 

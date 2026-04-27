@@ -1,3 +1,5 @@
+python311
+py311-pip
 python313
 py313-pip
 automake

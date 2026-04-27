@@ -105,18 +105,18 @@ if [[ "${COMMAND}" = '-erase' ]]; then
 		--chip "${CHIP}" \
 		--port "${SERIAL}" \
 		--baud "${BAUDRATE}" \
-		--before 'default-reset' \
-		--after 'hard-reset' \
-		erase-flash
+		--before 'default_reset' \
+		--after 'hard_reset' \
+		erase_flash
 
 elif [[ "${COMMAND}" = '-burn' ]]; then
 	python -m esptool \
 		--chip "${CHIP}" \
 		--port "${SERIAL}" \
 		--baud "${BAUDRATE}" \
-		--before 'default-reset' \
-		--after 'hard-reset' \
-		write-flash -z --flash-mode dio --flash-freq 40m --flash-size 4MB \
+		--before 'default_reset' \
+		--after 'hard_reset' \
+		write_flash -z --flash_mode dio --flash_freq 40m --flash_size 4MB \
 			0x1000 bootloader/bootloader.bin \
 			0x100000 esp-at.bin \
 			0x8000 partition_table/partition-table.bin \
@@ -126,6 +126,7 @@ elif [[ "${COMMAND}" = '-burn' ]]; then
 
 else
 	echo 'Usage: ./firmware_AT.sh {-erase | -burn}'
+	exit 1
 fi
 
 echo 'End of burning:' >> esp32_temp.txt

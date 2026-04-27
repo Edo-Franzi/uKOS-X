@@ -1,1 +1,4 @@
 esp-*/
+Construction/Pyenv/esp32_Pyenv/
+Construction/Examples/ble_to_uart/build/
+Construction/Examples/ble_to_uart/sdkconfig
