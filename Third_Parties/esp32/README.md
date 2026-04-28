@@ -150,15 +150,14 @@ source setup.sh
 # esp32 -reset
 # esp32 -boot
 
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Examples/ble_to_uart
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/ble_to_uart
 idf.py set-target esp32
 idf.py build
 idf.py -p /dev/cu.usbserial-uKOS_1 flash
 
 # From the Alastor console type
 # esp32 -reset
-
-esp32 -connect 460800
+# esp32 -connect 460800
 ```
 
 ### 
