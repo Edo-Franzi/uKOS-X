@@ -1,9 +1,9 @@
 {
-  "spdxVersion": "SPDX-0.4.6",
+  "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.4.6)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.4.6-2026-04-28",
+  "name": "uKOS-X SBOM (0.4.7)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.4.7-2026-04-30",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -11,30 +11,28 @@
       "Tool: manual-from-THIRD_PARTY_NOTICE"
     ]
   },
-
   "hasExtractedLicensingInfos": [
     {
       "licenseId": "LicenseRef-FatFs-ChaN",
       "name": "FatFs License (ChaN)",
-      "extractedText": "License text not embedded in this SBOM. See the FatFs license/notice shipped in Third_Parties/FatFs/ (or upstream documentation)."
+      "extractedText": "License text not embedded in this SBOM. See the FatFs license/notice shipped in Third_Parties/FatFs/ or upstream documentation."
     },
     {
       "licenseId": "LicenseRef-IntelRDFPMath",
       "name": "IntelRDFPMathLib License (Intel Corp.)",
-      "extractedText": "License text not embedded in this SBOM. See the IntelRDFPMathLib license/notice shipped in Third_Parties/IntelRDFPMath/ (or upstream documentation)."
+      "extractedText": "License text not embedded in this SBOM. See the IntelRDFPMathLib license/notice shipped in Third_Parties/IntelRDFPMath/ or upstream documentation."
     },
     {
       "licenseId": "LicenseRef-decnumber",
-      "name": "decnumber License (see repository notice)",
-      "extractedText": "License text not embedded in this SBOM. See the license file referenced by the project (e.g. ,LICENSES/License_DecNumbers.txt) and upstream headers."
+      "name": "decnumber License",
+      "extractedText": "License text not embedded in this SBOM. See LICENSES/License_DecNumbers.txt and upstream headers."
     }
   ],
-
   "packages": [
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.4.6",
+      "versionInfo": "0.4.7",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -44,12 +42,11 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.4.6",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.4.7",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
     },
-
     {
       "name": "Cppcheck",
       "SPDXID": "SPDXRef-Package-Cppcheck",
@@ -59,7 +56,7 @@
       "licenseDeclared": "GPL-3.0-or-later",
       "licenseConcluded": "GPL-3.0-or-later",
       "copyrightText": "NOASSERTION",
-      "comment": "Location: Third_Parties/Cppcheck/. Development tool only (not linked into firmware binaries).",
+      "comment": "Location: Third_Parties/Cppcheck/. Development tool only; not linked into firmware binaries.",
       "externalRefs": [
         {
           "referenceType": "purl",
@@ -68,11 +65,10 @@
         }
       ]
     },
-
     {
       "name": "decnumber",
       "SPDXID": "SPDXRef-Package-decnumber",
-      "versionInfo": "3.68 (commit ace3fa6)",
+      "versionInfo": "3.68 commit ace3fa6",
       "downloadLocation": "https://github.com/raitechnology/libdecnumber.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-decnumber",
@@ -87,7 +83,6 @@
         }
       ]
     },
-
     {
       "name": "Doxygen-awesome-css",
       "SPDXID": "SPDXRef-Package-DoxygenAwesome",
@@ -101,16 +96,15 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/jothepro/doxygen-awesome-css@3.41",
+          "referenceLocator": "pkg:github/jothepro/doxygen-awesome-css@2.42",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
     },
-
-     {
-      "name": "esp32",
-      "SPDXID": "SPDXRef-Package-esp32",
-      "versionInfo": "5.5.1",
+    {
+      "name": "esp-idf",
+      "SPDXID": "SPDXRef-Package-esp-idf",
+      "versionInfo": "6.0.1",
       "downloadLocation": "https://github.com/espressif/esp-idf.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -120,22 +114,21 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-      "referenceLocator": "pkg:github/espressif/esp-idf@v5.5.1",
+          "referenceLocator": "pkg:github/espressif/esp-idf@v6.0.1",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
     },
-
-   {
+    {
       "name": "FatFs",
       "SPDXID": "SPDXRef-Package-FatFs",
-      "versionInfo": "0.16 (commit 30ca13c)",
+      "versionInfo": "0.16 commit 30ca13c",
       "downloadLocation": "https://github.com/abbrev/fatfs.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-FatFs-ChaN",
       "licenseConcluded": "LicenseRef-FatFs-ChaN",
       "copyrightText": "NOASSERTION",
-      "comment": "Location: Third_Parties/FatFs/. License: FatFs (ChaN).",
+      "comment": "Location: Third_Parties/FatFs/. License: FatFs ChaN.",
       "externalRefs": [
         {
           "referenceType": "purl",
@@ -144,11 +137,10 @@
         }
       ]
     },
-
     {
       "name": "IntelRDFPMathLib",
       "SPDXID": "SPDXRef-Package-IntelRDFPMath",
-      "versionInfo": "2.3 (commit ffca6d2)",
+      "versionInfo": "2.3 commit ffca6d2",
       "downloadLocation": "https://github.com/xmake-mirror/IntelRDFPMathLib.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-IntelRDFPMath",
@@ -163,7 +155,6 @@
         }
       ]
     },
-
     {
       "name": "LVGL",
       "SPDXID": "SPDXRef-Package-LVGL",
@@ -182,7 +173,6 @@
         }
       ]
     },
-
     {
       "name": "MicroPython",
       "SPDXID": "SPDXRef-Package-MicroPython",
@@ -201,7 +191,6 @@
         }
       ]
     },
-
     {
       "name": "tflite-micro",
       "SPDXID": "SPDXRef-Package-TFLiteMicro",
@@ -215,16 +204,15 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/tensorflow/tflite-micro@3b638dd",
+          "referenceLocator": "pkg:github/tensorflow/tflite-micro@51bee03",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
     },
-
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 (commit 4c7fd70)",
+      "versionInfo": "0.20.0 commit 939c2f9",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -239,7 +227,6 @@
         }
       ]
     },
-
     {
       "name": "STM32Cube_FW_N6",
       "SPDXID": "SPDXRef-Package-STM32CubeN6",
@@ -249,7 +236,7 @@
       "licenseDeclared": "BSD-3-Clause",
       "licenseConcluded": "BSD-3-Clause",
       "copyrightText": "Copyright (c) 2024, STMicroelectronics",
-      "comment": "External vendor SDK (not distributed in this repository). Included for firmware builds only.",
+      "comment": "External vendor SDK; not distributed in this repository. Included for firmware builds only.",
       "externalRefs": [
         {
           "referenceType": "purl",
@@ -257,26 +244,114 @@
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
+    },
+    {
+      "name": "picotool",
+      "SPDXID": "SPDXRef-Package-picotool",
+      "versionInfo": "1.3.0",
+      "downloadLocation": "https://github.com/raspberrypi/picotool.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "BSD-3-Clause",
+      "licenseConcluded": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2020 Raspberry Pi (Trading) Ltd",
+      "comment": "External vendor tool; not distributed in this repository. Included for firmware builds only.",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/raspberrypi/picotool@1.3.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+    {
+      "name": "pico-sdk",
+      "SPDXID": "SPDXRef-Package-pico-sdk",
+      "versionInfo": "1.3.0",
+      "downloadLocation": "https://github.com/raspberrypi/pico-sdk.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "BSD-3-Clause",
+      "licenseConcluded": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2020 Raspberry Pi (Trading) Ltd",
+      "comment": "External vendor SDK; not distributed in this repository. Included for firmware builds only.",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/raspberrypi/pico-sdk@1.3.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
     }
   ],
-
   "relationships": [
     {
       "spdxElementId": "SPDXRef-DOCUMENT",
       "relationshipType": "DESCRIBES",
       "relatedSpdxElement": "SPDXRef-Package-uKOS-X"
     },
-
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-Cppcheck" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-decnumber" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-DoxygenAwesome" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-FatFs" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-IntelRDFPMath" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-LVGL" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-MicroPython" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-TFLiteMicro" },
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "CONTAINS", "relatedSpdxElement": "SPDXRef-Package-TinyUSB" },
-
-    { "spdxElementId": "SPDXRef-Package-uKOS-X", "relationshipType": "DEPENDS_ON", "relatedSpdxElement": "SPDXRef-Package-STM32CubeN6" }
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-Cppcheck"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-decnumber"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-DoxygenAwesome"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-esp-idf"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-FatFs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-IntelRDFPMath"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-LVGL"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-MicroPython"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-TFLiteMicro"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-TinyUSB"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-STM32CubeN6"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-picotool"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-uKOS-X",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-pico-sdk"
+    }
   ]
 }

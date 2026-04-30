@@ -51,6 +51,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
 
 # Project path configuration
 # - PATH_UKOS	--> Main uKOS-X folder
+# - PATH_OSYS	--> Main OS folder
 # - PATH_VARI	--> Projects Root Variant folder
 # - PATH_BASE	--> Projects Root Base folder
 # - PATH_PORT	--> PATH_UKOS/Ports
@@ -98,7 +99,7 @@ set(FIRST_P
 
 # Runtime & common components (privileged) -> librtcb_p.a
 list(APPEND RTCB_P
-	${PATH_UKOS}/OS/Boots/boot/boot.c
+	${PATH_OSYS}/Boots/boot/boot.c
 	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_BASE}/Runtime/cmns.c
 	${PATH_BASE}/Runtime/exce.c
@@ -109,21 +110,21 @@ target_link_libraries(rtcb_p PUBLIC system_compiler_flags)
 
 # uKernel components (privileged) -> libkern_p.a
 list(APPEND KERN_P
-	${PATH_UKOS}/OS/Lib_kernels/kern/debug.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/identifier.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/kern.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/lists.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/mailboxes.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/mutexes.c
-#	${PATH_UKOS}/OS/Lib_kernels/kern/pools.c
-#	${PATH_UKOS}/OS/Lib_kernels/kern/preciseSignals.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/processes.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/scheduler.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/semaphores.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/signals.c
-#	${PATH_UKOS}/OS/Lib_kernels/kern/softwareTimers.c
-#	${PATH_UKOS}/OS/Lib_kernels/kern/statistics.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/temporal.c
+	${PATH_OSYS}/Lib_kernels/kern/debug.c
+	${PATH_OSYS}/Lib_kernels/kern/identifier.c
+	${PATH_OSYS}/Lib_kernels/kern/kern.c
+	${PATH_OSYS}/Lib_kernels/kern/lists.c
+	${PATH_OSYS}/Lib_kernels/kern/mailboxes.c
+	${PATH_OSYS}/Lib_kernels/kern/mutexes.c
+#	${PATH_OSYS}/Lib_kernels/kern/pools.c
+#	${PATH_OSYS}/Lib_kernels/kern/preciseSignals.c
+	${PATH_OSYS}/Lib_kernels/kern/processes.c
+	${PATH_OSYS}/Lib_kernels/kern/scheduler.c
+	${PATH_OSYS}/Lib_kernels/kern/semaphores.c
+	${PATH_OSYS}/Lib_kernels/kern/signals.c
+#	${PATH_OSYS}/Lib_kernels/kern/softwareTimers.c
+#	${PATH_OSYS}/Lib_kernels/kern/statistics.c
+	${PATH_OSYS}/Lib_kernels/kern/temporal.c
 	${PATH_BASE}/Lib_kernels/kern/stub_kern_kernel.c
 )
 add_compile_definitions(
@@ -136,23 +137,23 @@ target_link_libraries(kern_p PUBLIC system_compiler_flags)
 
 # uKernel components (user) -> libkern_u.a
 list(APPEND KERN_U
-	${PATH_UKOS}/OS/Lib_kernels/kern/privileges.c
-	${PATH_UKOS}/OS/Lib_kernels/kern/xLibrary.c
+	${PATH_OSYS}/Lib_kernels/kern/privileges.c
+	${PATH_OSYS}/Lib_kernels/kern/xLibrary.c
 )
 add_library(kern_u ${KERN_U})
 target_link_libraries(kern_u PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (privileged) -> liblibx_p.a
 # (grouped by manager)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_generics/calendar/calendar.c CONFIG_MAN_CALENDAR_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_generics/machine/machine.c CONFIG_MAN_MACHINE_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_generics/memo/memo.c CONFIG_MAN_MEMO_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_generics/record/record.c CONFIG_MAN_RECORD_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_generics/system/system.c CONFIG_MAN_SYSTEM_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/led/led.c CONFIG_MAN_LED_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_peripherals/switch/switch.c CONFIG_MAN_SWITCH_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
-add_source_with_define(LIBX_P ${PATH_UKOS}/OS/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/calendar/calendar.c CONFIG_MAN_CALENDAR_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/machine/machine.c CONFIG_MAN_MACHINE_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/memo/memo.c CONFIG_MAN_MEMO_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/record/record.c CONFIG_MAN_RECORD_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/system/system.c CONFIG_MAN_SYSTEM_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/led/led.c CONFIG_MAN_LED_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/switch/switch.c CONFIG_MAN_SWITCH_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
 list(APPEND LIBX_P
 	${PATH_BASE}/Lib_generics/machine/stub_machine.c
 	${PATH_BASE}/Lib_peripherals/led/stub_led.c
@@ -163,24 +164,24 @@ add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (user) -> liblibx_u.a
-add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
-add_source_with_define(LIBX_U ${PATH_UKOS}/OS/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
+add_source_with_define(LIBX_U ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+add_source_with_define(LIBX_U ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 add_library(libx_u ${LIBX_U})
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
 
 # Process components (privileged) -> libproc_p.a
 list(APPEND PROC_P
-	${PATH_UKOS}/OS/Daemons/idle/idle.c
-	${PATH_UKOS}/OS/Daemons/stimer/stimer.c
+	${PATH_OSYS}/Daemons/idle/idle.c
+	${PATH_OSYS}/Daemons/stimer/stimer.c
 )
 add_library(proc_p ${PROC_P})
 target_link_libraries(proc_p PUBLIC system_compiler_flags)
 
 # Process components (user) -> libproc_u.a
 list(APPEND PROC_U
-	${PATH_UKOS}/OS/Processes/alive/alive.c
-	${PATH_UKOS}/OS/Processes/launcher/launcher.c
-	${PATH_UKOS}/OS/Processes/startUp/startUp.c
+	${PATH_OSYS}/Processes/alive/alive.c
+	${PATH_OSYS}/Processes/launcher/launcher.c
+	${PATH_OSYS}/Processes/startUp/startUp.c
 	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
 )
@@ -189,11 +190,11 @@ target_link_libraries(proc_u PUBLIC system_compiler_flags)
 
 # CLI components (user) -> libtool_u.a
 list(APPEND CLI_U
-	${PATH_UKOS}/OS/CLI/console/console.c
-	${PATH_UKOS}/OS/CLI/date/date.c
-	${PATH_UKOS}/OS/CLI/list/list.c
-	${PATH_UKOS}/OS/CLI/memory/memory.c
-	${PATH_UKOS}/OS/CLI/process/process.c
+	${PATH_OSYS}/CLI/console/console.c
+	${PATH_OSYS}/CLI/date/date.c
+	${PATH_OSYS}/CLI/list/list.c
+	${PATH_OSYS}/CLI/memory/memory.c
+	${PATH_OSYS}/CLI/process/process.c
 )
 add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)

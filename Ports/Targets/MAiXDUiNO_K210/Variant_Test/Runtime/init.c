@@ -147,7 +147,7 @@ static	void	local_GPIO_Configuration(void) {
 			fpioa_tie_t		tie = { 0 };
 	static	const			mainGpio_t	aGPIO_Cnf[] = {
 
-//			  .IOxx  .ch_sel,				.ds,              .oe_en, .oe_inv, .do_sel, .do_inv, .pu, .pd, .resv1, .sl, .ie_en, .ie_inv, .di_inv, .st, .tie_en, .tie_val, .resv0, .pad_di
+//			  .IOxx  .ch_sel,				.ds,              .oe_en,  .oe_inv,  .do_sel,  .do_inv, .pu,   .pd,  .resv1, .sl,    .ie_en, .ie_inv,  .di_inv,  .st,  .tie_en,  .tie_val, .resv0,  .pad_di
 
 			{ 0u,     FUNC_JTAG_TCLK,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 1u,     FUNC_JTAG_TDI,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
@@ -158,7 +158,7 @@ static	void	local_GPIO_Configuration(void) {
 
 			{ 6u,     FUNC_UART3_RX,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 7u,     FUNC_UART3_TX,		FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    0u,     0u,       0u,       0u,   0u,       0u,        0u,      0u },
-			{ 8u,     FUNC_GPIOHS0,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
+			{ 8u,     FUNC_GPIOHS0,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       1u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 9u,     FUNC_GPIOHS1,			FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 10u,    FUNC_UART1_RX,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 11u,    FUNC_GPIOHS5,			FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
@@ -271,7 +271,16 @@ static	void	local_GPIO_Configuration(void) {
 							 |  (1u<<BLED_1)
 							 |  (1u<<BLED_2)
 							 |  (1u<<BLCD_RST)
-							 |  (1u<<BLCD_DCX);
+							 |  (1u<<BLCD_DCX)
+							 |  (1u<<BESP32_ENABLE);
+
+// Led off and esp32 on
+
+	gpiohs->output_val.u32[0] |= (1u<<BLED_0);
+	gpiohs->output_val.u32[0] |= (1u<<BLED_1);
+	gpiohs->output_val.u32[0] |= (1u<<BLED_2);
+
+	gpiohs->output_val.u32[0] |= (1u<<BESP32_ENABLE);
 }
 
 /*

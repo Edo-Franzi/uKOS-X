@@ -69,19 +69,35 @@
 #include	"services/gap/ble_svc_gap.h"
 #include	"services/gatt/ble_svc_gatt.h"
 
-#define	KDEVICE_NAME	"uKOS-X_BLE"
+#include	"esp_log.h"
+#include	"esp_system.h"
+#include	"esp_rom_sys.h"
+
+#define	KUART_0
+#undef	KWITHOUT_LOGS
 #define KTAG			"BLE_UART"
+
+// BLE device
+
+#define	KDEVICE_NAME	"uKOS-X_BLE"
 
 // UART used by the bridge
 
-#define	KUART_PORT		UART_NUM_1
 #define	KUART_BAUDRATE	460800u
 #define	KUART_BUF_SIZE	1024u
-
-#define	KUART_TX_PIN	17u
-#define	KUART_RX_PIN	16u
 #define	KUART_RTS_PIN	UART_PIN_NO_CHANGE
 #define	KUART_CTS_PIN	UART_PIN_NO_CHANGE
+
+#if (defined(KUART_0))
+#define	KUART_PORT		UART_NUM_0
+#define	KUART_TX_PIN	1u
+#define	KUART_RX_PIN	3u
+
+#else
+#define	KUART_PORT		UART_NUM_1
+#define	KUART_TX_PIN	17u
+#define	KUART_RX_PIN	16u
+#endif
 
 // Nordic UART Service UUIDs, little-endian format for NimBLE
 // RX: central writes here, ESP32 receives
@@ -111,26 +127,26 @@ static	int		local_bleUartRXAccess_cb(uint16_t conn_handle, uint16_t attr_handle,
 static	int		local_gapEvent_cb(struct ble_gap_event *event, void *arg);
 
 static	const	struct	ble_gatt_svc_def aGattService[] = {
-	{
-		.type = BLE_GATT_SVC_TYPE_PRIMARY,
-		.uuid = &aUartServiceUUID.u,
-		.characteristics = (struct ble_gatt_chr_def[]) {
-			{
-				.uuid = &aUartRxUUID.u,
-				.access_cb = local_bleUartRXAccess_cb,
-				.flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_NO_RSP,
-			},
-			{
-				.uuid = &aUartTxUUID.u,
-				.access_cb = local_bleUartTXAccess_cb,
-				.val_handle = &vTxValHandle,
-				.flags = BLE_GATT_CHR_F_NOTIFY,
-			},
-			{ 0 }
-		},
-	},
-	{ 0 }
-};
+							{
+								.type = BLE_GATT_SVC_TYPE_PRIMARY,
+								.uuid = &aUartServiceUUID.u,
+								.characteristics = (struct ble_gatt_chr_def[]) {
+									{
+										.uuid = &aUartRxUUID.u,
+										.access_cb = local_bleUartRXAccess_cb,
+										.flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_NO_RSP,
+									},
+									{
+										.uuid = &aUartTxUUID.u,
+										.access_cb = local_bleUartTXAccess_cb,
+										.val_handle = &vTxValHandle,
+										.flags = BLE_GATT_CHR_F_NOTIFY,
+									},
+									{ 0 }
+								},
+							},
+							{ 0 }
+						};
 
 /*
  * \brief app_main
@@ -146,6 +162,14 @@ static	const	struct	ble_gatt_svc_def aGattService[] = {
 void	app_main(void) {
 	esp_err_t	ret;
 	BaseType_t	taskCreated;
+
+	#if (defined(KWITHOUT_LOGS))
+	esp_log_level_set("*", ESP_LOG_NONE);
+
+	#else
+	esp_log_level_set("*", ESP_LOG_INFO);
+	esp_log_level_set(KTAG, ESP_LOG_INFO);
+	#endif
 
 	ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -424,13 +448,13 @@ static void local_nimbleHostTask(void *param) {
  */
 static void local_initUart(void) {
 	const	uart_config_t	aUartConfig = {
-				.baud_rate	= KUART_BAUDRATE,
-				.data_bits	= UART_DATA_8_BITS,
-				.parity		= UART_PARITY_DISABLE,
-				.stop_bits	= UART_STOP_BITS_1,
-				.flow_ctrl	= UART_HW_FLOWCTRL_DISABLE,
-				.source_clk	= UART_SCLK_DEFAULT,
-			};
+								.baud_rate	= KUART_BAUDRATE,
+								.data_bits	= UART_DATA_8_BITS,
+								.parity		= UART_PARITY_DISABLE,
+								.stop_bits	= UART_STOP_BITS_1,
+								.flow_ctrl	= UART_HW_FLOWCTRL_DISABLE,
+								.source_clk	= UART_SCLK_DEFAULT,
+							};
 
 	ESP_ERROR_CHECK(uart_driver_install(KUART_PORT, (KUART_BUF_SIZE * 2), (KUART_BUF_SIZE * 2), 0, NULL, 0));
 	ESP_ERROR_CHECK(uart_param_config(KUART_PORT, &aUartConfig));

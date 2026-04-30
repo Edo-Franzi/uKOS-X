@@ -100,7 +100,7 @@ static	void	local_timeStmp_C0(void);
  * - Initialise the manager
  *
  */
-void	model_kernel_init_C0(void) {
+static	void	model_kernel_init_C0(void) {
 
 	sysctl->clk_en_peri.timer0_clk_en = 1u;			// Turn on the TIM0
 	sysctl->clk_en_peri.timer1_clk_en = 1u;			// Turn on the TIM1
@@ -113,7 +113,7 @@ void	model_kernel_init_C0(void) {
  * - Run the kernel
  *
  */
-void	model_kernel_runKernel_C0(void) {
+static	void	model_kernel_runKernel_C0(void) {
 	float64_t	step;
 	uint32_t	current;
 
@@ -212,7 +212,7 @@ void	model_kernel_runKernel_C0(void) {
  * KKERN_CPU_MODE_STOP			-> CPU in a stop mode
  *
  */
-void	model_kernel_setLowPower_C0(uint8_t mode) {
+static	void	model_kernel_setLowPower_C0(uint8_t mode) {
 
 	switch (mode) {
 		case KKERN_CPU_MODE_NORMAL:
@@ -235,7 +235,7 @@ void	model_kernel_setLowPower_C0(uint8_t mode) {
  * - Set the precise timer
  *
  */
-void	model_kernel_setPreciseSignal_C0(volatile prcs_t *handle) {
+static	void	model_kernel_setPreciseSignal_C0(volatile prcs_t *handle) {
 
 	UNUSED(handle);
 }
@@ -246,7 +246,7 @@ void	model_kernel_setPreciseSignal_C0(volatile prcs_t *handle) {
  * - Read the tickcount
  *
  */
-void	model_kernel_readTickCount_C0(uint64_t *tickCount) {
+static	void	model_kernel_readTickCount_C0(uint64_t *tickCount) {
 
 	local_timeStmp_C0();
 	*tickCount = vTickCount_C0;
@@ -258,7 +258,7 @@ void	model_kernel_readTickCount_C0(uint64_t *tickCount) {
  * - Start a new process timeout
  *
  */
-void	model_kernel_newProcessTimeout_C0(void) {
+static	void	model_kernel_newProcessTimeout_C0(void) {
 
 	timer2->channel[0].eoi;
 	timer2->channel[0].control &= (uint32_t)~TIMER_CR_ENABLE;
@@ -274,7 +274,7 @@ void	model_kernel_newProcessTimeout_C0(void) {
  * - Stop the process timeout
  *
  */
-void	model_kernel_stopProcessTimeout_C0(void) {
+static	void	model_kernel_stopProcessTimeout_C0(void) {
 
 	timer2->channel[0].eoi;
 	timer2->channel[0].control &= (uint32_t)~TIMER_CR_ENABLE;
@@ -357,8 +357,8 @@ static	void	local_PREEMPTION_IRQHandler_C0(uint32_t core, uint64_t parameter) {
 // The input parameters have to be provided by the macro KERN_SAVE_FRAME and
 // have to comply with the eabi
 //
-//																	   a0			  a1				  a2					a3
-void	__attribute__ ((noinline)) local_changeContext_PRE_C0(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
+//																               a0			  a1				  a2					a3
+void	__attribute__ ((noinline, used)) local_changeContext_PRE_C0(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
 	const	volatile	uint64_t	*newStack;
 
 // Save the plic threshold on the current process stack
@@ -484,8 +484,8 @@ static	void	local_TIM2_A_IRQHandler_C0(uint32_t core, uint64_t parameter) {
 // The input parameters have to be provided by the macro KERN_SAVE_FRAME and
 // have to comply with the eabi
 //
-//																	   a0			  a1				  a2					a3
-void	__attribute__ ((noinline)) local_changeContext_TOU_C0(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
+//															                   a0			  a1				  a2					a3
+void	__attribute__ ((noinline, used)) local_changeContext_TOU_C0(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
 	const	volatile	uint64_t	*newStack;
 
 // Save the plic threshold on the current process stack
@@ -613,8 +613,8 @@ static	void	local_ECALL_message_C0(uint32_t core, uint64_t message) {
 // The input parameters have to be provided by the macro KERN_SAVE_FRAME and
 // have to comply with the eabi
 //
-//																	   a0			  a1				a2					  a3
-void	__attribute__ ((noinline)) local_changeContext_MSG_C0(uint32_t core, uint64_t message, uint64_t *threshold, uintptr_t *stack) {
+//															                   a0			  a1				a2					  a3
+void	__attribute__ ((noinline, used)) local_changeContext_MSG_C0(uint32_t core, uint64_t message, uint64_t *threshold, uintptr_t *stack) {
 	const	volatile	uint64_t	*newStack;
 
 // Save the plic threshold on the current process stack

@@ -84,3 +84,7 @@
 
 #define	BLCD_DCX			2u														// GPIO02 - IO38, BLCD_DCX
 #define	BLCD_RST			3u														// GPIO03 - IO37, BLCD_RST
+
+// ESP32
+
+#define	BESP32_ENABLE		0u														// GPIO00 - IO08, ESP32_ENABLE, CHIP_PU, low=power off

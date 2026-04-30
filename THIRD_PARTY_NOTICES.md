@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-04-18
+(c) 2025-2026, Edo. Franzi, 2026-04-30
 
 
 
@@ -54,7 +54,7 @@ the third-party components shipped in this repository.
 
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/espressif/esp-idf.git
-- Version: 5.5.1
+- Version: 6.0.1
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2016-2024, Espressif Systems (Shanghai) Co., Ltd.
@@ -103,7 +103,7 @@ the third-party components shipped in this repository.
 ### 2.10) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 4c7fd70
+- Version: 0.20.0 / commit 939c2f9
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)
@@ -118,3 +118,21 @@ the third-party components shipped in this repository.
 - Copyright:
   -  Copyright (c) 2024, STMicroelectronics
 -  Notes: Not distributed in this repository.
+
+### 3.2) Picotools
+
+- Upstream:  https://github.com/raspberrypi/picotool.git
+- Version: 2.2.0-a4
+- License: BSD-3-Clause
+- Copyright:
+  - Copyright (c) 2020 Raspberry Pi (Trading) Ltd
+- Notes: Not distributed in this repository.
+
+### 3.3) Pico_SDK
+
+- Upstream:  https://github.com/raspberrypi/pico-sdk.git
+- Version: 2.2.0
+- License: BSD-3-Clause
+- Copyright:
+  - Copyright (c) 2020 Raspberry Pi (Trading) Ltd
+- Notes: Not distributed in this repository.

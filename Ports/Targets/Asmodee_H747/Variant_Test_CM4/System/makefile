@@ -48,6 +48,7 @@ SHELL			= /bin/sh
 
 PATH_UKOS_X_PACKAGE	?= $(abspath ../../../../..)
 PATH_UKOS			?= $(PATH_UKOS_X_PACKAGE)
+PATH_OSYS			?= $(PATH_UKOS)/OS
 
 # With the the time zone set for the Switzerland
 # CET+1		!!! For CET+1, the string has to be CET-1
@@ -112,33 +113,33 @@ RTCB_P			+=												$(PATH_PORT)/EquatesModels/Cores/$(CORE)/Runtime/syscallD
 RTCB_P			+=												$(PATH_VARI)/Runtime/init.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/exce.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/cmns.c
-RTCB_P			+= $(PATH_UKOS)/OS/Boots/boot/boot.c
+RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
 
 # The uKernel components (privileged)
 
 KERN_P			=
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/kern.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/identifier.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/lists.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/processes.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/mutexes.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/pools.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/preciseSignals.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/scheduler.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/semaphores.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/signals.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/statistics.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/softwareTimers.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/debug.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/temporal.c
-KERN_P			+= $(PATH_UKOS)/OS/Lib_kernels/kern/mailboxes.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/kern.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/identifier.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/lists.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/processes.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/mutexes.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/pools.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/preciseSignals.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/scheduler.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/semaphores.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/signals.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/statistics.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/softwareTimers.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/debug.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/temporal.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/mailboxes.c
 KERN_P			+=												$(PATH_BASE)/Lib_kernels/kern/stub_kern_kernel.c
 
 # The uKernel components (user)
 
 KERN_U			=
-KERN_U			+= $(PATH_UKOS)/OS/Lib_kernels/kern/privileges.c
-KERN_U			+= $(PATH_UKOS)/OS/Lib_kernels/kern/xLibrary.c
+KERN_U			+= $(PATH_OSYS)/Lib_kernels/kern/privileges.c
+KERN_U			+= $(PATH_OSYS)/Lib_kernels/kern/xLibrary.c
 
 # The Lib_xxxx components (privileged)
 
@@ -146,37 +147,37 @@ LIBX_P			=
 
 # With the LED manager
 CONF_SYSTEM		+= -DCONFIG_MAN_LED_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_peripherals/led/led.c
+LIBX_P			+= $(PATH_OSYS)/Lib_peripherals/led/led.c
 # With the SWITCH manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SWITCH_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_peripherals/switch/switch.c
+LIBX_P			+= $(PATH_OSYS)/Lib_peripherals/switch/switch.c
 # With the ASMP manager
 CONF_SYSTEM		+= -DCONFIG_MAN_ASMP_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/asmp/asmp.c
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/asmp/asmp.c
 # With the RECORD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_RECORD_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/record/record.c
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/record/record.c
 # With the MEMO manager
 CONF_SYSTEM		+= -DCONFIG_MAN_MEMO_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/memo/memo.c
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/memo/memo.c
 # With the SYSTEM manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SYSTEM_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/system/system.c
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/system/system.c
 # With the MACHINE manager
 CONF_SYSTEM		+= -DCONFIG_MAN_MACHINE_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/machine/machine.c
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/machine/machine.c
 # With the CALENDAR manager
 CONF_SYSTEM		+= -DCONFIG_MAN_CALENDAR_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_generics/calendar/calendar.c
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/calendar/calendar.c
 # With the SERIAL communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_serials/serial/serial.c
+LIBX_P			+= $(PATH_OSYS)/Lib_serials/serial/serial.c
 # With the URT0 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_URT0_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_serials/urt0/urt0.c
+LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt0/urt0.c
 # With the RANDOM manager
 CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
-LIBX_P			+= $(PATH_UKOS)/OS/Lib_cryptographics/random/random.c
+LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
 LIBX_P			+=  											$(PATH_VARI)/Lib_peripherals/led/stub_led.c
 LIBX_P			+=  											$(PATH_VARI)/Lib_peripherals/switch/stub_switch.c
 LIBX_P			+= 												$(PATH_COMX)/Lib_generics/asmp/stub_asmp_hsem.c
@@ -190,10 +191,10 @@ LIBX_U			=
 
 # With the TEXT manager
 CONF_SYSTEM		+= -DCONFIG_MAN_TEXT_S
-LIBX_U			+= $(PATH_UKOS)/OS/Lib_generics/text/text.c
+LIBX_U			+= $(PATH_OSYS)/Lib_generics/text/text.c
 # With the NEWLIB manager
 CONF_SYSTEM		+= -DCONFIG_MAN_NEWLIB_S
-LIBX_U			+= $(PATH_UKOS)/OS/Lib_generics/newlib/newlib.c
+LIBX_U			+= $(PATH_OSYS)/Lib_generics/newlib/newlib.c
 
 # The shared components (privileged)
 
@@ -202,56 +203,56 @@ SHAR_P			=
 # The process components (privileged)
 
 PROC_P			=
-PROC_P			+= $(PATH_UKOS)/OS/Daemons/idle/idle.c
-PROC_P			+= $(PATH_UKOS)/OS/Daemons/stimer/stimer.c
-PROC_P			+= $(PATH_UKOS)/OS/Daemons/stack/stack.c
-PROC_P			+= $(PATH_UKOS)/OS/Daemons/mcore/mcore.c
+PROC_P			+= $(PATH_OSYS)/Daemons/idle/idle.c
+PROC_P			+= $(PATH_OSYS)/Daemons/stimer/stimer.c
+PROC_P			+= $(PATH_OSYS)/Daemons/stack/stack.c
+PROC_P			+= $(PATH_OSYS)/Daemons/mcore/mcore.c
 
 # The process components (user)
 
 PROC_U			=
-PROC_U			+= $(PATH_UKOS)/OS/Processes/launcher/launcher.c
-PROC_U			+= $(PATH_UKOS)/OS/Processes/alive/alive.c
-PROC_U			+= $(PATH_UKOS)/OS/Processes/startUp/startUp.c
+PROC_U			+= $(PATH_OSYS)/Processes/launcher/launcher.c
+PROC_U			+= $(PATH_OSYS)/Processes/alive/alive.c
+PROC_U			+= $(PATH_OSYS)/Processes/startUp/startUp.c
 PROC_U			+=  											$(PATH_BASE)/Processes/alive/stub_alive.c
 PROC_U			+= 												$(PATH_VARI)/Processes/startUp/stub_startUp.c
 
 # The CLI components (user)
 
 CLI_U			=
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bangla/BaNgLa.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench_00.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench_01.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench_02.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench_03.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench_04.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/bench/bench_05.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/console/console.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/cycle/cycle.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/date/date.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/dump/dump.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/dumplog/dumplog.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/dumptrace/dumptrace.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/echo/echo.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/fill/fill.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/hexloader/hexloader.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/kill/kill.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/list/list.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/man/man.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/memory/memory.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/mutex/mutex.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/object/object.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/process/process.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/restart/restart.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/rnd/rnd.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/run/run.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/semaphore/semaphore.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/sloader/sloader.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/szkern/szkern.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/uKOS/uKOS.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/test_mcore/test_mcore.c
-CLI_U			+= $(PATH_UKOS)/OS/CLI/wkserial/wkserial.c
+CLI_U			+= $(PATH_OSYS)/CLI/bangla/BaNgLa.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_00.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_01.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_02.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_03.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_04.c
+CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_05.c
+CLI_U			+= $(PATH_OSYS)/CLI/console/console.c
+CLI_U			+= $(PATH_OSYS)/CLI/cycle/cycle.c
+CLI_U			+= $(PATH_OSYS)/CLI/date/date.c
+CLI_U			+= $(PATH_OSYS)/CLI/dump/dump.c
+CLI_U			+= $(PATH_OSYS)/CLI/dumplog/dumplog.c
+CLI_U			+= $(PATH_OSYS)/CLI/dumptrace/dumptrace.c
+CLI_U			+= $(PATH_OSYS)/CLI/echo/echo.c
+CLI_U			+= $(PATH_OSYS)/CLI/fill/fill.c
+CLI_U			+= $(PATH_OSYS)/CLI/hexloader/hexloader.c
+CLI_U			+= $(PATH_OSYS)/CLI/kill/kill.c
+CLI_U			+= $(PATH_OSYS)/CLI/list/list.c
+CLI_U			+= $(PATH_OSYS)/CLI/man/man.c
+CLI_U			+= $(PATH_OSYS)/CLI/memory/memory.c
+CLI_U			+= $(PATH_OSYS)/CLI/mutex/mutex.c
+CLI_U			+= $(PATH_OSYS)/CLI/object/object.c
+CLI_U			+= $(PATH_OSYS)/CLI/process/process.c
+CLI_U			+= $(PATH_OSYS)/CLI/restart/restart.c
+CLI_U			+= $(PATH_OSYS)/CLI/rnd/rnd.c
+CLI_U			+= $(PATH_OSYS)/CLI/run/run.c
+CLI_U			+= $(PATH_OSYS)/CLI/semaphore/semaphore.c
+CLI_U			+= $(PATH_OSYS)/CLI/sloader/sloader.c
+CLI_U			+= $(PATH_OSYS)/CLI/szkern/szkern.c
+CLI_U			+= $(PATH_OSYS)/CLI/uKOS/uKOS.c
+CLI_U			+= $(PATH_OSYS)/CLI/test_mcore/test_mcore.c
+CLI_U			+= $(PATH_OSYS)/CLI/wkserial/wkserial.c
 
 # All the uKOS-X library components
 

@@ -66,7 +66,7 @@ struct	boot {
 static	const	char_t	*argv_cnsUrt0[] = { "console", "urt0" };
 
 static	const	boot_t	aFunction[] = {
-							{ "console", KSYST, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 }
+							{ "console", KSYST, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_115200 }
 						};
 
 #define	KDEF_COMM		KURT0
@@ -92,12 +92,14 @@ STRG_LOC_CONST(aStrLogo[]) = STRG_LOGO;
 void	stub_startUp_launch(void) {
 			uint8_t			i;
 			uint16_t		index;
-			uint32_t		mode;
+			uint32_t		core, mode;
 			bool			error = false;
 			urtxCnf_t		configureURTx;
 			proc_t			*process;
 	const	uKOS_module_t	*module;
 	const	char_t			*identifier, *signature;
+
+	core = GET_RUNNING_CORE;
 
 // Configure by default all the Serial Communication Managers
 // Set the default communication device (KSYST)
@@ -106,7 +108,7 @@ void	stub_startUp_launch(void) {
 	kern_suspendProcess(500u);
 	switch_read(&mode);
 	if (mode >= KNB_FUNCTIONS) {
-		mode = 0;
+		mode = 0u;
 	}
 
 	serial_setDefSerialManager(KDEF_COMM);
@@ -118,6 +120,18 @@ void	stub_startUp_launch(void) {
 	configureURTx.oBaudRate = aFunction[mode].oBaudrate;
 	configureURTx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
 	serial_configure(KURT0, &configureURTx);
+
+// KURT1 is connevted to the WROOM
+// So, only core 0 should unse it
+
+	if (core == KCORE_0) {
+		configureURTx.oNBBits   = KSERIAL_NB_BITS_8;
+		configureURTx.oStopBits = KSERIAL_STOPBITS_1;
+		configureURTx.oParity   = KSERIAL_PARITY_NONE;
+		configureURTx.oBaudRate = KSERIAL_BAUDRATE_460800;
+		configureURTx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
+		serial_configure(KURT1, &configureURTx);
+	}
 
 // Bootstrap ...
 // -------------

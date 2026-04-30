@@ -114,8 +114,8 @@ export PATH_SCRIPTS
 # - mpfr
 
 export BIN_VER=2.46.0
-export GCC_ARM_VER=15.2.0
-export GCC_RVXX_VER=15.2.0
+export GCC_ARM_VER=16.1.0
+export GCC_RVXX_VER=16.1.0
 export NLB_VER=4.6.0
 export NLB_RVXX_VER=4.5.0
 export GDB_VER=17.1

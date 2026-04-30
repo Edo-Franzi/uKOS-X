@@ -112,9 +112,6 @@ static	void		local_TIM4_IRQHandler(void);
 static	void		local_nextTime(uint64_t absTime);
 #endif
 
-static	uintptr_t	*local_newContextPRE(uintptr_t *stack);
-static	uintptr_t	*local_newContextTOU(uintptr_t *stack);
-static	uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message);
 static	void		local_TIM2_IRQHandler(void);
 static	void		local_TIM5_IRQHandler(void);
 static	void		local_updateTickless(uint8_t mode);
@@ -504,8 +501,9 @@ static	void	local_TIM5_IRQHandler(void) {
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	PendSV_C0_IRQHandler(void) __attribute__ ((naked));
-void	PendSV_C0_IRQHandler(void) {
+uintptr_t	*local_newContextPRE(uintptr_t *stack);
+void		PendSV_C0_IRQHandler(void) __attribute__ ((naked));
+void		PendSV_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME_NORMAL;
 
@@ -530,7 +528,7 @@ void	PendSV_C0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t *stack) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t *stack) {
 
 // Save the stack of the old process
 
@@ -601,8 +599,9 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	TIM3_C0_IRQHandler(void) __attribute__ ((naked));
-void	TIM3_C0_IRQHandler(void) {
+uintptr_t	*local_newContextTOU(uintptr_t *stack);
+void		TIM3_C0_IRQHandler(void) __attribute__ ((naked));
+void		TIM3_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME_NORMAL;
 
@@ -630,7 +629,7 @@ void	TIM3_C0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t *stack) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t *stack) {
 
 // Save the stack of the old process
 
@@ -708,8 +707,9 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	kernel_message_C0(void) __attribute__ ((naked));
-void	kernel_message_C0(void) {
+uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message);
+void		kernel_message_C0(void) __attribute__ ((naked));
+void		kernel_message_C0(void) {
 
 	KERN_RECOVER_MESSAGE;
 	KERN_SAVE_FRAME_MESSAGE;
@@ -736,7 +736,7 @@ void	kernel_message_C0(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG(uintptr_t *stack, uint32_t message) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG(uintptr_t *stack, uint32_t message) {
 
 // Save the stack of the old process
 

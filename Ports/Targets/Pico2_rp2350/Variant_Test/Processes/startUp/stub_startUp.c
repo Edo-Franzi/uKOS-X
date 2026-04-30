@@ -142,7 +142,7 @@ void	stub_startUp_launch(void) {
 // Configure by default all the Serial Communication Managers
 // Set the default communication device (KSYST)
 
-	mode = 0;
+	mode = 0u;
 
 	#if (CONFIG_DIFFERENT_SERIAL_PER_CORE_S == true)
 	uint32_t	core;

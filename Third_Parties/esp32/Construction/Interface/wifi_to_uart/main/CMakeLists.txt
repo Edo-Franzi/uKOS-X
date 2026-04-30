@@ -1,14 +1,13 @@
 idf_component_register(
-    SRCS
-        "wifi_to_uart.c"
-
-    INCLUDE_DIRS
-        "."
-
-    REQUIRES
-        driver
-        esp_wifi
-        esp_netif
-        esp_event
-        nvs_flash
+	SRCS
+		"wifi_to_uart.c"
+	INCLUDE_DIRS
+		"."
+	REQUIRES
+		esp_wifi
+		esp_event
+		esp_netif
+		nvs_flash
+		esp_driver_uart
+		esp_driver_gpio
 )

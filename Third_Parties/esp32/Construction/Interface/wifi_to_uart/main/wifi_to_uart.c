@@ -1,6 +1,6 @@
 /*
-; ble_to_uart.
-; ============
+; wifi_to_uart.
+; =============
 
 ; SPDX-License-Identifier: MIT
 
@@ -69,7 +69,8 @@
 #include	"esp_netif.h"
 #include	"nvs_flash.h"
 
-#define	KDEVICE_NAME		"uKOS-X_WIFI"
+#define	KUART_0
+#undef	KWITHOUT_LOGS
 #define	KTAG				"WIFI_UART"
 
 // Wi-Fi SoftAP configuration
@@ -86,14 +87,21 @@
 
 // UART used by the bridge
 
-#define	KUART_PORT			UART_NUM_1
-#define	KUART_BAUDRATE		460800u
-#define	KUART_BUF_SIZE		1024u
+#define	KUART_BAUDRATE	460800u
+#define	KUART_BUF_SIZE	1024u
+#define	KUART_RTS_PIN	UART_PIN_NO_CHANGE
+#define	KUART_CTS_PIN	UART_PIN_NO_CHANGE
 
-#define	KUART_TX_PIN		17u
-#define	KUART_RX_PIN		16u
-#define	KUART_RTS_PIN		UART_PIN_NO_CHANGE
-#define	KUART_CTS_PIN		UART_PIN_NO_CHANGE
+#if (defined(KUART_0))
+#define	KUART_PORT		UART_NUM_0
+#define	KUART_TX_PIN	1u
+#define	KUART_RX_PIN	3u
+
+#else
+#define	KUART_PORT		UART_NUM_1
+#define	KUART_TX_PIN	17u
+#define	KUART_RX_PIN	16u
+#endif
 
 static	int					vListenSock	 = -1;
 static	int					vClientSock	 = -1;
@@ -124,6 +132,14 @@ void	app_main(void) {
 	esp_err_t	ret;
 	BaseType_t	taskCreated;
 
+	#if (defined(KWITHOUT_LOGS))
+	esp_log_level_set("*", ESP_LOG_NONE);
+
+	#else
+	esp_log_level_set("*", ESP_LOG_INFO);
+	esp_log_level_set(KTAG, ESP_LOG_INFO);
+	#endif
+
 	ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
 		ESP_ERROR_CHECK(nvs_flash_erase());
@@ -141,7 +157,7 @@ void	app_main(void) {
 	local_initWifiAp();
 
 	taskCreated = xTaskCreate(local_tcpServerTask, "tcp_server", 4096, NULL, 5, NULL);
-	if (taskCreated != pdPASS) { ESP_LOGE(KTAG, "Failed to create tcp_server task"); }
+	if (taskCreated != pdPASS) { ESP_LOGE(KTAG, "Failed to create tcp_server task");   }
 
 	taskCreated = xTaskCreate(local_uartToWifiTask, "uart_to_wifi", 4096, NULL, 5, NULL);
 	if (taskCreated != pdPASS) { ESP_LOGE(KTAG, "Failed to create uart_to_wifi task"); }
@@ -170,15 +186,15 @@ static	void	local_initWifiAp(void) {
 	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
 	wifi_config_t wifi_config = {
-		.ap = {
-			.ssid			= KWIFI_SSID,
-			.ssid_len		= strlen(KWIFI_SSID),
-			.channel		= KWIFI_CHANNEL,
-			.password		= KWIFI_PASSWORD,
-			.max_connection	= KWIFI_MAX_CONN,
-			.authmode		= WIFI_AUTH_WPA_WPA2_PSK,
-		},
-	};
+						.ap = {
+							.ssid			= KWIFI_SSID,
+							.ssid_len		= strlen(KWIFI_SSID),
+							.channel		= KWIFI_CHANNEL,
+							.password		= KWIFI_PASSWORD,
+							.max_connection	= KWIFI_MAX_CONN,
+							.authmode		= WIFI_AUTH_WPA_WPA2_PSK,
+						},
+					};
 
 	if (strlen(KWIFI_PASSWORD) == 0) {
 		wifi_config.ap.authmode = WIFI_AUTH_OPEN;
@@ -204,9 +220,9 @@ static	void	local_tcpServerTask(void *arg) {
 			int				clientSock;
 			int				len;
 			uint8_t			buffer[KUART_BUF_SIZE];
+	struct	sockaddr_in		serverAddr;
+	struct	sockaddr_in		clientAddr;
 			socklen_t		clientAddrLen = sizeof(clientAddr);
-	struct	sockaddr_in		erverAddr;
-	struct	sockaddr_in		lientAddr;
 
 	(void)arg;
 
@@ -258,14 +274,8 @@ static	void	local_tcpServerTask(void *arg) {
 			if (len > 0) {
 				uart_write_bytes(KUART_PORT, (const char *)buffer, len);
 			}
-			else if (len == 0) {
-				ESP_LOGI(KTAG, "TCP client disconnected");
-				break;
-			}
-			else {
-				ESP_LOGW(KTAG, "recv failed: errno=%d", errno);
-				break;
-			}
+			else if (len == 0) { ESP_LOGI(KTAG, "TCP client disconnected");		 break; }
+			else			   { ESP_LOGW(KTAG, "recv failed: errno=%d", errno); break; }
 		}
 
 		local_closeClient();
@@ -341,7 +351,6 @@ static	int	local_getClientSock(void) {
 	xSemaphoreTake(vSocketMutex, portMAX_DELAY);
 	sock = vClientSock;
 	xSemaphoreGive(vSocketMutex);
-
 	return (sock);
 }
 
@@ -367,13 +376,13 @@ static	void	local_setClientSock(int sock) {
  */
 static	void	local_initUart(void) {
 	const	uart_config_t	aUartConfig = {
-				.baud_rate	= KUART_BAUDRATE,
-				.data_bits	= UART_DATA_8_BITS,
-				.parity		= UART_PARITY_DISABLE,
-				.stop_bits	= UART_STOP_BITS_1,
-				.flow_ctrl	= UART_HW_FLOWCTRL_DISABLE,
-				.source_clk	= UART_SCLK_DEFAULT,
-			};
+								.baud_rate	= KUART_BAUDRATE,
+								.data_bits	= UART_DATA_8_BITS,
+								.parity		= UART_PARITY_DISABLE,
+								.stop_bits	= UART_STOP_BITS_1,
+								.flow_ctrl	= UART_HW_FLOWCTRL_DISABLE,
+								.source_clk	= UART_SCLK_DEFAULT,
+							};
 
 	ESP_ERROR_CHECK(uart_driver_install(KUART_PORT, (KUART_BUF_SIZE * 2), (KUART_BUF_SIZE * 2), 0, NULL, 0));
 	ESP_ERROR_CHECK(uart_param_config(KUART_PORT, &aUartConfig));

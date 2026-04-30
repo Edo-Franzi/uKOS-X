@@ -78,9 +78,6 @@ extern	volatile	bool		vPriv_insideSVC[KNB_CORES];								// Inside an SVC call
 
 // Prototypes
 
-static	uintptr_t	*local_newContextPRE_C0(uintptr_t *stack);
-static	uintptr_t	*local_newContextTOU_C0(uintptr_t *stack);
-static	uintptr_t	*local_newContextMSG_C0(uintptr_t *stack, uint32_t message);
 static	void		local_TIM0_ALA0_IRQHandler_C0(void);
 static	void		local_timeStmp_C0(bool overflow);
 static	void		local_timeStart_C0(void);
@@ -92,7 +89,7 @@ static	void		local_timeStop_C0(void);
  * - Initialise the manager
  *
  */
-void	model_kernel_init_C0(void) {
+static	void	model_kernel_init_C0(void) {
 
 // Reset of the device
 
@@ -120,7 +117,7 @@ void	model_kernel_init_C0(void) {
  * - Run the kernel
  *
  */
-void	model_kernel_runKernel_C0(void) {
+static	void	model_kernel_runKernel_C0(void) {
 
 	TIMER_C0->INTE = TIMER_C0->INTE | TIMER_INTE_ALARM_0;
 	TIMER_C0->INTE = TIMER_C0->INTE | TIMER_INTE_ALARM_1;
@@ -145,7 +142,7 @@ void	model_kernel_runKernel_C0(void) {
  * KKERN_CPU_MODE_STOP			-> CPU in a stop mode
  *
  */
-void	model_kernel_setLowPower_C0(uint8_t mode) {
+static	void	model_kernel_setLowPower_C0(uint8_t mode) {
 
 	switch (mode) {
 		case KKERN_CPU_MODE_NORMAL:
@@ -168,7 +165,7 @@ void	model_kernel_setLowPower_C0(uint8_t mode) {
  * - Read the tickcount
  *
  */
-void	model_kernel_readTickCount_C0(uint64_t *tickCount) {
+static	void	model_kernel_readTickCount_C0(uint64_t *tickCount) {
 
 	INTERRUPTION_OFF;
 	local_timeStmp_C0(false);
@@ -183,7 +180,7 @@ void	model_kernel_readTickCount_C0(uint64_t *tickCount) {
  * - Start a new process timeout
  *
  */
-void	model_kernel_newProcessTimeout_C0(void) {
+static	void	model_kernel_newProcessTimeout_C0(void) {
 
 	TIMER_C0->INTE = TIMER_C0->INTE & (uint32_t)~TIMER_INTE_ALARM_1;
 	TIMER_C0->INTR = TIMER_INTR_ALARM_1;
@@ -201,7 +198,7 @@ void	model_kernel_newProcessTimeout_C0(void) {
  * - Stop the process timeout
  *
  */
-void	model_kernel_stopProcessTimeout_C0(void) {
+static	void	model_kernel_stopProcessTimeout_C0(void) {
 
 	NVIC_DisableIRQ(TIMER_ALA1_VECTOR_NUMBER_C0);
 }
@@ -257,8 +254,9 @@ static	void	local_TIM0_ALA0_IRQHandler_C0(void) {
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	PendSV_C0_IRQHandler(void) __attribute__ ((naked));
-void	PendSV_C0_IRQHandler(void) {
+uintptr_t	*local_newContextPRE_C0(uintptr_t *stack);
+void		PendSV_C0_IRQHandler(void) __attribute__ ((naked));
+void		PendSV_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME_NORMAL;
 
@@ -283,7 +281,7 @@ void	PendSV_C0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE_C0(uintptr_t *stack) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE_C0(uintptr_t *stack) {
 
 // Save the stack of the old process
 
@@ -366,8 +364,9 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE_C0(uintpt
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	TIMER0_IRQ_1_C0_IRQHandler(void) __attribute__ ((naked));
-void	TIMER0_IRQ_1_C0_IRQHandler(void) {
+uintptr_t	*local_newContextTOU_C0(uintptr_t *stack);
+void		TIMER0_IRQ_1_C0_IRQHandler(void) __attribute__ ((naked));
+void		TIMER0_IRQ_1_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME_NORMAL;
 
@@ -395,7 +394,7 @@ void	TIMER0_IRQ_1_C0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU_C0(uintptr_t *stack) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU_C0(uintptr_t *stack) {
 
 // Save the stack of the old process
 
@@ -486,8 +485,9 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU_C0(uintpt
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	kernel_message_C0(void) __attribute__ ((naked));
-void	kernel_message_C0(void) {
+uintptr_t	*local_newContextMSG_C0(uintptr_t *stack, uint32_t message) ;
+void		kernel_message_C0(void) __attribute__ ((naked));
+void		kernel_message_C0(void) {
 
 	KERN_RECOVER_MESSAGE;
 	KERN_SAVE_FRAME_MESSAGE;
@@ -514,7 +514,7 @@ void	kernel_message_C0(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG_C0(uintptr_t *stack, uint32_t message) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG_C0(uintptr_t *stack, uint32_t message) {
 
 // Save the stack of the old process
 

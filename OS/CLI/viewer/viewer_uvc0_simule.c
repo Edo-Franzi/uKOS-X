@@ -75,8 +75,8 @@ struct	graphic {
 			uint8_t		*oImage;			// Ptr on the image
 		};
 
-extern	uint8_t		linker_stUSB_V_BUFFER_0[] __attribute__((weak));
-extern	uint8_t		linker_stUSB_V_BUFFER_1[] __attribute__((weak));
+extern	uint8_t		linker_stUSB_V_BUFFER_0[] __attribute__ ((weak));
+extern	uint8_t		linker_stUSB_V_BUFFER_1[] __attribute__ ((weak));
 static	bool		vKillRequest[KNB_CORES] = MCSET(false);
 
 // Prototypes

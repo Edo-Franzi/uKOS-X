@@ -1,4 +1,4 @@
-__attribute__((used, section(".picobin_block")))
+__attribute__ ((used, section(".picobin_block")))
 static	const	unsigned	char	picobin_block[] = {
 
 	0xD3u,0xDEu,0xFFu,0xFFu,		// START = 0xffffded3 (LE)

@@ -62,7 +62,7 @@ STRG_LOC_CONST(aStrSemaphoreTX_C1[]) = KUSART_SEMAPHORE_TX_C1;
 
 // Prototypes
 
-void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter);
+static	void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter);
 
 /*
  * \brief model_usart_init_C1
@@ -70,7 +70,7 @@ void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter);
  * - Initialise the manager
  *
  */
-int32_t	model_usart_init_C1(void) {
+static	int32_t	model_usart_init_C1(void) {
 	uint32_t	current;
 
 	cb_enable_C1();
@@ -122,7 +122,7 @@ int32_t	model_usart_init_C1(void) {
  * - Configure the manager
  *
  */
-int32_t	model_usart_configure_C1(const urtxCnf_t *configure) {
+static	int32_t	model_usart_configure_C1(const urtxCnf_t *configure) {
 
 	INTERRUPTION_OFF;
 	USART_C1->LCR |= 1u<<7u;
@@ -181,7 +181,7 @@ int32_t	model_usart_configure_C1(const urtxCnf_t *configure) {
  * - Write a buffer
  *
  */
-int32_t	model_usart_write_C1(const uint8_t *buffer, uint32_t size) {
+static	int32_t	model_usart_write_C1(const uint8_t *buffer, uint32_t size) {
 			uint32_t	i, newSize, wkSize = size;
 	const	uint8_t		*wkBuffer = buffer;
 	static	bool		terminate = false, busy = false;
@@ -224,7 +224,7 @@ int32_t	model_usart_write_C1(const uint8_t *buffer, uint32_t size) {
  * - Read n x bytes
  *
  */
-int32_t	model_usart_read_C1(uint8_t *buffer, uint32_t *size) {
+static	int32_t	model_usart_read_C1(uint8_t *buffer, uint32_t *size) {
 	uint8_t		*wkBuffer = buffer;
 	int32_t		status;
 	uint32_t	i;
@@ -267,7 +267,7 @@ int32_t	model_usart_read_C1(uint8_t *buffer, uint32_t *size) {
  * - Flush the usart manager
  *
  */
-int32_t	model_usart_flush_C1(void) {
+static	int32_t	model_usart_flush_C1(void) {
 	sema_t	*semaphore;
 
 // Initialise the circular buffers (rec) and restart the associated semaphore
@@ -289,7 +289,7 @@ int32_t	model_usart_flush_C1(void) {
  * - Interruption RX-TX
  *
  */
-void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter) {
+static	void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 	volatile	uint32_t	iir;
 
 	UNUSED(parameter);

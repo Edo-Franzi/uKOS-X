@@ -9,7 +9,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		stub for the connection of the "urt0" manager to the uart1 device.
+; Goal:		stub for the connection of the "urt0" manager to the uart1 & 2 device.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

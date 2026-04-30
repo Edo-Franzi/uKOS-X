@@ -109,7 +109,7 @@ void	stub_startUp_launch(void) {
 
 	switch_read(&mode);
 	if (mode >= KNB_FUNCTIONS) {
-		mode = 0;
+		mode = 0u;
 	}
 
 	serial_setDefSerialManager(KDEF_COMM);

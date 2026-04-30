@@ -72,7 +72,7 @@ static	void	local_UART_IRQHandler_C0(void);
  * - Initialise the manager
  *
  */
-int32_t	model_uart_init_C0(void) {
+static	int32_t	model_uart_init_C0(void) {
 
 	cb_enable_C0();
 
@@ -115,7 +115,7 @@ int32_t	model_uart_init_C0(void) {
  * - Configure the manager
  *
  */
-int32_t	model_uart_configure_C0(const urtxCnf_t *configure) {
+static	int32_t	model_uart_configure_C0(const urtxCnf_t *configure) {
 
 	INTERRUPTION_OFF;
 	UART_C0->UARTCR &= (uint32_t)~UART_UARTCR_UARTEN;
@@ -185,7 +185,7 @@ int32_t	model_uart_configure_C0(const urtxCnf_t *configure) {
  * - Write a buffer
  *
  */
-int32_t	model_uart_write_C0(const uint8_t *buffer, uint32_t size) {
+static	int32_t	model_uart_write_C0(const uint8_t *buffer, uint32_t size) {
 			uint32_t	i, newSize, wkSize = size;
 	const	uint8_t		*wkBuffer = buffer;
 	static	bool		terminate = false, busy = false;
@@ -230,7 +230,7 @@ int32_t	model_uart_write_C0(const uint8_t *buffer, uint32_t size) {
  * - Read n x bytes
  *
  */
-int32_t	model_uart_read_C0(uint8_t *buffer, uint32_t *size) {
+static	int32_t	model_uart_read_C0(uint8_t *buffer, uint32_t *size) {
 	uint8_t		*wkBuffer = buffer;
 	int32_t		status;
 	uint32_t	i;
@@ -273,7 +273,7 @@ int32_t	model_uart_read_C0(uint8_t *buffer, uint32_t *size) {
  * - Flush the usart manager
  *
  */
-int32_t	model_uart_flush_C0(void) {
+static	int32_t	model_uart_flush_C0(void) {
 	sema_t	*semaphore;
 
 // Initialise the circular buffers (rec) and restart the associated semaphore

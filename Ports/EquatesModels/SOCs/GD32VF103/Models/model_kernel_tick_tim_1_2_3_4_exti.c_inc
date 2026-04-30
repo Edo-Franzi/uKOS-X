@@ -96,9 +96,6 @@ static	void		local_nextTime(uint64_t absTime);
 static	void		local_TIMER4_IRQHandler(void);
 #endif
 
-static	uintptr_t	*local_newContextPRE(uintptr_t *stack);
-static	uintptr_t	*local_newContextTOU(uintptr_t *stack);
-static	uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message);
 static	void		local_TIMER1_IRQHandler(void);
 static	void		local_TIMER3_IRQHandler(void);
 static	void		local_timeStmp(bool overflow);
@@ -483,8 +480,7 @@ static	void	local_TIMER1_IRQHandler(void) {
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	local_EXTI1_IRQHandler(void) __attribute__ ((naked));
-
+void	local_EXTI1_IRQHandler(void);
 void	EXTI1_C0_IRQHandler(void) __attribute__ ((naked));
 void	EXTI1_C0_IRQHandler(void) {
 
@@ -493,7 +489,7 @@ void	EXTI1_C0_IRQHandler(void) {
 	JUMP_FNCT(local_EXTI1_IRQHandler);
 }
 
-void	local_EXTI1_IRQHandler(void) __attribute__ ((naked));
+void	local_EXTI1_IRQHandler(void) __attribute__ ((naked, used));
 void	local_EXTI1_IRQHandler(void) {
 
 	CALL_FNCT(local_newContextPRE);
@@ -515,7 +511,7 @@ void	local_EXTI1_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t *stack) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t *stack) {
 
 // Save the stack of the old process
 // Save the old priority
@@ -605,8 +601,7 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	local_TIMER2_IRQHandler(void) __attribute__ ((naked));
-
+void	local_TIMER2_IRQHandler(void);
 void	TIMER2_C0_IRQHandler(void) __attribute__ ((naked));
 void	TIMER2_C0_IRQHandler(void) {
 
@@ -640,7 +635,7 @@ void	local_TIMER2_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t *stack) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t *stack) {
 
 // Save the stack of the old process
 // Save the old priority
@@ -730,8 +725,7 @@ static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void	local_EXTI0_IRQHandler(void) __attribute__ ((naked));
-
+void	local_EXTI0_IRQHandler(void);
 void	EXTI0_C0_IRQHandler(void) __attribute__ ((naked));
 void	EXTI0_C0_IRQHandler(void) {
 
@@ -764,7 +758,7 @@ void	local_EXTI0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-static	uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG(uintptr_t *stack, uint32_t message) {
+uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG(uintptr_t *stack, uint32_t message) {
 
 // Save the stack of the old process
 // Save the old priority

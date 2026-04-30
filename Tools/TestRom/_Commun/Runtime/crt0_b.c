@@ -73,7 +73,7 @@
 // ================
 
 		uint32_t	vCrt0_randomSeed;
-		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS] __attribute__((aligned(2048)));
+		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS] __attribute__ ((aligned(2048)));
 extern	void		(* const g_pfnVectors_C0[])(void);
 
 // Prototypes

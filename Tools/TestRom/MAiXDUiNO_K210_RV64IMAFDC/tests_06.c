@@ -98,12 +98,12 @@ void	test_06(void) {
 #if (defined(__clang__))
 
 // Helpers C appelés depuis l'ASM nu (compatibles Clang)
-static	uint64_t	__attribute__((noinline, used)) read_plic_threshold_c(uint32_t core) {
+static	uint64_t	__attribute__ ((noinline, used)) read_plic_threshold_c(uint32_t core) {
 
 	return ((uint64_t)plic->targets.target[core].priority_threshold & 0x00000000000000FFULL);
 }
 
-static	void	__attribute__((noinline, used)) write_plic_threshold_c(uint32_t core, uint64_t threshold) {
+static	void	__attribute__ ((noinline, used)) write_plic_threshold_c(uint32_t core, uint64_t threshold) {
 
     plic->targets.target[core].priority_threshold = (uint32_t)(threshold & 0x00000000000000FFULL);
 }

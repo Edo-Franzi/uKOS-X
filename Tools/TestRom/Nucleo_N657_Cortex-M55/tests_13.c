@@ -76,7 +76,7 @@ static	void	local_sysTick_init(void) {
 // DSB + ISB flush the pipeline so that the SysTick read
 // reflects the actual cycle count at this point in time.
 
-static	uint32_t	__attribute__((noinline)) local_sysTick_read(void) {
+static	uint32_t	__attribute__ ((noinline)) local_sysTick_read(void) {
 
 	__asm volatile ("dsb sy" ::: "memory");
 	__asm volatile ("isb"    ::: "memory");
@@ -90,7 +90,7 @@ static	uint32_t	__attribute__((noinline)) local_sysTick_read(void) {
 // Scalar dot product (plain C)
 // ----------------------------
 
-static	float	__attribute__((noinline, optimize("no-tree-vectorize"))) scalar_dot_f32(const float *a, const float *b, uint32_t n) {
+static	float	__attribute__ ((noinline, optimize("no-tree-vectorize"))) scalar_dot_f32(const float *a, const float *b, uint32_t n) {
 	float	sum = 0.0f;
 
 	for (uint32_t i = 0u; i < n; i++) {
@@ -103,7 +103,7 @@ static	float	__attribute__((noinline, optimize("no-tree-vectorize"))) scalar_dot
 // ------------------------------------
 
 #if (HAVE_MVE)
-static	float	__attribute__((noinline, optimize("O2"))) mve_dot_f32(const float *a, const float *b, uint32_t n) {
+static	float	__attribute__ ((noinline, optimize("O2"))) mve_dot_f32(const float *a, const float *b, uint32_t n) {
 	float32x4_t	vAcc = vdupq_n_f32(0.0f);
 	uint32_t	remaining = n;
 	uint32_t	idx = 0u;

@@ -90,7 +90,11 @@ target_compile_definitions(system_compiler_flags INTERFACE
 	${CORE}_S
 	ROMABLE_S
 	"$<$<BOOL:${KERNEL_OPT}>:${KERNEL_OPT}_S>"
-	_POSIX_C_SOURCE=200809L
+)
+
+# C library specific compile definitions
+target_compile_definitions(system_compiler_flags INTERFACE
+	_GNU_SOURCE
 )
 
 # Common flags from *_system_CORTEX_M3.mk, *_system_CORTEX_M4.mk,
@@ -235,11 +239,7 @@ if(NOT DEFINED LINKS_LD)
 	if(NOT DEFINED PATH_MAPP)
 		set(PATH_MAPP "${PATH_BASE}/Runtime")
 	endif()
-	if(PREFIX STREQUAL "llvm-")
-		set(LINKS_LD "${PATH_MAPP}/link${MODE}.ld")
-	else()
-		set(LINKS_LD "${PATH_MAPP}/link${MODE}.ld")
-	endif()
+	set(LINKS_LD "${PATH_MAPP}/link${MODE}.ld")
 endif()
 
 # Common link options
@@ -252,8 +252,7 @@ set(TARGET_COMMON_LINK_OPTIONS
 	-L${PATH_UKOS}/Ports/EquatesModels/SOCs/${SOC}/Runtime
 	-L${PATH_UKOS}/Ports/EquatesModels/Cores/${CORE}/Runtime
 	-T${LINKS_LD}
-	$<$<C_COMPILER_ID:GNU>:-nostartfiles>
-	$<$<AND:$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,20>,$<C_COMPILER_ID:Clang>>:-nostartfiles>
+	-nostartfiles
 )
 target_link_options(${TARGET_NOSIG_ELF} PRIVATE ${TARGET_COMMON_LINK_OPTIONS})
 target_link_options(${TARGET_ELF} PRIVATE
@@ -323,9 +322,7 @@ set(ARTEFACTS_DIR "$ENV{PWD}/System" CACHE PATH "Directory for build artifacts")
 add_custom_command(
 	TARGET ${TARGET_ELF}
 	POST_BUILD
-	COMMAND ${CMAKE_STRIP} --strip-debug ${TARGET_ELF} -o stripped${TARGET_ELF}
-	COMMAND ${CMAKE_SIZE} -A --radix=16 stripped${TARGET_ELF} | grep -F -v -e .debug -e .ARM.attributes -e .comment
-	COMMAND ${CMAKE_COMMAND} -E remove stripped${TARGET_ELF}
+	COMMAND ${CMAKE_SIZE} -A --radix=16 ${TARGET_ELF} | grep -E -e \.text -e \.init_array -e \.fini_array -e \.rodata -e \.signature -e \.data* -e \.bss* -e \.tbss
 	VERBATIM
 )
 

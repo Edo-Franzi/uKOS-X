@@ -76,7 +76,7 @@ MODULE(
 // Runtime specific
 // ================
 
-		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS] __attribute__((aligned(2048)));
+		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS] __attribute__ ((aligned(2048)));
 		void		(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 		void		(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 extern	void		(* const g_pfnVectors_C0[])(void);

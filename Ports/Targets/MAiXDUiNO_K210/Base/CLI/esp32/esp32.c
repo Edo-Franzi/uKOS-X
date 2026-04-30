@@ -5,12 +5,12 @@
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-04-29
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		This tool allows to control the ESP32 Alastor chip.
-;			!!! This tool is Alastor specific.
+; Goal:		This tool allows to control the ESP32 Maixduino chip.
+;			!!! This tool is Maixduino specific.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -58,10 +58,10 @@ STRG_LOC_CONST(aStrApplication[]) =	"esp32        Control of the ESP32 processor
 STRG_LOC_CONST(aStrHelp[])		  = "Initial control of the ESP32 device\n"
 									"===================================\n\n"
 
-									"This tool allows to control the Alastor ESP32\n"
+									"This tool allows to control the Maixduino ESP32\n"
 									"To quit the connected mode, type ++++\n\n"
 
-									"Input format:  esp32 {-disable | -reset | -boot | -srts | -rrts | -connect baudrate}\n"
+									"Input format:  esp32 {-disable | -reset | -connect baudrate}\n"
 									"Output format: [result]\n\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
@@ -118,8 +118,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 //
 // Examples:
 //
+//	esp32 -disable	Disable the ESP32 chip
 //	esp32 -reset	Initialise the ESP32 chip
-//	esp32 -boot		Enable the boot mode
 //	esp32 -connect	Connect the KURT2 to the ESP32 uart
 
 	PRIVILEGE_ELEVATE;
@@ -135,7 +135,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 			text_checkAsciiBuffer(argv[1], "-disable", &equals);
 			if (equals == true) {
-				GPIOE->ODR &= (uint32_t)~(1u<<BESP32_ENABLE);
+				gpiohs->output_val.u32[0] &= (uint32_t)~(1u<<BESP32_ENABLE);
 				break;
 			}
 
@@ -144,42 +144,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 			text_checkAsciiBuffer(argv[1], "-reset", &equals);
 			if (equals == true) {
-				GPIOD->ODR |=			 (1u<<BESP32_NDOWNLOAD);
-				GPIOE->ODR &= (uint32_t)~(1u<<BESP32_ENABLE);	 kern_suspendProcess(10u);
-				GPIOE->ODR |=			 (1u<<BESP32_ENABLE);
-				break;
-			}
-
-// Set the boot mode
-// BOOT ---\____________/---
-// BE   -------\____/-------
-
-			text_checkAsciiBuffer(argv[1], "-boot", &equals);
-			if (equals == true) {
-				GPIOD->ODR &= (uint32_t)~(1u<<BESP32_NDOWNLOAD); kern_suspendProcess(10u);
-				GPIOE->ODR &= (uint32_t)~(1u<<BESP32_ENABLE);	 kern_suspendProcess(10u);
-				GPIOE->ODR |=			 (1u<<BESP32_ENABLE);	 kern_suspendProcess(10u);
-				GPIOD->ODR |=			 (1u<<BESP32_NDOWNLOAD);
-
-				(void)dprintf(KSYST, "ESP32 bootloader is active!\n");
-				break;
-			}
-
-// Set RTS
-// RTS _______/---
-
-			text_checkAsciiBuffer(argv[1], "-srts", &equals);
-			if (equals == true) {
-				GPIOG->ODR |= (1u<<BESP32_CTS);
-				break;
-			}
-
-// Reset RTS
-// RTS ---\_____
-
-			text_checkAsciiBuffer(argv[1], "-rrts", &equals);
-			if (equals == true) {
-				GPIOG->ODR &= (uint32_t)~(1u<<BESP32_CTS);
+				gpiohs->output_val.u32[0] &= (uint32_t)~(1u<<BESP32_ENABLE); kern_suspendProcess(10u);
+				gpiohs->output_val.u32[0] |=			(1u<<BESP32_ENABLE);
 				break;
 			}
 			error = KERR_INA;
@@ -187,7 +153,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		}
 		case 3u: {
 
-// Connect the KURT0 to the KURT2
+// Connect the KURT0 to the KURT1
 // Terminate when KURT0 receives ++++
 
 			text_checkAsciiBuffer(argv[1], "-connect", &equals);
@@ -215,13 +181,13 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 					default:		{ bdValue = KSERIAL_BAUDRATE_460800;  break; }
 				}
 
-				RESERVE_SERIAL(KURT2, KMODE_READ_WRITE);
+				RESERVE_SERIAL(KURT1, KMODE_READ_WRITE);
 				configureURTx.oBaudRate = bdValue;
-				serial_configure(KURT2, &configureURTx);
+				serial_configure(KURT1, &configureURTx);
 
 				while (terminate == false) {
 
-// Read a buffer on the KURT0 and write it on the KURT2
+// Read a buffer on the KURT0 and write it on the KURT1
 // Buffer per buffer operation
 
 					nbBytes = KSZ_BUFFER;
@@ -231,14 +197,14 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 								terminate = true;
 							}
 						}
-						local_putByte(KURT2, &data[0], &nbBytes);
+						local_putByte(KURT1, &data[0], &nbBytes);
 					}
 
-// Read a buffer on the KURT2 and write it on the KURT0
+// Read a buffer on the KURT1 and write it on the KURT0
 // Buffer per buffer operation
 
 					nbBytes = KSZ_BUFFER;
-					if (local_getByte(KURT2, &data[0], &nbBytes) == true) {
+					if (local_getByte(KURT1, &data[0], &nbBytes) == true) {
 						local_putByte(KURT0, &data[0], &nbBytes);
 					}
 
@@ -246,7 +212,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 					kern_suspendProcess(1u);
 				}
-				RELEASE_SERIAL(KURT2, KMODE_READ_WRITE);
+				RELEASE_SERIAL(KURT1, KMODE_READ_WRITE);
 
 				(void)dprintf(KSYST, "End connection.\n\n");
 				break;

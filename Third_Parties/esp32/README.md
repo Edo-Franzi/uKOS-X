@@ -1,6 +1,6 @@
 # ESP32 tools
 
-(c) 2025-2026, Edo. Franzi, 2026-04-27
+(c) 2025-2026, Edo. Franzi, 2026-04-30
 
 ## Packages used for building ESP32 applications
 
@@ -140,24 +140,16 @@ On the iPhone UUID C305 we should get value: 754B 4F53 ...
 uKOS-X forever
 ```
 
-## Build and burn the ble_to_uart firmware
+## Other custom firmwares
 
 ```bash
-# Set-up the environment
-source setup.sh
-
-# From the Alastor console type
-# esp32 -reset
-# esp32 -boot
-
+# ble_to_uart
 cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/ble_to_uart
-idf.py set-target esp32
-idf.py build
-idf.py -p /dev/cu.usbserial-uKOS_1 flash
 
-# From the Alastor console type
-# esp32 -reset
-# esp32 -connect 460800
+# wifi_to_uart
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/wifi_to_uart
+
+# wifi_to_uart_client
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/wifi_to_uart_client
 ```
 
-### 
