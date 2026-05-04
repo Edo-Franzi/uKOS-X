@@ -5,7 +5,7 @@
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-04-29
 ; Modifs:
 ;
 ; Project:	uKOS-X
@@ -61,7 +61,10 @@ STRG_LOC_CONST(aStrHelp[])		  = "Initial control of the ESP32 device\n"
 									"This tool allows to control the Alastor ESP32\n"
 									"To quit the connected mode, type ++++\n\n"
 
-									"Input format:  esp32 {-disable | -reset | -boot | -srts | -rrts | -connect baudrate}\n"
+									"Input format:  esp32 {-disable | -reset}\n"
+									"               esp32 {-connect baudrate}\n"
+									"               esp32 {-ble deviceName}\n"
+									"               esp32 {-wifi ssid password}\n"
 									"Output format: [result]\n\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
@@ -83,21 +86,22 @@ MODULE(
 // CLI tool specific
 // =================
 
-#define	KSZ_BUFFER		128u
+#define	KSZ_BUFFER		64u
 
 // Prototypes
 
-static	bool	local_getByte(serialManager_t serialManager, uint8_t *buffer, uint32_t *nbBytes);
-static	void	local_putByte(serialManager_t serialManager, const uint8_t *buffer, const uint32_t *nbBytes);
+static	bool	local_getByte(serialManager_t serialManager, char_t *buffer, uint32_t *nbBytes);
+static	void	local_putByte(serialManager_t serialManager, const char_t *buffer, const uint32_t *nbBytes);
 static	bool	local_checkExit(const char_t *buffer);
+static	void	local_removeQuotes(const char_t *bufferIn, char_t *bufferOut);
 
 /*
  * \brief Main entry point
  *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
-	char_t		*dummy;
-	uint8_t		data[KSZ_BUFFER], bdValue;
+	char_t		*dummy, data[KSZ_BUFFER], tmp[KSZ_BUFFER];
+	uint8_t		bdValue;
 	int32_t		binary;
 	uint32_t	nbBytes;
 	int32_t		status;
@@ -120,9 +124,6 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 //
 //	esp32 -disable	Disable the ESP32 chip
 //	esp32 -reset	Initialise the ESP32 chip
-//	esp32 -boot		Enable the boot mode
-//	esp32 -srts		Set the RTS
-//	esp32 -rrts		Reset the RTS
 //	esp32 -connect	Connect the KURT2 to the ESP32 uart
 
 	PRIVILEGE_ELEVATE;
@@ -167,31 +168,13 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				(void)dprintf(KSYST, "ESP32 bootloader is active!\n");
 				break;
 			}
-
-// Set RTS
-// RTS _______/---
-
-			text_checkAsciiBuffer(argv[1], "-srts", &equals);
-			if (equals == true) {
-				GPIOG->ODR |= (1u<<BESP32_CTS);
-				break;
-			}
-
-// Reset RTS
-// RTS ---\_____
-
-			text_checkAsciiBuffer(argv[1], "-rrts", &equals);
-			if (equals == true) {
-				GPIOG->ODR &= (uint32_t)~(1u<<BESP32_CTS);
-				break;
-			}
 			error = KERR_INA;
 			break;
 		}
 		case 3u: {
 
-// Connect the KURT0 to the KURT2
-// Terminate when KURT0 receives ++++
+// Connect the KSYST to the KURT2
+// Terminate when KSYST receives ++++
 
 			text_checkAsciiBuffer(argv[1], "-connect", &equals);
 			if (equals == true) {
@@ -218,31 +201,30 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 					default:		{ bdValue = KSERIAL_BAUDRATE_460800;  break; }
 				}
 
-				RESERVE_SERIAL(KURT2, KMODE_READ_WRITE);
 				configureURTx.oBaudRate = bdValue;
 				serial_configure(KURT2, &configureURTx);
-
+				RESERVE_SERIAL(KURT2, KMODE_READ_WRITE);
 				while (terminate == false) {
 
-// Read a buffer on the KURT0 and write it on the KURT2
+// Read a buffer on the KSYST and write it on the KURT2
 // Buffer per buffer operation
 
 					nbBytes = KSZ_BUFFER;
-					if (local_getByte(KURT0, &data[0], &nbBytes) == true) {
+					if (local_getByte(KSYST, &data[0], &nbBytes) == true) {
 						if (nbBytes >= 4u) {
-							if (local_checkExit((const char_t *)&data[0]) == true) {
+							if (local_checkExit(&data[0]) == true) {
 								terminate = true;
 							}
 						}
 						local_putByte(KURT2, &data[0], &nbBytes);
 					}
 
-// Read a buffer on the KURT2 and write it on the KURT0
+// Read a buffer on the KURT2 and write it on the KSYST
 // Buffer per buffer operation
 
 					nbBytes = KSZ_BUFFER;
 					if (local_getByte(KURT2, &data[0], &nbBytes) == true) {
-						local_putByte(KURT0, &data[0], &nbBytes);
+						local_putByte(KSYST, &data[0], &nbBytes);
 					}
 
 // A pack every 1-ms
@@ -252,6 +234,65 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				RELEASE_SERIAL(KURT2, KMODE_READ_WRITE);
 
 				(void)dprintf(KSYST, "End connection.\n\n");
+				break;
+			}
+
+// Send the BLE name
+// (remove the CR)
+
+			text_checkAsciiBuffer(argv[1], "-ble", &equals);
+			if (equals == true) {
+				serial_flush(KURT2);
+
+				local_removeQuotes(argv[2], &tmp[0]);
+				snprintf(data, sizeof(data), "<%.*s/>", (int16_t)(sizeof(data) - (1 + 2 + 1)), tmp);
+				nbBytes = (uint32_t)strlen(&data[0]);
+				local_putByte(KURT2, &data[0], &nbBytes);
+
+// Read the answer
+
+				(void)dprintf(KSYST, "Waiting for the connection ...\n");
+				kern_suspendProcess(5000u);
+				nbBytes = KSZ_BUFFER;
+				if (local_getByte(KURT2, &data[0], &nbBytes) == true) {
+					local_putByte(KSYST, &data[0], &nbBytes);
+				}
+				break;
+			}
+			error = KERR_INA;
+			break;
+		}
+		case 4u: {
+
+// Send the Wi-Fi ssid & password
+// (remove the CR)
+
+			text_checkAsciiBuffer(argv[1], "-wifi", &equals);
+			if (equals == true) {
+				serial_flush(KURT2);
+
+// The SSID
+
+				local_removeQuotes(argv[2], &tmp[0]);
+				snprintf(data, sizeof(data), "<%.*s/>", (int16_t)(sizeof(data) - (1 + 2 + 1)), tmp);
+				nbBytes = (uint32_t)strlen(&data[0]);
+				local_putByte(KURT2, &data[0], &nbBytes);
+
+// The Password
+
+				local_removeQuotes(argv[3], &tmp[0]);
+				snprintf(data, sizeof(data), "<%.*s/>", (int16_t)(sizeof(data) - (1 + 2 + 1)), tmp);
+				nbBytes = (uint32_t)strlen(&data[0]);
+				local_putByte(KURT2, &data[0], &nbBytes);
+
+// Read the answer
+
+				(void)dprintf(KSYST, "Waiting for the connection ...\n");
+				kern_suspendProcess(5000u);
+				nbBytes = KSZ_BUFFER;
+				if (local_getByte(KURT2, &data[0], &nbBytes) == true) {
+					local_putByte(KSYST, &data[0], &nbBytes);
+				}
 				break;
 			}
 			error = KERR_INA;
@@ -281,10 +322,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  * - Read a Byte
  *
  */
-static	bool	local_getByte(serialManager_t serialManager, uint8_t *buffer, uint32_t *nbBytes) {
+static	bool	local_getByte(serialManager_t serialManager, char_t *buffer, uint32_t *nbBytes) {
 	bool	status;
 
-	status = (serial_read(serialManager, buffer, nbBytes) == KERR_SERIAL_NOERR) ? (true) : (false);
+	status = (serial_read(serialManager, (uint8_t *)buffer, nbBytes) == KERR_SERIAL_NOERR) ? (true) : (false);
 	led_toggle(KLED_0);
 	return (status);
 }
@@ -295,13 +336,13 @@ static	bool	local_getByte(serialManager_t serialManager, uint8_t *buffer, uint32
  * - Write a Byte
  *
  */
-static	void	local_putByte(serialManager_t serialManager, const uint8_t *buffer, const uint32_t *nbBytes) {
+static	void	local_putByte(serialManager_t serialManager, const char_t *buffer, const uint32_t *nbBytes) {
 	int32_t		status;
 
 	do {
 		kern_switchFast();
 
-		status = serial_write(serialManager, buffer, *nbBytes);
+		status = serial_write(serialManager, (const uint8_t *)buffer, *nbBytes);
 	} while (status != KERR_SERIAL_NOERR);
 }
 
@@ -319,4 +360,29 @@ static	bool	local_checkExit(const char_t *buffer) {
 	if (exitPatter[2] != buffer[2]) { return (false); }
 	if (exitPatter[3] != buffer[3]) { return (false); }
 	return (true);
+}
+
+/*
+ * \brief local_removeQuotes
+ *
+ * - "a text" -> a text
+ *   Example:
+ *     "La Taverne du Diable"\r\n  ->  La Taverne du Diable
+ *     'La Taverne du Diable'\r\n  ->  La Taverne du Diable
+ *
+ */
+static	void	local_removeQuotes(const char_t *bufferIn, char_t *bufferOut) {
+	size_t	start, end, len;
+
+	if ((bufferIn == NULL) || (bufferOut == NULL)) {
+		return;
+	}
+
+	start = 0; end = strcspn(bufferIn, "\r\n");
+	if ((bufferIn[start] == '"') || (bufferIn[start] == '\''))						  { start++; }
+	if ((end > start) && ((bufferIn[end - 1] == '"') || (bufferIn[end - 1] == '\''))) { end--;	 }
+	len = end - start;
+
+	memcpy(bufferOut, &bufferIn[start], len);
+	bufferOut[len] = '\0';
 }

@@ -49,8 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_08_S))
-
 // Prototypes
 
 extern	void	init_launchCore_1(void (*entry)(void));
@@ -90,5 +88,3 @@ void	test_08(void) {
 		LED_SYSTEM_TOGGLE;
 	}
 }
-
-#endif

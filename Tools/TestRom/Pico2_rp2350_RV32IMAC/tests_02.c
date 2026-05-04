@@ -49,7 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_02_S))
 /*
  * \brief test_02
  *
@@ -70,4 +69,3 @@ void	test_02(void) {
 		}
 	}
 }
-#endif

@@ -48,12 +48,11 @@
 cmake_minimum_required(VERSION 3.26)
 
 # Get project paths
-cmake_path(GET CMAKE_SOURCE_DIR PARENT_PATH PATH_TEST_ROM)
-cmake_path(GET PATH_TEST_ROM PARENT_PATH PATH_TOOLS)
-cmake_path(GET PATH_TOOLS PARENT_PATH PATH_UKOS)
+get_filename_component(PATH_UKOS "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+get_filename_component(PATH_TEST_ROM "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 
 # Set toolchain
-include(${PATH_UKOS}/Ports/cmake/select-riscv-toolchain.cmake)
+include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-riscv-toolchain.cmake)
 
 project(
 	RP2350_RISCV-TestRom
@@ -76,7 +75,8 @@ set_property(CACHE TEST_NUMBER PROPERTY STRINGS ${VALID_TEST_NUMBERS})
 if(NOT TEST_NUMBER IN_LIST VALID_TEST_NUMBERS)
     message(FATAL_ERROR "Invalid value for TEST_NUMBER: ${TEST_NUMBER}. Valid values are: ${VALID_TEST_NUMBERS}.")
 endif()
-message(STATUS "Configured to use test number ${TEST_NUMBER}" )
+set(test_source "tests_${TEST_NUMBER}.c")
+message(STATUS "Configured to use test file ${test_source}" )
 
 # Define the list of supported boards
 list(APPEND VALID_BOARDS
@@ -109,12 +109,12 @@ include_directories(
 # Create the executable
 add_executable(${TARGET_NAME}.elf
     first_rv.c
-    picobin_rv.c
+    picobin.c
     init.c
     cmns.c
+    ${test_source}
     tests.c
     ../_Commun/Runtime/crt0.c
-    ../_Commun/Runtime/debug.c
 )
 
 # Forward selected test

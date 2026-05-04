@@ -1,6 +1,6 @@
 # ESP32 BLE ↔ UART Bridge (NUS)
 
-(c) 2025-2026, Edo. Franzi, 2026-04-30
+(c) 2025-2026, Edo. Franzi, 2026-05-03
 
 ## Introduction
 
@@ -48,16 +48,18 @@ source setup.sh
 #undef	KWITHOUT_LOGS
 
 # Optional board control
-# esp32 -reset
-# esp32 -boot
+esp32 -reset
+esp32 -boot
 
 cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/ble_to_uart
 idf.py set-target esp32
 idf.py build
 idf.py -p /dev/cu.usbserial-uKOS_1 flash
 
-# esp32 -reset
-# esp32 -connect 460800
+# If the host has to provide the BLE name
+esp32 -reset
+esp32 -ble "Name"
+esp32 -connect 460800
 ```
 
 ### For MAiXDUiNO_K210
@@ -71,7 +73,7 @@ source setup.sh
 #define	KWITHOUT_LOGS
 
 # Push, and maintain, the boot button
-# esp32 -reset
+esp32 -reset
 # Push reset
 # Release the boot button
 
@@ -80,8 +82,10 @@ idf.py set-target esp32
 idf.py build
 idf.py -p /dev/cu.usbserial-00320000001 -b 115200 flash
 
-# esp32 -reset
-# esp32 -connect 460800
+# If the host has to provide the BLE name
+esp32 -reset
+esp32 -ble "Name"
+esp32 -connect 460800
 ```
 
 ## Testing (iOS/Android)

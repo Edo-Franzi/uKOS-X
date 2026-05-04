@@ -133,7 +133,7 @@ export LIBUSB_VER=1.0.29
 export LIBCONFUSE_VER=3.3
 export DFUUTIL_VER=1.1
 export LIBJAYLINK_VER=0.4.0
-export DOXYGEN_VER=1.16.1
+export DOXYGEN_VER=1.17.0
 export GRAPHVIZ_VER=14.1.5
 export CPPCHECK_VER=2.20.0
 export PICO_SDK_VER=2.2.0
@@ -142,9 +142,9 @@ export PICOTOOL_VER=2.2.0-a4
 # Goodies
 # Not used for the uKOS-X project
 
-export GCC_ARC_VER=15.2.0
-export BOOST_VER=1.90.0
-export IMAGEMAGICK_VER=7.1.2-19
+export GCC_ARC_VER=16.1.0
+export BOOST_VER=1.91.0
+export IMAGEMAGICK_VER=7.1.2-21
 export PK2CMD_VER=1.27.01
 export SDCC_VER=4.5.0
 export SRECORD_VER=1.65

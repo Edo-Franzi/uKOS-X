@@ -49,7 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_00_S))
 /*
  * \brief test_00
  *
@@ -72,4 +71,3 @@ void	test_00(void) {
 		cmns_wait(100000);
    }
 }
-#endif

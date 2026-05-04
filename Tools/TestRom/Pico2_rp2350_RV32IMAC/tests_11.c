@@ -49,8 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_11_S))
-
 // Prototypes
 
 		void	local_doorBell_IRQHandler(void);
@@ -136,4 +134,3 @@ void	test_11(void) {
 		if ((cpt % 10u) == 0u) { REG(SIO)->DOORBELL_OUT_SET = 0x2u; }
 	}
 }
-#endif

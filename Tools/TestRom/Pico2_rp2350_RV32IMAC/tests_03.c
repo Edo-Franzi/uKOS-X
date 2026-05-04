@@ -49,8 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_03_S))
-
 // Prototypes
 
 void	local_UART0_IRQHandler(void);
@@ -110,5 +108,3 @@ void	local_UART0_IRQHandler(void) {
 		REG(UART0)->UARTICR = (UART_UARTICR_RXIC | UART_UARTICR_RTIC);
 	}
 }
-
-#endif

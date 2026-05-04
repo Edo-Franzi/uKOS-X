@@ -1,12 +1,12 @@
-# ESP32 Wi-Fi ↔ UART Bridge (TCP)
+# ESP32 Wi-Fi ↔ UART Bridge (TCP client)
 
-(c) 2025-2026, Edo. Franzi, 2026-04-30
+(c) 2025-2026, Edo. Franzi, 2026-05-03
 
 ## Introduction
 
 This firmware implements a **transparent bidirectional bridge** between a UART interface and a Wi-Fi TCP connection.
 
-The ESP32 runs as a **Wi-Fi SoftAP** and exposes a **TCP server**.
+The ESP32 runs as a **Wi-Fi Station (STA)** and connects to an existing network. It exposes a **TCP server** on the assigned IP address.
 
 - **Wi-Fi → UART**: TCP data is forwarded to UART
 - **UART → Wi-Fi**: UART data is sent to the TCP client
@@ -14,7 +14,7 @@ The ESP32 runs as a **Wi-Fi SoftAP** and exposes a **TCP server**.
 ## Features
 
 - Transparent byte stream (no protocol overhead)
-- Wi-Fi SoftAP mode (no router required)
+- Wi-Fi **STA mode** (connects to existing router)
 - Standard TCP socket interface
 - Compatible with any TCP client (netcat, telnet, custom apps)
 - Single-client connection model
@@ -22,12 +22,11 @@ The ESP32 runs as a **Wi-Fi SoftAP** and exposes a **TCP server**.
 
 ## Wi-Fi Configuration
 
-### Access Point
+### Station (Client Mode)
 
 ```bash
-SSID:     uKOS-X_WIFI
-Password: 12345678
-IP:       192.168.4.1
+#define KWIFI_SSID     "Your_WiFi_Name"
+#define KWIFI_PASSWORD "Your_WiFi_Password"
 ```
 
 ### TCP Server
@@ -36,6 +35,8 @@ IP:       192.168.4.1
 Port: 3333
 Protocol: TCP
 ```
+
+IP address is assigned by the router (e.g. `192.168.1.xxx`)
 
 Only **one client** can be connected at a time
 
@@ -54,16 +55,18 @@ source setup.sh
 #undef	KWITHOUT_LOGS
 
 # Optional board control
-# esp32 -reset
-# esp32 -boot
+esp32 -reset
+esp32 -boot
 
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/wifi_to_uart
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/wifi_to_uart_client
 idf.py set-target esp32
 idf.py build
 idf.py -p /dev/cu.usbserial-uKOS_1 flash
 
-# esp32 -reset
-# console urt2
+# If the host has to provide the SSID and the password
+esp32 -reset
+esp32 -wifi "Netwok_Name" "Password"
+console urt2
 ```
 
 ### For MAiXDUiNO_K210
@@ -77,17 +80,19 @@ source setup.sh
 #define	KWITHOUT_LOGS
 
 # Push, and maintain, the boot button
-# esp32 -reset
+esp32 -reset
 # Push reset
 # Release the boot button
 
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/wifi_to_uart
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/wifi_to_uart_client
 idf.py set-target esp32
 idf.py build
 idf.py -p /dev/cu.usbserial-00320000001 -b 115200 flash
 
-# esp32 -reset
-# console urt1
+# If the host has to provide the SSID and the password
+esp32 -reset
+esp32 -wifi "Netwok_Name" "Password"
+console urt1
 ```
 
 ## Testing
@@ -95,15 +100,16 @@ idf.py -p /dev/cu.usbserial-00320000001 -b 115200 flash
 ### PC / macOS / Linux
 
 ```
-nc 192.168.4.1 3333
+nc <ESP32_IP> 3333
 ```
 
 ### Steps
 
-1. Connect to Wi-Fi network `uKOS-X_WIFI`
-2. Enter password `12345678`
-3. Open TCP connection using `nc` or any TCP client
-4. Start sending/receiving data
+1. Power the ESP32
+1. Ensure it connects to your Wi-Fi network
+1. Retrieve its IP address (router, logs, DHCP list)
+1. Connect using `nc` or any TCP client
+1. Start sending/receiving data
 
 ## UART
 
@@ -128,8 +134,9 @@ By default the firmware uses `UART_NUM_1` à `460800 8N1`.
 Depends on:
 
 - Wi-Fi signal quality
+- Network load
 - CPU load
-- TCP window / stack tuning
+- TCP stack tuning
 
 Typical range:
 
@@ -137,7 +144,8 @@ Typical range:
 
 ## Internal Behavior
 
-- ESP32 operates in **SoftAP mode**
+- ESP32 operates in **STA mode**
+- Connects to Wi-Fi at boot
 - TCP server listens on port `3333`
 - One active client at a time
 - UART polled every ~20 ms
@@ -153,13 +161,13 @@ Typical range:
 
 ## Comparison with BLE Version
 
-| Feature     | Wi-Fi (this firmware) | BLE version |
-| ----------- | --------------------- | ----------- |
-| Throughput  | High                  | Low–Medium  |
-| Latency     | Medium                | Low         |
-| Range       | Long                  | Short       |
-| Power usage | Higher                | Low         |
-| Setup       | Requires Wi-Fi        | Very simple |
+| Feature    | Wi-Fi (this firmware) | BLE version |
+| ---------- | --------------------- | ----------- |
+| Throughput | High                  | Low–Medium  |
+| Latency    | Medium                | Low         |
+| Range      | Long                  | Short       |
+| Power      | Higher                | Low         |
+| Setup      | Requires Wi-Fi        | Very simple |
 
 ## Typical Use Cases
 
@@ -174,10 +182,12 @@ Typical range:
 
 - For mobile / low-power applications, prefer the BLE version
 
-- You can easily adapt this to:
+- Extensions possible:
 
-  - **STA mode (connect to existing Wi-Fi)**
+  - STA + AP dual mode
 
-  - **UDP mode (lower latency, no guarantee)**
+  - UDP mode (lower latency)
 
-  - **TLS (secure socket)**
+  - TLS (secure TCP)
+  
+  - Multi-client support

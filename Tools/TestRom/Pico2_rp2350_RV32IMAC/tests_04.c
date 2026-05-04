@@ -49,7 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_04_S))
 volatile	bool		vTransmitted = false;
 volatile	bool		vFirstKick = false;
 volatile	uint8_t		vString[] = ".. but we are not afraid, we are alway firsts ...\n";
@@ -160,4 +159,3 @@ void	local_UART0_IRQHandler(void) {
        REG(UART0)->UARTICR = UART_UARTICR_TXIC;
 	}
 }
-#endif

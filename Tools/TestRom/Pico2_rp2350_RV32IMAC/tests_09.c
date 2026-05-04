@@ -49,7 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_09_S))
 #define	KTIM_ESAMPLING_0	((float64_t)(0.5))									// 500-ms
 #define KDELTA_TIME_0		((uint32_t)(KFREQUENCY_TIM * KTIM_ESAMPLING_0))		// Delta time
 
@@ -177,4 +176,3 @@ void	local_TIM0_0_IRQHandler(void) {
 		LED_GREEN_TOGGLE;
 	}
 }
-#endif

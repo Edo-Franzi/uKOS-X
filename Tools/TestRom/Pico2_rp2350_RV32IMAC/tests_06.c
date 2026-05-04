@@ -47,9 +47,10 @@
 ;------------------------------------------------------------------------
 */
 
-#include	"tests.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
-#if (defined(TEST_06_S))
+#include	"tests.h"
 
 #define	VERBOSE_S
 
@@ -194,9 +195,7 @@ void	test_06(void) {
  * - Blink the RED Led
  *
  */
-void	process_0(uintptr_t *argument) {
-
-	UNUSED(argument);
+void	process_0([[maybe_unused]] uintptr_t *argument) {
 
 	cmns_send(KURT0, "Enter P0\n");
 
@@ -216,9 +215,7 @@ void	process_0(uintptr_t *argument) {
  * - Blink the GREEN Led
  *
  */
-void	process_1(uintptr_t *argument) {
-
-	UNUSED(argument);
+void	process_1([[maybe_unused]] uintptr_t *argument) {
 
 	cmns_send(KURT0, "Enter P1\n");
 
@@ -250,9 +247,9 @@ static	void	__attribute__ ((noinline)) local_scheduler(void) {
 		case KMSGFIRST: {
 
 			#if (defined(VERBOSE_S))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vSaveStack);
+			snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vSaveStack);
 			cmns_send(KURT0, "Kernel First    Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel First    Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -268,9 +265,9 @@ static	void	__attribute__ ((noinline)) local_scheduler(void) {
 		case KMSGRUNP0: {
 
 			#if (defined(VERBOSE_S))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vSaveStack);
+			snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vSaveStack);
 			cmns_send(KURT0, "Kernel go to P0 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel go to P0 Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -286,9 +283,9 @@ static	void	__attribute__ ((noinline)) local_scheduler(void) {
 		case KMSGRUNP1: {
 
 			#if (defined(VERBOSE_S))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vSaveStack);
+			snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vSaveStack);
 			cmns_send(KURT0, "Kernel go to P1 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP1);
+			snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP1);
 			cmns_send(KURT0, "Kernel go to P1 Stack P1 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -298,4 +295,3 @@ static	void	__attribute__ ((noinline)) local_scheduler(void) {
 		}
 	}
 }
-#endif

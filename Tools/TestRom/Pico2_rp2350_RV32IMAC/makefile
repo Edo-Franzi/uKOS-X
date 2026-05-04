@@ -46,6 +46,13 @@
 
 SHELL			= /bin/sh
 
+ifeq ($(VERBOSE),1)
+    Q :=
+else
+    Q := @
+endif
+MAKEFLAGS		+= --no-print-directory
+
 ifndef PATH_GCC_RVXX
 $(error PATH_GCC_RVXX is not defined)
 endif
@@ -57,6 +64,7 @@ COMPILER_FAMILY	?= gcc
 
 TARGET			=  testROM
 BOARD			=  Pico2_rp2350_RV32IMAC
+TEST_NUMBER		?= 00
 
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun/Includes
@@ -67,8 +75,8 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/SOC
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
-OBJ				=  first_rv.o picobin_rv.o init.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o
+OBJ				=  first_rv.o picobin.o init.o cmns.o tests.o
+OBJ				+= ../_Commun/Runtime/crt0.o
 
 # Target & Infrastructure
 
@@ -87,6 +95,7 @@ CFLAGS			+= -MMD
 CFLAGS			+= -DCACHE_D_S -DSECURE_S
 CFLAGS			+= -DBOARD_Pico2=true
 CFLAGS			+= -DBOARD_Pico2W=false
+CFLAGS			+= -DTEST_$(TEST_NUMBER)_S
 
 CFLAGS			+= -Wall
 CFLAGS			+= -Wlogical-op
@@ -101,32 +110,32 @@ LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage -Wl,--no-warn-rw
 SWTCH_OBJDUMP	=  -f -p -g -D -d -h -t -s
 
 all :
-	$(MAKE) clr_all
-	$(MAKE) build
-	$(MAKE) clr
+	$(Q)$(MAKE) clr_all
+	$(Q)$(MAKE) build
+	$(Q)$(MAKE) clr
 
 src :
-	$(MAKE) clr_all
-	$(MAKE) build
-	$(MAKE) display
-	$(MAKE) clr
+	$(Q)$(MAKE) clr_all
+	$(Q)$(MAKE) build
+	$(Q)$(MAKE) display
+	$(Q)$(MAKE) clr
 
 burn :
-	$(MAKE) program
+	$(Q)$(MAKE) program
 
 clean :
-	$(MAKE) clr
+	$(Q)$(MAKE) clr
 
 clean_all :
-	$(MAKE) clr_all
+	$(Q)$(MAKE) clr_all
 
 # Clean
 
 clr :
-	rm -f *.o *.d ../_Commun/Runtime/*.o ../_Commun/Runtime/*.d
+	$(Q)rm -f *.o *.d ../_Commun/Runtime/*.o ../_Commun/Runtime/*.d
 
 clr_all :
-	rm -f *.hex *.bin *.elf *.o *.d *.map *.dis *.lst ../_Commun/Runtime/*.o ../_Commun/Runtime/*.d
+	$(Q)rm -f *.hex *.bin *.elf *.o *.d *.map *.dis *.lst ../_Commun/Runtime/*.o ../_Commun/Runtime/*.d
 
 # Build
 
@@ -134,19 +143,28 @@ build : $(TARGET).bin $(TARGET).hex $(TARGET).dis
 
 display : $(TARGET).bin $(TARGET).dis $(TARGET).lst
 
+%.o : %.c
+	@echo "  CC      $<"
+	$(Q)$(CC) $(CFLAGS) -o $@ $<
+
 $(TARGET).bin : $(TARGET).elf
-	$(OBJCOPY) $(OBJCOPYFLAGS) -O binary $< $@
+	@echo "  OBJCOPY $@"
+	$(Q)$(OBJCOPY) $(OBJCOPYFLAGS) -O binary $< $@
 
 $(TARGET).elf : $(OBJ)
-	$(LINK.o) -o $@ $^ -lm
+	@echo "  LD      $@"
+	$(Q)$(LINK.o) -o $@ $^ -lm
 
 $(TARGET).dis : $(TARGET).elf
-	$(OBJDUMP) -S $< > $@
+	@echo "  OBJDUMP $@"
+	$(Q)$(OBJDUMP) -S $< > $@
 
 $(TARGET).lst : $(TARGET).elf
-	$(OBJDUMP) $(SWTCH_OBJDUMP) $< > $@
+	@echo "  OBJDUMP $@"
+	$(Q)$(OBJDUMP) $(SWTCH_OBJDUMP) $< > $@
 
 $(TARGET).hex : $(TARGET).elf
-	$(OBJCOPY) -O ihex --strip-all $< $@
+	@echo "  OBJCOPY $@"
+	$(Q)$(OBJCOPY) -O ihex --strip-all $< $@
 
 .PHONY : all src clean clean_all clr clr_all build display

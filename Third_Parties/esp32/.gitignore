@@ -6,6 +6,3 @@ Construction/Interface/ble_to_uart/sdkconfig.old
 Construction/Interface/wifi_to_uart/build/
 Construction/Interface/wifi_to_uart/sdkconfig
 Construction/Interface/wifi_to_uart/sdkconfig.ond
-Construction/Interface/wifi_to_uart_client/build/
-Construction/Interface/wifi_to_uart_client/sdkconfig
-Construction/Interface/wifi_to_uart_client/sdkconfig.ond

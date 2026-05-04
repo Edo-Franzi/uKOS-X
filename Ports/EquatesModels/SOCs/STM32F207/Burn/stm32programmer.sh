@@ -64,7 +64,7 @@ readonly FAINT=$'\033[2m'
 readonly ITALIC=$'\033[3m'
 readonly NC=$'\033[0m' # No Color
 
-readonly target_device='STM32H7xx'
+readonly target_device='STM32F2xx'
 readonly HEX='FLASH.hex'
 
 # Detection of the STM32_Programmer_CLI on different OS

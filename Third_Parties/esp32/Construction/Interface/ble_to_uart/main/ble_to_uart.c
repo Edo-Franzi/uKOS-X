@@ -73,30 +73,35 @@
 #include	"esp_system.h"
 #include	"esp_rom_sys.h"
 
-#define	KUART_0
+#undef	KUART_0
 #undef	KWITHOUT_LOGS
-#define KTAG			"BLE_UART"
+#undef	KSET_HARD_DEVICE_NAME
 
 // BLE device
 
-#define	KDEVICE_NAME	"uKOS-X_BLE"
+#define	KDEVICE_NAME_MAX_SIZE	32u
+
+#if (defined(KSET_HARD_DEVICE_NAME))
+#define	KDEVICE_NAME			"uKOS-X_BLE"
+#endif
 
 // UART used by the bridge
 
-#define	KUART_BAUDRATE	460800u
-#define	KUART_BUF_SIZE	1024u
-#define	KUART_RTS_PIN	UART_PIN_NO_CHANGE
-#define	KUART_CTS_PIN	UART_PIN_NO_CHANGE
+#define KTAG					"BLE_UART"
+#define	KUART_BAUDRATE			460800u
+#define	KUART_BUF_SIZE			1024u
+#define	KUART_RTS_PIN			UART_PIN_NO_CHANGE
+#define	KUART_CTS_PIN			UART_PIN_NO_CHANGE
 
 #if (defined(KUART_0))
-#define	KUART_PORT		UART_NUM_0
-#define	KUART_TX_PIN	1u
-#define	KUART_RX_PIN	3u
+#define	KUART_PORT				UART_NUM_0
+#define	KUART_TX_PIN			1u
+#define	KUART_RX_PIN			3u
 
 #else
-#define	KUART_PORT		UART_NUM_1
-#define	KUART_TX_PIN	17u
-#define	KUART_RX_PIN	16u
+#define	KUART_PORT				UART_NUM_1
+#define	KUART_TX_PIN			17u
+#define	KUART_RX_PIN			16u
 #endif
 
 // Nordic UART Service UUIDs, little-endian format for NimBLE
@@ -113,6 +118,10 @@ static			uint16_t		vTxValHandle	 = 0;
 static			uint16_t		vMtuPayload		 = 20;
 static			uint8_t			vOwnAddrType;
 
+#if (!defined(KSET_HARD_DEVICE_NAME))
+static			char			vDeviceName[KDEVICE_NAME_MAX_SIZE + 1];
+#endif
+
 // Prototypes
 
 static	void	local_bleOnSync(void);
@@ -125,6 +134,12 @@ static	void	local_initUart(void);
 static	int		local_bleUartTXAccess_cb(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg);
 static	int		local_bleUartRXAccess_cb(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg);
 static	int		local_gapEvent_cb(struct ble_gap_event *event, void *arg);
+
+#if (!defined(KSET_HARD_DEVICE_NAME))
+static	bool	local_waitBleConfig(void);
+static	bool	local_readUartTag(char *buffer, size_t size);
+static	void	local_writeUartText(const char *text);
+#endif
 
 static	const	struct	ble_gatt_svc_def aGattService[] = {
 							{
@@ -165,20 +180,31 @@ void	app_main(void) {
 
 	#if (defined(KWITHOUT_LOGS))
 	esp_log_level_set("*", ESP_LOG_NONE);
+    esp_log_set_vprintf(NULL);
 
 	#else
+    esp_log_set_vprintf(&vprintf);
 	esp_log_level_set("*", ESP_LOG_INFO);
 	esp_log_level_set(KTAG, ESP_LOG_INFO);
 	#endif
 
 	ret = nvs_flash_init();
-	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+	if ((ret == ESP_ERR_NVS_NO_FREE_PAGES) || (ret == ESP_ERR_NVS_NEW_VERSION_FOUND)) {
 		ESP_ERROR_CHECK(nvs_flash_erase());
 		ret = nvs_flash_init();
 	}
 	ESP_ERROR_CHECK(ret);
 
 	local_initUart();
+	vTaskDelay(pdMS_TO_TICKS(200));
+	uart_flush_input(KUART_PORT);
+
+	#if (!defined(KSET_HARD_DEVICE_NAME))
+	if (local_waitBleConfig() == false) {
+		local_writeUartText("Configuration error");
+		return;
+	}
+	#endif
 
 	ESP_ERROR_CHECK(nimble_port_init());
 	ESP_ERROR_CHECK(ble_att_set_preferred_mtu(517));
@@ -190,13 +216,24 @@ void	app_main(void) {
 	ble_svc_gap_init();
 	ble_svc_gatt_init();
 
+	#if (defined(KSET_HARD_DEVICE_NAME))
 	ESP_ERROR_CHECK(ble_svc_gap_device_name_set(KDEVICE_NAME));
+
+	#else
+	ESP_ERROR_CHECK(ble_svc_gap_device_name_set(vDeviceName));
+	#endif
+
 	ESP_ERROR_CHECK(ble_gatts_count_cfg(aGattService));
 	ESP_ERROR_CHECK(ble_gatts_add_svcs(aGattService));
 
 	nimble_port_freertos_init(local_nimbleHostTask);
+
 	taskCreated = xTaskCreate(local_uartToBleTask, "uart_to_ble", 4096, NULL, 5, NULL);
 	if (taskCreated != pdPASS) { ESP_LOGE(KTAG, "Failed to create uart_to_ble task"); }
+
+	#if (!defined(KSET_HARD_DEVICE_NAME))
+	local_writeUartText("BLE ready\n");
+	#endif
 
 	ESP_LOGI(KTAG, "BLE UART bridge started");
 }
@@ -217,11 +254,18 @@ static	void	local_startAdvertising(void) {
 	struct	ble_hs_adv_fields	fields;
 
 	memset(&fields, 0, sizeof(fields));
-	fields.flags			= BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
-	fields.name				= (const uint8_t *)KDEVICE_NAME;
-	fields.name_len			= strlen(KDEVICE_NAME);
-	fields.name_is_complete = 1;
+	fields.flags	= BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
 
+	#if (defined(KSET_HARD_DEVICE_NAME))
+	fields.name		= (const uint8_t *)KDEVICE_NAME;
+	fields.name_len = strlen(KDEVICE_NAME);
+
+	#else
+	fields.name		= (const uint8_t *)vDeviceName;
+	fields.name_len = strlen(vDeviceName);
+	#endif
+
+	fields.name_is_complete = 1;
 	rc = ble_gap_adv_set_fields(&fields);
 	if (rc != 0) { ESP_LOGE(KTAG, "ble_gap_adv_set_fields failed: %d", rc); return; }
 
@@ -230,15 +274,108 @@ static	void	local_startAdvertising(void) {
 	adv_params.disc_mode   = BLE_GAP_DISC_MODE_GEN;
 	adv_params.channel_map = BLE_GAP_ADV_DFLT_CHANNEL_MAP;
 
-// 0x20 = 20 ms, 0x40 = 40 ms environ
-
 	adv_params.itvl_min = 0x20;
 	adv_params.itvl_max = 0x40;
 
 	rc = ble_gap_adv_start(vOwnAddrType, NULL, BLE_HS_FOREVER, &adv_params, local_gapEvent_cb, NULL);
-	if (rc != 0) { ESP_LOGE(KTAG, "ble_gap_adv_start failed: %d", rc); }
-	else		 { ESP_LOGI(KTAG, "Advertising as uKOS-X_BLE");		   }
+	if (rc != 0) {
+		ESP_LOGE(KTAG, "ble_gap_adv_start failed: %d", rc);
+	}
+	else {
+		#if (defined(KSET_HARD_DEVICE_NAME))
+		ESP_LOGI(KTAG, "Advertising as %s", KDEVICE_NAME);
+
+		#else
+		ESP_LOGI(KTAG, "Advertising as %s", vDeviceName);
+		#endif
+	}
 }
+
+#if (!defined(KSET_HARD_DEVICE_NAME))
+/*
+ * \brief local_waitBleConfig
+ *
+ * - Waiting for theBLE configuration.
+ *
+ */
+static	bool	local_waitBleConfig(void) {
+
+	ESP_LOGI(KTAG, "Waiting BLE device name");
+	if (local_readUartTag(vDeviceName, sizeof(vDeviceName)) == false) {
+		return (false);
+	}
+
+	ESP_LOGI(KTAG, "BLE name=[%s], len=%d", vDeviceName, strlen(vDeviceName));
+
+	return (true);
+}
+
+/*
+ * \brief local_readUartTag
+ *
+ * - Waiting for the NAME tags < .../>.
+ *
+ */
+static	bool	local_readUartTag(char *buffer, size_t size) {
+	char	c, last = 0;
+	size_t	i = 0;
+	bool	in = false;
+	int		len;
+
+	if ((buffer == NULL) || (size == 0)) {
+		return (false);
+	}
+
+	memset(buffer, 0, size);
+
+	while (true) {
+		len = uart_read_bytes(KUART_PORT, (uint8_t *)&c, 1, portMAX_DELAY);
+		if (len <= 0) {
+			continue;
+		}
+
+		if (in == false) {
+			if (c == '<') {
+				in = true;
+				i = 0;
+				last = 0;
+			}
+			continue;
+		}
+
+		if ((last == '/') && (c == '>')) {
+			if (i == 0) {
+				return (false);
+			}
+
+			buffer[i - 1] = 0;
+			return (true);
+		}
+
+		if (i >= (size - 1)) {
+			buffer[0] = 0;
+			return (false);
+		}
+
+		buffer[i++] = c;
+		buffer[i] = 0;
+		last = c;
+	}
+}
+
+/*
+ * \brief local_writeUartText
+ *
+ * - Write a message on UART.
+ *
+ */
+static	void	local_writeUartText(const char *text) {
+
+	if (text != NULL) {
+		uart_write_bytes(KUART_PORT, text, strlen(text));
+	}
+}
+#endif
 
 /*
  * \brief local_bleUartTXAccess_cb
@@ -265,9 +402,7 @@ static	int		local_bleUartTXAccess_cb(uint16_t conn_handle, uint16_t attr_handle,
  *
  */
 static	int		local_bleUartRXAccess_cb(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg) {
-	int			rc;
-	int			len = OS_MBUF_PKTLEN(ctxt->om);
-	int			offset = 0;
+	int			rc, len = OS_MBUF_PKTLEN(ctxt->om), offset = 0;
 	uint8_t		buffer[KUART_BUF_SIZE];
 
 	(void)conn_handle;
@@ -300,8 +435,7 @@ static	int		local_bleUartRXAccess_cb(uint16_t conn_handle, uint16_t attr_handle,
  */
 static	void	local_notifyUartData(const uint8_t *data, uint16_t len) {
 			int			rc;
-			uint16_t	offset = 0;
-			uint16_t	chunk;
+			uint16_t	offset = 0, chunk;
 	struct	os_mbuf		*om;
 
 	if ((vConnHandle == BLE_HS_CONN_HANDLE_NONE) || (!vNotifyEnabled)) { return; }

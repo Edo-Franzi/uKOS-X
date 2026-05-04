@@ -197,6 +197,21 @@ static	void	local_PLL_Configuration(void) {
 
 	// Configure clk_peri = clk_sys (for UART, etc.)
 	REG(CLOCKS)->CLK_PERI_CTRL = (0x0u<<5u) | (1u<<0x0Bu);
+
+// The timer clocks
+// ----------------
+
+// Timer 0 clocked to 1-MHz
+
+	REG(TICKS)->TIMER0_CTRL	  = TICKS_TIMER0_CTRL_ENABLE;
+	REG(TICKS)->TIMER0_CYCLES = KCRYSTAL / KFREQUENCY_TIM;
+	REG(TIMER0)->SOURCE		  = 0u;
+
+// Timer 1 clocked to 1-MHz
+
+	REG(TICKS)->TIMER1_CTRL	  = TICKS_TIMER1_CTRL_ENABLE;
+	REG(TICKS)->TIMER1_CYCLES = KCRYSTAL / KFREQUENCY_TIM;
+	REG(TIMER1)->SOURCE		  = 0u;
 }
 
 /*

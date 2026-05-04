@@ -49,7 +49,6 @@
 
 #include	"tests.h"
 
-#if (defined(TEST_01_S))
 /*
  * \brief test_01
  *
@@ -67,4 +66,3 @@ void	test_01(void) {
 		cmns_send(KURT0, "Nous sommes les petits Strumpfs, trala lala lala ...\n");
 	}
 }
-#endif

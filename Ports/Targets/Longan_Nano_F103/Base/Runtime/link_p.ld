@@ -87,7 +87,7 @@ INCLUDE		GD32VF103CBT.ld
 /* on a boundary of 16-bytes								*/
 
 linker_sizeStackSystem_C0	= (0);													/* Length of the System stack  								*/
-linker_sizeStackFirst_C0	= (1792);												/* Length of the First stack  								*/
+linker_sizeStackFirst_C0	= (768);												/* Length of the First stack  								*/
 
 /* IMPORTANT:												*/
 /* External memory, User (download application) and shared	*/
@@ -103,7 +103,7 @@ linker_lnUMemo				= (3K);													/* Length of the user memory	  							*/
 /* on a boundary of 8-bytes									*/
 
 linker_stHeap				= (linker_stPrgmData + linker_lnPrgmData);				/* 0x20004000: start of the heap							*/
-linker_lnHeap				= (13K);												/* Length of the heap										*/
+linker_lnHeap				= (14K);												/* Length of the heap										*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
