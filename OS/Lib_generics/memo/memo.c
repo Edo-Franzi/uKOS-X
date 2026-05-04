@@ -122,9 +122,9 @@ static	void	local_init(void);
  * \endcode
  *
  * \param[in]	memoAlignement	KMEMO_ALIGN_4
- * \param[in]	-				KMEMO_ALIGN_8
- * \param[in]	-				KMEMO_ALIGN_16
- * \param[in]	-				KMEMO_ALIGN_32
+ *								KMEMO_ALIGN_8
+ *								KMEMO_ALIGN_16
+ *								KMEMO_ALIGN_32
  * \param[in]	size			Size of the memory to allocate
  * \param[in]	*identifier		Ptr on the identifier
  * \return		nullptr			Memory block not allocated
@@ -243,9 +243,9 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
  * \endcode
  *
  * \param[in]	memoAlignement	KMEMO_ALIGN_4
- * \param[in]	-				KMEMO_ALIGN_8
- * \param[in]	-				KMEMO_ALIGN_16
- * \param[in]	-				KMEMO_ALIGN_32
+ *								KMEMO_ALIGN_8
+ *								KMEMO_ALIGN_16
+ *								KMEMO_ALIGN_32
  * \param[in]	*address		Ptr on the address
  * \param[in]	size			Size of the memory to allocate
  * \param[in]	*identifier		Ptr on the identifier

@@ -79,7 +79,6 @@ uint16_t	vKern_curStim[KNB_CORES];
  *   Before using the manager functions, it is necessary to
  *   call this function
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

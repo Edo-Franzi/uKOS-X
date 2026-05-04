@@ -80,7 +80,6 @@ void	cmns_wait(uint32_t us);
 /*
  * \brief cmns_init
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

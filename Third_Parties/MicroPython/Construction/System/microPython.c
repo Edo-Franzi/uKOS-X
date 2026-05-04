@@ -257,7 +257,6 @@ void	mp_hal_stdout_tx_strn(const uint8_t *ascii, mp_uint_t size) {
 /*
  * \brief mp_hal_stdin_rx_chr
  *
- * \param[in]	-
  * \return		char	The read char
  *
  */

@@ -241,7 +241,6 @@ void	__attribute__ ((noreturn)) __wrap___stack_chk_fail(void) {
  * Same behaviour than exit(EXIT_OS_SUCCESS)
  * This call is used to properly terminate the process execution.
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

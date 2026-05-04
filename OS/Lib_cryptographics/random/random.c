@@ -102,7 +102,7 @@ extern	int32_t		stub_random_read(randomGenerator_t generator, uint32_t *number);
  * \endcode
  *
  * \param[in]	generator			KRANDOM_SOFT, use the software implementation
- * \param[in]	-					KRANDOM_HARD, use the hardware implementation
+ *									KRANDOM_HARD, use the hardware implementation
  * \param[out]	*number				Ptr on the number
  * \param[in]	nbNumbers			Number of numbers
  * \return		KERR_RANDOM_NOERR	OK

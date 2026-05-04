@@ -364,7 +364,6 @@ static	uint32_t	local_getAddress(const char_t *hexString) {
 /*
  * \brief local_usage
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

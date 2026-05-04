@@ -117,7 +117,6 @@ static			uintptr_t	vTableRam_C0[KSZ_TABLE] __attribute__ ((aligned(512)));
  * - Initialise some basic periphs
  * - GPIO, watchdog, SDRAM
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -150,7 +149,6 @@ void	init_init(void) {
  *
  * - Vector table relocation
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

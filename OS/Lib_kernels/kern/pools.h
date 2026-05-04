@@ -159,8 +159,8 @@ extern	int32_t	kern_setPool(pool_t *handle, const pcnf_t *configure);
  * \param[in]	*handle			Ptr on the handle
  * \param[out]	**address		Ptr on the pool address
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOPOI	The memory pool does not exist
  * \return		KERR_KERN_PONCF	The memory pool is not configured

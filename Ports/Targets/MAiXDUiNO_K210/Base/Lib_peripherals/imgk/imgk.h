@@ -215,7 +215,6 @@ extern	int32_t	imgk_configure(const cnfImgk_t *configure);
  *    status = imgk_acquisition();
  * \endcode
  *
- * \param[in]	-
  * \return		KERR_IMGK_NOERR	OK
  * \return		KERR_IMGK_GEERR	General error
  * \return		KERR_IMGK_TIMEO	Timeout error

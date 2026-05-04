@@ -81,7 +81,6 @@ extern	uintptr_t	g_pfnVectors_C1[];
  * - Initialise some basic periphs
  * - GPIO, watchdog, SDRAM
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

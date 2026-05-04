@@ -94,8 +94,8 @@ extern	"C" {
  *
  * \param[in]	reserveMode		Any mode
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_ADC_NOERR	The manager is reserved
  * \return		KERR_ADC_GEERR	General error
  * \return		KERR_ADC_CHBSY	The manager is busy

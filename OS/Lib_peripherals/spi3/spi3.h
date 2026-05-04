@@ -96,8 +96,8 @@ extern	"C" {
  *
  * \param[in]	reserveMode		Any mode
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_SPI_NOERR	The manager is reserved
  * \return		KERR_SPI_GEERR	General error
  * \return		KERR_SPI_CHBSY	The manager is busy
@@ -206,8 +206,8 @@ extern	int32_t	spi3_writeRead(uint8_t *data);
  * \param[in]	*rData			Ptr on the data to read
  * \param[in]	rSize			Size of the read buffer
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_SPI_NOERR	OK
  * \return		KERR_SPI_GEERR	General error
  * \return		KERR_SPI_TIMEO	Timeout error

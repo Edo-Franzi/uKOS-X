@@ -78,7 +78,6 @@ static	void	local_ECLIC_Configuration(void);
  * - Initialise some basic periphs
  * - GPIO, watchdog, RTC
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

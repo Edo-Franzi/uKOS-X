@@ -127,7 +127,7 @@ extern	int32_t	calendar_writeUnixTime(uint64_t unixTime);
  * \endcode
  *
  * \param[in]	fromTimer			KFROM_TIMER, use the Unix time from the Timer (normal mode)
- * \param[in]	-					KFROM_RTC, use the Unix time from the RTC (used for better precision)
+ *									KFROM_RTC, use the Unix time from the RTC (used for better precision)
  * \param[out]	*unixTime			Ptr on the Unix time
  * \return		KERR_CALENDAR_NOERR	OK
  *

@@ -1,6 +1,6 @@
 /*
 ; wki2c.
-; ====
+; ======
 
 ; SPDX-License-Identifier: MIT
 

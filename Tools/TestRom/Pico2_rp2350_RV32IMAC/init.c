@@ -57,7 +57,6 @@ extern	uint8_t		linker_topStackFirst_C1[];
  * - Initialise basic peripherals for RISC-V
  * - GPIO, clocks
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

@@ -34,7 +34,6 @@
  *
  * - Initialise the UART0 and UART1 peripherals
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

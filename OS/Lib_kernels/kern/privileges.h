@@ -96,7 +96,7 @@ extern	void	privileges_init(void);
  * - This function allows to change the execution mode (Privileged / user)
  *
  * \param[in]	mode			KPROC_USER, Reduction the process rights in the user mode
- * \param[in]	-				KPROC_PRIVILEGED, Elevate the process rights in the privileged mode
+ *								KPROC_PRIVILEGED, Elevate the process rights in the privileged mode
  * \return		KERR_KERN_NOERR	OK
  *
  */
@@ -116,7 +116,6 @@ extern	int32_t	kern_setPrivilegeMode(uint8_t mode);
  * - Coming from the TRAP dispatcher.
  * - Set the privileged mode
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

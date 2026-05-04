@@ -97,7 +97,6 @@ extern	"C" {
  *    stub_kern_init();
  * \endcode
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -113,7 +112,6 @@ extern	void	stub_kern_init(void);
  *    stub_kern_runKernel();
  * \endcode
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -197,7 +195,6 @@ extern	void	stub_kern_setPreciseSignal(prcs_t *handle);
  *    stub_kern_readTickCount(&tickCount);
  * \endcode
  *
- * \param[in]	-
  * \param[out]	*tickCount	Ptr on the tickCount (1-us of resolution)
  *
  * \note This function does not return a value (None).
@@ -214,7 +211,6 @@ extern	void	stub_kern_readTickCount(uint64_t *tickCount);
  *    stub_kern_newProcessTimeout();
  * \endcode
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -230,7 +226,6 @@ extern	void	stub_kern_newProcessTimeout(void);
  *    stub_kern_stopProcessTimeout();
  * \endcode
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

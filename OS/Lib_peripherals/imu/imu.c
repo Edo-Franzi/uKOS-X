@@ -104,8 +104,8 @@ extern	int32_t		stub_imu_read(imuAccePack_t *accelerometer, imuGyroPack_t *gyros
  *
  * \param[in]	reserveMode		Any mode
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_IMU_NOERR	The manager is reserved
  * \return		KERR_IMU_GEERR	General error
  * \return		KERR_IMU_CHBSY	The manager is busy

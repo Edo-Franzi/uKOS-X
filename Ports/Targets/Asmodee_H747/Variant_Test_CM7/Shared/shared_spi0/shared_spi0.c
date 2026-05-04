@@ -129,7 +129,6 @@ int32_t	shared_spi0_reserve(uint32_t manager, uint32_t timeout) {
 /*
  * \brief Release the shared spi0 device
  *
- * \param[in]	-
  * \return		KSHARED_SPI0_NOERR	OK
  * \return		KSHARED_SPI0_GEERR	General error
  * \return		KSHARED_SPI0_CAREL	Cannot release the manager

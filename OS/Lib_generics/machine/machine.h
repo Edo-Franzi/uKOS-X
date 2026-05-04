@@ -124,7 +124,6 @@ extern	int32_t	machine_readFunctionName(const uintptr_t pc, const char_t **funct
  *    status = stub_machine_restart();
  * \endcode
  *
- * \param[in]	-
  * \return		KERR_SYSTEM_NOERR	OK
  *
  */

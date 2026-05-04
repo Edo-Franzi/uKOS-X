@@ -99,8 +99,8 @@ extern	"C" {
  * \param[in]	manager			I2C manager
  * \param[in]	reserveMode		Any mode
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_I2C_XXXXX	Depends on the "xxxx" device manager
  *
  */

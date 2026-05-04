@@ -154,8 +154,8 @@ extern	"C" {
  *
  * \param[in]	reserveMode			Any mode
  * \param[in]	timeout				Timeout (1-ms of resolution)
- * \param[in]	-					KWAIT_INFINITY, waiting forever
- * \param[in]	-					KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *									KWAIT_INFINITY, waiting forever
+ *									KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_STORAGE_NOERR	The manager is reserved
  * \return		KERR_STORAGE_GEERR	General error
  * \return		KERR_STORAGE_CHBSY	The manager is busy
@@ -220,7 +220,6 @@ extern	int32_t	sdcard_initialise(sdcard_specification_t *specification);
  *    status = sdcard_readStatus();
  * \endcode
  *
- * \param[in]	-
  * \return		KERR_STORAGE_NOERR	OK
  * \return		KERR_STORAGE_GEERR	General error
  * \return		KERR_STORAGE_NODEV	No sdcard

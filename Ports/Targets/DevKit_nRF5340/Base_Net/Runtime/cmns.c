@@ -80,7 +80,6 @@ static	char_t	vTxBuffer_0[KCMNS_SZ_TX_BUF];
 /*
  * \brief cmns_init
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

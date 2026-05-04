@@ -82,7 +82,6 @@ void	xLibrary_initialise(proc_t *handle) {
  *
  * \warning call usable only by the uKernel.
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

@@ -92,7 +92,6 @@ static	void	local_cpyLEDs(uint8_t value);
 /*
  * \brief exce_init
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

@@ -168,9 +168,9 @@ extern	int32_t	kern_createBitSignal(sign_t *handle, uint8_t *bitSignal);
  * \param[in]	*handle			Ptr on the handle
  * \param[in]	signals			Signals
  * \param[in]	*toProcess		Ptr on the process handle (selective signal)
- * \param[in]	-				KKERN_HANDLE_BROADCAST, broadcast to all the installed processes the signals
+ *								KKERN_HANDLE_BROADCAST, broadcast to all the installed processes the signals
  * \param[in]	mode			KSIGN_SIGNALE_WITH_CONTEXT_SWITCH		-> (synchro with the context switching)
- * \param[in]	-				KSIGN_SIGNALE_WITHOUT_CONTEXT_SWITCH	-> (synchro without the context switching)
+ *								KSIGN_SIGNALE_WITHOUT_CONTEXT_SWITCH	-> (synchro without the context switching)
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOGRO	The signal group does not exist
  * \return		KERR_KERN_NOPRO	The process does not exist
@@ -203,11 +203,11 @@ extern	int32_t	kern_signalSignal(sign_t *handle, uint32_t signals, proc_t *toPro
  * \param[in]		*handle			Ptr on the handle
  * \param[in, out]	*signals		Ptr on the signal (1 or more)
  * \param[in]		*fromProcess	Ptr on the process handle (selective signal)
- * \param[in]		-				KKERN_HANDLE_BROADCAST, broadcast to all the installed processes the signals
- * \param[in]		-				KKERN_HANDLE_FROM_ISR, selective signal coming from an ISR
+ *									KKERN_HANDLE_BROADCAST, broadcast to all the installed processes the signals
+ *									KKERN_HANDLE_FROM_ISR, selective signal coming from an ISR
  * \param[in]		timeout			Timeout (1-ms of resolution)
- * \param[in]		-				KWAIT_INFINITY, waiting forever
- * \param[in]		-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *									KWAIT_INFINITY, waiting forever
+ *									KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return			KERR_KERN_NOERR	OK
  * \return			KERR_KERN_NOGRO	The signal group does not exist
  * \return			KERR_KERN_NOPRO	The process does not exist

@@ -76,7 +76,6 @@ MODULE(
 /*
  * \brief cmns_init
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

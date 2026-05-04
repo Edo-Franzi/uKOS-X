@@ -86,7 +86,6 @@ static	void	local_read(uint32_t core, mbox_t *handle, void **message, uint32_t *
  *   Before using the manager functions, it is necessary to
  *   call this function
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -301,8 +300,8 @@ int32_t	kern_setMailbox(mbox_t *handle, const mcnf_t *configure) {
  * \param[in]	*message		Ptr on the message
  * \param[in]	size			Size of the message
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMBO	The mailbox does not exist
  * \return		KERR_KERN_MBNCF	The mailbox is not configured
@@ -346,8 +345,8 @@ int32_t	kern_writeMailbox(mbox_t *handle, void *message, uint32_t size, uint32_t
  * \param[in]	*handle			Ptr on the handle
  * \param[in]	message			Message
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMBO	The mailbox does not exist
  * \return		KERR_KERN_MBNCF	The mailbox is not configured
@@ -391,8 +390,8 @@ int32_t	kern_writeQueue(mbox_t *handle, uintptr_t message, uint32_t timeout) {
  * \param[out]	**message		Ptr on the message (return nullptr in case of error)
  * \param[out]	*size			Ptr on the	size of the message
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMBO	The mailbox does not exist
  * \return		KERR_KERN_MBNCF	The mailbox is not configured
@@ -435,8 +434,8 @@ int32_t	kern_readMailbox(mbox_t *handle, void **message, uint32_t *size, uint32_
  * \param[in]	*handle			Ptr on the handle
  * \param[out]	*message		Ptr on the message (return 0 in case of error)
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMBO	The mailbox does not exist
  * \return		KERR_KERN_MBNCF	The mailbox is not configured
@@ -612,8 +611,8 @@ int32_t	kern_getMailboxById(const char_t *identifier, mbox_t **handle) {
  * \param[in]	*message		Ptr on the message
  * \param[in]	size			Size of the message
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \param[out]	*preemption		Ptr on the preemption
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMBO	The mailbox does not exist
@@ -733,8 +732,8 @@ static	void	local_write(uint32_t core, mbox_t *handle, void *message, uint32_t s
  * \param[out]	**message		Ptr on the message (return nullptr in case of error)
  * \param[out]	*size			Ptr on the size of the message
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \param[out]	*preemption		Ptr on the preemption
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMBO	The mailbox does not exist

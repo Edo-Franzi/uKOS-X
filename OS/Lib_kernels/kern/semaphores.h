@@ -153,8 +153,8 @@ extern	int32_t	kern_signalSemaphore(sema_t *handle);
  *
  * \param[in]	*handle			Ptr on the handle
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOSEM	The semaphore does not exist
  * \return		KERR_KERN_SETME	The semaphore counts too many events

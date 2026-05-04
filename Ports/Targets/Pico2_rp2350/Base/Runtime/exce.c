@@ -130,7 +130,6 @@ static void __attribute__ ((noreturn)) cb_signal(uint8_t mode) {
 /*
  * \brief exce_init
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

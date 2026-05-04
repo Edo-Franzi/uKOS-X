@@ -1,6 +1,6 @@
 /*
 ; led.
-; ===
+; ====
 
 ; SPDX-License-Identifier: MIT
 

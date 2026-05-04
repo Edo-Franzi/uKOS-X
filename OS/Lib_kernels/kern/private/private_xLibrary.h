@@ -89,7 +89,6 @@ extern	void	xLibrary_initialise(proc_t *handle);
 /*!
  * \brief update the impure pointer with the impure data of the process
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

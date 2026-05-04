@@ -76,7 +76,6 @@ volatile	uint32_t	vKern_TimeException[KNB_CORES] = MCSET(0u);
  *   Before using the manager functions, it is necessary to
  *   call this function
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -107,8 +106,8 @@ void	temporal_init(void) {
  * - Connect the process to the time list
  *
  * \param[in]	time			Suspend the process for a time (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_FRISR	Execution from ISR
  *
@@ -164,8 +163,8 @@ int32_t	kern_suspendProcess(uint32_t time) {
  *
  * \param[in]	*handle			Ptr on the handle
  * \param[in]	timeout			Set a new timeout (1-ms of resolution)
- * \param[in]	-				Set with KWAIT_INFINITY, waiting forever
- * \param[in]	-				Set with KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								Set with KWAIT_INFINITY, waiting forever
+ *								Set with KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOPRO	The process does not exist
  *
@@ -304,7 +303,6 @@ int32_t	kern_readRemainingProcessTimeout(uint32_t *timeout) {
  *
  * - Force a context switch
  *
- * \param[in]	-
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_FRISR	Execution from ISR
  *
@@ -428,10 +426,9 @@ int32_t	kern_waitAtLeast(uint16_t time) {
  * - This functions scans the currently waiting processes and check
  *   if all timeouts are infinite or not
  *
- * \param[in]	-
  * \param[out]	*nonInfTOActive	Non infinite active timeout
- * \param[out]	-				true, If a non-infinite timeout is active
- * \param[out]	-				false, All waiting processes have an KWAIT_INFINITY timeout
+ *								true, If a non-infinite timeout is active
+ *								false, All waiting processes have an KWAIT_INFINITY timeout
  * \return		KERR_KERN_NOERR	OK
  *
  */
@@ -517,7 +514,6 @@ void	temporal_testEOTime(uint32_t time) {
  *
  * \warning call usable only by the uKernel.
  *
- * \param[in]	-
  * \return		time	The next wake-up time
  *
  */

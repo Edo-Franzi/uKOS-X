@@ -109,7 +109,6 @@ struct cnfOctx {
  *    status = oct0_init(void);
  * \endcode
  *
- * \param[in]	-
  * \return		KERR_OCT0_NOERR	OK
  * \return		KERR_OCT0_GEERR	General error
  *

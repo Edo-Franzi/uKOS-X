@@ -83,7 +83,6 @@ static	int32_t	local_signalMutex(uint32_t core, mutx_t *handle, bool *preemption
  *   Before using the manager functions, it is necessary to
  *   call this function
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
@@ -209,8 +208,8 @@ int32_t	kern_unlockMutex(mutx_t *handle) {
  *
  * \param[in]	*handle			Ptr on the handle
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMUT	The mutex does not exist
  * \return		KERR_KERN_MUTME	The mutex counts too many events
@@ -462,8 +461,8 @@ static	int32_t	local_createMutex(const char_t *identifier, int32_t iniCounter, i
  * \param[in]	core			Core number
  * \param[in]	*handle			Ptr on the handle
  * \param[in]	timeout			Timeout (1-ms of resolution)
- * \param[in]	-				KWAIT_INFINITY, waiting forever
- * \param[in]	-				KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *								KWAIT_INFINITY, waiting forever
+ *								KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_KERN_NOERR	OK
  * \return		KERR_KERN_NOMUT	The mutex does not exist
  * \return		KERR_KERN_MUTME	The mutex counts too many events

@@ -79,7 +79,6 @@ static	void	local_CLOCK_Configuration(void);
  * - Initialise some basic periphs
  * - GPIO, watchdog, SDRAM
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

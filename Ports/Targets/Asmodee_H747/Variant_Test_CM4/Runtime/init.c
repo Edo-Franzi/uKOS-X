@@ -92,7 +92,6 @@ static	void	local_wait(uint32_t us);
  * - Initialise some basic periphs
  * - GPIO, watchdog, SDRAM
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

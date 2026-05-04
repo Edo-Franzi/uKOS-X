@@ -102,8 +102,8 @@ static	void	local_getDevice(serialManager_t serialManager, serialManager_t *mana
  * \param[in]	serialManager		Serial Communication Manager
  * \param[in]	reserveMode			KMODE_READ, KMODE_WRITE, KMODE_READ_WRITE
  * \param[in]	timeout				Timeout (1-ms of resolution)
- * \param[in]	-					KWAIT_INFINITY, waiting forever
- * \param[in]	-					KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
+ *									KWAIT_INFINITY, waiting forever
+ *									KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
  * \return		KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager

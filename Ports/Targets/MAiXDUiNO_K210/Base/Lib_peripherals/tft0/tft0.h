@@ -158,7 +158,6 @@
  *    status = tft0_init(void);
  * \endcode
  *
- * \param[in]	-
  * \return		KOTFT0NOERR	OK
  * \return		KOTFT0GEERR	General error
  *

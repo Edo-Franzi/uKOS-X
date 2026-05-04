@@ -116,7 +116,6 @@ static	inline	void	cache_I_Invalidate(void);
  * - Initialise some basic periphs
  * - GPIO, watchdog, SDRAM
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *

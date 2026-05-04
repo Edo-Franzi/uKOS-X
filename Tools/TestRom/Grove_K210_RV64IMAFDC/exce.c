@@ -68,7 +68,6 @@ extern	void	cmns_wait(uint32_t us);
 /*
  * \brief exce_init
  *
- * \param[in]	-
  *
  * \note This function does not return a value (None).
  *
