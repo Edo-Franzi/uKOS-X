@@ -200,7 +200,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 // Do not return with "EXIT_OS_SUCCESS_CLI" because the "console" uses the KURT0
 
-
 	LOG(KINFO_USER, "Application launched, kill the console");
 	return (EXIT_OS_SUCCESS);
 }

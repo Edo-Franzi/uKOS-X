@@ -1,4 +1,4 @@
-# Doxyfile 1.9.8
+# Doxyfile 1.17.0
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project.
@@ -48,7 +48,7 @@ PROJECT_NAME           = "uKOS-X"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.4.8
+PROJECT_NUMBER         = 0.4.9
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -1496,7 +1496,7 @@ HTML_EXTRA_FILES       = $(PATH_UKOS_X_PACKAGE)/Third_Parties/Doxygen-awesome/Do
 # The default value is: AUTO_LIGHT.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_COLORSTYLE        = AUTO_LIGHT
+HTML_COLORSTYLE        = TOGGLE
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to

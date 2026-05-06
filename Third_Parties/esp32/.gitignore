@@ -1,8 +1,9 @@
 esp-*/
 Construction/Pyenv/esp32_Pyenv/
+Construction/Interface/ble_terminal
 Construction/Interface/ble_to_uart/build/
 Construction/Interface/ble_to_uart/sdkconfig
 Construction/Interface/ble_to_uart/sdkconfig.old
 Construction/Interface/wifi_to_uart/build/
 Construction/Interface/wifi_to_uart/sdkconfig
-Construction/Interface/wifi_to_uart/sdkconfig.ond
+Construction/Interface/wifi_to_uart/sdkconfig.old
