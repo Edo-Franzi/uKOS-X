@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -121,7 +122,8 @@ MODULE(
  *			- Wait 70-ms
  *		 At the output of the loop the watchdog has to restart the system
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	uint16_t	i;
 
 	UNUSED(argument);

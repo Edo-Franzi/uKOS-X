@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -82,16 +83,16 @@ typedef	enum	_timer_channel_number {
 // The TIMER address map
 // ---------------------
 
-typedef	struct	_timer_channel {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _timer_channel {
 
 	volatile	uint32_t		load_count;			// TIMER_N Load Count Register              (0x00+(N-1)*0x14)
 	volatile	uint32_t		current_value;		// TIMER_N Current Value Register           (0x04+(N-1)*0x14)
 	volatile	uint32_t		control;			// TIMER_N Control Register                 (0x08+(N-1)*0x14)
 	volatile	uint32_t		eoi;				// TIMER_N Interrupt Clear Register         (0x0c+(N-1)*0x14)
 	volatile	uint32_t		intr_stat;			// TIMER_N Interrupt Status Register        (0x10+(N-1)*0x14)
-} __attribute__ ((packed, aligned (4))) timer_channel_t;
+} timer_channel_t;
 
-typedef	struct	_kendryte_timer {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _kendryte_timer {
 	volatile	timer_channel_t	channel[4];			// TIMER_N Register                         (0x00-0x4c)
 	volatile	uint32_t		resv1[20];			// reserverd                                (0x50-0x9c)
 	volatile	uint32_t		intr_stat;			// TIMER Interrupt Status Register          (0xa0)
@@ -99,7 +100,7 @@ typedef	struct	_kendryte_timer {
 	volatile	uint32_t		raw_intr_stat;		// TIMER Raw Interrupt Status Register      (0xa8)
 	volatile	uint32_t		comp_version;		// TIMER Component Version Register         (0xac)
 	volatile	uint32_t		load_count2[4];		// TIMER_N Load Count2 Register             (0xb0-0xbc)
-} __attribute__ ((packed, aligned (4))) kendryte_timer_t;
+} kendryte_timer_t;
 
 #define	timer0	((volatile	kendryte_timer_t *)0x502D0000u)
 #define	timer1	((volatile	kendryte_timer_t *)0x502E0000u)

@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -152,7 +153,7 @@ void	test_07(void) {
  * - Change the context f(message)
  *
  */
-void	EXTI0_IRQHandler(void) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	EXTI0_IRQHandler(void) {
 
 	__asm volatile ("								\n \
@@ -274,7 +275,7 @@ void	EXTI0_IRQHandler(void) {
  * - Change the context f(message)
  *
  */
-void	EXTI1_IRQHandler(void) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	EXTI1_IRQHandler(void) {
 
 	__asm volatile ("								\n \
@@ -396,7 +397,8 @@ void	EXTI1_IRQHandler(void) {
  * - Blink the YELLOW Led
  *
  */
-static	void	__attribute__ ((noinline)) local_process(uint32_t message) {
+[[gnu::noinline]]
+static	void	local_process(uint32_t message) {
 
 	LED_BLUE_TOGGLE;
 

@@ -11,9 +11,9 @@
 ## Bench 00
 
 ```
-; Goal:		Bench 00: 	Compute the X-Y projection and the histogram of
-;	                    a small square array (50 x 50 uint8_t) elements.
-;						          The data is located in the CPU internal memory
+; Goal:    Bench 00:    Compute the X-Y projection and the histogram of
+;                           a small square array (50 x 50 uint8_t) elements.
+;                           The data is located in the CPU internal memory
 ```
 
 |                          | CoreMark/MHz     | _fill  [µs] | _projX  [µs] | _projY  [µs] | _histo  [µs] |
@@ -26,9 +26,9 @@
 ## Bench 01
 
 ```
-; Goal:		Bench 01: 	Compute the X-Y projection and the histogram of
-;						          a small square array (200 x 200 uint8_t) elements.
-;						          The data is located in the CPU internal memory
+; Goal:    Bench 01:    Compute the X-Y projection and the histogram of
+;                           a small square array (200 x 200 uint8_t) elements.
+;                           The data is located in the CPU internal memory
 ```
 
 |                          | CoreMark/MHz     | _fill  [µs] | _projX  [µs] | _projY  [µs] | _histo  [µs] |
@@ -41,9 +41,9 @@
 ## Bench 02
 
 ```
-; Goal:		Bench 02: 	Searching for the min / max of a small square array
-;                     (1000 uint32_t) elements.
-;						          The data is located in the CPU internal memory. 1000 iteractions.
+; Goal:    Bench 02:    Searching for the min / max of a small square array
+;                           (1000 uint32_t) elements.
+;                           The data is located in the CPU internal memory. 1000 iteractions.
 ```
 
 |                          | CoreMark/MHz     | _minMax  [µs] |
@@ -56,9 +56,9 @@
 ## Bench 03
 
 ```
-; Goal:		Bench 03: 	Searching for the min / max of a big square array
-;                     (50000 uint32_t) elements.
-;						          The data is located in the internal memory; 100 iteractions.
+; Goal:    Bench 03:    Searching for the min / max of a big square array
+;                           (50000 uint32_t) elements.
+;                           The data is located in the internal memory; 100 iteractions.
 ```
 
 |                          | CoreMark/MHz     | _minMax  [µs] |
@@ -71,8 +71,8 @@
 ## Bench 04
 
 ```
-; Goal:		Bench 04: 	Compute the atan2(x, y) by a cordic in a fixed point.
-;						          The data is located in the external memory. 1000 iteractions.
+; Goal:    Bench 04:    Compute the atan2(x, y) by a cordic in a fixed point.
+;                           The data is located in the external memory. 1000 iteractions.
 ```
 
 |                          | CoreMark/MHz     | _atan2  [µs] |
@@ -85,7 +85,7 @@
 ## Bench 05
 
 ```
-; Goal:		Bench 05: 	Compute a simple loop. 1000000 iterations.
+; Goal:    Bench 05:    Compute a simple loop. 1000000 iterations.
 ```
 
 |                          | CoreMark/MHz     | _loop  [µs] |

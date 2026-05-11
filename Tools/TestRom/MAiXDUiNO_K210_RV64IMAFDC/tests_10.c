@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -109,7 +110,7 @@ void	test_10(void) {
  * - Display some information
  *
  */
-void	local_kern(uint32_t core, uint64_t parameter) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	local_kern(uint32_t core, uint64_t parameter) {
 
 // Save the context
@@ -127,7 +128,8 @@ void	local_kern(uint32_t core, uint64_t parameter) {
  * - Blink the Red 2 Led
  *
  */
-void	__attribute__ ((noinline)) local_process(uint32_t core, uint64_t parameter, uint64_t *threshold, volatile uintptr_t *stack) {
+[[gnu::noinline]]
+void	local_process(uint32_t core, uint64_t parameter, uint64_t *threshold, volatile uintptr_t *stack) {
 				uint32_t	msb, lsb;
 	volatile	uint64_t	*newStack;
 

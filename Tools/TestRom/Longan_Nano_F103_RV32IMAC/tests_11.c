@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -116,7 +117,7 @@ void	test_11(void) {
  * - Blink the BLUE Led
  *
  */
-void	TIMER2_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	TIMER2_IRQHandler(void) {
 
 	KERN_SAVE_FRAME;

@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -52,7 +53,7 @@ extern	int32_t			aStart(uint32_t argc, const char_t *argv[]);
 extern	uintptr_t		_lnApplication;
 extern	uKOS_module_t	aUserAppl_Specifications;
 
-__attribute__ ((section(".header")))
+[[gnu::section(".header")]]
 const	uKOS_header_t	appHeader = {
 							KMEMU,
 							aStart,

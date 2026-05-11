@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -76,7 +77,8 @@ MODULE(
 // Runtime specific
 // ================
 
-		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS] __attribute__ ((aligned(2048)));
+		[[gnu::aligned(2048)]]
+		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS];
 		void		(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 		void		(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 extern	void		(* const g_pfnVectors_C0[])(void);
@@ -130,7 +132,8 @@ void	exce_init(void) {
  *   - Interruption
  *
  */
-static void __attribute__ ((noreturn)) cb_signal(uint8_t mode) {
+[[noreturn]]
+static	void	cb_signal(uint8_t mode) {
 
 	switch (mode) {
 		default:

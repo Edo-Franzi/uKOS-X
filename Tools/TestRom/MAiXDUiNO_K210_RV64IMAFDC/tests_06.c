@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -98,21 +99,25 @@ void	test_06(void) {
 #if (defined(__clang__))
 
 // Helpers C appelés depuis l'ASM nu (compatibles Clang)
-static	uint64_t	__attribute__ ((noinline, used)) read_plic_threshold_c(uint32_t core) {
+[[gnu::noinline, gnu::used]]
+static	uint64_t	read_plic_threshold_c(uint32_t core) {
 
 	return ((uint64_t)plic->targets.target[core].priority_threshold & 0x00000000000000FFULL);
 }
 
-static	void	__attribute__ ((noinline, used)) write_plic_threshold_c(uint32_t core, uint64_t threshold) {
+[[gnu::noinline, gnu::used]]
+static	void	write_plic_threshold_c(uint32_t core, uint64_t threshold) {
 
     plic->targets.target[core].priority_threshold = (uint32_t)(threshold & 0x00000000000000FFULL);
 }
 #endif
 
-void	local_message(uint32_t core, uint64_t message) __attribute__ ((naked));
+[[gnu::naked]]
+void	local_message(uint32_t core, uint64_t message);
 
 #if (defined(__clang__))
-void	local_message(uint32_t core, uint64_t message) __attribute__ ((naked)) {
+[[gnu::naked]]
+void	local_message(uint32_t core, uint64_t message)) {
 
 	__asm volatile ("\
 	addi		sp,sp,-(13*8)\n\
@@ -564,7 +569,8 @@ void	local_message(uint32_t core, uint64_t message) {
  * - Blink the Red 2 Led
  *
  */
-static	void	__attribute__ ((noinline, used)) local_process(uint32_t core, uint64_t threshold, uint64_t message) {
+[[gnu::noinline, gnu::used]]
+void	*local_process(uint32_t core, uint64_t threshold, uint64_t message) {
 	uint32_t	msb, lsb;
 
 	LED_BLUE_TOGGLE;

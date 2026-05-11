@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -102,7 +103,8 @@ void	test_XX(void) {
  * - Test
  *
  */
-__attribute__ ((noinline)) void	local_Test_a(objectParam_t *parameter) {
+[[gnu::noinline]]
+void	local_Test_a(objectParam_t *parameter) {
 	volatile	uint32_t	*a = (volatile	uint32_t *)0x12345678;
 	volatile	uint32_t	*b = (volatile	uint32_t *)0x23456789;
 	volatile	uint32_t	*c = (volatile	uint32_t *)0x3456789A;
@@ -121,7 +123,8 @@ __attribute__ ((noinline)) void	local_Test_a(objectParam_t *parameter) {
  * - Test
  *
  */
-__attribute__ ((noinline)) void	local_Test_b(uint32_t p0, uint32_t p1, uint32_t p2, uint32_t p3) {
+[[gnu::noinline]]
+void	local_Test_b(uint32_t p0, uint32_t p1, uint32_t p2, uint32_t p3) {
 	volatile	uint32_t	*a = (volatile	uint32_t *)0x12345678;
 	volatile	uint32_t	*b = (volatile	uint32_t *)0x23456789;
 	volatile	uint32_t	*c = (volatile	uint32_t *)0x3456789A;

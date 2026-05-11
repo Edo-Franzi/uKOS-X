@@ -3,6 +3,7 @@
 ; =======================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -85,7 +86,8 @@ void	local_readFunctionName(const uintptr_t pc, const char_t **function) {
  * - Display the process name
  *
  */
-static	void	__attribute__ ((noinline)) local_printFunction(uintptr_t pc, const char_t *vectorName, const char_t *excepInter) {
+[[gnu::noinline]]
+static	void	local_printFunction(uintptr_t pc, const char_t *vectorName, const char_t *excepInter) {
 			uint32_t	core;
 	const	char_t		*functionName;
 

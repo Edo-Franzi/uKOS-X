@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -67,7 +68,8 @@ extern	void	crt0(void);
  * - call the crt0
  *
  */
-__attribute__ ((noinline)) void local_fixPC(void) {
+[[gnu::noinline]]
+void local_fixPC(void) {
 	register	uint32_t	regRa;
 
 	__asm volatile ("add	%0,ra,zero" : "=r" (regRa));
@@ -82,7 +84,8 @@ __attribute__ ((noinline)) void local_fixPC(void) {
 	}
 }
 
-void __attribute__ ((naked)) Reset_C0_Handler(void) {
+[[gnu::naked]]
+void	Reset_C0_Handler(void) {
 
 	CALL_FNCT(local_fixPC);
 

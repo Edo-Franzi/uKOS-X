@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -378,7 +379,8 @@ static	void	local_initialiseLayer(mlpnLayer_t *layer) {
 // Dot product: Helium FP (MVE) if available (with unroll x2 (8 floats per iteration))
 
 #if	(defined(__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE >= 3))
-__attribute__ ((always_inline))	static	inline	float32_t	local_hadd_f32x4(float32x4_t v) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_hadd_f32x4(float32x4_t v) {
 	float32_t	tmp[4];
 
 	vstrwq_f32(tmp, v);
@@ -386,7 +388,8 @@ __attribute__ ((always_inline))	static	inline	float32_t	local_hadd_f32x4(float32
 }
 #endif
 
-__attribute__ ((always_inline))	static	inline	float32_t	local_dot_f32(const float32_t * __restrict w, const float32_t * __restrict x, uint16_t n) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_dot_f32(const float32_t * __restrict w, const float32_t * __restrict x, uint16_t n) {
 
 	#if	(defined(__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE >= 3))
     float32x4_t		acc0 = vdupq_n_f32(0.0f);
@@ -515,7 +518,8 @@ static	void	local_nonLinear_tan0(const float32_t *w, const float32_t *x, float32
  *      b  = ((28 x^2 + 3150) x^2 + 62370) x^2 + 135135
  *
  */
-__attribute__ ((always_inline))	static	inline	float32_t	local_tan1(float32_t p) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_tan1(float32_t p) {
 	float32_t	s, a, b;
 
 	if (p < -3.0f) { return (-1.0f); }
@@ -554,7 +558,8 @@ static void	local_nonLinear_tan1(const float32_t *w, const float32_t *x, float32
  *   tanh(p) =  p, if (p > -1) && (p < +1)
  *
  */
-__attribute__ ((always_inline))	static	inline	float32_t	local_tan2(float32_t p) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_tan2(float32_t p) {
 	float32_t	p2, num, den;
 
 	if (p <= -3.0f) { return (-1.0f); }
@@ -594,7 +599,8 @@ static	void	local_nonLinear_tan2(const float32_t *w, const float32_t *x, float32
  *   tanh(p) =  p, if (p > -1) && (p < +1)
  *
  */
-__attribute__ ((always_inline))	static	inline	float32_t	local_tan3(float32_t p) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_tan3(float32_t p) {
 
 	if (p <= -1.0f) { return (-1.0f); }
 	if (p >= +1.0f) { return (+1.0f); }
@@ -628,7 +634,8 @@ static	void	local_nonLinear_tan3(const float32_t *w, const float32_t *x, float32
  *   relu(p) = p, if p > 0
  *
  */
-__attribute__ ((always_inline))	static	inline	float32_t	local_relu(float32_t p) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_relu(float32_t p) {
 
 	if (p <= 0.0f) { return (0.0f); }
 	if (p > +1.0f) { return (p);	}
@@ -702,7 +709,8 @@ static	void	local_nonLinear_line(const float32_t *w, const float32_t *x, float32
  *   The exponent bias: 127.2^23 = 1064866805
  *
  */
-__attribute__ ((always_inline))	static	inline	float32_t	local_exp(float32_t p) {
+[[gnu::always_inline]]
+static	inline	float32_t	local_exp(float32_t p) {
 	union { float f; int32_t i; } u;
 
 	u.i = (int32_t)(12102203.0f * p) + 1064866805;

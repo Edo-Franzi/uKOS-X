@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -112,7 +113,7 @@ typedef	enum	_dmac_burst_trans_length {
 // Structure for accessing DMAC channel registers
 // ----------------------------------------------
 
-typedef	struct	_dmac_channel {
+typedef	struct	[[gnu::packed, gnu::aligned(8)]] _dmac_channel {
 	uint64_t	sar;												// (0x100) SAR Address Register
 	uint64_t	dar;												// (0x108) DAR Address Register
 	uint64_t	block_ts;											// (0x110) Block Transfer Size Register
@@ -131,12 +132,12 @@ typedef	struct	_dmac_channel {
 	uint64_t	intsignal_en;										// (0x190) Interrupt  Siganl Enable Register
 	uint64_t	intclear;											// (0x198) Interrupt Clear Register
 	uint64_t	reserved2[12];										// Reserved address
-} __attribute__ ((packed, aligned (8))) dmac_channel_t;
+} dmac_channel_t;
 
 // Structure for accessing DMAC registers
 // --------------------------------------
 
-typedef	struct	_dmac {
+typedef	struct	[[gnu::packed, gnu::aligned(8)]] _dmac {
 	uint64_t	id;													// (0x00) DMAC ID Rgister
 	uint64_t	compver;											// (0x08) DMAC COMPVER Register
 	uint64_t	cfg;												// (0x10) DMAC Configure Register
@@ -150,12 +151,12 @@ typedef	struct	_dmac {
 	uint64_t	reset;												// (0x58) DMAC Reset register
 	uint64_t	reserved2[20];										// Reserved address
 	dmac_channel_t channel[DMAC_CHANNEL_COUNT];						//
-} __attribute__ ((packed, aligned (8))) dmac_t;
+} dmac_t;
 
 // Structure for accessing DMAC chen registers
 // -------------------------------------------
 
-typedef	struct	_damc_chen {
+typedef	struct	[[gnu::packed, gnu::aligned(8)]] _damc_chen {
 	uint64_t	ch1_en       : 1;									//
 	uint64_t	ch2_en       : 1;									//
 	uint64_t	ch3_en       : 1;									//
@@ -199,7 +200,7 @@ typedef	struct	_damc_chen {
 	uint64_t	ch6_abort_we : 1;									//
 	uint64_t	rsvd6        : 2;									//
 	uint64_t	rsvd7        : 16;									//
-} __attribute__ ((packed, aligned (8))) damc_chen_t;
+} damc_chen_t;
 
 typedef	union	_dmac_chen_u {
 	damc_chen_t		dmac_chen;										//
@@ -209,11 +210,11 @@ typedef	union	_dmac_chen_u {
 // Structure for accessing DMAC cfg registers
 // ------------------------------------------
 
-typedef	struct	_dmac_cfg {
+typedef	struct	[[gnu::packed, gnu::aligned(8)]] _dmac_cfg {
 	uint64_t	dmac_en : 1;										//
 	uint64_t	int_en  : 1;										//
 	uint64_t	rsvd    : 62;										//
-} __attribute__ ((packed, aligned (8))) dmac_cfg_t;
+} dmac_cfg_t;
 
 typedef	union	_dmac_cfg_u {
 	dmac_cfg_t	cfg;												//
@@ -223,7 +224,7 @@ typedef	union	_dmac_cfg_u {
 // Structure for accessing DMAC ctl registers
 // ------------------------------------------
 
-typedef	struct	_dmac_ch_ctl {
+typedef	struct	[[gnu::packed, gnu::aligned(8)]] _dmac_ch_ctl {
 	uint64_t	sms                    : 1;							//
 	uint64_t	rsvd1                  : 1;							//
 	uint64_t	dms                    : 1;							//
@@ -252,7 +253,7 @@ typedef	struct	_dmac_ch_ctl {
 	uint64_t	rsvd10                 : 3;							//
 	uint64_t	shadowreg_or_lli_last  : 1;							//
 	uint64_t	shadowreg_or_lli_valid : 1;							//
-} __attribute__ ((packed, aligned (8))) dmac_ch_ctl_t;
+} dmac_ch_ctl_t;
 
 typedef	union	_dmac_ch_ctl_u {
 	dmac_ch_ctl_t	ch_ctl;											//
@@ -262,7 +263,7 @@ typedef	union	_dmac_ch_ctl_u {
 // Structure for accessing DMAC cfg registers
 // ------------------------------------------
 
-typedef	struct	_dmac_ch_cfg {
+typedef	struct	[[gnu::packed, gnu::aligned(8)]] _dmac_ch_cfg {
 	uint64_t	src_multblk_type : 2;								//
 	uint64_t	dst_multblk_type : 2;								//
 	uint64_t	rsvd1            : 28;								//
@@ -280,7 +281,7 @@ typedef	struct	_dmac_ch_cfg {
 	uint64_t	lock_ch_l        : 2;								//
 	uint64_t	src_osr_lmt      : 4;								//
 	uint64_t	dst_osr_lmt      : 4;								//
-} __attribute__ ((packed, aligned (8))) dmac_ch_cfg_t;
+} dmac_ch_cfg_t;
 
 typedef	union	_dmac_ch_cfg_u {
 	dmac_ch_cfg_t	ch_cfg;											//

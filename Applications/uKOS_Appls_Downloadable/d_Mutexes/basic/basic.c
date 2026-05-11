@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -152,7 +153,8 @@ static	void	local_printStruct(mutx_t *mutex, strt_t data);
  *			- Release a mutex
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	int32_t		status;
 	mutx_t		*mutex;
 
@@ -197,7 +199,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Release a mutex
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	int32_t		status;
 	mutx_t		*mutex;
 
@@ -242,7 +245,8 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
  *			- Release a mutex
  *
  */
-static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
+[[noreturn]]
+static	void	aProcess_2(const void *argument) {
 	int32_t		status;
 	mutx_t		*mutex;
 

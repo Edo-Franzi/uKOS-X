@@ -1,4 +1,4 @@
-__attribute__ ((used, section(".picobin_block")))
+[[gnu::used, gnu::section(".picobin_block")]]
 static	const	unsigned	char	picobin_block[] = {
 
 	0xD3U,0xDEU,0xFFU,0xFFU,		// START = 0xffffded3 (LE)

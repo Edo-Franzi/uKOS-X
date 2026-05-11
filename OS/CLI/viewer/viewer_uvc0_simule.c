@@ -3,6 +3,7 @@
 ; ===================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -75,8 +76,11 @@ struct	graphic {
 			uint8_t		*oImage;			// Ptr on the image
 		};
 
-extern	uint8_t		linker_stUSB_V_BUFFER_0[] __attribute__ ((weak));
-extern	uint8_t		linker_stUSB_V_BUFFER_1[] __attribute__ ((weak));
+[[gnu::weak]]
+extern	uint8_t		linker_stUSB_V_BUFFER_0[];
+
+[[gnu::weak]]
+extern	uint8_t		linker_stUSB_V_BUFFER_1[];
 static	bool		vKillRequest[KNB_CORES] = MCSET(false);
 
 // Prototypes
@@ -160,7 +164,8 @@ int32_t	viewer_uvc0_clean(uint32_t argc, const char_t *argv[]) {
  *			- Send it over usb
  *
  */
-static void __attribute__ ((noreturn)) aProcess(const void *argument) {
+[[noreturn]]
+static	void	aProcess(const void *argument) {
 			uint32_t	w, h;
 			float64_t	frameRate;
 			uint8_t		*image_0, *image_1;

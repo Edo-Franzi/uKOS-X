@@ -3,6 +3,7 @@
 ; ========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -121,7 +122,8 @@ MODULE(
  *		 Display the registers
  *
  */
-static void __attribute__ ((noreturn)) aProcess(const void *argument) {
+[[noreturn]]
+static	void	aProcess(const void *argument) {
 	uint32_t	time = 20u;
 	uintptr_t	i;
 

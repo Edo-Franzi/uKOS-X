@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -48,8 +49,6 @@
 
 #pragma	once
 
-#include	<stdbool.h>
-#include	<stdint.h>
 #include	"core_reg.h"
 
 /*
@@ -61,7 +60,8 @@
  * \return		value		The register value
  *
  */
-__attribute__ ((always_inline))	static	inline	uint32_t	core_getCSR(uint32_t reg) {
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getCSR(uint32_t reg) {
 	uint32_t	value;
 
 	__asm volatile (
@@ -84,7 +84,8 @@ __attribute__ ((always_inline))	static	inline	uint32_t	core_getCSR(uint32_t reg)
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_putCSR(uint32_t reg, uint32_t value) {
+[[gnu::always_inline]]
+static	inline	void	core_putCSR(uint32_t reg, uint32_t value) {
 
 	if (__builtin_constant_p(value) && ((uint32_t)(value) < 32u)) {
 		__asm volatile (
@@ -113,7 +114,8 @@ __attribute__ ((always_inline))	static	inline	void	core_putCSR(uint32_t reg, uin
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setBitCSR(uint32_t reg, uint32_t mask) {
+[[gnu::always_inline]]
+static	inline	void	core_setBitCSR(uint32_t reg, uint32_t mask) {
 
 	if (__builtin_constant_p(mask) && ((uint32_t)(mask) < 32u)) {
 		__asm volatile (
@@ -142,7 +144,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setBitCSR(uint32_t reg, 
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_clrBitCSR(uint32_t reg, uint32_t mask) {
+[[gnu::always_inline]]
+static	inline	void	core_clrBitCSR(uint32_t reg, uint32_t mask) {
 
 	if (__builtin_constant_p(mask) && ((uint32_t)(mask) < 32u)) {
 		__asm volatile (

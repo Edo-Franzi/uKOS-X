@@ -49,8 +49,6 @@
 
 #pragma	once
 
-#include	<stdint.h>
-
 #include	"Registers/RP2350_sio.h"
 
 // Multicore macro
@@ -180,9 +178,9 @@ enum {
 // Using inline assembly to avoid circular dependency with core.h
 
 #ifndef INTERRUPTION_OFF
-#define	INTERRUPTION_OFF			volatile	uint32_t	__saveMIE_msk __attribute__ ((unused));							\
-										__asm volatile ("csrr %0, mstatus" : "=r"(__saveMIE_msk));										\
-										__asm volatile ("csrci mstatus, 0x8")	// Clear MIE bit (bit 3)
+#define	INTERRUPTION_OFF			[[maybe_unused]] volatile	uint32_t	__saveMIE_msk;										\
+									__asm volatile ("csrr %0, mstatus" : "=r"(__saveMIE_msk));									\
+									__asm volatile ("csrci mstatus, 0x8")	// Clear MIE bit (bit 3)
 #endif
 
 #ifndef INTERRUPTION_RESTORE
@@ -202,13 +200,13 @@ enum {
 #endif
 
 #ifndef INTERRUPTION_OFF_CRITICAL
-#define	INTERRUPTION_OFF_CRITICAL(savemMask)															\
-									__asm volatile ("csrr %0, mstatus" : "=r"(savemMask));				\
+#define	INTERRUPTION_OFF_CRITICAL(savemMask)																					\
+									__asm volatile ("csrr %0, mstatus" : "=r"(savemMask));										\
 									__asm volatile ("csrci mstatus, 0x8")
 #endif
 
 #ifndef INTERRUPTION_RESTORE_CRITICAL
-#define	INTERRUPTION_RESTORE_CRITICAL(savemMask)														\
+#define	INTERRUPTION_RESTORE_CRITICAL(savemMask)																				\
 									__asm volatile ("csrw mstatus, %0" :: "r"(savemMask) : "memory")
 #endif
 

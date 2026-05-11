@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -141,7 +142,8 @@ void	SVCall_C0_IRQHandler(void) {
  * - Process the SVC call (non-naked wrapper)
  *
  */
-static	void	__attribute__ ((noinline, used)) local_handleSVCall(uint32_t message) {
+[[gnu::noinline, gnu::used]]
+static	void	local_handleSVCall(uint32_t message) {
 
 	vMessage = message;
 	local_process(vMessage);
@@ -153,7 +155,8 @@ static	void	__attribute__ ((noinline, used)) local_handleSVCall(uint32_t message
  * - Blink the YELLOW Led
  *
  */
-static	void	__attribute__ ((noinline)) local_process(uint32_t message) {
+[[gnu::noinline]]
+static	void	local_process(uint32_t message) {
 
 	LED_BLUE_TOGGLE;
 

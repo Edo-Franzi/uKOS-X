@@ -3,6 +3,7 @@
 ; ========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -121,7 +122,7 @@ struct uKOS_module {
 												.oFlag			 = flag,																				\
 												.oExecutionCore	 = executionCore																		\
 											};																											\
-	C_DECLARE	const	uKOS_directory_t	dir##name __attribute__ ((section (".directory"))) = {														\
+	C_DECLARE	const	uKOS_directory_t	dir##name [[gnu::section(".directory")]] = {																\
 												.oModuleLocation = KBUILD_IN,																			\
 												.oModule		 = (const uKOS_module_t *)&a##name##_Specifications										\
 											}

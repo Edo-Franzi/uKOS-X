@@ -3,6 +3,7 @@
 ; ===================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -94,7 +95,7 @@ static	void	local_printInterruption(const char_t **vectorName);
  * x17 - a7   = 0x00000070
  *
  */
-static	void	model_coreDump_displayInterruptions(void) __attribute__ ((naked));
+[[gnu::naked]]
 static	void	model_coreDump_displayInterruptions(void) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
@@ -113,7 +114,8 @@ static	void	model_coreDump_displayInterruptions(void) {
  * - Display the stack frame
  *
  */
-static	void	__attribute__ ((noinline, used, noreturn)) local_processInterruption(uintptr_t *stackBefore, uintptr_t *stackAfter) {
+[[gnu::noinline, gnu::used, noreturn]]
+static	void	local_processInterruption(uintptr_t *stackBefore, uintptr_t *stackAfter) {
 			uint32_t	core, i;
 	const	uintptr_t	*ptr;
 	const	char_t		*vectorName;
@@ -147,7 +149,8 @@ static	void	__attribute__ ((noinline, used, noreturn)) local_processInterruption
  * - Display the interruption name
  *
  */
-static	void	__attribute__ ((noinline)) local_printInterruption(const char_t **vectorName) {
+[[gnu::noinline]]
+static	void	local_printInterruption(const char_t **vectorName) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;

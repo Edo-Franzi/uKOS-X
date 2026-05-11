@@ -50,8 +50,6 @@
 
 // IWYU pragma: begin_exports
 
-#include	<stdint.h>
-
 #include	"Registers/soc_vectors.h"
 #include	"Registers/stm32U5Gx_adc1.h"
 #include	"Registers/stm32U5Gx_adc12_common.h"

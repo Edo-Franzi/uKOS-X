@@ -3,6 +3,7 @@
 ; ========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -217,7 +218,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  * - Launch a console
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static	void	local_process(const void *argument) {
 			char_t				*commandLine;
 			bool				*releasePack;
 			uint32_t			core, i, argc;

@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -170,7 +171,7 @@ extern	void					(*vMsgs_process[KNB_CORES])(uint32_t core, uint64_t message);
 #endif
 
 #if (!defined(INTERRUPTION_OFF))
-#define	INTERRUPTION_OFF		volatile	uint32_t	__savePLIC_msk __attribute__ ((unused));  								\
+#define	INTERRUPTION_OFF		volatile	uint32_t	__savePLIC_msk [[maybe_unused]];  										\
 								__savePLIC_msk = plic->targets.target[GET_RUNNING_CORE].priority_threshold;						\
 								(void)__savePLIC_msk;																			\
 								plic->targets.target[GET_RUNNING_CORE].priority_threshold = KINT_IMASK_OFF

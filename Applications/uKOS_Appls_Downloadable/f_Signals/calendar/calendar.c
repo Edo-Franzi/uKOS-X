@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -133,7 +134,8 @@ MODULE(
  *			- if mSecond == 10 Generate the signal KCALENDAR
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	uint8_t		mSeconds = 0u;
 	sign_t		*group;
 
@@ -158,7 +160,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Compute and display the absolute time
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	uint64_t	unixTime;
 	time_t		now;
 	tm_t		localTime;
@@ -197,7 +200,8 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
  *			- Generate the signal KALARME
  *
  */
-static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
+[[noreturn]]
+static	void	aProcess_2(const void *argument) {
 	sign_t	*group;
 
 	UNUSED(argument);

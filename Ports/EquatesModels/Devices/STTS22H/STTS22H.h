@@ -3,6 +3,7 @@
 ; ========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Florence Lorenzin
 
 ;------------------------------------------------------------------------
 ; Author:	Florence Lorenzin	The 2025-01-01

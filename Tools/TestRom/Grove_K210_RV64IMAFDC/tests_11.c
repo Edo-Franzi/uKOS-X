@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -57,8 +58,11 @@
 static		char_t		vString[20];
 #endif
 
-volatile	uint64_t	vStackP0[800] __attribute__ ((aligned (16)));	//
-volatile	uint64_t	vStackP1[800] __attribute__ ((aligned (16)));	//
+[gnu::aligned(16)]]
+volatile	uintptr_t	vStackP0[800];										//
+
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackP1[800];										//
 volatile	uintptr_t	vStackCurFs;									//
 volatile	uintptr_t	vStackCurP0;									//
 volatile	uintptr_t	vStackCurP1;									//
@@ -176,7 +180,7 @@ void	process_1(uintptr_t *argument) {
  * - Change the context
  *
  */
-void	local_kern(uint32_t core, uint64_t number) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	local_kern(uint32_t core, uint64_t number) {
 
 // Save the context
@@ -193,7 +197,8 @@ void	local_kern(uint32_t core, uint64_t number) {
  * - Pico scheduler
  *
  */
-void	__attribute__ ((noinline)) local_scheduler(uint32_t core, uint64_t parameter, uint64_t *threshold, volatile uintptr_t *stack) {
+[[gnu::noinline]]
+void	local_scheduler(uint32_t core, uint64_t parameter, uint64_t *threshold, volatile uintptr_t *stack) {
 	static		uint8_t		vIndex = 0;
 	volatile	uint64_t	*newStack;
 

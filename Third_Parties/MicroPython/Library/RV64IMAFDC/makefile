@@ -1,0 +1,164 @@
+# makefile.
+# =========
+
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
+
+#------------------------------------------------------------------------
+# Author:	Laurent von Allmen	The 2025-01-01
+# Modifs:
+#
+# Project:	uKOS-X
+# Goal:		makefile for building the MicroPython library.
+#
+#   (c) 2025-2026, Laurent von Allmen
+#   ---------------------------------
+#                                              __ ______  _____
+#   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+#   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+#   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+#                                     \__,_/_/ |_\____//____/
+#   edo.franzi@ukos.ch
+#
+#   Description: Lightweight, real-time multitasking operating
+#   system for embedded microcontroller and DSP-based systems.
+#
+#   Permission is hereby granted, free of charge, to any person
+#   obtaining a copy of this software and associated documentation
+#   files (the "Software"), to deal in the Software without restriction,
+#   including without limitation the rights to use, copy, modify,
+#   merge, publish, distribute, sublicense, and/or sell copies of the
+#   Software, and to permit persons to whom the Software is furnished
+#   to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be
+#   included in all copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+#   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+#   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+#   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+#   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#   SOFTWARE.
+#
+#------------------------------------------------------------------------
+
+include ../../MicroPython-current/py/mkenv.mk
+
+PREFIX			?= riscv64-unknown-elf-
+
+# Select the compiler
+
+ifneq ($(PREFIX),llvm-)
+PATH_COMPILER	= $(PATH_GCC_RVXX)/bin/$(PREFIX)
+else
+PATH_COMPILER	= $(PATH_LLVM_RVXX)/bin/
+endif
+
+CROSS_COMPILE	:= $(PATH_COMPILER)
+
+PATH_UKOS		=  $(PATH_UKOS_X_PACKAGE)
+
+INC				+= -I.
+INC				+= -I$(TOP)
+INC				+= -I$(BUILD)
+INC				+= -I$(PATH_UKOS)
+INC				+= -I$(PATH_UKOS)/OS
+INC				+= -I$(PATH_UKOS)/OS/Includes
+INC				+= -I$(PATH_UKOS)/OS/Lib_generics
+INC				+= -I$(PATH_UKOS)/OS/Lib_peripherals
+INC				+= -I$(PATH_UKOS)/OS/Lib_serials
+INC				+= -I$(PATH_UKOS)/OS/Lib_kernels
+INC				+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
+INC				+= -I$(PATH_UKOS)/Third_Parties/MicroPython/uKOS_System
+
+# Libs & files necessary for building MicroPython.a
+#
+# !!The paths have to be relative to MicroPython_current
+# !!Mandatory: Place the object list before "include $(TOP)/py/py.mk"
+
+SRC_C			+= $(addprefix Construction/System/, \
+					help.c \
+					headerMicroPython.c \
+					microPython.c \
+				)
+
+SRC_MODULE		+= $(addprefix Construction/Interface/, \
+					led/led.c \
+					switch/switch.c \
+					serial/serial.c \
+					example/example.c \
+)
+
+SRC_LIBM		+= $(addprefix lib/libm/, \
+					atanhf.c \
+					acoshf.c \
+					asinfacosf.c \
+					asinhf.c \
+					atan2f.c \
+					atanf.c \
+					ef_rem_pio2.c \
+					ef_sqrt.c \
+					erf_lgamma.c \
+					fmodf.c \
+					kf_cos.c \
+					kf_rem_pio2.c \
+					kf_sin.c \
+					kf_tan.c \
+					log1pf.c \
+					math.c \
+					nearbyintf.c \
+					roundf.c \
+					sf_cos.c \
+					sf_erf.c \
+					sf_frexp.c \
+					sf_ldexp.c \
+					sf_modf.c \
+					sf_sin.c \
+					sf_tan.c \
+					wf_lgamma.c \
+					wf_tgamma.c \
+				)
+
+# Important: for the QSTR components it is mandatory the full path
+
+SRC_QSTR		+= $(addprefix shared/runtime/, \
+					stdout_helpers.c \
+					pyexec.c \
+				)
+
+SRC_QSTR		+= $(addprefix shared/readline/, \
+					readline.c \
+				)
+
+SRC_QSTR		+= $(addprefix ../, $(SRC_MODULE))
+
+include $(TOP)/py/py.mk
+
+OBJ				=  $(PY_O)
+OBJ				+= $(addprefix $(BUILD)/, $(SRC_QSTR:.c=.o))
+OBJ				+= $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
+OBJ				+= $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ				+= $(addprefix $(BUILD)/, $(SRC_MODULE:.c=.o))
+OBJ				:= $(patsubst $(BUILD)/../%, $(BUILD)/%, $(OBJ))
+OBJ				:= $(sort $(OBJ))
+
+# Settings for RV64IMAFDC cores
+# -----------------------------
+
+CORE			= RV64IMAFDC
+FLAGS_UKOS		= -DTHIRD_PARTY_S -DRV64IMAFDC_S
+
+CFLAGS_RISCV	+= -march=rv64imafdc -mabi=lp64d -mcmodel=medany
+CFLAGS_RISCV	+= -fshort-enums
+CFLAGS_RISCV	+= $(FLAGS_UKOS)
+
+CFLAGS			+= $(INC) -Wall -Wno-pedantic -std=c23 -nostdlib $(CFLAGS_RISCV) $(COPT) -Os -DNDEBUG
+ifneq ($(PREFIX),llvm-)
+CFLAGS			+= -Wno-dangling-pointer
+endif
+
+include ../Mkfiles/MicroPython.mk
+include $(TOP)/py/mkrules.mk

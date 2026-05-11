@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -126,13 +127,13 @@
 
 #if (defined(PRIVILEGED_USER_S))
 #define	PROCESS_PRIVILEGED(index, specification, infoStr, lenStackNbWords, code, identifier, serialManager, priority)												\
-	VAR_DECLARED_ALIGN(static uintptr_t vStack_##index[lenStackNbWords], KSTACK_ALIGNMENT) __attribute__ ((section (".privileged")));								\
+	[[gnu::aligned(KSTACK_ALIGNMENT), gnu::section(".privileged")]] static uintptr_t vStack_##index[lenStackNbWords]; 												\
 																																									\
 	SPECIFICATIONS(index, specification, infoStr, lenStackNbWords, code, identifier, serialManager, priority, KPROC_NORMAL, KPROC_STACK_STATIC);
 
 #else
 #define	PROCESS_PRIVILEGED(index, specification, infoStr, lenStackNbWords, code, identifier, serialManager, priority)												\
-	VAR_DECLARED_ALIGN(static uintptr_t vStack_##index[lenStackNbWords], KSTACK_ALIGNMENT) __attribute__ ((section (".user")));										\
+	[[gnu::aligned(KSTACK_ALIGNMENT), gnu::section(".user")]] static uintptr_t vStack_##index[lenStackNbWords]; 													\
 																																									\
 	SPECIFICATIONS(index, specification, infoStr, lenStackNbWords, code, identifier, serialManager, priority, KPROC_NORMAL, KPROC_STACK_STATIC);
 #endif
@@ -142,7 +143,7 @@
 // - Mode user
 
 #define	PROCESS(index, specification, infoStr, lenStackNbWords, code, identifier, serialManager, priority)															\
-	VAR_DECLARED_ALIGN(static uintptr_t vStack_##index[lenStackNbWords], KSTACK_ALIGNMENT) __attribute__ ((section (".user")));										\
+	[[gnu::aligned(KSTACK_ALIGNMENT), gnu::section(".user")]] static uintptr_t vStack_##index[lenStackNbWords]; 													\
 																																									\
 	SPECIFICATIONS(index, specification, infoStr, lenStackNbWords, code, identifier, serialManager, priority, KPROC_NORMAL, KPROC_STACK_STATIC);
 

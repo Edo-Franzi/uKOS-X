@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi			The 2025-01-01
@@ -86,8 +87,8 @@
 // -----------------------
 
 #define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.9"
+#define	uKOS_VERSION_NUMBER		"0.4.11"
 #define	uKOS_VERSION_MAJOR		0
 #define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		9
+#define	uKOS_VERSION_PATCH		11
 #define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)

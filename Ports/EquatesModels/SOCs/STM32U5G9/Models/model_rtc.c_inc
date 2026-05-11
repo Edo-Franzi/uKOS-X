@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Laurent von Allmen		The 2026-02-13
@@ -13,8 +14,8 @@
 ; Goal:		Model for managing the time & date by a hardware rtc.
 ;			In the rtc it stored the local time.
 ;
-;   (c) 2025-2026, Edo. Franzi
-;   --------------------------
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -48,12 +49,11 @@
 ;------------------------------------------------------------------------
 */
 
-#include	<stdint.h>
-#include	<time.h>
-
 #include	"types.h"
 #include	"soc_reg.h"
 #include	"kern/kern.h"
+#include	<stdint.h>
+#include	<time.h>
 
 // Prototypes
 

@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -137,7 +138,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *   integrity (if there is enough place)
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static	void	local_process(const void *argument) {
 			bool		terminate;
 			uint16_t	i;
 			uint32_t	core, stackSize, j;

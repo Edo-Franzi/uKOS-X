@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -124,7 +125,8 @@ MODULE(
  *			- Display a message on the KSYST manager
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	int32_t		cpt = 0u;
 
 	UNUSED(argument);
@@ -144,7 +146,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Display a message on the KSYST manager
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	int32_t		cpt = 0u;
 
 	UNUSED(argument);

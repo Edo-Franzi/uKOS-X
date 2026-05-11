@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -105,7 +106,7 @@ void	test_06(void) {
  */
 #define	KSAVEREGISTERS	"r0", "r1", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11"
 
-void	SVCall_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	SVCall_IRQHandler(void) {
 
 // Recover the message
@@ -146,7 +147,8 @@ void	SVCall_IRQHandler(void) {
  * - Blink the BLUE Led
  *
  */
-static	void	__attribute__ ((noinline)) local_process(uint32_t message) {
+[[gnu::noinline]]
+static	void	local_process(uint32_t message) {
 
 	LED_1_TOGGLE;
 

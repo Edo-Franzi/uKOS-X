@@ -3,6 +3,7 @@
 ; ========================================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -340,7 +341,8 @@ static	void	local_TIM0_B_IRQHandler_C1(uint32_t core, uint64_t parameter) {
  *
  */
 		void	local_changeContext_PRE_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack);
-static	void	local_PREEMPTION_IRQHandler_C1(uint32_t core, uint64_t parameter) __attribute__ ((naked));
+
+[[gnu::naked]]
 static	void	local_PREEMPTION_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 
 	#if (!defined(__clang__))
@@ -359,8 +361,9 @@ static	void	local_PREEMPTION_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 // The input parameters have to be provided by the macro KERN_SAVE_FRAME and
 // have to comply with the eabi
 //
-//															                   a0			  a1				  a2					a3
-void	__attribute__ ((noinline, used)) local_changeContext_PRE_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
+//											 a0			    a1				    a2					  a3
+[[gnu::noinline, gnu::used]]
+void	local_changeContext_PRE_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
 	const	volatile	uint64_t	*newStack;
 
 // Save the plic threshold on the current process stack
@@ -398,7 +401,8 @@ void	__attribute__ ((noinline, used)) local_changeContext_PRE_C1(uint32_t core, 
  *     - Start time of the process
  *
  */
-static	void	__attribute__ ((noinline)) local_newContextPRE_C1(uint32_t core, uint64_t parameter) {
+[[gnu::noinline]]
+static	void	local_newContextPRE_C1(uint32_t core, uint64_t parameter) {
 
 	vExce_isException[core] = false;
 
@@ -467,7 +471,8 @@ static	void	__attribute__ ((noinline)) local_newContextPRE_C1(uint32_t core, uin
  *
  */
 		void	local_changeContext_TOU_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack);
-static	void	local_TIM2_B_IRQHandler_C1(uint32_t core, uint64_t parameter) __attribute__ ((naked));
+
+[[gnu::naked]]
 static	void	local_TIM2_B_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 
 	#if (!defined(__clang__))
@@ -486,8 +491,9 @@ static	void	local_TIM2_B_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 // The input parameters have to be provided by the macro KERN_SAVE_FRAME and
 // have to comply with the eabi
 //
-//																			   a0			  a1				  a2					a3
-void	__attribute__ ((noinline, used)) local_changeContext_TOU_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
+//											 a0			    a1				    a2					  a3
+[[gnu::noinline, gnu::used]]
+void	local_changeContext_TOU_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack) {
 	const	volatile	uint64_t	*newStack;
 
 // Save the plic threshold on the current process stack
@@ -528,7 +534,8 @@ void	__attribute__ ((noinline, used)) local_changeContext_TOU_C1(uint32_t core, 
  *     - Start time of the process
  *
  */
-static	void	__attribute__ ((noinline)) local_newContextTOU_C1(uint32_t core, uint64_t parameter) {
+[[gnu::noinline]]
+static	void	local_newContextTOU_C1(uint32_t core, uint64_t parameter) {
 
 	vExce_isException[core] = false;
 
@@ -596,7 +603,8 @@ static	void	__attribute__ ((noinline)) local_newContextTOU_C1(uint32_t core, uin
  *
  */
 		void	local_changeContext_MSG_C1(uint32_t core, uint64_t message, uint64_t *threshold, uintptr_t *stack);
-static	void	local_ECALL_message_C1(uint32_t core, uint64_t message) __attribute__ ((naked));
+
+[[gnu::naked]]
 static	void	local_ECALL_message_C1(uint32_t core, uint64_t message) {
 
 	#if (!defined(__clang__))
@@ -615,8 +623,9 @@ static	void	local_ECALL_message_C1(uint32_t core, uint64_t message) {
 // The input parameters have to be provided by the macro KERN_SAVE_FRAME and
 // have to comply with the eabi
 //
-//														                       a0			  a1				a2					  a3
-void	__attribute__ ((noinline, used)) local_changeContext_MSG_C1(uint32_t core, uint64_t message, uint64_t *threshold, uintptr_t *stack) {
+//											 a0			    a1				  a2				    a3
+[[gnu::noinline, gnu::used]]
+void	local_changeContext_MSG_C1(uint32_t core, uint64_t message, uint64_t *threshold, uintptr_t *stack) {
 	const	volatile	uint64_t	*newStack;
 
 // Save the plic threshold on the current process stack
@@ -655,7 +664,8 @@ void	__attribute__ ((noinline, used)) local_changeContext_MSG_C1(uint32_t core, 
  *     - Start time of the process
  *
  */
-static	void	__attribute__ ((noinline)) local_newContextMSG_C1(uint32_t core, uint64_t message) {
+[[gnu::noinline]]
+static	void	local_newContextMSG_C1(uint32_t core, uint64_t message) {
 
 	vExce_isException[core] = false;
 

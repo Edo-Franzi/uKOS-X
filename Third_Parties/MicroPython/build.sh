@@ -4,6 +4,7 @@
 # ======
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi		The 2025-01-01
@@ -116,5 +117,11 @@ build_core CORTEX_M55
 
 printf '\n%bBuilding for cortex M85! ...%b\n' "${BOLD}" "${NC}"
 build_core CORTEX_M85
+
+printf '\n%bBuilding for RISC-V 32! ...%b\n' "${BOLD}" "${NC}"
+build_core RV32IMAC
+
+printf '\n%bBuilding for RISC-V 64! ...%b\n' "${BOLD}" "${NC}"
+build_core RV64IMAFDC
 
 printf '\n🎉 %bBuild Complete%b\n\n' "${GREEN}" "${NC}"

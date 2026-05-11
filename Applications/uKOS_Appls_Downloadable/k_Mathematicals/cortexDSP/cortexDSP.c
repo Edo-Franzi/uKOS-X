@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -118,8 +119,11 @@ MODULE(
 
 // Prototypes
 
-__attribute__ ((always_inline)) static inline void local_cumulate32(int32_t *value, int16_t a, int16_t b);
-__attribute__ ((always_inline)) static inline void local_cumulate64(int64_t *value, int32_t a, int32_t b);
+[[gnu::always_inline]]
+static	inline	void	local_cumulate32(int32_t *value, int16_t a, int16_t b);
+
+[[gnu::always_inline]]
+static	inline	void	local_cumulate64(int64_t *value, int32_t a, int32_t b);
 
 /*
  * \brief aProcess 0
@@ -128,7 +132,8 @@ __attribute__ ((always_inline)) static inline void local_cumulate64(int64_t *val
  *  		- Toggle LED 1
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 
 	UNUSED(argument);
 
@@ -145,7 +150,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Compute the vertical-horizontal sums of a matrix
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 					uint8_t		i, j;
 	static	const	int16_t		image[10][10] = {
 									{  0,  1,  2,  3,  4,  5,  6,  7,  8,  9 },
@@ -197,7 +203,8 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
  *			- Compute the sum of the 2 vector product
  *
  */
-static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
+[[noreturn]]
+static	void	aProcess_2(const void *argument) {
 			uint8_t		i;
 			int64_t		result;
 	static	int32_t		vector_1[10] = { 1, -2, 3, 4,  5, 6, 7, 8, 9,  10 };
@@ -298,7 +305,8 @@ MAIN_ENTRY(argc, argv[]) {
 
 // NOLINTBEGIN(readability-non-const-parameter)
 //
-__attribute__ ((always_inline)) static inline void local_cumulate32(int32_t *value, int16_t a, int16_t b) {
+[[gnu::always_inline]]
+static	inline	void	local_cumulate32(int32_t *value, int16_t a, int16_t b) {
 
 	__asm volatile ("smlabb %0, %1, %2, %3" : "=r" (*value) : "r" (a), "r" (b), "r" (*value));
 }
@@ -310,7 +318,8 @@ __attribute__ ((always_inline)) static inline void local_cumulate32(int32_t *val
  *   - value.64 = value.64 + (a.32 * b.32).
  *
  */
-__attribute__ ((always_inline)) static inline void local_cumulate64(int64_t *value, int32_t a, int32_t b) {
+[[gnu::always_inline]]
+static	inline	void	local_cumulate64(int64_t *value, int32_t a, int32_t b) {
 	uint32_t	h, l;
 
 	h = (uint32_t)(*value>>32); l = (uint32_t)(*value & 0xFFFFFFFFul);

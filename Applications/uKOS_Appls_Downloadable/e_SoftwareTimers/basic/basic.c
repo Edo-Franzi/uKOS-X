@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -125,7 +126,8 @@ static	void	local_changeStateLed(const void *argument);
  *			- Print a message
  *
  */
-static void __attribute__ ((noreturn)) aProcess(const void *argument) {
+[[noreturn]]
+static	void	aProcess(const void *argument) {
 					uint32_t	time;
 					tspc_t		configure_0, configure_1;
 					stim_t		*softwareTimer_0, *softwareTimer_1;

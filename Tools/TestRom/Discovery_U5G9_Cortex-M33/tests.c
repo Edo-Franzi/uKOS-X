@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -61,7 +62,8 @@
 			void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 volatile	bool	vPriv_insideException[KNB_CORES] = MCSET(false);
 
-void	__attribute__ ((noreturn)) model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp) {
+[[noreturn]]
+void	model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp) {
 
 	UNUSED(lr);
 	UNUSED(msp);
@@ -69,7 +71,8 @@ void	__attribute__ ((noreturn)) model_coreDump_displayExceptions(uintptr_t lr, u
 	while (true) { ; }
 }
 
-void	__attribute__ ((noreturn)) model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp) {
+[[noreturn]]
+void	model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp) {
 
 	UNUSED(lr);
 	UNUSED(msp);

@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -88,9 +89,14 @@
 #define	KPROCESS_INIT_MCAUSE	(MCAUSE_INTERRUPT | RVBB_MCAUSE_MPP(3) | RVBB_MCAUSE_MPIE | 11)
 
 static		char_t		vString[20];
-volatile	uintptr_t	vStackFs[800] __attribute__ ((aligned (16)));		//
-volatile	uintptr_t	vStackP0[800] __attribute__ ((aligned (16)));		//
-volatile	uintptr_t	vStackP1[800] __attribute__ ((aligned (16)));		//
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackFs[800];										//
+
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackP0[800];										//
+
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackP1[800];										//
 volatile	uintptr_t	vStackCurFs;										//
 volatile	uintptr_t	vStackCurP0;										//
 volatile	uintptr_t	vStackCurP1;										//
@@ -288,7 +294,7 @@ void	process_1(uintptr_t *argument) {
  * - Change the context f(message)
  *
  */
-void	EXTI0_IRQHandler(void) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	EXTI0_IRQHandler(void) {
 
 	__asm volatile ("								\n \
@@ -417,7 +423,8 @@ void	EXTI0_IRQHandler(void) {
  * - Pico scheduler
  *
  */
-static	void	__attribute__ ((noinline)) local_scheduler(void) {
+[[gnu::noinline]]
+static	void	local_scheduler(void) {
 
 	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_message);
 	cmns_send(KURT0, "Message 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");

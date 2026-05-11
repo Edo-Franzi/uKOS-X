@@ -75,12 +75,15 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 # - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(V)
 # - PATH_MAPP	PATH_MAPP ?= $(PATH_BASE)/Runtime
 
-PATH_MKFILE		:= $(abspath $(lastword $(MAKEFILE_LIST)))
-PATH_PORT		=  $(PATH_UKOS)/Ports
+PATH_MKFILE				:= $(abspath $(lastword $(MAKEFILE_LIST)))
+PATH_PORT				=  $(PATH_UKOS)/Ports
 
-DISPLAY			=  TFT_2_4_Inches
-PATH_LIB_LVGL	=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
-LVGL			=  libLVGL
+DISPLAY					=  TFT_2_4_Inches
+PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+LVGL					=  libLVGL
+
+PATH_LIB_MICROPYTHON	=  $(PATH_UKOS)/Third_Parties/MicroPython/Library/$(CORE)
+MICROPYTHON				=  libMicroPython
 
 # Target & Infrastructure
 
@@ -256,6 +259,7 @@ CLI_U			+= $(PATH_OSYS)/CLI/list/list.c
 CLI_U			+= $(PATH_OSYS)/CLI/man/man.c
 CLI_U			+= $(PATH_OSYS)/CLI/memck/memck.c
 CLI_U			+= $(PATH_OSYS)/CLI/memory/memory.c
+CLI_U			+= $(PATH_OSYS)/CLI/microPython/microPython.c
 CLI_U			+= $(PATH_OSYS)/CLI/mutex/mutex.c
 CLI_U			+= $(PATH_OSYS)/CLI/object/object.c
 CLI_U			+= $(PATH_OSYS)/CLI/process/process.c
@@ -278,6 +282,10 @@ UKOS_COMPONENTS	=  librtcb_p.a libkern_p.a libkern_u.a liblibx_p.a liblibx_u.a l
 # With the LVGL library
 CONF_SYSTEM		+= -DSYSTEM_LVGL_S
 UKOS_COMPONENTS	+= $(LVGL).a
+
+# With the MicroPython manager (MicroPython Engine)
+CONF_SYSTEM		+= -DCONFIG_MAN_MICROPYTHON_S
+UKOS_COMPONENTS	+= $(MICROPYTHON).a
 
 # The included makefiles
 

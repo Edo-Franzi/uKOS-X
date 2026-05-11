@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -56,7 +57,7 @@
 // Structure for accessing GPIO registers by individual bit
 // --------------------------------------------------------
 
-typedef	struct	_gpio_bits {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _gpio_bits {
 	uint32_t	b0  : 1;							//
 	uint32_t	b1  : 1;							//
 	uint32_t	b2  : 1;							//
@@ -89,22 +90,22 @@ typedef	struct	_gpio_bits {
 	uint32_t	b29 : 1;							//
 	uint32_t	b30 : 1;							//
 	uint32_t	b31 : 1;							//
-} __attribute__ ((packed, aligned (4))) gpio_bits_t;
+} gpio_bits_t;
 
 // Structure of templates for accessing GPIO registers
 // ---------------------------------------------------
 
-typedef	union	_gpio_access_tp {
+typedef	union	[[gnu::packed, gnu::aligned(4)]] _gpio_access_tp {
 	uint32_t		u32[1];							// 32x1 bit mode
 	uint16_t		u16[2];							// 16x2 bit mode
 	uint8_t			u8[4];							// 8x4 bit mode
 	gpio_bits_t		bits;							// 1x32 bit mode
-} __attribute__ ((packed, aligned (4))) gpio_access_tp_t;
+} gpio_access_tp_t;
 
 // The GPIO address map
 // --------------------
 
-typedef	struct	_gpio {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _gpio {
 	gpio_access_tp_t	data_output;				// Offset 0x00: Data (output) registers
 	gpio_access_tp_t	direction;					// Offset 0x04: Data direction registers
 	gpio_access_tp_t	source;						// Offset 0x08: Data source registers
@@ -122,6 +123,6 @@ typedef	struct	_gpio {
 	gpio_access_tp_t	sync_level;					// Offset 0x60: Sync level registers
 	gpio_access_tp_t	id_code;					// Offset 0x64: ID code
 	gpio_access_tp_t	interrupt_bothedge;			// Offset 0x68: Interrupt both edge type
-} __attribute__ ((packed, aligned (4))) gpio_t;
+} gpio_t;
 
 #define	gpio	((volatile	gpio_t *)0x50200000u)

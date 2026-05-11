@@ -3,6 +3,8 @@
 ; ============
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2019 Ha Thach (tinyusb.org)
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -119,15 +121,15 @@ extern	"C" {
 // TinyUSB use follows macros to declare transferring memory so that they can be put
 // into those specific section.
 // e.g
-// - CFG_TUSB_MEM SECTION : __attribute__ (( section(".usb_ram") ))
-// - CFG_TUSB_MEM_ALIGN   : __attribute__ ((aligned(4)))
+// - CFG_TUSB_MEM SECTION : [[gnu::section(".usb_ram")]]
+// - CFG_TUSB_MEM_ALIGN   : [[gnu::aligned(4)]]
 
 #if (!defined(CFG_TUSB_MEM_SECTION))
 #define	CFG_TUSB_MEM_SECTION
 #endif
 
 #if (!defined(CFG_TUSB_MEM_ALIGN))
-#define	CFG_TUSB_MEM_ALIGN		__attribute__ ((aligned(32)))
+#define	CFG_TUSB_MEM_ALIGN		[[gnu::aligned(32)]]
 #endif
 
 // Device Configuration

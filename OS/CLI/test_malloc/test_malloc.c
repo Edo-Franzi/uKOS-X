@@ -3,6 +3,7 @@
 ; ============
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -248,7 +249,8 @@ static	bool	local_install(uint32_t number) {
  *       When the heap is full, check of the coherence of the blocs & release them
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static	void	local_process(const void *argument) {
 			uint32_t			nbSamples, i, j, amount;
 			uint8_t				**aTabPtr, *array, *length, *counter, cpt;
 	const	char_t				*processName;

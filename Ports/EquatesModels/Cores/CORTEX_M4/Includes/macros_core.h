@@ -3,6 +3,7 @@
 ; ============
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -194,7 +195,7 @@
 #endif
 
 #if (!defined(INTERRUPTION_OFF))
-#define	INTERRUPTION_OFF		volatile	uint32_t	saveBASEPRI __attribute__ ((unused));									\
+#define	INTERRUPTION_OFF		[[maybe_unused]] volatile	uint32_t	saveBASEPRI;											\
 																																\
 								saveBASEPRI = core_getBASEPRI();																\
 								(void)saveBASEPRI;																				\
@@ -244,7 +245,9 @@
 
 extern	volatile	bool	vPriv_insideException[KNB_CORES];
 extern				void	(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
-extern				void	__attribute__ ((noreturn)) model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp);
+
+[[noreturn]]
+extern				void	model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp);
 
 #define	EXCEPTION_SPECIFIC_HANDLER(exc)																							\
 								void exc##_local_IRQHandler(uintptr_t lr, uintptr_t *msp) {										\
@@ -260,7 +263,7 @@ extern				void	__attribute__ ((noreturn)) model_coreDump_displayExceptions(uintp
 									vPriv_insideException[core] = false;														\
 								}																								\
 																																\
-								void exc##_IRQHandler(void) __attribute__ ((weak, naked));										\
+								[[gnu::weak, gnu::naked]]																		\
 								void exc##_IRQHandler(void) {																	\
 																																\
 									__asm volatile ("																		 \n \
@@ -275,7 +278,9 @@ extern				void	__attribute__ ((noreturn)) model_coreDump_displayExceptions(uintp
 #define KINTERRUPTION			1u
 
 extern	void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
-extern	void	__attribute__ ((noreturn)) model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp);
+
+[[noreturn]]
+extern	void	model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp);
 
 #define	INTERRUPT_SPECIFIC_HANDLER(irq)																							\
 								void irq##_local_IRQHandler(uintptr_t lr, uintptr_t *msp) {										\
@@ -291,7 +296,7 @@ extern	void	__attribute__ ((noreturn)) model_coreDump_displayInterruptions(uintp
 									TAC_EXCEPTION_TIME(core);																	\
 								}																								\
 																																\
-								void irq##_IRQHandler(void) __attribute__ ((weak, naked));										\
+								[[gnu::weak, gnu::naked]]																		\
 								void irq##_IRQHandler(void) {																	\
 																																\
 									__asm volatile ("																		 \n \

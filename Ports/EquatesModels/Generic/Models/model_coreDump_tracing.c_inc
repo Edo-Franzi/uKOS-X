@@ -3,6 +3,7 @@
 ; =======================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -58,7 +59,8 @@ static	void	local_compose(const char_t *identifier, const char_t **idSpacer);
  * - Display the user trace
  *
  */
-static	void	__attribute__ ((noinline)) local_printTrace(void) {
+[[gnu::noinline]]
+static	void	local_printTrace(void) {
 
 	#if (!defined(NO_KERNEL_S))
 	uint32_t	core, i;
@@ -88,7 +90,8 @@ static	void	__attribute__ ((noinline)) local_printTrace(void) {
  * - Display the user log
  *
  */
-static	void	__attribute__ ((noinline)) local_printLog(void) {
+[[gnu::noinline]]
+static	void	local_printLog(void) {
 
 	#if (!defined(NO_KERNEL_S))
 			uint32_t			core, i;

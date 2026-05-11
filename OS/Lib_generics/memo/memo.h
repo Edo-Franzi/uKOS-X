@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -128,7 +129,8 @@ extern	void	memo_free(void *address);
  *
  */
 #if	((uKOS_COMPILER_VERSION > 110200) && (!defined(__clang__)))
-extern	void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *identifier) __attribute__ ((malloc, malloc(memo_free, 1), alloc_size(2)));
+[[gnu::malloc, gnu::malloc(memo_free, 1), gnu::alloc_size(2)]]
+extern	void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *identifier);
 
 #else
 extern	void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *identifier);
@@ -158,7 +160,8 @@ extern	void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const c
  *
  */
 #if	((uKOS_COMPILER_VERSION > 110200) && (!defined(__clang__)))
-extern	void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32_t size, const char_t *identifier) __attribute__ ((malloc, malloc(memo_free, 1), alloc_size(3)));
+[[gnu::malloc, gnu::malloc(memo_free, 1), gnu::alloc_size(3)]]
+extern	void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32_t size, const char_t *identifier);
 
 #else
 extern	void	*memo_realloc(memoAlignement_t memoAlignement, void *address, uint32_t size, const char_t *identifier);

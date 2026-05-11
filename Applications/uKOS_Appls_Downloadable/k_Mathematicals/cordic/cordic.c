@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -128,7 +129,8 @@ static	float64_t	local_atan2(int32_t y, int32_t x);
  *			- Toggle LED 1
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 
 	UNUSED(argument);
 
@@ -145,7 +147,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Compute the atan2 with a Cordic
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	uint64_t	time[2];
 	uint32_t	delta = 0;
 	float64_t	angle;

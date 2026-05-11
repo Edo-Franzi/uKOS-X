@@ -3,6 +3,7 @@
 ; ========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -136,7 +137,8 @@ MODULE(
  *			- Toggle LED 1
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	uint16_t	x;
 	uint32_t	random;
 	float64_t	y;

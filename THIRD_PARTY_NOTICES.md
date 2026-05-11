@@ -95,7 +95,7 @@ the third-party components shipped in this repository.
 ### 2.9) Tflite-micro
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/tensorflow/tflite-micro.git
-- Version: commit 51bee03
+- Version: commit 9f5ac25
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2020 The TensorFlow Authors. All rights reserved.

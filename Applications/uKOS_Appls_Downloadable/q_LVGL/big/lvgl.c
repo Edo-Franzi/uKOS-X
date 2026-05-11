@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -69,7 +70,8 @@ extern	void	ui_draw(void);
  *				  - Increment the VLGL tick
  *
  */
-static void __attribute__ ((noreturn)) aProcess_lvgl_tick(const void *argument) {
+[[noreturn]]
+static	void	aProcess_lvgl_tick(const void *argument) {
 	uint32_t	core, delta;
 	uint64_t	last, now;
 
@@ -105,7 +107,8 @@ static void __attribute__ ((noreturn)) aProcess_lvgl_tick(const void *argument) 
  *			     - do nothing
  *
  */
-static void __attribute__ ((noreturn)) aProcess_lvgl(const void *argument) {
+[[noreturn]]
+static	void	aProcess_lvgl(const void *argument) {
 	uint32_t	core, LCDBufferSize;
 	lv_color_t	*LCDBuffer;
 

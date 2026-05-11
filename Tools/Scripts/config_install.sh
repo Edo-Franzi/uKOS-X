@@ -2,6 +2,7 @@
 # ===============
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2025-01-01
@@ -118,7 +119,7 @@ export GCC_ARM_VER=16.1.0
 export GCC_RVXX_VER=16.1.0
 export NLB_VER=4.6.0
 export NLB_RVXX_VER=4.5.0
-export GDB_VER=17.1
+export GDB_VER=17.2
 export LLVM_ARM_VER=22.1.1
 export LLVM_ARM_COMMIT=c2e3f0b2
 export LLVM_RVXX_VER=22.1.1

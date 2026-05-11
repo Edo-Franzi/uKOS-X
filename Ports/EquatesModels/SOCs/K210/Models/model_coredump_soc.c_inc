@@ -3,6 +3,7 @@
 ; ===================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -109,8 +110,9 @@ static	void	local_printExt_Interruption(const char_t **vectorName);
  *
  */
 		void	local_processExt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter);
-static	void	coreDump_displayExt_Interruption(uint32_t core, uint64_t number) __attribute__ ((naked));
-static	void	coreDump_displayExt_Interruption(uint32_t core __attribute__ ((unused)), uint64_t number __attribute__ ((unused))) {
+
+[[gnu::naked]]
+static	void	coreDump_displayExt_Interruption([[maybe_unused]] uint32_t core, [[maybe_unused]] uint64_t number) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
 
@@ -128,7 +130,8 @@ static	void	coreDump_displayExt_Interruption(uint32_t core __attribute__ ((unuse
  * - Display the stack frame
  *
  */
-void	__attribute__ ((noinline)) local_processExt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter) {
+[[gnu::noinline]]
+void	local_processExt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter) {
 			uint32_t	i;
 	const	uintptr_t	*ptr;
 	const	char_t		*vectorName;
@@ -161,7 +164,8 @@ void	__attribute__ ((noinline)) local_processExt(uint32_t core, uint64_t number,
  * - Display the interruption name
  *
  */
-static	void	__attribute__ ((noinline)) local_printExt_Interruption(const char_t **vectorName) {
+[[gnu::noinline]]
+static	void	local_printExt_Interruption(const char_t **vectorName) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;

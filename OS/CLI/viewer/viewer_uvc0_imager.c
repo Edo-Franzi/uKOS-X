@@ -3,6 +3,7 @@
 ; ===================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -157,7 +158,8 @@ int32_t	viewer_uvc0_clean(uint32_t argc, const char_t *argv[]) {
  *			- Send an image
  *
  */
-static void __attribute__ ((noreturn)) aProcess_acquisition(const void *argument) {
+[[noreturn]]
+static	void	aProcess_acquisition(const void *argument) {
 				uint32_t		core;
 				uint32_t		w, h;
 				uint8_t			*imageYUY2;

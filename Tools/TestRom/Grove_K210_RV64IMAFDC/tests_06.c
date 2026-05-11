@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -53,7 +54,8 @@
 static	char_t		vString[20];
 		uintptr_t	vKern_stackProc;
 
-static	void	__attribute__ ((naked)) syscall(uint64_t message) {
+[[gnu::naked]]
+static	void	syscall(uint64_t message) {
 	__asm volatile ("ECALL" : : "r" (message));
 	__asm volatile ("ret");
 }
@@ -94,7 +96,7 @@ void	test_06(void) {
  * - Display the message
  *
  */
-void	local_message(uint32_t core, uint64_t message) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	local_message(uint32_t core, uint64_t message) {
 	uint64_t	threshold;
 
@@ -405,7 +407,8 @@ void	local_message(uint32_t core, uint64_t message) {
  * - Blink the Red 2 Led
  *
  */
-static	void	__attribute__ ((noinline)) local_process(uint32_t core, uint64_t threshold, uint64_t message) {
+[[gnu::noinline]]
+static	void	local_process(uint32_t core, uint64_t threshold, uint64_t message) {
 	uint32_t	msb, lsb;
 
 	LED_RED_2_TOGGLE;

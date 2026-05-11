@@ -23,9 +23,10 @@ Exemple for C source file:
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:    Edo. Franzi			     The 2025-01-01
+; Author:    Edo. Franzi           The 2025-01-01
 ; Modifs:    Laurent von Allmen    The 2025-01-01
 ;
 ; Project:   µKOS-X
@@ -92,7 +93,7 @@ Line 4 : separator line (72 '-')
 ### Section 2
 
 ```
-; Author:	Edo. Franzi    The 2025-01-01
+; Author:    Edo. Franzi    The 2025-01-01
 ```
 
 ### Section 3
@@ -127,7 +128,7 @@ Goal description can extend to more lines, e.g.
 ;            Service system calls
 ;            --------------------
 ;
-;            int32_t	kern_init(void);
+;            int32_t    kern_init(void);
 ```
 
 Last line of section is blank.

@@ -96,8 +96,8 @@ undefined reference to `linker_topStackFirst_C1'
 
 **`Runtime/link_p.ld`** - Added Core 1 stack size definitions:
 ```ld
-linker_sizeStackSystem_C1	= (4K);		/* System stack for core 1 */
-linker_sizeStackFirst_C1	= (2K);		/* Application stack for core 1 */
+linker_sizeStackSystem_C1   = (4K);		/* System stack for core 1 */
+linker_sizeStackFirst_C1    = (2K);     /* Application stack for core 1 */
 ```
 
 **`Runtime/system_p.ld`** - Added Core 1 stack sections:

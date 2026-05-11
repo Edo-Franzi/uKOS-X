@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -124,7 +125,8 @@ MODULE(
  *			- Measure (tac - tic) time of the Toggle LED 1 function
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	uint64_t	time[2];
 	uint32_t	delta;
 
@@ -149,7 +151,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Display the function time durations
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	uint64_t	time[2];
 	uint32_t	delta = 0u;
 
@@ -173,7 +176,8 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
  *			- Display the identifier string
  *
  */
-static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
+[[noreturn]]
+static	void	aProcess_2(const void *argument) {
 			uint32_t	cpt = 0;
 	const	char_t		*identifier;
 	const	char_t		*family;

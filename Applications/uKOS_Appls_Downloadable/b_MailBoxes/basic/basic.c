@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -130,7 +131,8 @@ MODULE(
  *			- Toggle LED 1
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	uint32_t	sizeRec;
 	uint8_t		*bufPtr;
 	uint8_t		*bufRec;
@@ -178,7 +180,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Write a message into the mailbox
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	size_t		sizeSnd;
 	uint8_t		*bufSnd;
 	mbox_t		*mailBox;
@@ -223,7 +226,8 @@ static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
  *			- Write a message into the mailbox
  *
  */
-static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
+[[noreturn]]
+static	void	aProcess_2(const void *argument) {
 	size_t		sizeSnd;
 	uint8_t		*bufSnd;
 	mbox_t		*mailBox;
@@ -269,7 +273,8 @@ static void __attribute__ ((noreturn)) aProcess_2(const void *argument) {
  *			- Write a message into the mailbox
  *
  */
-static void __attribute__ ((noreturn)) aProcess_3(const void *argument) {
+[[noreturn]]
+static	void	aProcess_3(const void *argument) {
 	size_t		sizeSnd;
 	uint8_t		*bufSnd;
 	mbox_t		*mailBox;

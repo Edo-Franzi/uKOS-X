@@ -3,6 +3,7 @@
 ; ===================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -88,7 +89,8 @@ static	void	local_printInterruption(const char_t **vectorName);
  * BASEPRI  = 0x00000070
  *
  */
-void	 __attribute__ ((naked, noreturn)) model_coreDump_displayInterruptions(uintptr_t lr __attribute__ ((unused)), uintptr_t *msp __attribute__ ((unused))) {
+[[gnu::naked, noreturn]]
+void	model_coreDump_displayInterruptions([[maybe_unused]] uintptr_t lr, [[maybe_unused]] uintptr_t *msp) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
 
@@ -106,7 +108,8 @@ void	 __attribute__ ((naked, noreturn)) model_coreDump_displayInterruptions(uint
  * - Display the stack frame
  *
  */
-static	void	__attribute__ ((noinline, used, noreturn)) local_processInterruption(uintptr_t *stackBefore, uintptr_t *stackAfter) {
+[[gnu::noinline, gnu::used, noreturn]]
+static	void	local_processInterruption(uintptr_t *stackBefore, uintptr_t *stackAfter) {
 			uint32_t	core, i;
 	const	uintptr_t	*ptr;
 	const	char_t		*vectorName;
@@ -141,7 +144,8 @@ static	void	__attribute__ ((noinline, used, noreturn)) local_processInterruption
  * - Display the interruption name
  *
  */
-static	void	__attribute__ ((noinline)) local_printInterruption(const char_t **vectorName) {
+[[gnu::noinline]]
+static	void	local_printInterruption(const char_t **vectorName) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;

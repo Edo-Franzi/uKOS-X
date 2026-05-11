@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -134,7 +135,8 @@ extern	void	stub_intr_timer_init(void);
  *			- Toggle the LED 1
  *
  */
-static void __attribute__ ((noreturn)) aProcess(const void *argument) {
+[[noreturn]]
+static	void	aProcess(const void *argument) {
 	int32_t		status;
 	sema_t		*semaphore;
 

@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -120,7 +121,8 @@ extern	int32_t	kern_setPrivilegeMode(uint8_t mode);
  * \note This function does not return a value (None).
  *
  */
-extern	void	kern_privilegeElevate(void) __attribute__ ((naked));
+[[gnu::naked]]
+extern	void	kern_privilegeElevate(void);
 
 #if (defined(__cplusplus))
 }

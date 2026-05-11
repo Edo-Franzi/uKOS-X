@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -135,7 +136,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  * - Install all the processes of the system
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static	void	local_process(const void *argument) {
 			uint16_t		index = 0u;
 			uint32_t		core, idModule, argc = 4u;
 	const	uKOS_module_t	*module;

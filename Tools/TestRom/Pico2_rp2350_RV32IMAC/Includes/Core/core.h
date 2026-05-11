@@ -49,11 +49,7 @@
 
 #pragma	once
 
-#include	<stdint.h>
-#include	<stdatomic.h>
-
 #include	"core_reg.h"
-#include	"macros_soc.h"
 
 /*
  * \brief core_getCSR
@@ -64,7 +60,8 @@
  * \return		value		The register value
  *
  */
-__attribute__ ((always_inline))	static	inline	uint32_t	core_getCSR(uint32_t reg) {
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getCSR(uint32_t reg) {
 	uint32_t	value;
 
 	__asm volatile (
@@ -87,7 +84,8 @@ __attribute__ ((always_inline))	static	inline	uint32_t	core_getCSR(uint32_t reg)
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_putCSR(uint32_t reg, uint32_t value) {
+[[gnu::always_inline]]
+static	inline	void	core_putCSR(uint32_t reg, uint32_t value) {
 
 	if (__builtin_constant_p(value) && ((uint32_t)(value) < 32U)) {
 		__asm volatile (
@@ -116,7 +114,8 @@ __attribute__ ((always_inline))	static	inline	void	core_putCSR(uint32_t reg, uin
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setBitCSR(uint32_t reg, uint32_t mask) {
+[[gnu::always_inline]]
+static	inline	void	core_setBitCSR(uint32_t reg, uint32_t mask) {
 
 	if (__builtin_constant_p(mask) && ((uint32_t)(mask) < 32U)) {
 		__asm volatile (
@@ -145,7 +144,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setBitCSR(uint32_t reg, 
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_clrBitCSR(uint32_t reg, uint32_t mask) {
+[[gnu::always_inline]]
+static	inline	void	core_clrBitCSR(uint32_t reg, uint32_t mask) {
 
 	if (__builtin_constant_p(mask) && ((uint32_t)(mask) < 32U)) {
 		__asm volatile (
@@ -173,12 +173,14 @@ __attribute__ ((always_inline))	static	inline	void	core_clrBitCSR(uint32_t reg, 
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_enableExternalIRQ(uint32_t irqNum) {
+[[gnu::always_inline]]
+static	inline	void	core_enableExternalIRQ(uint32_t irqNum) {
 	uint32_t	index = irqNum / 16u;
-	uint32_t	bit   = 1u << (irqNum % 16u);
+	uint32_t	bit   = 1u<<(irqNum % 16u);
 
-	// Write index in low bits, data in high 16 bits; csrs does atomic OR
-	__asm volatile ("csrs 0xBE0, %0" :: "r" (index | (bit << 16)));
+// Write index in low bits, data in high 16 bits; csrs does atomic OR
+
+	__asm volatile ("csrs 0xBE0, %0" :: "r" (index | (bit<<16)));
 }
 
 /*
@@ -191,12 +193,14 @@ __attribute__ ((always_inline))	static	inline	void	core_enableExternalIRQ(uint32
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_disableExternalIRQ(uint32_t irqNum) {
+[[gnu::always_inline]]
+static	inline	void	core_disableExternalIRQ(uint32_t irqNum) {
 	uint32_t	index = irqNum / 16u;
-	uint32_t	bit   = 1u << (irqNum % 16u);
+	uint32_t	bit   = 1u<<(irqNum % 16u);
 
-	// csrc does atomic AND-NOT
-	__asm volatile ("csrc 0xBE0, %0" :: "r" (index | (bit << 16)));
+// csrc does atomic AND-NOT
+
+	__asm volatile ("csrc 0xBE0, %0" :: "r" (index | (bit<<16)));
 }
 
 /*
@@ -209,11 +213,12 @@ __attribute__ ((always_inline))	static	inline	void	core_disableExternalIRQ(uint3
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setPendingExternalIRQ(uint32_t irqNum) {
+[[gnu::always_inline]]
+static	inline	void	core_setPendingExternalIRQ(uint32_t irqNum) {
 	uint32_t	index = irqNum / 16u;
-	uint32_t	bit   = 1u << (irqNum % 16u);
+	uint32_t	bit   = 1u<<(irqNum % 16u);
 
-	__asm volatile ("csrs 0xBE2, %0" :: "r" (index | (bit << 16)));
+	__asm volatile ("csrs 0xBE2, %0" :: "r" (index | (bit<<16)));
 }
 
 /*
@@ -226,11 +231,12 @@ __attribute__ ((always_inline))	static	inline	void	core_setPendingExternalIRQ(ui
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_clearPendingExternalIRQ(uint32_t irqNum) {
+[[gnu::always_inline]]
+static	inline	void	core_clearPendingExternalIRQ(uint32_t irqNum) {
 	uint32_t	index = irqNum / 16u;
-	uint32_t	bit   = 1u << (irqNum % 16u);
+	uint32_t	bit   = 1u<<(irqNum % 16u);
 
-	__asm volatile ("csrc 0xBE2, %0" :: "r" (index | (bit << 16)));
+	__asm volatile ("csrc 0xBE2, %0" :: "r" (index | (bit<<16)));
 }
 
 /*
@@ -246,12 +252,14 @@ __attribute__ ((always_inline))	static	inline	void	core_clearPendingExternalIRQ(
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setExternalIRQPriority(uint32_t irqNum, uint32_t priority) {
+[[gnu::always_inline]]
+static	inline	void	core_setExternalIRQPriority(uint32_t irqNum, uint32_t priority) {
 	uint32_t	index = irqNum / 4u;
 	uint32_t	shift = (irqNum % 4u) * 4u;
 
-	// csrs ORs the priority bits into the selected window
-	__asm volatile ("csrs 0xBE3, %0" :: "r" (index | ((priority & 0xFu) << (shift + 16u))));
+// csrs ORs the priority bits into the selected window
+
+	__asm volatile ("csrs 0xBE3, %0" :: "r" (index | ((priority & 0xFu)<<(shift + 16u))));
 }
 
 /*
@@ -262,7 +270,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setExternalIRQPriority(u
  * \return		meinext		The MEINEXT register value
  *
  */
-__attribute__ ((always_inline))	static	inline	uint32_t	core_getNextExternalIRQ(void) {
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getNextExternalIRQ(void) {
 	uint32_t	meinext;
 
 	__asm volatile ("csrr %0, 0xBE4" : "=r" (meinext));

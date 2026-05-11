@@ -5,6 +5,7 @@
 # =========
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi     The 2025-01-01
@@ -170,13 +171,13 @@ def mlp_exportNetwork(weights, layers, filename = "network.c_inc"):
 			f.write(f"// Layer {index}\n\n")
 
 			f.write(f"#define\tKMLPN_L{index}_NB_IN\t{nb_in}\n")
-			f.write(f"#define\tKMLPN_L{index}_NB_OUT\t{nb_out}\n\n")
+			f.write(f"#define\tKMLPN_L{index}_NB_OUT\t{nb_out}\n")
 
 			if index == 1:
-				f.write(f"static\t\t\tfloat32_t\tvInput_L1[KMLPN_L1_NB_IN] __attribute__ ((aligned(16)));\n")
-			f.write(f"static\t\t\tfloat32_t\tvActivation_L{index}[KMLPN_L{index}_NB_OUT] __attribute__ ((aligned(16)));\n")
-			f.write(f"static\t\t\tfloat32_t\tvOutput_L{index}[KMLPN_L{index}_NB_OUT + 1] __attribute__ ((aligned(16)));\n")
-			f.write(f"static\tconst\tfloat32_t\tvWeight_L{index}[KMLPN_L{index}_NB_OUT][KMLPN_L{index}_NB_IN] __attribute__ ((aligned(16))) = {{\n")
+				f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvInput_L1[KMLPN_L1_NB_IN];\n")
+			f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvActivation_L{index}[KMLPN_L{index}_NB_OUT];\n")
+			f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvOutput_L{index}[KMLPN_L{index}_NB_OUT + 1];\n")
+			f.write(f"\n[[gnu::aligned(16)]]\nstatic\tconst\tfloat32_t\tvWeight_L{index}[KMLPN_L{index}_NB_OUT][KMLPN_L{index}_NB_IN] = {{\n")
 			for row in w:
 				values = ', '.join(f"{v:.6f}f" for v in row)
 				f.write(f"\t\t\t\t\t\t\t\t{{ {values} }},\n")

@@ -229,7 +229,6 @@ export PATH_LLVM_RVXX
 export PATH_GCC_DFUUTIL
 export PATH_PICOTOOL
 export PATH
-
 ```
 
 #### Ubuntu desktop installation for Mac ARM Mx

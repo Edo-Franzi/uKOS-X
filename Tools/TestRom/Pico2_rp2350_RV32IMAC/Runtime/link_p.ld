@@ -76,22 +76,22 @@ linker_topStackFirst_C1		= linker_lowStackFirst_C1 + linker_sizeStackFirst_C1 - 
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
-linker_stHeap				= (rp_stSRAM + 128K);			/* 0x20020000: start of the heap							*/
-linker_lnHeap				= (128K);												/* Length of the heap										*/
+linker_stHeap				= (rp_stSRAM + 128K);					/* 0x20020000: start of the heap							*/
+linker_lnHeap				= (128K);								/* Length of the heap										*/
 
 /* IMPORTANT:												*/
 /* External memory, User (download application) and shared	*/
 
-linker_stUMemo				= (linker_stHeap + linker_lnHeap);						/* 0x20040000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (128K);												/* Length of the user memory	  							*/
+linker_stUMemo				= (linker_stHeap + linker_lnHeap);		/* 0x20040000: UMemo, start of the user memory 				*/
+linker_lnUMemo				= (128K);								/* Length of the user memory	  							*/
 
 /* Flash and RAM configuration */
 
-linker_stPrgmCode			= rp_stINTFLASH;		/* 0x10000000: Flash start */
-linker_lnPrgmCode			= rp_lnINTFLASH;		/* 4MB Flash */
+linker_stPrgmCode			= rp_stINTFLASH;						/* 0x10000000: Flash start 									*/
+linker_lnPrgmCode			= rp_lnINTFLASH;						/* 4MB Flash 												*/
 
-linker_stPrgmData			= rp_stSRAM + 12K;		/* 0x20000000: RAM start */
-linker_lnPrgmData			= (116K);				/* 128KB RAM for test */
+linker_stPrgmData			= rp_stSRAM + 12K;						/* 0x20000000: RAM start 									*/
+linker_lnPrgmData			= (116K);								/* 128KB RAM for test 										*/
 
 MEMORY {
 	prgm_code (rx)	: ORIGIN = linker_stPrgmCode, LENGTH = linker_lnPrgmCode

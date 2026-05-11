@@ -15,7 +15,7 @@ For ARM architectures, this process is handled automatically via a patch applied
 To enable similar support for RISC-V, the **t-elf-multilib** file located at:
 
 ```
- ${PATH_TOOLS_GCC}/Packages/gcc-15.2.0/gcc/config/riscv/
+${PATH_TOOLS_GCC}/Packages/gcc-15.2.0/gcc/config/riscv/
 ```
 
 should be modified as follows:

@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -62,7 +63,8 @@ static	void	local_myRoutine(uint8_t state);
  * - Blink the LED alive
  *
  */
-void __attribute__ ((noreturn)) stub_alive_process(const void *argument) {
+[[noreturn]]
+void	stub_alive_process(const void *argument) {
 			uint8_t			led;
 			uint32_t		time[2];
 	const	bool			*killRequest;

@@ -170,7 +170,8 @@ This is crucial when **multiple processes** share the **same serial communicatio
  *   Reserve the serial communication manager in write mode
  *   Print a string
  */
-static void __attribute__ ((noreturn)) process_0(const void *argument) {
+[[noreturn]]
+static void process_0(const void *argument) {
 
     UNUSED(argument);
 
@@ -190,7 +191,8 @@ static void __attribute__ ((noreturn)) process_0(const void *argument) {
  *      during the process creation (KSYST) in write mode
  *   Print a string
  */
-static void __attribute__ ((noreturn)) process_1(const void *argument) {
+[[noreturn]]
+static void process_1(const void *argument) {
 
     UNUSED(argument);
 
@@ -441,7 +443,7 @@ KEPOCHS         = 1000000
 
 # Some Input/Output samples for rapid validation
 #
-#                      Input x     Input y      Class 1   Class 2
+#                      Input x      Input y      Class 1  Class 2
 KVALIDATION    = [
                       [0.490344,    0.051584,    0.98,    0.00],
                       [0.458057,   -0.458232,    0.98,    0.00],
@@ -470,9 +472,16 @@ The result of the training phase is a C source file (**network.c_inc**) that is 
 #define    KMLPN_L1_NB_IN     3
 #define    KMLPN_L1_NB_OUT    52
 
+[[gnu::aligned(16)]]
 static          float32_t    vInput_L1[KMLPN_L1_NB_IN];
+
+[[gnu::aligned(16)]]
 static          float32_t    vActivation_L1[KMLPN_L1_NB_OUT];
+
+[[gnu::aligned(16)]]
 static          float32_t    vOutput_L1[KMLPN_L1_NB_OUT + 1];
+
+[[gnu::aligned(16)]]
 static const    float32_t    vWeight_L1[KMLPN_L1_NB_OUT][KMLPN_L1_NB_IN] = {
                                  { 4.834236f, -0.297750f, 2.434499f },
                                  { 4.576709f, 2.125155f, -2.364352f },
@@ -496,8 +505,13 @@ static mlpnLayer_t     aLayer_L1 = {
 #define    KMLPN_L2_NB_IN     53
 #define    KMLPN_L2_NB_OUT    73
 
+[[gnu::aligned(16)]]
 static          float32_t    vActivation_L2[KMLPN_L2_NB_OUT];
+
+[[gnu::aligned(16)]]
 static          float32_t    vOutput_L2[KMLPN_L2_NB_OUT + 1];
+
+[[gnu::aligned(16)]]
 static const    float32_t    vWeight_L2[KMLPN_L2_NB_OUT][KMLPN_L2_NB_IN] = {
                                  { 1.089468f, -0.555754f, ... , 0.199735f  },
                                  { -0.206732f, 0.342678f, ... , -0.644606f },
@@ -521,8 +535,13 @@ static mlpnLayer_t     aLayer_L2 = {
 #define    KMLPN_L3_NB_IN     74
 #define    KMLPN_L3_NB_OUT    2
 
+[[gnu::aligned(16)]]
 static          float32_t    vActivation_L3[KMLPN_L3_NB_OUT];
+
+[[gnu::aligned(16)]]
 static          float32_t    vOutput_L3[KMLPN_L3_NB_OUT + 1];
+
+[[gnu::aligned(16)]]
 static const    float32_t    vWeight_L3[KMLPN_L3_NB_OUT][KL3_NB_IN] = {
                                  { 1.447221f, 0.413932f,   ... , -0.704893f },
                                  { -1.315357f, -0.809255f, ... , 1.526794f  },
@@ -560,6 +579,7 @@ static const    mlpnNetwork_t     aNetwork = {
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -631,7 +651,8 @@ MODULE(
  *        - Display the result
  *
  */
-static    void    __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static void aProcess_0(const void *argument) {
     float32_t    x, y, result, gain = 2.0f;
     uint64_t     time[2];
     uint32_t     delta = 0u;

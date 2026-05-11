@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -170,7 +171,8 @@ static	void	local_execute(uint16_t i) {
  *   the software timers
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static	void	local_process(const void *argument) {
 	uint16_t	i;
 	uintptr_t	data;
 	uint32_t	core, delay, nextTimeout, lastTimeout, errorTimeout, compTime;

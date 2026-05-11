@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -151,7 +152,8 @@ static	const	myPack_t	aParameter[6] = {
  *				- Display the text (t, u)
  *
  */
-static void __attribute__ ((noreturn)) aProcess(const void *argument) {
+[[noreturn]]
+static	void	aProcess(const void *argument) {
 	const	myPack_t	*pack;
 			char_t		*name;
 			uint32_t	counter, time;

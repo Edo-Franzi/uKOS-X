@@ -34,7 +34,8 @@ int main(uint32_t argc, const char_t *argv[]) {
 
 // In a multitasking implementation (2 independent processes)
 
-static void __attribute__ ((noreturn)) process_receiver(const void *argument) {
+[[noreturn]]
+static void process_receiver(const void *argument) {
 
     while (true) {
 
@@ -45,7 +46,8 @@ static void __attribute__ ((noreturn)) process_receiver(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) process_transmitter(const void *argument) {
+[[noreturn]]
+static void process_transmitter(const void *argument) {
 
     while (true) {
 
@@ -114,7 +116,7 @@ In a more concrete way, here is the switching mechanism for the **cortex -M3 -M4
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void TIM2_IRQHandler(void) __attribute__ ((naked));
+[[gnu::naked]]
 void TIM2_IRQHandler(void) {
 
 // Save the registers r4..r11 and the basepri
@@ -172,7 +174,8 @@ void TIM2_IRQHandler(void) {
  *     - Start time of the process
  *
  */
-static void __attribute__ ((noinline))local_newContextTOU(void) {
+[[gnu::noinline]]
+static void local_newContextTOU(void) {
 
     local_timeStop();
     TIM2->CR1 &= (uint32_t)~TIM_CR1_CEN;
@@ -283,7 +286,8 @@ void TIM3_IRQHandler(void) {
  *     - Start time of the process
  *
  */
-static void __attribute__ ((noinline))local_newContextTOU(void) {
+[[gnu::noinline]]
+static void local_newContextTOU(void) {
 
     local_timeStop();
     TIM3->CR1 &= (uint32_t)~TIM_CR1_CEN;
@@ -332,7 +336,7 @@ static void __attribute__ ((noinline))local_newContextTOU(void) {
  * !!! Do not generate prologue/epilogue sequences
  *
  */
-void TIMER2_IRQHandler(void) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void TIMER2_IRQHandler(void) {
 
 // Save all the context
@@ -449,7 +453,8 @@ void TIMER2_IRQHandler(void) {
  *     - Start time of the process
  *
  */
-static void __attribute__ ((noinline))local_newContextTOU(void) {
+[[gnu::noinline]]
+static void local_newContextTOU(void) {
 
     local_timeStop();
 
@@ -560,7 +565,8 @@ However, in all other cases — especially when access may take longer or involv
 
 static uint8_t    vBuffer[KSZ_BUF];     // Critical resource
 
-static void __attribute__ ((noreturn)) process_1(const void *argument) {
+[[noreturn]]
+static void process_1(const void *argument) {
     uint8_t    i, result;
 
     UNUSED(argument);
@@ -575,7 +581,8 @@ static void __attribute__ ((noreturn)) process_1(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) process_2(const void *argument) {
+[[noreturn]]
+static void process_2(const void *argument) {
     uint8_t    i, result;
 
     UNUSED(argument);
@@ -888,8 +895,6 @@ This model ensures that **no events are lost**, even if they occur while the pro
 ```c
 // Example of a synchronisation semaphore (interruption synchronise P1)
 
-static void __attribute__ ((noreturn))
-
 static sema_t    *vSemaphore;
 
 void kern_createSyncSemaphore(“int synchro”, &vSsemaphore);
@@ -901,7 +906,8 @@ interruption_RS232() {
     ...
 }
 
-static void __attribute__ ((noreturn)) process_1(const void *argument) {
+[[noreturn]]
+static void process_1(const void *argument) {
 
     UNUSED(argument);
     ...
@@ -936,21 +942,24 @@ To enforce mutual exclusion:
 2. Once the process has completed the operation on the shared buffer, it releases the semaphore using **kern_unlockMutex**.
 
 ```c
-static void __attribute__ ((noreturn)) process_1(const void *argument) {
+[[noreturn]]
+static void process_1(const void *argument) {
     ...
     kern_lockMutex(vMutex, KWAIT_INFINITY);    // Lock the resource
     computeBuffer(&vBuffer[0]);                // Reserved for process_1
     kern_unlockMutex(vMutex);                  // Unlock the resource
 }
 
-static void __attribute__ ((noreturn)) process_2(const void *argument) {
+[[noreturn]]
+static void process_2(const void *argument) {
     ...
     kern_lockMutex(vMutex, KWAIT_INFINITY);    // Lock the resource
     computeBuffer(&vBuffer[0]);                // Reserved for process_2
     kern_unlockMutex(vMutex);                  // Unlock the resource
 }
 
-static void __attribute__ ((noreturn)) process_3(const void *argument) {
+[[noreturn]]
+static void process_3(const void *argument) {
     ...
     kern_lockMutex(vMutex, KWAIT_INFINITY);    // Lock the resource
     computeBuffer(&vBuffer[0]);                // Reserved for process_3
@@ -1007,7 +1016,8 @@ Mailboxes and queues both enable **safe and decoupled communication** between ta
 ```c
 // Example of a mailbox (PX sends a buffer, PY receives it)
 
-static void __attribute__ ((noreturn)) process_X(const void *argument) {
+[[noreturn]]
+static void process_X(const void *argument) {
     uint8_t     *bufSnd;
     uint16_t    sizeSnd;
     uint32_t    counterSnd = 0u;
@@ -1054,7 +1064,8 @@ static void __attribute__ ((noreturn)) process_X(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) process_Y(const void *argument) {
+[[noreturn]]
+static void process_Y(const void *argument) {
     uint8_t     *bufRec;
     uint16_t    sizeRec;
     mbox_t      *mailBox;
@@ -1096,7 +1107,8 @@ The **resolution** of software timers is **1-ms**, providing a fine granularity 
 ```c
 // Example of software timer (single shot and continuous modes)
 
-static void __attribute__ ((noreturn)) process(const void *argument) {
+[[noreturn]]
+static void process(const void *argument) {
           int32_t     status;
           tspc_t      configure_0, configure_1;
           stim_t      *softwareTimer_0, *softwareTimer_1;
@@ -1175,10 +1187,11 @@ This design ensures that signals are a **lightweight, scalable, and real-time fr
 ```c
 // Example of signal usage (referred to the figure)
 
-static void __attribute__ ((noreturn)) Process_A(const void *argument) {
-    int32_t      status;
-    uint32_t     signal_usb;
-    sign_t       *group_usb;
+[[noreturn]]
+static void Process_A(const void *argument) {
+    int32_t     status;
+    uint32_t    signal_usb;
+    sign_t      *group_usb;
 
     UNUSED(argument);
 
@@ -1197,10 +1210,11 @@ static void __attribute__ ((noreturn)) Process_A(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_B(const void *argument) {
-    int32_t      status;
-    uint32_t     signal_key, signal_mouse;
-    sign_t       *group_key, *group_mouse;
+[[noreturn]]
+static void Process_B(const void *argument) {
+    int32_t     status;
+    uint32_t    signal_key, signal_mouse;
+    sign_t      *group_key, *group_mouse;
 
     UNUSED(argument);
 
@@ -1224,10 +1238,11 @@ static void __attribute__ ((noreturn)) Process_B(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_C(const void *argument) {
-    int32_t      status;
-    uint32_t     signal_alarm;
-    sign_t       *group_usb;
+[[noreturn]]
+static void Process_C(const void *argument) {
+    int32_t     status;
+    uint32_t    signal_alarm;
+    sign_t      *group_usb;
 
     UNUSED(argument);
 
@@ -1243,10 +1258,11 @@ static void __attribute__ ((noreturn)) Process_C(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_D(const void *argument) {
-    int32_t      status;
-    uint32_t     signal_key;
-    sign_t       *group_key;
+[[noreturn]]
+static void Process_D(const void *argument) {
+    int32_t     status;
+    uint32_t    signal_key;
+    sign_t      *group_key;
 
     UNUSED(argument);
 
@@ -1260,7 +1276,8 @@ static void __attribute__ ((noreturn)) Process_D(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_E(const void *argument) {
+[[noreturn]]
+static void Process_E(const void *argument) {
     int32_t      status;
     uint32_t     signals;
     sign_t       *group_usb;
@@ -1302,10 +1319,11 @@ This makes precise signals especially suitable for real-time tasks requiring **d
 
 static prcs_t    *vPrecise_0, *vPrecise_1;
 
-static void __attribute__ ((noreturn)) Process_main(const void *argument) {
-    int32_t      status;
-    uint32_t     time;
-    sign_t       *sigGroup_0, *sigGroup_1;
+[[noreturn]]
+static void Process_main(const void *argument) {
+    int32_t     status;
+    uint32_t    time;
+    sign_t      *sigGroup_0, *sigGroup_1;
 
     UNUSED(argument);
 
@@ -1347,9 +1365,10 @@ static void __attribute__ ((noreturn)) Process_main(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_0(const void *argument) {
-    uint32_t     signal;
-    sign_t       *sigGroup = nullptr;
+[[noreturn]]
+static void Process_0(const void *argument) {
+    uint32_t    signal;
+    sign_t      *sigGroup = nullptr;
 
     UNUSED(argument);
 
@@ -1362,9 +1381,10 @@ static void __attribute__ ((noreturn)) Process_0(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_1(const void *argument) {
-    uint32_t     signal;
-    sign_t       *sigGroup = nullptr;
+[[noreturn]]
+static void Process_1(const void *argument) {
+    uint32_t    signal;
+    sign_t      *sigGroup = nullptr;
 
     UNUSED(argument);
 
@@ -1377,9 +1397,10 @@ static void __attribute__ ((noreturn)) Process_1(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) Process_2(const void *argument) {
-    uint32_t     signal;
-    sign_t       *sigGroup = nullptr;
+[[noreturn]]
+static void Process_2(const void *argument) {
+    uint32_t    signal;
+    sign_t      *sigGroup = nullptr;
 
     UNUSED(argument);
 
@@ -1432,22 +1453,23 @@ struct stts {
 ![](The_uKernel_16.png)
 <div class="full_width_table">
 
-| Time                  |                                                       |                                          |
-| :-------------------- | :---------------------------------------------------- | :--------------------------------------- |
-| Total time CPU in [s] | $$CPUt[s] = \sum_{i=0}^P{(Ptavg_i + Ktavg_i).nexec}$$ | **Ptmin**    min. CPU time used by the P |
-| P time CPU in [%]     | $$PCPU[\%] = \frac{(Ptavg.nexec)}{CPUt}.100$$         | **Ptavg**    avg. CPU time used by the P |
-| K time CPU in [%]     | $$KCPU[\%] = \frac{(Ktavg.nexec)}{CPUt}.100$$         | **Ptmax**    max. CPU time used by the P |
-| P efficiency in [%]   | $$E[\%] = \frac{Ptavg}{Ptavg+Ktavg}.100$$             | **Ktmin**    min. CPU time used by the K |
-|                       |                                                       | **Ktavg**    avg. CPU time used by the K |
-|                       |                                                       | **Ktmax**    max. CPU time used by the K |
-|                       |                                                       | **nexec**    nb. of executions           |
+| Time                  |                                                              |                                          |
+| :-------------------- | :----------------------------------------------------------- | :--------------------------------------- |
+| Total time CPU in [s] | $$ CPU_t[s] = \sum_{i=0}^{P} \left(Ptavg_i + Ktavg_i\right)\, n_{exec} $$ | **Ptmin**    min. CPU time used by the P |
+| P time CPU in [%]     | $$PCPU[\%] = \frac{(Ptavg.nexec)}{CPUt}.100$$                | **Ptavg**    avg. CPU time used by the P |
+| K time CPU in [%]     | $$KCPU[\%] = \frac{(Ktavg.nexec)}{CPUt}.100$$                | **Ptmax**    max. CPU time used by the P |
+| P efficiency in [%]   | $$E[\%] = \frac{Ptavg}{Ptavg+Ktavg}.100$$                    | **Ktmin**    min. CPU time used by the K |
+|                       |                                                              | **Ktavg**    avg. CPU time used by the K |
+|                       |                                                              | **Ktmax**    max. CPU time used by the K |
+|                       |                                                              | **nexec**    nb. of executions           |
 
 </div>
 
 Sometimes it is useful to measure the CPU time used by a portion of the code. The system call **kern_getTiccount** can be used for this purpose. Here is an example:
 
 ```c
-static void __attribute__ ((noreturn)) process_1(const void *argument) {
+[[noreturn]]
+static void process_1(const void *argument) {
     uint64_t    time[2];
     uint32_t    duration;
 

@@ -3,6 +3,7 @@
 ; ============
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -302,15 +303,15 @@ typedef	enum	_sysctl_reset_enum_status {
 	SYSCTL_RESET_STATUS_MAX							//
 } sysctl_reset_enum_status_t;
 
-typedef	struct	_sysctl_git_idn {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_git_idn {
 	uint32_t	git_id : 32;						//
-} __attribute__ ((packed, aligned (4))) sysctl_git_id_t;
+} sysctl_git_id_t;
 
-typedef	struct	_sysctl_clk_freqn {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_freqn {
 	uint32_t	clk_freq : 32;
-} __attribute__ ((packed, aligned (4))) sysctl_clk_freq_t;
+} sysctl_clk_freq_t;
 
-typedef	struct	_sysctl_pll0 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_pll0 {
 	uint32_t	clkr0       : 4;					//
 	uint32_t	clkf0       : 6;					//
 	uint32_t	clkod0      : 4;					//
@@ -323,9 +324,9 @@ typedef	struct	_sysctl_pll0 {
 	uint32_t	pll_out_en0 : 1;					//
 	uint32_t	pll_test_en : 1;					//
 	uint32_t	reserved    : 5;					//
-} __attribute__ ((packed, aligned (4))) sysctl_pll0_t;
+} sysctl_pll0_t;
 
-typedef	struct	_sysctl_pll1 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_pll1 {
 	uint32_t	clkr1       : 4;					//
 	uint32_t	clkf1       : 6;					//
 	uint32_t	clkod1      : 4;					//
@@ -337,9 +338,9 @@ typedef	struct	_sysctl_pll1 {
 	uint32_t	pll_test1   : 1;					//
 	uint32_t	pll_out_en1 : 1;					//
 	uint32_t	reserved    : 6;					//
-} __attribute__ ((packed, aligned (4))) sysctl_pll1_t;
+} sysctl_pll1_t;
 
-typedef	struct	_sysctl_pll2 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_pll2 {
 	uint32_t	clkr2         : 4;					//
 	uint32_t	clkf2         : 6;					//
 	uint32_t	clkod2        : 4;					//
@@ -352,9 +353,9 @@ typedef	struct	_sysctl_pll2 {
 	uint32_t	pll_out_en2   : 1;					//
 	uint32_t	pll_ckin_sel2 : 2;					//
 	uint32_t	reserved      : 4;					//
-} __attribute__ ((packed, aligned (4))) sysctl_pll2_t;
+} sysctl_pll2_t;
 
-typedef	struct	_sysctl_pll_lock {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_pll_lock {
 	uint32_t	pll_lock0       : 2;				//
 	uint32_t	pll_slip_clear0 : 1;				//
 	uint32_t	test_clk_out0   : 1;				//
@@ -367,15 +368,15 @@ typedef	struct	_sysctl_pll_lock {
 	uint32_t	pll_slip_clear2 : 1;				//
 	uint32_t	test_clk_out2   : 1;				//
 	uint32_t	reserved2       : 12;				//
-} __attribute__ ((packed, aligned (4))) sysctl_pll_lock_t;
+} sysctl_pll_lock_t;
 
-typedef	struct	_sysctl_rom_error {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_rom_error {
 	uint32_t	rom_mul_error : 1;					//
 	uint32_t	rom_one_error : 1;					//
 	uint32_t	reserved      : 30;					//
-} __attribute__ ((packed, aligned (4))) sysctl_rom_error_t;
+} sysctl_rom_error_t;
 
-typedef	struct	_sysctl_clk_sel0 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_sel0 {
 	uint32_t	aclk_sel         : 1;				//
 	uint32_t	aclk_divider_sel : 2;				//
 	uint32_t	apb0_clk_sel     : 3;				//
@@ -386,15 +387,15 @@ typedef	struct	_sysctl_clk_sel0 {
 	uint32_t	timer1_clk_sel   : 1;				//
 	uint32_t	timer2_clk_sel   : 1;				//
 	uint32_t	reserved         : 16;				//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_sel0_t;
+} sysctl_clk_sel0_t;
 
-typedef	struct	_sysctl_clk_sel1 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_sel1 {
 	uint32_t	spi3_sample_clk_sel : 1;			//
 	uint32_t	reserved0           : 30;			//
 	uint32_t	reserved1           : 1;			//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_sel1_t;
+} sysctl_clk_sel1_t;
 
-typedef	struct	_sysctl_clk_en_cent {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_en_cent {
 	uint32_t	cpu_clk_en   : 1;					//
 	uint32_t	sram0_clk_en : 1;					//
 	uint32_t	sram1_clk_en : 1;					//
@@ -402,9 +403,9 @@ typedef	struct	_sysctl_clk_en_cent {
 	uint32_t	apb1_clk_en  : 1;					//
 	uint32_t	apb2_clk_en  : 1;					//
 	uint32_t	reserved     : 26;					//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_en_cent_t;
+} sysctl_clk_en_cent_t;
 
-typedef	struct	_sysctl_clk_en_peri {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_en_peri {
 	uint32_t	rom_clk_en    : 1;					//
 	uint32_t	dma_clk_en    : 1;					//
 	uint32_t	ai_clk_en     : 1;					//
@@ -436,14 +437,14 @@ typedef	struct	_sysctl_clk_en_peri {
 	uint32_t	reserved      : 1;					//
 	uint32_t	rtc_clk_en    : 1;					//
 	uint32_t	reserved0     : 2;					//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_en_peri_t;
+} sysctl_clk_en_peri_t;
 
-typedef	struct	_sysctl_soft_reset {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_soft_reset {
 	uint32_t	soft_reset : 1;						//
 	uint32_t	reserved   : 31;					//
-} __attribute__ ((packed, aligned (4))) sysctl_soft_reset_t;
+} sysctl_soft_reset_t;
 
-typedef	struct	_sysctl_peri_reset {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_peri_reset {
 	uint32_t	rom_reset    : 1;					//
 	uint32_t	dma_reset    : 1;					//
 	uint32_t	ai_reset     : 1;					//
@@ -474,67 +475,67 @@ typedef	struct	_sysctl_peri_reset {
 	uint32_t	reserved     : 2;					//
 	uint32_t	rtc_reset    : 1;					//
 	uint32_t	reserved0    : 2;					//
-} __attribute__ ((packed, aligned (4))) sysctl_peri_reset_t;
+} sysctl_peri_reset_t;
 
-typedef	struct	_sysctl_clk_th0 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th0 {
 	uint32_t	sram0_gclk_threshold : 4;			//
 	uint32_t	sram1_gclk_threshold : 4;			//
 	uint32_t	ai_gclk_threshold    : 4;			//
 	uint32_t	dvp_gclk_threshold   : 4;			//
 	uint32_t	rom_gclk_threshold   : 4;			//
 	uint32_t	reserved             : 12;			//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th0_t;
+} sysctl_clk_th0_t;
 
-typedef	struct	_sysctl_clk_th1 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th1 {
 	uint32_t	spi0_clk_threshold : 8;				//
 	uint32_t	spi1_clk_threshold : 8;				//
 	uint32_t	spi2_clk_threshold : 8;				//
 	uint32_t	spi3_clk_threshold : 8;				//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th1_t;
+} sysctl_clk_th1_t;
 
-typedef	struct	_sysctl_clk_th2 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th2 {
 	uint32_t	timer0_clk_threshold : 8;			//
 	uint32_t	timer1_clk_threshold : 8;			//
 	uint32_t	timer2_clk_threshold : 8;			//
 	uint32_t	reserved             : 8;			//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th2_t;
+} sysctl_clk_th2_t;
 
-typedef	struct	_sysctl_clk_th3 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th3 {
 	uint32_t	i2s0_clk_threshold : 16;			//
 	uint32_t	i2s1_clk_threshold : 16;			//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th3_t;
+} sysctl_clk_th3_t;
 
-typedef	struct	_sysctl_clk_th4 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th4 {
 	uint32_t i2s2_clk_threshold  : 16;				//
 	uint32_t i2s0_mclk_threshold : 8;				//
 	uint32_t i2s1_mclk_threshold : 8;				//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th4_t;
+} sysctl_clk_th4_t;
 
-typedef	struct	_sysctl_clk_th5 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th5 {
 	uint32_t	i2s2_mclk_threshold : 8;			//
 	uint32_t	i2c0_clk_threshold  : 8;			//
 	uint32_t	i2c1_clk_threshold  : 8;			//
 	uint32_t	i2c2_clk_threshold  : 8;			//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th5_t;
+} sysctl_clk_th5_t;
 
-typedef	struct	_sysctl_clk_th6 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_clk_th6 {
 	uint32_t	wdt0_clk_threshold : 8;				//
 	uint32_t	wdt1_clk_threshold : 8;				//
 	uint32_t	reserved0          : 8;				//
 	uint32_t	reserved1          : 8;				//
-} __attribute__ ((packed, aligned (4))) sysctl_clk_th6_t;
+} sysctl_clk_th6_t;
 
-typedef	struct	_sysctl_misc {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_misc {
 	uint32_t	debug_sel           : 6;			//
 	uint32_t	reserved0           : 4;			//
 	uint32_t	spi_dvp_data_enable : 1;			//
 	uint32_t	reserved1           : 21;			//
-} __attribute__ ((packed, aligned (4))) sysctl_misc_t;
+} sysctl_misc_t;
 
 // Peripheral controller
 // ---------------------
 
-typedef	struct	_sysctl_peri {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_peri {
 	uint32_t	timer0_pause     : 1;				//
 	uint32_t	timer1_pause     : 1;				//
 	uint32_t	timer2_pause     : 1;				//
@@ -562,55 +563,55 @@ typedef	struct	_sysctl_peri {
 	uint32_t	debug_clk_bypass : 1;				//
 	uint32_t	reserved0        : 1;				//
 	uint32_t	reserved1        : 6;				//
-} __attribute__ ((packed, aligned (4))) sysctl_peri_t;
+} sysctl_peri_t;
 
 // SPI sleep controller
 // --------------------
 
-typedef	struct	_sysctl_spi_sleep {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_spi_sleep {
 	uint32_t	ssi0_sleep : 1;						//
 	uint32_t	ssi1_sleep : 1;						//
 	uint32_t	ssi2_sleep : 1;						//
 	uint32_t	ssi3_sleep : 1;						//
 	uint32_t	reserved   : 28;					//
-} __attribute__ ((packed, aligned (4))) sysctl_spi_sleep_t;
+} sysctl_spi_sleep_t;
 
 // Reset source status
 // -------------------
 
-typedef	struct	_sysctl_reset_status {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_reset_status {
 	uint32_t	reset_sts_clr  : 1;					//
 	uint32_t	pin_reset_sts  : 1;					//
 	uint32_t	wdt0_reset_sts : 1;					//
 	uint32_t	wdt1_reset_sts : 1;					//
 	uint32_t	soft_reset_sts : 1;					//
 	uint32_t	reserved       : 27;				//
-} __attribute__ ((packed, aligned (4))) sysctl_reset_status_t;
+} sysctl_reset_status_t;
 
 // DMA handshake selector
 // ----------------------
 
-typedef	struct	_sysctl_dma_sel0 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_dma_sel0 {
 	uint32_t	dma_sel0 : 6;						//
 	uint32_t	dma_sel1 : 6;						//
 	uint32_t	dma_sel2 : 6;						//
 	uint32_t	dma_sel3 : 6;						//
 	uint32_t	dma_sel4 : 6;						//
 	uint32_t	reserved : 2;						//
-} __attribute__ ((packed, aligned (4))) sysctl_dma_sel0_t;
+} sysctl_dma_sel0_t;
 
 // DMA handshake selector
 // ----------------------
 
-typedef	struct	_sysctl_dma_sel1 {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_dma_sel1 {
 	uint32_t	dma_sel5 : 6;						//
 	uint32_t	reserved : 26;						//
-} __attribute__ ((packed, aligned (4))) sysctl_dma_sel1_t;
+} sysctl_dma_sel1_t;
 
 // IO Power Mode Select controller
 // -------------------------------
 
-typedef	struct	_sysctl_power_sel {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_power_sel {
 	uint32_t	power_mode_sel0 : 1;				//
 	uint32_t	power_mode_sel1 : 1;				//
 	uint32_t	power_mode_sel2 : 1;				//
@@ -620,12 +621,12 @@ typedef	struct	_sysctl_power_sel {
 	uint32_t	power_mode_sel6 : 1;				//
 	uint32_t	power_mode_sel7 : 1;				//
 	uint32_t	reserved        : 24;				//
-} __attribute__ ((packed, aligned (4))) sysctl_power_sel_t;
+} sysctl_power_sel_t;
 
 // System controller object
 // ------------------------
 
-typedef	struct	_sysctl {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl {
 	sysctl_git_id_t			git_id;					// No. 0 (0x00): Git short commit id
 	sysctl_clk_freq_t		clk_freq;				// No. 1 (0x04): System clock base frequency
 	sysctl_pll0_t			pll0;					// No. 2 (0x08): PLL0 controller
@@ -658,9 +659,9 @@ typedef	struct	_sysctl {
 	uint32_t				resv29;					// No. 29 (0x74): Reserved
 	uint32_t				resv30;					// No. 30 (0x78): Reserved
 	uint32_t				resv31;					// No. 31 (0x7c): Reserved
-} __attribute__ ((packed, aligned (4))) sysctl_t;
+} sysctl_t;
 
-typedef	struct	_sysctl_general_pll {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _sysctl_general_pll {
 	uint32_t	clkr         : 4;					//
 	uint32_t	clkf         : 6;					//
 	uint32_t	clkod        : 4;					//
@@ -673,7 +674,7 @@ typedef	struct	_sysctl_general_pll {
 	uint32_t	pll_out_en   : 1;					//
 	uint32_t	pll_ckin_sel : 2;					//
 	uint32_t	reserved     : 4;					//
-} __attribute__ ((packed, aligned (4))) sysctl_general_pll_t;
+} sysctl_general_pll_t;
 
 #if 0
 const	uint8_t	get_select_pll2[] = {

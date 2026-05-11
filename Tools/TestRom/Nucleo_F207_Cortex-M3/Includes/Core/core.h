@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -48,8 +49,6 @@
 
 #pragma	once
 
-#include	<stdbool.h>
-#include	<stdint.h>
 #include	"core_reg.h"
 
 /*
@@ -60,7 +59,8 @@
  * \return		BASEPRI		The BASEPRI register
  *
  */
-__attribute__ ((always_inline))	static	inline	uint32_t	core_getBASEPRI(void) {
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getBASEPRI(void) {
 	uint32_t	valBASEPRI;
 
 	__asm volatile (
@@ -81,7 +81,8 @@ __attribute__ ((always_inline))	static	inline	uint32_t	core_getBASEPRI(void) {
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setBASEPRI(uint32_t valBASEPRI) {
+[[gnu::always_inline]]
+static	inline	void	core_setBASEPRI(uint32_t valBASEPRI) {
 
 	__asm volatile (
 	"msr		basepri,%0"
@@ -98,7 +99,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setBASEPRI(uint32_t valB
  * \return		stackPSP	The thread stack PSP
  *
  */
-__attribute__ ((always_inline))	static	inline	uintptr_t	core_getPSP(void) {
+[[gnu::always_inline]]
+static	inline	uintptr_t	core_getPSP(void) {
 	uintptr_t	stackPSP;
 
 	__asm volatile (
@@ -119,7 +121,8 @@ __attribute__ ((always_inline))	static	inline	uintptr_t	core_getPSP(void) {
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setPSP(uintptr_t stackPSP) {
+[[gnu::always_inline]]
+static	inline	void	core_setPSP(uintptr_t stackPSP) {
 
 	__asm volatile (
 	"msr		psp,%0"
@@ -136,7 +139,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setPSP(uintptr_t stackPS
  * \return		stackMSP	The system stack MSP
  *
  */
-__attribute__ ((always_inline))	static	inline	uintptr_t	core_getMSP(void) {
+[[gnu::always_inline]]
+static	inline	uintptr_t	core_getMSP(void) {
 	uintptr_t	stackMSP;
 
 	__asm volatile (
@@ -157,7 +161,8 @@ __attribute__ ((always_inline))	static	inline	uintptr_t	core_getMSP(void) {
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setMSP(uintptr_t stackMSP) {
+[[gnu::always_inline]]
+static	inline	void	core_setMSP(uintptr_t stackMSP) {
 
 	__asm volatile (
 	"msr		msp,%0"
@@ -174,7 +179,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setMSP(uintptr_t stackMS
  * \return		CONTROL		The CONTROL register
  *
  */
-__attribute__ ((always_inline))	static	inline	uint32_t	core_getCONTROL(void) {
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getCONTROL(void) {
 	uint32_t	valCONTROL;
 
 	__asm volatile (
@@ -195,7 +201,8 @@ __attribute__ ((always_inline))	static	inline	uint32_t	core_getCONTROL(void) {
  * \note This function does not return a value (None).
  *
  */
-__attribute__ ((always_inline))	static	inline	void	core_setCONTROL(uint32_t control) {
+[[gnu::always_inline]]
+static	inline	void	core_setCONTROL(uint32_t control) {
 
 	__asm volatile (
 	"msr		control,%0"
@@ -212,7 +219,8 @@ __attribute__ ((always_inline))	static	inline	void	core_setCONTROL(uint32_t cont
  * \return		LR		The LR register
  *
  */
-__attribute__ ((always_inline))	static	inline	uintptr_t	core_getLR(void) {
+[[gnu::always_inline]]
+static	inline	uintptr_t	core_getLR(void) {
 	uintptr_t	valLR;
 
 	__asm volatile (
@@ -231,7 +239,8 @@ __attribute__ ((always_inline))	static	inline	uintptr_t	core_getLR(void) {
  * \return		IPSR		The IPSR register
  *
  */
-__attribute__ ((always_inline))	static	inline	uint32_t	core_getIPSR(void) {
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getIPSR(void) {
 	uint32_t	valIPSR;
 
 	__asm volatile (

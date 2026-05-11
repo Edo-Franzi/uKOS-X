@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -53,7 +54,8 @@
 
 #define	KSTATUS			(MSTATUS64_SD | MSTATUS_FS | MSTATUS_MPP | MSTATUS_MPIE)
 
-static	void	__attribute__ ((naked)) syscall(uint64_t message) {
+[[gnu::naked]]
+static	void	syscall(uint64_t message) {
 	__asm volatile ("ECALL" : : "r" (message));
 	__asm volatile ("ret");
 }
@@ -69,9 +71,14 @@ static	void	__attribute__ ((naked)) syscall(uint64_t message) {
 static		char_t		vString[20];
 #endif
 
-volatile	uint64_t	vStackFs[800] __attribute__ ((aligned (16)));		//
-volatile	uint64_t	vStackP0[800] __attribute__ ((aligned (16)));		//
-volatile	uint64_t	vStackP1[800] __attribute__ ((aligned (16)));		//
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackFs[800];										//
+
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackP0[800];										//
+
+[[gnu::aligned(16)]]
+volatile	uintptr_t	vStackP1[800];										//
 volatile	uintptr_t	vStackCurFs;										//
 volatile	uintptr_t	vStackCurP0;										//
 volatile	uintptr_t	vStackCurP1;										//
@@ -312,7 +319,7 @@ void	process_1(uintptr_t *argument) {
  * - Change the context f(message)
  *
  */
-void	local_message(uint32_t core, uint64_t message) __attribute__ ((naked, optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	local_message(uint32_t core, uint64_t message) {
 	uint64_t	threshold;
 
@@ -623,7 +630,8 @@ void	local_message(uint32_t core, uint64_t message) {
  * - Pico scheduler
  *
  */
-static	void	__attribute__ ((noinline)) local_scheduler(uint64_t message) {
+[[gnu::noinline]]
+static	void	local_scheduler(uint64_t message) {
 
 	switch (message) {
 		default:

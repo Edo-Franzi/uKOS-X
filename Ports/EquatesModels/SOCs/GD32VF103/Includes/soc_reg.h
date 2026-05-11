@@ -55,8 +55,6 @@
 
 // IWYU pragma: begin_exports
 
-#include	<stdint.h>
-
 #include	"Registers/soc_vectors.h"
 #include	"Registers/GD32VF103_adc0.h"
 #include	"Registers/GD32VF103_adc1.h"

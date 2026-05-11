@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -523,7 +524,8 @@ int		_kill_r(reent_t *reent, int pid, int sig) {
  * - exit - Call the crt0 exit
  *
  */
-void	__attribute__ ((noreturn)) _exit(int number) {
+[[noreturn]]
+void	_exit(int number) {
 
 	crt0_exit(number);
 	while (true) { ; }

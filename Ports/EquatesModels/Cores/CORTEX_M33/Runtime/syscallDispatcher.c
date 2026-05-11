@@ -3,6 +3,7 @@
 ; ==================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -68,7 +69,7 @@ extern	void	kern_privilegeElevate(void);
  *	+4		 r1
  *	+0		 r0
  */
-void	SVCall_C0_IRQHandler(void) __attribute__ ((naked));
+[[gnu::naked]]
 void	SVCall_C0_IRQHandler(void) {
 
 // Branch to 	 --> kernel_message_C0
@@ -80,7 +81,7 @@ void	SVCall_C0_IRQHandler(void) {
 #if	(KNB_CORES == 2)
 extern	void	kernel_message_C1(void);
 
-void	SVCall_C1_IRQHandler(void) __attribute__ ((naked));
+[[gnu::naked]]
 void	SVCall_C1_IRQHandler(void) {
 
 // Branch to 	 --> kernel_message
@@ -90,7 +91,8 @@ void	SVCall_C1_IRQHandler(void) {
 }
 #endif
 
-void	__attribute__ ((noreturn)) syscall(const uintptr_t *arg) {
+[[noreturn]]
+void	syscall(const uintptr_t *arg) {
 
 	UNUSED(arg);
 

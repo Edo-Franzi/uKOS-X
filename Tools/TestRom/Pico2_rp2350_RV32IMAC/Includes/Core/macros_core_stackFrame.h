@@ -51,10 +51,9 @@
 
 #pragma	once
 
-#include	<stdlib.h>		// IWYU pragma: keep (for exit)
-
 #include	"macros_soc.h"
 #include	"types.h"		// IWYU pragma: keep (for EXIT_OS_PANIC_STACK_UNDERFLOW)
+#include	<stdlib.h>		// IWYU pragma: keep (for exit)
 
 // For the stack sanity
 

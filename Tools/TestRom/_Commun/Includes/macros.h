@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -70,12 +71,12 @@
 
 #if (defined(__STDC_VERSION__)) && (__STDC_VERSION__ < 201112L)
 #define	VAR_DECLARED_ALIGN(varDeclared, boundary)											\
-								varDeclared __attribute__ ((aligned (boundary)))
+								[[gnu::aligned(boundary)]] varDeclared
 
 #else
 #include	<stdalign.h>
 #define	VAR_DECLARED_ALIGN(varDeclared, boundary)											\
-								alignas (boundary) varDeclared
+								[[gnu::aligned(boundary)]] varDeclared
 #endif
 
 // Device reserve/release macros

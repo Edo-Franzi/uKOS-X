@@ -3,6 +3,7 @@
 ; ====================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -126,15 +127,17 @@ static	void		local_printStackFrame(void);
  *
  */
 		void	local_displayIntInt(int32_t core, uint64_t number);
-static	void	coreDump_displayInt_Interruption(uint32_t core, uint64_t number) __attribute__ ((naked));
-static	void	coreDump_displayInt_Interruption(uint32_t core  __attribute__ ((unused)), uint64_t number __attribute__ ((unused))) {
+
+[[gnu::naked]]
+static	void	coreDump_displayInt_Interruption([[maybe_unused]] uint32_t core, [[maybe_unused]] uint64_t number) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
 
 	JUMP_FNCT(local_processIntInt);
 }
 
-void	__attribute__ ((noinline)) local_processIntInt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter) {
+[[gnu::noinline]]
+void	local_processIntInt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter) {
 
 	vExceptionNb[core] = number;
 	vStackBefore[core] = stackBefore;
@@ -144,15 +147,17 @@ void	__attribute__ ((noinline)) local_processIntInt(uint32_t core, uint64_t numb
 }
 
 		void	local_displayIntExt(int32_t core, uint64_t number);
-static	void	coreDump_displayInt_Exceptions(uint32_t core, uint64_t number) __attribute__ ((naked));
-static	void	coreDump_displayInt_Exceptions(uint32_t core __attribute__ ((unused)), uint64_t number __attribute__ ((unused))) {
+
+[[gnu::naked]]
+static	void	coreDump_displayInt_Exceptions([[maybe_unused]] uint32_t core, [[maybe_unused]] uint64_t number) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
 
 	JUMP_FNCT(local_processIntExt);
 }
 
-void	__attribute__ ((noinline)) local_processIntExt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter) {
+[[gnu::noinline]]
+void	local_processIntExt(uint32_t core, uint64_t number, uintptr_t *stackBefore, uintptr_t *stackAfter) {
 
 	vExceptionNb[core] = number;
 	vStackBefore[core] = stackBefore;
@@ -171,7 +176,8 @@ void	__attribute__ ((noinline)) local_processIntExt(uint32_t core, uint64_t numb
  * - Display the stack frame
  *
  */
-static	void	__attribute__ ((noinline)) local_processInt_Interruption(void) {
+[[gnu::noinline]]
+static	void	local_processInt_Interruption(void) {
 			uint32_t	core, i;
 	const	uintptr_t	*ptr;
 	const	char_t		*vectorName;
@@ -206,7 +212,8 @@ static	void	__attribute__ ((noinline)) local_processInt_Interruption(void) {
  * - Display the stack frame
  *
  */
-static	void	__attribute__ ((noinline)) local_processInt_Exceptions(void) {
+[[gnu::noinline]]
+static	void	local_processInt_Exceptions(void) {
 			uint32_t	core, i;
 	const	uintptr_t	*ptr;
 	const	char_t		*vectorName;
@@ -237,7 +244,8 @@ static	void	__attribute__ ((noinline)) local_processInt_Exceptions(void) {
  * - Display the Interruption name
  *
  */
-static	void	__attribute__ ((noinline)) local_printInt_Interruption(const char_t **vectorName) {
+[[gnu::noinline]]
+static	void	local_printInt_Interruption(const char_t **vectorName) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
@@ -271,7 +279,8 @@ static	void	__attribute__ ((noinline)) local_printInt_Interruption(const char_t 
  * - Display the exception name
  *
  */
-static	void	__attribute__ ((noinline)) local_printInt_Exception(const char_t **vectorName) {
+[[gnu::noinline]]
+static	void	local_printInt_Exception(const char_t **vectorName) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
@@ -305,7 +314,8 @@ static	void	__attribute__ ((noinline)) local_printInt_Exception(const char_t **v
  * - Display the core information
  *
  */
-static	void	__attribute__ ((noinline)) local_printCore(void) {
+[[gnu::noinline]]
+static	void	local_printCore(void) {
 	char_t		string[80 + 1];
 	int64_t		mvendor, marchid, mimpd, mhartid;
 	int64_t		mscratch, mpec, mcause, mdadaddr, mip;

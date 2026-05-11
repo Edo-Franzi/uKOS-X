@@ -3,6 +3,7 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -211,7 +212,8 @@ void	crt0(void) {
  *	 vector table relocation
  *
  */
-void	__attribute__ ((weak)) init_relocate(void) {
+[[gnu::weak]]
+void	init_relocate(void) {
 
 }
 
@@ -227,7 +229,8 @@ void	__attribute__ ((weak)) init_relocate(void) {
  *   LDFLAGS += -Wl,--wrap=__stack_chk_fail
  *
  */
-void	__attribute__ ((noreturn)) __wrap___stack_chk_fail(void) {
+[[noreturn]]
+void	__wrap___stack_chk_fail(void) {
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
@@ -245,7 +248,8 @@ void	__attribute__ ((noreturn)) __wrap___stack_chk_fail(void) {
  * \note This function does not return a value (None).
  *
  */
-void	__attribute__ ((noreturn)) exit_terminate(void) {
+[[noreturn]]
+void	exit_terminate(void) {
 
 	exit(EXIT_OS_SUCCESS);
 }
@@ -294,7 +298,8 @@ void	crt0_exit(int number) {
  * \brief local_killProcess
  *
  */
-static	void	__attribute__ ((noinline, noreturn)) local_killProcess(void) {
+[[gnu::noinline, noreturn]]
+static	void	local_killProcess(void) {
 	proc_t	*process;
 
 	kern_getProcessRun(&process);
@@ -309,7 +314,8 @@ static	void	__attribute__ ((noinline, noreturn)) local_killProcess(void) {
  * \brief local_panicMallocBroken
  *
  */
-static	void	__attribute__ ((noinline)) local_panicMallocBroken(void) {
+[[gnu::noinline]]
+static	void	local_panicMallocBroken(void) {
 	uint32_t	core;
 	const		char_t	*identifier;
 
@@ -327,7 +333,8 @@ static	void	__attribute__ ((noinline)) local_panicMallocBroken(void) {
  * \brief local_panicStackUnderflow
  *
  */
-static	void	__attribute__ ((noinline)) local_panicStackUnderflow(void) {
+[[gnu::noinline]]
+static	void	local_panicStackUnderflow(void) {
 			uint32_t	core;
 			char_t		string[200 + 1];
 	const	char_t		*identifier;
@@ -366,7 +373,8 @@ static	void	__attribute__ ((noinline)) local_panicStackUnderflow(void) {
  * \brief local_panicNoSystemCall
  *
  */
-static	void	__attribute__ ((noinline)) local_panicNoSystemCall(void) {
+[[gnu::noinline]]
+static	void	local_panicNoSystemCall(void) {
 			uint32_t	core;
 	const	char_t		*identifier;
 
@@ -384,7 +392,8 @@ static	void	__attribute__ ((noinline)) local_panicNoSystemCall(void) {
  * \brief local_panicElevation
  *
  */
-static	void	__attribute__ ((noinline)) local_panicElevation(void) {
+[[gnu::noinline]]
+static	void	local_panicElevation(void) {
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
@@ -396,7 +405,8 @@ static	void	__attribute__ ((noinline)) local_panicElevation(void) {
  * \brief local_panicGeneral
  *
  */
-static	void	__attribute__ ((noinline)) local_panicGeneral(void) {
+[[gnu::noinline]]
+static	void	local_panicGeneral(void) {
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;

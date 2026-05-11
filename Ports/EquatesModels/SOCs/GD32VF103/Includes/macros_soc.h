@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -155,7 +156,7 @@ enum {
 #endif
 
 #if (!defined(INTERRUPTION_OFF))
-#define	INTERRUPTION_OFF		volatile	uint32_t	__saveECLIC_msk __attribute__ ((unused));								\
+#define	INTERRUPTION_OFF		volatile	uint32_t	__saveECLIC_msk [[maybe_unused]];										\
 								__saveECLIC_msk = (uint32_t)ECLIC->MTH;															\
 								(void)__saveECLIC_msk;																			\
 								ECLIC->MTH = KINT_IMASK_OFF

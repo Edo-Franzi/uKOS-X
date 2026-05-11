@@ -4,8 +4,6 @@
 
 ## Packages used for building ESP32 applications
 
-
-
 ### 1. Prepare the package
 
 ```bash

@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -136,7 +137,8 @@ MODULE(
  */
 extern	float64_t	pi_spigot(float64_t index, float64_t oldPi);
 
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	volatile	float64_t	n = 0.0, pi = 0.0;
 	uint64_t	time[2];
 	uint32_t	delta;
@@ -169,7 +171,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  */
 extern	float64_t	pi_lambert(float64_t index, float64_t oldPi);
 
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 	volatile	float64_t	n = 1.0, pi = 0.0;
 
 	UNUSED(argument);

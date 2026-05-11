@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -86,9 +87,14 @@ extern		uintptr_t	*vVectors;
 static		char_t		vString[20];
 #endif
 
-volatile	uintptr_t	vStackFs[200] __attribute__ ((aligned (8)));		//
-volatile	uintptr_t	vStackP0[200] __attribute__ ((aligned (8)));		//
-volatile	uintptr_t	vStackP1[200] __attribute__ ((aligned (8)));		//
+[[gnu::aligned(8)]]
+volatile	uintptr_t	vStackFs[200];										//
+
+[[gnu::aligned(8)]]
+volatile	uintptr_t	vStackP0[200];										//
+
+[[gnu::aligned(8)]]
+volatile	uintptr_t	vStackP1[200];										//
 volatile	uintptr_t	vStackCurFs;										//
 volatile	uintptr_t	vStackCurP0;										//
 volatile	uintptr_t	vStackCurP1;										//
@@ -294,7 +300,8 @@ void	SVCall_C0_IRQHandler(void) {
  * - Pico scheduler
  *
  */
-static	void	__attribute__ ((noinline, used)) local_scheduler(void) {
+[[gnu::noinline, gnu::used]]
+void	*local_scheduler(void) {
 
 	switch (vMessage) {
 		default:

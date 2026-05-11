@@ -3,6 +3,8 @@
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2019 Ha Thach (tinyusb.org)
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -69,6 +71,7 @@
 ;------------------------------------------------------------------------
 */
 
-__attribute__((weak)) void __unhandled_user_irq(void) {
-  while (1) { __asm volatile("wfi"); }
+[[gnu::weak]]
+void	__unhandled_user_irq(void) {
+	while (1) { __asm volatile("wfi"); }
 }

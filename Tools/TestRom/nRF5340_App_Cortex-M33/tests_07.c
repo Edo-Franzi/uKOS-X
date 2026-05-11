@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -82,9 +83,14 @@
 static		char_t		vString[20];
 #endif
 
-volatile	uintptr_t	vStackFs[200] __attribute__ ((aligned (8)));		//
-volatile	uintptr_t	vStackP0[200] __attribute__ ((aligned (8)));		//
-volatile	uintptr_t	vStackP1[200] __attribute__ ((aligned (8)));		//
+[[gnu::aligned(8)]]
+volatile	uintptr_t	vStackFs[200];										//
+
+[[gnu::aligned(8)]]
+volatile	uintptr_t	vStackP0[200];										//
+
+[[gnu::aligned(8)]]
+volatile	uintptr_t	vStackP1[200];										//
 volatile	uintptr_t	vStackCurFs;										//
 volatile	uintptr_t	vStackCurP0;										//
 volatile	uintptr_t	vStackCurP1;										//
@@ -225,7 +231,7 @@ void	process_1(uintptr_t *argument) {
  */
 #define	KSAVEREGISTERS	"r0", "r1", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11"
 
-void	SVCall_IRQHandler(void) __attribute__ ((naked)) __attribute__ ((optimize("Os")));
+[[gnu::naked, gnu::optimize("Os")]]
 void	SVCall_IRQHandler(void) {
 
 // Recover the message
@@ -310,7 +316,8 @@ void	SVCall_IRQHandler(void) {
  * - Pico scheduler
  *
  */
-static	void	__attribute__ ((noinline)) local_scheduler(void) {
+[[gnu::noinline]]
+static	void	local_scheduler(void) {
 
 	switch (vMessage) {
 		default:

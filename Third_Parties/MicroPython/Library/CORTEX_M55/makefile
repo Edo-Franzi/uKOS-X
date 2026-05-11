@@ -2,6 +2,7 @@
 # =========
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi		The 2025-01-01
@@ -74,7 +75,7 @@ INC				+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 
 # Libs & files necessary for building MicroPython.a
 #
-# !!The paths have to be relative to MicroPyton_current
+# !!The paths have to be relative to MicroPython_current
 # !!Mandatory: Place the object list before "include $(TOP)/py/py.mk"
 
 SRC_C			+= $(addprefix Construction/System/, \
@@ -140,7 +141,6 @@ OBJ				+= $(addprefix $(BUILD)/, $(SRC_QSTR:.c=.o))
 OBJ				+= $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 OBJ				+= $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ				+= $(addprefix $(BUILD)/, $(SRC_MODULE:.c=.o))
-
 OBJ				:= $(patsubst $(BUILD)/../%, $(BUILD)/%, $(OBJ))
 OBJ				:= $(sort $(OBJ))
 

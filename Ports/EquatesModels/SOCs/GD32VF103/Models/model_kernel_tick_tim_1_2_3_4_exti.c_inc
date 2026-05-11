@@ -3,6 +3,7 @@
 ; ===================================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -483,7 +484,7 @@ static	void	local_TIMER1_IRQHandler(void) {
  *
  */
 void	local_EXTI1_IRQHandler(void);
-void	EXTI1_C0_IRQHandler(void) __attribute__ ((naked));
+[[gnu::naked]]
 void	EXTI1_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME;
@@ -491,7 +492,7 @@ void	EXTI1_C0_IRQHandler(void) {
 	JUMP_FNCT(local_EXTI1_IRQHandler);
 }
 
-void	local_EXTI1_IRQHandler(void) __attribute__ ((naked, used));
+[[gnu::naked, gnu::used]]
 void	local_EXTI1_IRQHandler(void) {
 
 	CALL_FNCT(local_newContextPRE);
@@ -513,7 +514,8 @@ void	local_EXTI1_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t *stack) {
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextPRE(uintptr_t *stack) {
 
 // Save the stack of the old process
 // Save the old priority
@@ -604,7 +606,8 @@ uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE(uintptr_t *stack
  *
  */
 void	local_TIMER2_IRQHandler(void);
-void	TIMER2_C0_IRQHandler(void) __attribute__ ((naked));
+
+[[gnu::naked]]
 void	TIMER2_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME;
@@ -612,7 +615,7 @@ void	TIMER2_C0_IRQHandler(void) {
 	JUMP_FNCT(local_TIMER2_IRQHandler);
 }
 
-void	local_TIMER2_IRQHandler(void) __attribute__ ((naked));
+[[gnu::naked]]
 void	local_TIMER2_IRQHandler(void) {
 
 	CALL_FNCT(local_newContextTOU);
@@ -637,7 +640,8 @@ void	local_TIMER2_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t *stack) {
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextTOU(uintptr_t *stack) {
 
 // Save the stack of the old process
 // Save the old priority
@@ -728,7 +732,8 @@ uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU(uintptr_t *stack
  *
  */
 void	local_EXTI0_IRQHandler(void);
-void	EXTI0_C0_IRQHandler(void) __attribute__ ((naked));
+
+[[gnu::naked]]
 void	EXTI0_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME;
@@ -737,7 +742,7 @@ void	EXTI0_C0_IRQHandler(void) {
 	JUMP_FNCT(local_EXTI0_IRQHandler);
 }
 
-void	local_EXTI0_IRQHandler(void) __attribute__ ((naked));
+[[gnu::naked]]
 void	local_EXTI0_IRQHandler(void) {
 
 	CALL_FNCT(local_newContextMSG);
@@ -760,7 +765,8 @@ void	local_EXTI0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG(uintptr_t *stack, uint32_t message) {
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message) {
 
 // Save the stack of the old process
 // Save the old priority

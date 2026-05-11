@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -120,7 +121,8 @@ MODULE(
  *			- Display some time manipulations on the KSYST manager
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 			time_t		now, newTime;
 			clock_t		tic1, toc1;
 			timeval_t	tic2, toc2;

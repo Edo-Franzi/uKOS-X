@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: MIT
 
 #------------------------------------------------------------------------
-# Author:	Laurent von Allmen		The 2025-10-02
+# Author:	Laurent von Allmen	The 2025-10-02
 # Modifs:
 #
 # Project:	uKOS-X

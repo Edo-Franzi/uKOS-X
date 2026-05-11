@@ -83,6 +83,7 @@ This file will contain all exported functions, properly registered and linked to
 ; =========================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -124,7 +125,7 @@ This file will contain all exported functions, properly registered and linked to
 // Prototypes
 // ==========
 
-static uint8_t    local_writeReadSPI(uint8_t data);
+static uint8_t local_writeReadSPI(uint8_t data);
 
 /*
  * \brief stub_temperature_init
@@ -223,7 +224,7 @@ int32_t stub_temperature_write(float64_t temperature) {
  *
  */
 static uint8_t local_writeReadSPI(uint8_t data) {
-    volatile uint16_t    dummy __attribute__ ((unused));
+    volatile    uint16_t    dummy [[maybe_unused]];
 
 // Send a Byte ... and waiting for the end of the transfer
 
@@ -252,6 +253,7 @@ To activate this simulation mode, simply define the **SIMULE_S** flag prior to c
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -301,9 +303,9 @@ LOC_CONST_STRG(aStrHelp[]) =
 
 // Prototypes
 
-static int32_t    prgm(uint32_t argc, const char_t *argv[]);
-static int32_t    temperature_clean(uint32_t argc, const char_t *argv[]);
-static void       local_process(const void *argument);
+static int32_t prgm(uint32_t argc, const char_t *argv[]);
+static int32_t temperature_clean(uint32_t argc, const char_t *argv[]);
+static void    local_process(const void *argument);
 
 // This process has to run on the following cores:
 
@@ -324,7 +326,7 @@ MODULE(
 // Process specific
 // ================
 
-static bool    vKillRequest[KNB_CORES] = MCSET(false);
+static bool vKillRequest[KNB_CORES] = MCSET(false);
 
 #if (!defined(KTEMPERATURE_ZERO_KELVIN))
 #define    KTEMPERATURE_ZERO_KELVIN    ((float64_t)(-273.16))
@@ -378,7 +380,7 @@ static int32_t prgm(uint32_t argc, char_t *argv[]) {
  *        - Free all the ressources
  *
  */
-static int32_t    temperature_clean(uint32_t argc, const char_t *argv[]) {
+static int32_t temperature_clean(uint32_t argc, const char_t *argv[]) {
     uint32_t    core;
 
     UNUSED(argc);
@@ -397,7 +399,8 @@ static int32_t    temperature_clean(uint32_t argc, const char_t *argv[]) {
  *   200-ms per sample -> 3.2-s -> 1/3.2 = 0.3125-Hz
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static void local_process(const void *argument) {
                     mbox_t     *mailBox;
                     int16_t    *temperature = nullptr;
                     uint16_t   i;
@@ -410,7 +413,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
 
     #if (!defined(CONFIG_REAL_TMPERATURE_S))
                     uint32_t   random;
-    static const    float64_t  aSimule[KNB_SAMPLES] = {
+    static const float64_t  aSimule[KNB_SAMPLES] = {
                 20.23, 20.52, 21.23, 21.87, 22.21, 22.67, 23.12, 23.67,
                 23.78, 23.34, 22.76, 22.09, 21.56, 21.14, 20.55, 20.03,
                 20.23, 20.52, 21.23, 21.87, 22.21, 22.67, 23.12, 23.67,
@@ -428,7 +431,7 @@ static void __attribute__ ((noreturn)) local_process(const void *argument) {
                 20.23, 20.52, 21.23, 21.87, 22.21, 22.67, 23.12, 23.67,
                 23.78, 23.34, 22.76, 22.09, 21.56, 21.14, 20.55, 20.03 };
     #else
-                    float64_t  instTemperature;
+                 float64_t  instTemperature;
     #endif
 
     killRequest = (const bool *)argument;
@@ -511,6 +514,7 @@ The CLI tool **module X** is responsible for handling messages received from a h
 ; ==
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -552,7 +556,7 @@ LOC_CONST_STRG(aStrHelp[]) =
 
     "Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static  int32_t prgm(uint32_t argc, char_t *argv[]);
+static int32_t prgm(uint32_t argc, char_t *argv[]);
 
 MODULE(
     X,                                   // Module name

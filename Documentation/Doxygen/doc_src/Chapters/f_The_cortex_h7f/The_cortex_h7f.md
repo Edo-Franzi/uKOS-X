@@ -331,6 +331,7 @@ Two connectors are in place to handle the debug activity; the **Debug** (**J6**)
 ; =====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -430,6 +431,7 @@ extern uint32_t    linker_stEXRAM[], linker_lnEXRAM[];
 #define    SDRAM_COMMAND_BANK2(command, mrd, cycles)                            \
            FMC_Bank5_6->SDCMR = (mrd<<9) | (cycles<<5) | (1<<3) | (command<<0); \
            while ((FMC_Bank5_6->SDSR & FMC_SDSR_BUSY) != 0) { ; }
+
 // Prototypes
 
 static           void local_GPIO_Configuration(void);
@@ -475,7 +477,7 @@ void init_init(void) {
  * - Enable the FPU
  *
  */
-static  void local_FPU_Configuration(void) {
+static void local_FPU_Configuration(void) {
 
     SCB->CPACR |= ((SCB_CPACR_FPAF<<20u) | (SCB_CPACR_FPAF<<22u));
     FPU->FPCCR |= ((1u<<FPU_FPCCR_ASPEN) | (1u<<FPU_FPCCR_LSPEN));
@@ -487,7 +489,7 @@ static  void local_FPU_Configuration(void) {
  * - GPIO configuration
  *
  */
-static  void local_GPIO_Configuration(void) {
+static void local_GPIO_Configuration(void) {
 
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;    // Turn on the GPIOA
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;    // Turn on the GPIOB

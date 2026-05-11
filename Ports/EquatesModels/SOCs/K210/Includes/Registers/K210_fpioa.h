@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -619,7 +620,7 @@ typedef	enum	_fpioa_driving {					//  |DS[3:0] |Min(mA)|Typ(mA)|Max(mA)|
 //  | 30:24     | NA       | Reserved bits.                                    |
 //  | 31        | PAD_DI   | Read current IO's data input.                     |
 
-typedef	 struct	_fpioa_io_config {
+typedef	 struct	[[gnu::packed, gnu::aligned(4)]] _fpioa_io_config {
 	uint32_t	ch_sel  : 8;						// Channel select from 256 input
 	uint32_t	ds		: 4;						// Driving selector
 	uint32_t	oe_en	: 1;						// Static output enable, will AND with OE_INV
@@ -636,7 +637,7 @@ typedef	 struct	_fpioa_io_config {
 	uint32_t	st      : 1;						// Schmitt trigger
 	uint32_t	resv1   : 5;						// Reserved bits
 	uint32_t	pad_di  : 1;						// Read current PAD's data input
-} __attribute__ ((packed, aligned (4))) fpioa_io_config_t;
+} fpioa_io_config_t;
 
 // Function which input tie high by default
 
@@ -647,10 +648,10 @@ typedef	 struct	_fpioa_io_config {
 //
 // Tie high means the SPI Arbitration input is 1
 
-typedef	struct	_fpioa_tie {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _fpioa_tie {
 	uint32_t	en[FUNC_MAX / 32u];					// FPIOA GPIO multiplexer tie enable array
 	uint32_t	val[FUNC_MAX / 32u];				// FPIOA GPIO multiplexer tie value array
-} __attribute__ ((packed, aligned (4))) fpioa_tie_t;
+} fpioa_tie_t;
 
 // FPIOA IO Pin RAM Layout
 
@@ -705,9 +706,9 @@ typedef	struct	_fpioa_tie {
 //  | 0x0B8     | PAD46    | FPIOA GPIO multiplexer io 46   |
 //  | 0x0BC     | PAD47    | FPIOA GPIO multiplexer io 47   |
 
-typedef	struct	_fpioa	{
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _fpioa	{
 	fpioa_io_config_t	io[FPIOA_NUM_IO];			// FPIOA GPIO multiplexer io array
 	fpioa_tie_t			tie;						// FPIOA GPIO multiplexer tie
-} __attribute__ ((packed, aligned (4))) fpioa_t;
+} fpioa_t;
 
 #define	fpioa	((volatile	fpioa_t *)0x502B0000u)

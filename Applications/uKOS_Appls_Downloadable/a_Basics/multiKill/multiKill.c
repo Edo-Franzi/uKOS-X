@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -165,7 +166,8 @@ static	volatile	uint32_t	vCounter = 0u;
  *		 - Commit a suicide
  *
  */
-static void __attribute__ ((noreturn)) aThread_Px(const void *argument) {
+[[noreturn]]
+static	void	aThread_Px(const void *argument) {
 			uint32_t	increment;
 	const	myPack_t	*pack;
 
@@ -185,7 +187,8 @@ static void __attribute__ ((noreturn)) aThread_Px(const void *argument) {
  */
 #define	KPRIORITY	KKERN_PRIORITY_LOW_01
 
-static void __attribute__ ((noreturn)) aProcess_a(const void *argument) {
+[[noreturn]]
+static	void	aProcess_a(const void *argument) {
 	uint32_t	i;
 
 	UNUSED(argument);

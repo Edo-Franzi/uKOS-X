@@ -50,8 +50,6 @@
 
 // IWYU pragma: begin_exports
 
-#include	<stdint.h>
-
 #include	"Registers/soc_vectors.h"
 #include	"Registers/RP2350_accessctrl.h"
 #include	"Registers/RP2350_adc.h"

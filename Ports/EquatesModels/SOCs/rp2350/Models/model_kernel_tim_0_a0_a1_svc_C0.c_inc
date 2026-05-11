@@ -3,6 +3,7 @@
 ; ================================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -257,7 +258,8 @@ static	void	local_TIM0_ALA0_IRQHandler_C0(void) {
  *
  */
 uintptr_t	*local_newContextPRE_C0(uintptr_t *stack);
-void		PendSV_C0_IRQHandler(void) __attribute__ ((naked));
+
+[[gnu::naked]]
 void		PendSV_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME_NORMAL;
@@ -283,7 +285,8 @@ void		PendSV_C0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE_C0(uintptr_t *stack) {
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextPRE_C0(uintptr_t *stack) {
 
 // Save the stack of the old process
 
@@ -367,7 +370,8 @@ uintptr_t	__attribute__ ((noinline, used)) *local_newContextPRE_C0(uintptr_t *st
  *
  */
 uintptr_t	*local_newContextTOU_C0(uintptr_t *stack);
-void		TIMER0_IRQ_1_C0_IRQHandler(void) __attribute__ ((naked));
+
+[[gnu::naked]]
 void		TIMER0_IRQ_1_C0_IRQHandler(void) {
 
 	KERN_SAVE_FRAME_NORMAL;
@@ -396,7 +400,8 @@ void		TIMER0_IRQ_1_C0_IRQHandler(void) {
  *	 - Return the stack of the new process
  *
  */
-uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU_C0(uintptr_t *stack) {
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextTOU_C0(uintptr_t *stack) {
 
 // Save the stack of the old process
 
@@ -488,7 +493,8 @@ uintptr_t	__attribute__ ((noinline, used)) *local_newContextTOU_C0(uintptr_t *st
  *
  */
 uintptr_t	*local_newContextMSG_C0(uintptr_t *stack, uint32_t message) ;
-void		kernel_message_C0(void) __attribute__ ((naked));
+
+[[gnu::naked]]
 void		kernel_message_C0(void) {
 
 	KERN_RECOVER_MESSAGE;
@@ -516,7 +522,8 @@ void		kernel_message_C0(void) {
  *	 - Return the stack of the new process
  *
  */
-uintptr_t	__attribute__ ((noinline, used)) *local_newContextMSG_C0(uintptr_t *stack, uint32_t message) {
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextMSG_C0(uintptr_t *stack, uint32_t message) {
 
 // Save the stack of the old process
 

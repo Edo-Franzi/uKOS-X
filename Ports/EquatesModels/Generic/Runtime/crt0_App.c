@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -195,7 +196,8 @@ int32_t		aStart(uint32_t argc, const char_t *argv[]) {
  *
  */
 #if (!defined(__clang__))
-void	__attribute__ ((noreturn)) __wrap___stack_chk_fail(void) {
+[[noreturn]]
+void	__wrap___stack_chk_fail(void) {
 
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;

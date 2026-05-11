@@ -6,10 +6,17 @@
 #define	KMLPN_L1_NB_IN	10
 #define	KMLPN_L1_NB_OUT	32
 
-static			float32_t	vInput_L1[KMLPN_L1_NB_IN] __attribute__((aligned(16)));
-static			float32_t	vActivation_L1[KMLPN_L1_NB_OUT] __attribute__((aligned(16)));
-static			float32_t	vOutput_L1[KMLPN_L1_NB_OUT + 1] __attribute__((aligned(16)));
-static	const	float32_t	vWeight_L1[KMLPN_L1_NB_OUT][KMLPN_L1_NB_IN] __attribute__((aligned(16))) = {
+[[gnu::aligned(16)]]
+static			float32_t	vInput_L1[KMLPN_L1_NB_IN];
+
+[[gnu::aligned(16)]]
+static			float32_t	vActivation_L1[KMLPN_L1_NB_OUT];
+
+[[gnu::aligned(16)]]
+static			float32_t	vOutput_L1[KMLPN_L1_NB_OUT + 1];
+
+[[gnu::aligned(16)]]
+static	const	float32_t	vWeight_L1[KMLPN_L1_NB_OUT][KMLPN_L1_NB_IN] = {
 								{ -0.180917f, -0.014444f, 0.045429f, 0.589759f, -0.486415f, 0.152013f, -0.026645f, -0.067045f, 0.229429f, -0.046125f },
 								{ 0.359636f, 0.071713f, 0.371395f, -0.069635f, -0.137480f, -0.178611f, -0.329651f, 0.238787f, -0.460626f, 0.096482f },
 								{ -0.339911f, -0.195325f, -0.000940f, 0.345164f, -0.363282f, -0.116598f, 0.218914f, -0.153130f, 0.201278f, 0.063184f },
@@ -59,9 +66,14 @@ static	mlpnLayer_t	aLayer_L1 = {
 #define	KMLPN_L2_NB_IN	33
 #define	KMLPN_L2_NB_OUT	16
 
-static			float32_t	vActivation_L2[KMLPN_L2_NB_OUT] __attribute__((aligned(16)));
-static			float32_t	vOutput_L2[KMLPN_L2_NB_OUT + 1] __attribute__((aligned(16)));
-static	const	float32_t	vWeight_L2[KMLPN_L2_NB_OUT][KMLPN_L2_NB_IN] __attribute__((aligned(16))) = {
+[[gnu::aligned(16)]]
+static			float32_t	vActivation_L2[KMLPN_L2_NB_OUT];
+
+[[gnu::aligned(16)]]
+static			float32_t	vOutput_L2[KMLPN_L2_NB_OUT + 1];
+
+[[gnu::aligned(16)]]
+static	const	float32_t	vWeight_L2[KMLPN_L2_NB_OUT][KMLPN_L2_NB_IN] = {
 								{ -0.229930f, 0.233763f, -0.329709f, -0.499920f, -0.052899f, 0.367179f, -0.458561f, 0.423858f, -0.211731f, -0.569436f, -0.083985f, -0.490921f, 0.074355f, 0.347671f, -0.067364f, -0.289962f, 0.101156f, 0.285390f, -0.074192f, 0.202360f, -0.137806f, 0.476911f, -0.129660f, -0.298385f, -0.014765f, -0.054989f, 0.188689f, -0.334114f, 0.043773f, -0.207338f, -0.396554f, -0.283130f, -0.042803f },
 								{ 0.208035f, -0.320763f, 0.319755f, 0.101354f, 0.016940f, 0.445448f, 0.035163f, -0.181972f, 0.160150f, 0.019293f, 0.123356f, -0.438673f, -0.172671f, 0.053371f, 0.273254f, -0.311271f, 0.119634f, -0.147186f, -0.232752f, -0.494353f, 0.064808f, 0.487996f, 0.066711f, -0.255745f, 0.326801f, 0.148424f, 0.353923f, 0.189568f, 0.263414f, -0.079067f, 0.086243f, 0.269557f, -0.141010f },
 								{ -0.266173f, 0.258677f, -0.333419f, 0.195634f, -0.281880f, 0.147924f, 0.148922f, 0.184620f, -0.287969f, -0.087211f, -0.087247f, -0.161667f, -0.217607f, 0.208509f, 0.092127f, 0.173588f, -0.250404f, 0.365597f, -0.295150f, -0.311979f, 0.268160f, 0.256593f, 0.162044f, -0.378518f, -0.025871f, 0.140355f, -0.422790f, -0.400307f, 0.155124f, -0.241158f, -0.260171f, -0.149527f, 0.104996f },
@@ -95,9 +107,14 @@ static	mlpnLayer_t	aLayer_L2 = {
 #define	KMLPN_L3_NB_IN	17
 #define	KMLPN_L3_NB_OUT	3
 
-static			float32_t	vActivation_L3[KMLPN_L3_NB_OUT] __attribute__((aligned(16)));
-static			float32_t	vOutput_L3[KMLPN_L3_NB_OUT + 1] __attribute__((aligned(16)));
-static	const	float32_t	vWeight_L3[KMLPN_L3_NB_OUT][KMLPN_L3_NB_IN] __attribute__((aligned(16))) = {
+[[gnu::aligned(16)]]
+static			float32_t	vActivation_L3[KMLPN_L3_NB_OUT];
+
+[[gnu::aligned(16)]]
+static			float32_t	vOutput_L3[KMLPN_L3_NB_OUT + 1];
+
+[[gnu::aligned(16)]]
+static	const	float32_t	vWeight_L3[KMLPN_L3_NB_OUT][KMLPN_L3_NB_IN] = {
 								{ -0.547158f, 0.227840f, 0.168076f, 0.680165f, -0.652330f, -0.799491f, -0.397940f, -0.121526f, -0.481433f, 0.201095f, 0.209922f, 0.564263f, -0.468390f, -0.675384f, -0.791782f, -0.804886f, -0.191127f },
 								{ 0.566444f, 0.010282f, 0.314672f, -0.605845f, -0.037648f, -0.221076f, -0.107704f, 0.055235f, 0.193861f, 0.345088f, -0.697144f, -0.213047f, 0.585982f, 0.582083f, -0.315771f, -0.054695f, -0.043100f },
 								{ -0.600662f, 0.308531f, -0.457540f, 0.204643f, 0.309404f, 0.742323f, 0.366456f, -0.442337f, 0.411311f, -0.189648f, 0.387541f, -0.250527f, 0.603088f, -0.240166f, -0.235657f, -0.376819f, -0.087019f },

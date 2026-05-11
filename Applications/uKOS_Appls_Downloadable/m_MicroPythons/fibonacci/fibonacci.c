@@ -3,6 +3,7 @@
 ; ==========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -123,7 +124,8 @@ MODULE(
  *			- Toggle LED 1
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 
 	UNUSED(argument);
 
@@ -141,7 +143,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
  *			- Compute the fibonacci serie
  *
  */
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static	void	aProcess_1(const void *argument) {
 			uint32_t			size;
 			uint8_t				*memory;
 			microPythonCnf_t	configure;

@@ -255,6 +255,7 @@ mem0 13  XLS_  v1.0   list      List the system modules.                       (
 ; ====
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -297,7 +298,7 @@ STRG_LOC_CONST(aStrHelp[]) =
 
     "Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static  int32_t prgm(uint32_t argc, const char_t *argv[]);
+static int32_t prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
     Man,                              // Module name
@@ -379,6 +380,7 @@ static int32_t prgm(uint32_t argc, char_t *argv[]) {
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -406,7 +408,7 @@ extern int32_t      a_start(uint32_t argc, const char_t *argv[]);
 extern uintptr_t    _lnApplication;
 extern module_t     aUserAppl_Specifications;
 
-__attribute__ ((section(".header")))
+[[gnu::section(".header")]]
 const  header_t     appHeader = {
                         KMEMU,
                         a_start,
@@ -420,6 +422,7 @@ const  header_t     appHeader = {
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -570,7 +573,8 @@ int32_t aStart(uint32_t argc, const char_t *argv[]) {
  *   LDFLAGS += -Wl,--wrap=__stack_chk_fail
  *
  */
-void __attribute__ ((noreturn)) __wrap___stack_chk_fail(void) {
+[[noreturn]]
+void __wrap___stack_chk_fail(void) {
 
     PRIVILEGE_ELEVATE;
     INTERRUPTION_OFF;
@@ -585,6 +589,7 @@ void __attribute__ ((noreturn)) __wrap___stack_chk_fail(void) {
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
@@ -648,7 +653,8 @@ MODULE(
  *       - Display a message on the KSYST manager
  *
  */
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static void aProcess_0(const void *argument) {
     int32_t    cpt = 0;
 
     UNUSED(argument);
@@ -664,7 +670,8 @@ static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
     }
 }
 
-static void __attribute__ ((noreturn)) aProcess_1(const void *argument) {
+[[noreturn]]
+static void aProcess_1(const void *argument) {
     int32_t    cpt = 0;
 
     UNUSED(argument);
@@ -737,6 +744,7 @@ int main(uint32_t argc, const char_t *argv[]) {
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01

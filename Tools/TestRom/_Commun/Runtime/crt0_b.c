@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -73,7 +74,9 @@
 // ================
 
 		uint32_t	vCrt0_randomSeed;
-		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS] __attribute__ ((aligned(2048)));
+
+		[[gnu::aligned(2048)]]
+		uintptr_t	vVectors[KNB_EXCEPTIONS + KNB_INTERRUPTIONS];
 extern	void		(* const g_pfnVectors_C0[])(void);
 
 // Prototypes

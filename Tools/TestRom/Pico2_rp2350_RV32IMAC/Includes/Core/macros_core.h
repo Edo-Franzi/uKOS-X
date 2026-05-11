@@ -6,7 +6,7 @@
 ; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
-; Author:	Laurent von Allmen		The 2026-02-13
+; Author:	Laurent von Allmen	The 2026-02-13
 ; Modifs:
 ;
 ; Project:	uKOS-X
@@ -53,7 +53,6 @@
 #include	"Registers/rv32_csr.h"
 #include	"Registers/soc_vectors.h"	// IWYU pragma: keep for KNB_EXCEPTIONS KNB_INTERRUPTIONS
 #include	"macros_soc.h"
-// #include	"macros_core_stackFrame.h"
 
 // uKernel macros
 // --------------
@@ -189,7 +188,7 @@ extern	bool	vExce_isException[KNB_CORES];
 									vExce_isException[core] = false;															\
 								}																								\
 																																\
-								void irq##_IRQHandler(void) __attribute__ ((weak, naked));										\
+								[[gnu::weak, gnu::naked]]																		\
 								void irq##_IRQHandler(void) {																	\
 																																\
 									INTERRUPTION_IN;																			\
@@ -226,7 +225,7 @@ extern	bool	vExce_isException[KNB_CORES];
 									vExce_isException[core] = false;															\
 								}																								\
 																																\
-								void irq##_IRQHandler(void) __attribute__ ((weak, naked));										\
+								[[gnu::weak, gnu::naked]]																		\
 								void irq##_IRQHandler(void) {																	\
 																																\
 									INTERRUPTION_IN;																			\

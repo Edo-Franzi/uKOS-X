@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -199,7 +200,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  * - Display textes with random colors
  *
  */
-static void __attribute__ ((noreturn)) local_process_0(const void *argument) {
+[[noreturn]]
+static	void	local_process_0(const void *argument) {
 
 // Window position
 
@@ -260,7 +262,8 @@ static void __attribute__ ((noreturn)) local_process_0(const void *argument) {
  * - Display random colors dots
  *
  */
-static void __attribute__ ((noreturn)) local_process_1(const void *argument) {
+[[noreturn]]
+static	void	local_process_1(const void *argument) {
 
 // Window position
 
@@ -294,7 +297,8 @@ static void __attribute__ ((noreturn)) local_process_1(const void *argument) {
  * - Display random colors rectangles
  *
  */
-static void __attribute__ ((noreturn)) local_process_2(const void *argument) {
+[[noreturn]]
+static	void	local_process_2(const void *argument) {
 
 // Window position
 
@@ -352,7 +356,8 @@ static void __attribute__ ((noreturn)) local_process_2(const void *argument) {
  * - Display the uKOS-X logo
  *
  */
-static void __attribute__ ((noreturn)) local_process_3(const void *argument) {
+[[noreturn]]
+static	void	local_process_3(const void *argument) {
 
 	#define	KW3_X0		60u
 	#define	KW3_Y0		20u
@@ -427,7 +432,8 @@ static void __attribute__ ((noreturn)) local_process_3(const void *argument) {
  * - Change the background
  *
  */
-static void __attribute__ ((noreturn)) local_process_4(const void *argument) {
+[[noreturn]]
+static	void	local_process_4(const void *argument) {
 	uint16_t	color;
 	uint32_t	value;
 

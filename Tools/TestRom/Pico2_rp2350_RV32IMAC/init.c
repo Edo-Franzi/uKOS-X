@@ -28,6 +28,26 @@
 ;   Description: Lightweight, real-time multitasking operating
 ;   system for embedded microcontroller and DSP-based systems.
 ;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
 ;------------------------------------------------------------------------
 */
 
@@ -75,7 +95,8 @@ void	init_init(void) {
  */
 static	void	local_GPIO_Configuration(void) {
 
-	// Release GPIO from reset
+// Release GPIO from reset
+
 	REG(RESETS)->RESET &= ~(RESETS_RESET_IO_BANK0 | RESETS_RESET_PADS_BANK0);
 	while ((REG(RESETS)->RESET_DONE & (RESETS_RESET_IO_BANK0 | RESETS_RESET_PADS_BANK0)) !=
 	       (RESETS_RESET_IO_BANK0 | RESETS_RESET_PADS_BANK0)) { }
@@ -168,6 +189,7 @@ static	void	local_PLL_Configuration(void) {
 	while ((REG(CLOCKS)->CLK_REF_SELECTED & (1u<<0x2u)) == 0x0u) { }
 
 // Reset PLL_SYS
+
 	REG(RESETS)->RESET |= RESETS_RESET_PLL_SYS;
 	cmns_wait(10);
 	REG(RESETS)->RESET &= ~RESETS_RESET_PLL_SYS;
@@ -175,26 +197,30 @@ static	void	local_PLL_Configuration(void) {
 
 	REG(PLL_SYS)->PWR |= (PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD | PLL_SYS_PWR_POSTDIVPD);
 
-	// Configure PLL_SYS for 150 MHz
-	// VCO = 1500 MHz, REFDIV = 1, FBDIV = 125 (12 * 125 = 1500)
-	// postdiv1 = 5, postdiv2 = 2 => 1500 / (5 * 2) = 150 MHz
+// Configure PLL_SYS for 150 MHz
+// VCO = 1500 MHz, REFDIV = 1, FBDIV = 125 (12 * 125 = 1500)
+// postdiv1 = 5, postdiv2 = 2 => 1500 / (5 * 2) = 150 MHz
+
 	REG(PLL_SYS)->CS        = 0x1u;
 	REG(PLL_SYS)->FBDIV_INT = 125u;
 
-	// Turn on the VCO
+// Turn on the VCO
+
 	REG(PLL_SYS)->PWR &= ~(PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD);
 	while ((REG(PLL_SYS)->CS & PLL_SYS_CS_LOCK) == 0u) { }
 
 	REG(PLL_SYS)->PRIM = (5u * PLL_SYS_PRIM_POSTDIV1_0) | (2u * PLL_SYS_PRIM_POSTDIV2_0);
 	REG(PLL_SYS)->PWR &= ~PLL_SYS_PWR_POSTDIVPD;
 
-	// Switch clk_sys to PLL_SYS (glitchless via SRC/AUXSRC)
+// Switch clk_sys to PLL_SYS (glitchless via SRC/AUXSRC)
+
 	REG(CLOCKS)->CLK_SYS_DIV  = 1u * CLOCKS_CLK_SYS_DIV_INT_0;
 	REG(CLOCKS)->CLK_SYS_CTRL = (REG(CLOCKS)->CLK_SYS_CTRL & ~(0x7u<<5u)) | (0x0u<<5u);
 	REG(CLOCKS)->CLK_SYS_CTRL = (REG(CLOCKS)->CLK_SYS_CTRL & ~0x1u) | 0x1u;
 	while ((REG(CLOCKS)->CLK_SYS_SELECTED & (1u<<0x1u)) == 0x0u) { }
 
-	// Configure clk_peri = clk_sys (for UART, etc.)
+// Configure clk_peri = clk_sys (for UART, etc.)
+
 	REG(CLOCKS)->CLK_PERI_CTRL = (0x0u<<5u) | (1u<<0x0Bu);
 
 // The timer clocks

@@ -5,6 +5,7 @@
 # =============
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Jean-Marc Koller
 
 #------------------------------------------------------------------------
 # Author:	Jean-Marc Koller	The 2025-01-01

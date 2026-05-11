@@ -2,8 +2,8 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.4.9)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.4.9-2026-05-06",
+  "name": "uKOS-X SBOM (0.4.10)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.4.10-2026-05-10",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -32,7 +32,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.4.9",
+      "versionInfo": "0.4.10",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -42,7 +42,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.4.9",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.4.10",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -194,7 +194,7 @@
     {
       "name": "tflite-micro",
       "SPDXID": "SPDXRef-Package-TFLiteMicro",
-      "versionInfo": "commit 51bee03",
+      "versionInfo": "commit 9f5ac25",
       "downloadLocation": "https://github.com/tensorflow/tflite-micro.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -212,7 +212,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 commit 9b1b781",
+      "versionInfo": "0.20.0 commit dcd2a4b",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",

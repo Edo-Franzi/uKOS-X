@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -182,7 +183,8 @@ static	void	test_listDirectoryTree(const char *path, uint8_t depth);
 #define	DRIVE_FLASH		"/flash"
 #define	DRIVE_SDCARD	"/sdcard"
 
-static void __attribute__ ((noreturn)) aProcess_0(const void *argument) {
+[[noreturn]]
+static	void	aProcess_0(const void *argument) {
 	UINT	bytesRead_sdcard_1, bytesRead_sdcard_2, bytesRead_sdcard_3;
 	UINT	bytesRead_serialFlash_1, bytesRead_serialFlash_2, bytesRead_serialFlash_3;
 	UINT	bytesWrote_sdcard_1, bytesWrote_sdcard_2, bytesWrote_sdcard_3;

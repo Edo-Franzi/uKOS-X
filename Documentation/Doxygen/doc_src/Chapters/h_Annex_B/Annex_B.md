@@ -44,7 +44,7 @@ MODULE(
 );
 ...
 
-int    main(int argc, const char *argv[]) {
+int main(int argc, const char *argv[]) {
     ...
 }
 
@@ -54,7 +54,7 @@ int    main(int argc, const char *argv[]) {
 
 // Prototypes
 
-static   int32_t   prgm(uint32_t argc, const char_t *argv[]);
+static int32_t prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
     Coherence,                             // Module name

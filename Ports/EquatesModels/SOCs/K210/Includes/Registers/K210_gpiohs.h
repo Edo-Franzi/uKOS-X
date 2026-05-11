@@ -3,6 +3,7 @@
 ; ============
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -77,7 +78,7 @@
 // GPIO bits raw object
 // --------------------
 
-typedef	struct	_gpiohs_raw {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _gpiohs_raw {
 	uint32_t	input_val;							// Address offset 0x00
 	uint32_t	input_en;							// Address offset 0x04
 	uint32_t	output_en;							// Address offset 0x08
@@ -95,12 +96,12 @@ typedef	struct	_gpiohs_raw {
 	uint32_t	iof_en;								// Address offset 0x38
 	uint32_t	iof_sel;							// Address offset 0x3c
 	uint32_t	output_xor;							// Address offset 0x40
-} __attribute__ ((packed, aligned (4))) gpiohs_raw_t;
+} gpiohs_raw_t;
 
 // Structure for accessing GPIOHS registers by individual bit
 // ----------------------------------------------------------
 
-typedef	struct	_gpiohs_bits {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _gpiohs_bits {
 	uint32_t	b0  : 1;							//
 	uint32_t	b1  : 1;							//
 	uint32_t	b2  : 1;							//
@@ -133,22 +134,22 @@ typedef	struct	_gpiohs_bits {
 	uint32_t	b29 : 1;							//
 	uint32_t	b30 : 1;							//
 	uint32_t	b31 : 1;							//
-} __attribute__ ((packed, aligned (4))) gpiohs_bits_t;
+} gpiohs_bits_t;
 
 // Structure of templates for accessing GPIOHS registers
 // -----------------------------------------------------
 
-typedef	union	_gpiohs_u32 {
+typedef	union	[[gnu::packed, gnu::aligned(4)]] _gpiohs_u32 {
 	uint32_t		u32[1];							// 32x1 bit mode
 	uint16_t		u16[2];							// 16x2 bit mode
 	uint8_t			u8[4];							// 8x4 bit mode
 	gpiohs_bits_t	bits;							// 1x32 bit mode
-} __attribute__ ((packed, aligned (4))) gpiohs_u32_t;
+} gpiohs_u32_t;
 
 // The GPIOHS address map
 // ----------------------
 
-typedef	struct	_gpiohs {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _gpiohs {
 	gpiohs_u32_t	input_val;						// Address offset 0x00, Input Values
 	gpiohs_u32_t	input_en;						// Address offset 0x04, Input enable
 	gpiohs_u32_t	output_en;						// Address offset 0x08, Output enable
@@ -166,6 +167,6 @@ typedef	struct	_gpiohs {
 	gpiohs_u32_t	iof_en;							// Address offset 0x38, HW I/O Function enable
 	gpiohs_u32_t	iof_sel;						// Address offset 0x3c, HW I/O Function select
 	gpiohs_u32_t	output_xor;						// Address offset 0x40, Output XOR (invert)
-} __attribute__ ((packed, aligned (4))) gpiohs_t;
+} gpiohs_t;
 
 #define	gpiohs	((volatile	gpiohs_t *)0x38001000u)

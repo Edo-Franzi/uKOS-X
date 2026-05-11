@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -175,7 +176,8 @@ static	int32_t	test_mcore_clean(uint32_t argc, const char_t *argv[]) {
  * - Send data to the core X
  *
  */
-static void __attribute__ ((noreturn)) local_process_TX(const void *argument) {
+[[noreturn]]
+static	void	local_process_TX(const void *argument) {
 			uint32_t	core;
 			uint8_t		*send = nullptr, counter = (uint8_t)'a';
 			size_t		size;
@@ -252,7 +254,8 @@ static void __attribute__ ((noreturn)) local_process_TX(const void *argument) {
  * - Read the data coming from the core X
  *
  */
-static void __attribute__ ((noreturn)) local_process_RX(const void *argument) {
+[[noreturn]]
+static	void	local_process_RX(const void *argument) {
 			uint32_t	core, size;
 			uint8_t		*receive, *message;
 			int32_t		status;

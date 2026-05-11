@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -325,7 +326,8 @@ static	int32_t	cycle_clean(uint32_t argc, const char_t *argv[]) {
  * - Launch a cycle
  *
  */
-static void __attribute__ ((noreturn)) local_process(const void *argument) {
+[[noreturn]]
+static	void	local_process(const void *argument) {
 			uint32_t			core, time, argc;
 			serialManager_t		serialManager;
 			uint16_t			indexSerialManager;

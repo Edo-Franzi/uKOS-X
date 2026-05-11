@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -49,8 +50,6 @@
 #pragma	once
 
 // IWYU pragma: begin_exports
-
-#include	<stdint.h>
 
 #include	"Registers/rv64_csr.h"
 #include	"Registers/core_addendum.h"

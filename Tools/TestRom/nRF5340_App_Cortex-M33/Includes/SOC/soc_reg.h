@@ -50,8 +50,6 @@
 
 // IWYU pragma: begin_exports
 
-#include	<stdint.h>
-
 #if (defined(CPU_APPLICATION_S))
 #include	"Registers/soc_vectors_application.h"
 #include	"Registers/nrf5340_application_cache.h"

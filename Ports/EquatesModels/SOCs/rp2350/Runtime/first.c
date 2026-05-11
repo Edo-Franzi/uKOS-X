@@ -3,6 +3,7 @@
 ; ======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -58,7 +59,9 @@
 extern	void		crt0(void);
 extern	void		cmns_wait(uint32_t time);
 
-const	uintptr_t	g_pfnVectors_C0[] __attribute__ ((used, section(".isr_vector"))) = {
+[[gnu::used, gnu::section(".isr_vector")]]
+const	uintptr_t	g_pfnVectors_C0[] = {
+
 
 	(uintptr_t)linker_topStackSystem_C0,						// MSP Stack
 
@@ -190,7 +193,8 @@ INTERRUPT_SPECIFIC_HANDLER(POWMAN_IRQ_TIMER_C0)
 
 // cppcheck-suppress-end premium-unreadVariable
 
-const	uintptr_t	g_pfnVectors_C1[] __attribute__ ((used, aligned(512))) = {
+[[gnu::used, gnu::aligned(512)]]
+const	uintptr_t	g_pfnVectors_C1[] = {
 
 	(uintptr_t)linker_topStackSystem_C1,						// MSP Stack
 

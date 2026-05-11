@@ -3,6 +3,7 @@
 ; =========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Laurent von Allmen	The 2026-03-01
@@ -11,8 +12,8 @@
 ; Project:	uKOS-X
 ; Goal:		Test of the MVE/Helium dot product benchmark.
 ;
-;   (c) 2025-2026, Edo. Franzi
-;   --------------------------
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -53,6 +54,7 @@
 #if (defined(__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE >= 3))
 #include	<arm_mve.h>
 #define	HAVE_MVE	1
+
 #else
 #define	HAVE_MVE	0
 #endif
@@ -76,7 +78,8 @@ static	void	local_sysTick_init(void) {
 // DSB + ISB flush the pipeline so that the SysTick read
 // reflects the actual cycle count at this point in time.
 
-static	uint32_t	__attribute__ ((noinline)) local_sysTick_read(void) {
+[[gnu::noinline]]
+static	uint32_t	local_sysTick_read(void) {
 
 	__asm volatile ("dsb sy" ::: "memory");
 	__asm volatile ("isb"    ::: "memory");
@@ -90,7 +93,8 @@ static	uint32_t	__attribute__ ((noinline)) local_sysTick_read(void) {
 // Scalar dot product (plain C)
 // ----------------------------
 
-static	float	__attribute__ ((noinline, optimize("no-tree-vectorize"))) scalar_dot_f32(const float *a, const float *b, uint32_t n) {
+[[gnu::noinline, gnu::optimize("no-tree-vectorize")]]
+static	float	scalar_dot_f32(const float *a, const float *b, uint32_t n) {
 	float	sum = 0.0f;
 
 	for (uint32_t i = 0u; i < n; i++) {
@@ -103,7 +107,8 @@ static	float	__attribute__ ((noinline, optimize("no-tree-vectorize"))) scalar_do
 // ------------------------------------
 
 #if (HAVE_MVE)
-static	float	__attribute__ ((noinline, optimize("O2"))) mve_dot_f32(const float *a, const float *b, uint32_t n) {
+[[gnu::noinline, gnu::optimize("O2")]]
+static	float	mve_dot_f32(const float *a, const float *b, uint32_t n) {
 	float32x4_t	vAcc = vdupq_n_f32(0.0f);
 	uint32_t	remaining = n;
 	uint32_t	idx = 0u;

@@ -3,6 +3,7 @@
 ; ====================
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -107,7 +108,7 @@ static	void	local_printStackFrame(void);
  * x17 - a7   = 0x00000070
  *
  */
-static	void	model_coreDump_displayExceptions(void) __attribute__ ((naked));
+[[gnu::naked]]
 static	void	model_coreDump_displayExceptions(void) {
 
 	CORE_DUMP_SAVE_STACK_FRAME;
@@ -125,7 +126,8 @@ static	void	model_coreDump_displayExceptions(void) {
  * - Display the stack frame
  *
  */
-static	void	__attribute__ ((noinline, used, noreturn)) local_processException(uintptr_t *stackBefore, uintptr_t *stackAfter) {
+[[gnu::noinline, gnu::used, noreturn]]
+static	void	local_processException(uintptr_t *stackBefore, uintptr_t *stackAfter) {
 			uint32_t	core, i;
 	const	uintptr_t	*ptr;
 	const	char_t		*vectorName;
@@ -158,7 +160,8 @@ static	void	__attribute__ ((noinline, used, noreturn)) local_processException(ui
  * - Display the exception name
  *
  */
-static	void	__attribute__ ((noinline)) local_printException(const char_t **vectorName) {
+[[gnu::noinline]]
+static	void	local_printException(const char_t **vectorName) {
 	uint32_t	core;
 
 	core = GET_RUNNING_CORE;
@@ -195,7 +198,8 @@ static	void	__attribute__ ((noinline)) local_printException(const char_t **vecto
  * - Display the core information
  *
  */
-static	void	__attribute__ ((noinline)) local_printCore(void) {
+[[gnu::noinline]]
+static	void	local_printCore(void) {
 	char_t		string[80 + 1];
 	int32_t		mvendor, marchid, mimpd, mhartid;
 	int32_t		mscratch, mpec, mcause, mdadaddr, mip;

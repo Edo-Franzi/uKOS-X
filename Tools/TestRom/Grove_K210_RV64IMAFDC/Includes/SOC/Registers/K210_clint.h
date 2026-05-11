@@ -3,6 +3,7 @@
 ; ===========
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -72,10 +73,10 @@
 // the msip registers are hardwired to zero. The mapping supports
 // up to 4095 machine-mode cores.
 //
-typedef	struct	_clint_msip {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _clint_msip {
 	uint32_t	msip : 1;
 	uint32_t	zero : 31;
-} __attribute__ ((packed, aligned(4))) clint_msip_t;
+} clint_msip_t;
 
 // Timer compare Registers
 // -----------------------
@@ -113,11 +114,11 @@ typedef	uint64_t	clint_mtime_t;
 // local timer interrupts, and other interrupts routed directly to
 // a core.
 //
-typedef	struct	_clint {
+typedef	struct	[[gnu::packed, gnu::aligned(4)]] _clint {
 	clint_msip_t		msip[CLINT_MAX_CORES];				// 0x0000 to 0x3FF8, MSIP Registers
     uint32_t			resv0;								// Resverd space, do not use
 	clint_mtimecmp_t	mtimecmp[CLINT_MAX_CORES];			// 0x4000 to 0xBFF0, Timer Compare Registers
 	clint_mtime_t		mtime;								// 0xBFF8, Time Register
-} __attribute__ ((packed, aligned(4))) clint_t;
+} clint_t;
 
 #define	clint	((volatile clint_t *)0x02000000u)
