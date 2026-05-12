@@ -90,7 +90,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = imager_reserve(KMODE_READ_WRITE, 1234);
+ *    status = imager_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    imager_xyz();
  *    ....

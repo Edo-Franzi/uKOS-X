@@ -96,7 +96,7 @@ extern	int32_t		stub_spi1_multipleWriteRead(const uint8_t *wData, uint16_t wSize
  * \code{.c}
  * int32_t    status;
  *
- *    status = spi1_reserve(KMODE_READ_WRITE, 1234);
+ *    status = spi1_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    spi1_xyz();
  *    ....

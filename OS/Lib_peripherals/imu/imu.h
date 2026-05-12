@@ -146,7 +146,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = imu_reserve(KMODE_READ_WRITEL, 1234);
+ *    status = imu_reserve(KMODE_READ_WRITEL, 1234u);
  *    ....
  *    imu_xyz();
  *    ....

@@ -90,7 +90,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = i2c0_reserve(KMODE_READ_WRITE, 1234);
+ *    status = i2c0_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    i2c0_xyz();
  *    ....

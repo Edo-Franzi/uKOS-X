@@ -86,7 +86,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = adc_reserve(KMODE_READ_WRITE, 1234);
+ *    status = adc_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    adc_xyz();
  *    ....

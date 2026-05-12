@@ -117,7 +117,8 @@ static	const	console_t	aTabConsole[] = {
 								{ KURT4, "Console_urt4", "Process console urt4.                     (c) EFr-2026" },
 								{ KCDC0, "Console_cdc0", "Process console cdc0.                     (c) EFr-2026" },
 								{ KCDC1, "Console_cdc1", "Process console cdc1.                     (c) EFr-2026" },
-								{ KWFI0, "Console_wfi0", "Process console wfi0.                     (c) EFr-2026" }
+								{ KWFI0, "Console_wfi0", "Process console wfi0.                     (c) EFr-2026" },
+								{ KBLE0, "Console_ble0", "Process console ble0.                     (c) EFr-2026" }
 							};
 
 #define	KNB_CHANNELS			(sizeof(aTabConsole) / sizeof(console_t))

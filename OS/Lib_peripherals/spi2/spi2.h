@@ -88,7 +88,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = spi2_reserve(KMODE_READ_WRITE, 1234);
+ *    status = spi2_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    spi2_xyz();
  *    ....

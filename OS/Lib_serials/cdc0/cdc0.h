@@ -91,7 +91,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = cdc0_reserve(KMODE_WRITE, 1234);
+ *    status = cdc0_reserve(KMODE_WRITE, 1234u);
  *    ....
  *    cdc0_xyz();
  *    ....
@@ -158,7 +158,7 @@ extern	int32_t	cdc0_configure(const cdcxCnf_t *configure);
  * \code{.c}
  * #define    KSIZE    10
  *
- * uint8_t    buffer[KSIZE] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+ * uint8_t    buffer[KSIZE] = { 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u };
  * int32_t    status;
  *
  *    status = cdc0_write(buffer, KSIZE);

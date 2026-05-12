@@ -109,7 +109,7 @@ extern	"C" {
  * \code{.c}
  * int32_t    status;
  *
- *    status = imgk_reserve(KMODE_READ_WRITE, 1234);
+ *    status = imgk_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    imgk_xyz();
  *    ....

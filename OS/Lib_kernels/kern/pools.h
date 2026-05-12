@@ -154,7 +154,7 @@ extern	int32_t	kern_setPool(pool_t *handle, const pcnf_t *configure);
  * pool_t     *memoryPool;
  * void       *address;
  *
- *    status = kern_allocateBlock(memoryPool, &address, 1234);
+ *    status = kern_allocateBlock(memoryPool, &address, 1234u);
  * \endcode
  *
  * \param[in]	*handle			Ptr on the handle

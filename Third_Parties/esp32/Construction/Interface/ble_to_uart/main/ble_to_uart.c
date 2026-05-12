@@ -202,7 +202,7 @@ void	app_main(void) {
 
 	#if (!defined(KSET_HARD_DEVICE_NAME))
 	if (local_waitBleConfig() == false) {
-		local_writeUartText("Configuration error");
+		local_writeUartText("Configuration error\n");
 		return;
 	}
 	#endif
@@ -424,6 +424,10 @@ static	int		local_bleUartRXAccess_cb(uint16_t conn_handle, uint16_t attr_handle,
 		uart_write_bytes(KUART_PORT, (const char *)buffer, chunk);
 		offset += chunk;
 	}
+
+// Terminate the line with a \n
+
+	uart_write_bytes(KUART_PORT, "\n", 1);
 	return (0);
 }
 

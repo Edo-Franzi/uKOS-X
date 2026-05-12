@@ -98,7 +98,7 @@ extern	int32_t		stub_i2c1_flush(void);
  * \code{.c}
  * int32_t    status;
  *
- *    status = i2c1_reserve(KMODE_READ_WRITE, 1234);
+ *    status = i2c1_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    i2c1_xyz();
  *    ....

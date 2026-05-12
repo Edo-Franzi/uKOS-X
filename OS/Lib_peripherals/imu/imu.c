@@ -96,7 +96,7 @@ extern	int32_t		stub_imu_read(imuAccePack_t *accelerometer, imuGyroPack_t *gyros
  * \code{.c}
  * int32_t    status;
  *
- *    status = imu_reserve(KMODE_READ_WRITEL, 1234);
+ *    status = imu_reserve(KMODE_READ_WRITEL, 1234u);
  *    ....
  *    imu_xyz();
  *    ....

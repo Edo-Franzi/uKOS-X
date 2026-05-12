@@ -96,7 +96,7 @@ extern	int32_t		stub_temperature_write(float64_t temperature);
  * \code{.c}
  * int32_t    status;
  *
- *    status = temperature_reserve(KMODE_READ_WRITE, 1234);
+ *    status = temperature_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    temperature_xyz();
  *    ....

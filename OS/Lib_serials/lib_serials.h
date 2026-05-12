@@ -106,6 +106,9 @@
 #if (defined(CONFIG_MAN_WFI0_S))
 #include	"wfi0/wfi0.h"
 #endif
+#if (defined(CONFIG_MAN_BLE0_S))
+#include	"ble0/ble0.h"
+#endif
 
 // IWYU pragma: end_exports
 

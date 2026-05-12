@@ -95,7 +95,7 @@ extern	int32_t		stub_battery_read(batteryInfo_t *infoBattery);
  * \code{.c}
  * int32_t    status;
  *
- *    status = battery_reserve(KMODE_READ_WRITE, 1234);
+ *    status = battery_reserve(KMODE_READ_WRITE, 1234u);
  *    ....
  *    battery_xyz();
  *    ....

@@ -181,6 +181,9 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt0/urt0.c
 # With the URT1 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_URT1_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt1/urt1.c
+# With the WFI0 communication manager
+CONF_SYSTEM		+= -DCONFIG_MAN_WFI0_S
+LIBX_P			+= $(PATH_OSYS)/Lib_serials/wfi0/wfi0.c
 # With the RANDOM manager
 CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
 LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
@@ -194,6 +197,7 @@ LIBX_P			+= 												$(PATH_BASE)/Lib_generics/asmp/stub_asmp_msip.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_uart.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt1/stub_urt1_uart.c
+LIBX_P			+=												$(PATH_BASE)/Lib_serials/wfi0/stub_wfi0_urt1.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 
 # The Lib_xxxx components (user)

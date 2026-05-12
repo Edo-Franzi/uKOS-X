@@ -99,7 +99,7 @@ extern	int32_t		stub_urt0_flush(void);
  * \code{.c}
  * int32_t    status;
  *
- *    status = urt0_reserve(KMODE_WRITE, 1234);
+ *    status = urt0_reserve(KMODE_WRITE, 1234u);
  *    ....
  *    urt0_xyz();
  *    ....
@@ -287,7 +287,7 @@ int32_t	urt0_configure(const urtxCnf_t *configure) {
  * \code{.c}
  * #define    KSIZE    10
  *
- * uint8_t    buffer[KSIZE] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+ * uint8_t    buffer[KSIZE] = { 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u };
  * int32_t    status;
  *
  *    status = urt0_write(buffer, KSIZE);

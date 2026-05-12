@@ -204,7 +204,8 @@ enum {
 			KNUM_URT2			   = (((uint32_t)'0'<<8) + (uint32_t)'5'),									// urt2 manager
 			KNUM_URT3			   = (((uint32_t)'0'<<8) + (uint32_t)'6'),									// urt3 manager
 			KNUM_URT4			   = (((uint32_t)'0'<<8) + (uint32_t)'7'),									// urt4 manager
-			KNUM_WFI0			   = (((uint32_t)'0'<<8) + (uint32_t)'8')									// wfi0 manager
+			KNUM_WFI0			   = (((uint32_t)'0'<<8) + (uint32_t)'8'),									// wfi0 manager
+			KNUM_BLE0			   = (((uint32_t)'0'<<8) + (uint32_t)'9')									// ble0 manager
 };
 
 // Lib_cryptographics

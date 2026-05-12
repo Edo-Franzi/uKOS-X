@@ -75,6 +75,7 @@ source setup.sh
 # Push, and maintain, the boot button
 esp32 -reset
 # Push reset
+# Release the reset button
 # Release the boot button
 
 cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/esp32/Construction/Interface/ble_to_uart

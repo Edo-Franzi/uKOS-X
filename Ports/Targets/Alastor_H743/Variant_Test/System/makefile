@@ -224,9 +224,9 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt2/urt2.c
 # With the URT3 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_URT3_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt3/urt3.c
-# With the WFI0 communication manager
-CONF_SYSTEM		+= -DCONFIG_MAN_WFI0_S
-LIBX_P			+= $(PATH_OSYS)/Lib_serials/wfi0/wfi0.c
+# With the BLE0 communication manager
+CONF_SYSTEM		+= -DCONFIG_MAN_BLE0_S
+LIBX_P			+= $(PATH_OSYS)/Lib_serials/ble0/ble0.c
 # With the STORAGE manager
 CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
@@ -253,7 +253,7 @@ LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt1/stub_urt1_usart3.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt2/stub_urt2_usart1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt3/stub_urt3_uart4.c
-LIBX_P			+=												$(PATH_BASE)/Lib_serials/wfi0/stub_wfi0_usart1_esp32_wifi_AP.c
+LIBX_P			+=												$(PATH_BASE)/Lib_serials/ble0/stub_ble0_urt2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/serialFlash/stub_serialFlash.c
 

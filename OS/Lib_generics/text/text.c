@@ -433,9 +433,13 @@ static	void	local_getChar(serialManager_t serialManager, char_t *c, sema_t *sema
 
 	switch ((uint32_t)serialManager & 0xFFFFFF00u) {
 
+// The serialManager is a WFI0; the WFI0 is redirected to URTx
+// The serialManager is a BLE0; the BLE0 is redirected to URTx
 // The serialManager is a URTx
 
-		case (((uint32_t)'u'<<24u) | ((uint32_t)'r'<<16u) | ((uint32_t)'t'<<8u) | 0x0u): {
+		case (KWFI0 & 0xFFFFFF00u):
+		case (KBLE0 & 0xFFFFFF00u):
+		case (KURT0 & 0xFFFFFF00u): {
 			while (true) {
 				size = 1u;
 				if (serial_read(serialManager, (uint8_t *)c, &size) == KERR_SERIAL_NOERR) {
@@ -444,14 +448,12 @@ static	void	local_getChar(serialManager_t serialManager, char_t *c, sema_t *sema
 
 				kern_waitSemaphore(semaphore, KWAIT_INFINITY);
 			}
+			break;
 		}
 
-// The serialManager is a USBx
-// The serialManager is a BLTx
 // ... or any other managers
 
-		case (((uint32_t)'u'<<24u) | ((uint32_t)'s'<<16u) | ((uint32_t)'b'<<8u) | 0x0u):
-		case (((uint32_t)'b'<<24u) | ((uint32_t)'l'<<16u) | ((uint32_t)'t'<<8u) | 0x0u):
+		case (KCDC0 & 0xFFFFFF00u):
 		default: {
 			while (true) {
 				size = 1u;
@@ -461,6 +463,7 @@ static	void	local_getChar(serialManager_t serialManager, char_t *c, sema_t *sema
 
 				kern_suspendProcess(2u);
 			}
+			break;
 		}
 	}
 }

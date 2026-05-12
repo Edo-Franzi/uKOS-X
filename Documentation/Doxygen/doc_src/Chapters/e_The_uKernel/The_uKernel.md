@@ -1744,7 +1744,7 @@ This modular organisation allows for a **lightweight, robust, and scalable kerne
 | kern_getPoolById                 | Get the memory pool by its identifier                     |
 |                                  |                                                           |
 | **Debug System Calls**           |                                                           |
-| kern_stopProcess                 | Stop a process (descheduled)                              |
+| kern_stopProcess                 | Stop a process (unscheduled)                              |
 | kern_reactivateProcess           | Reactivate the process                                    |
 |                                  |                                                           |
 | **SPrivilege System Calls**      |                                                           |

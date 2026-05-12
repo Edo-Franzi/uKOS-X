@@ -73,8 +73,8 @@
 #include	"esp_netif.h"
 #include	"nvs_flash.h"
 
-#undef	KUART_0
-#undef	KWITHOUT_LOGS
+#define	KUART_0
+#define	KWITHOUT_LOGS
 #undef	KSET_HARD_SSID
 
 // Wi-Fi Station configuration
@@ -187,7 +187,7 @@ void	app_main(void) {
 
 	#if (!defined(KSET_HARD_SSID))
 	if (local_waitWifiConfig() == false) {
-		local_writeUartTag("Configuration error");
+		local_writeUartTag("Configuration error\n");
 		return;
 	}
 	#endif
@@ -195,7 +195,7 @@ void	app_main(void) {
 	if (local_initWifiSta() == false) {
 
 		#if (!defined(KSET_HARD_SSID))
-		local_writeUartTag("No connection");
+		local_writeUartTag("No connection\n");
 		#endif
 
 		return;
