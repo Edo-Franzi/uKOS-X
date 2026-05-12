@@ -228,7 +228,7 @@ int32_t	kern_setNewTimeout(proc_t *handle, uint32_t timeout) {
  *
  */
 int32_t	kern_resumeProcessWithTimeout(proc_t *handle) {
-	uint32_t	core
+	uint32_t	core;
 
 	DEBUG_KERN_TRACE("entry: ");
 	core = GET_RUNNING_CORE;
