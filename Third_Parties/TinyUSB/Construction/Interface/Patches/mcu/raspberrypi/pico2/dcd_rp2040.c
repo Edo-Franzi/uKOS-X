@@ -405,7 +405,12 @@ bool dcd_deinit(uint8_t rhport) {
   (void) rhport;
 
   reset_non_control_endpoints();
+
+#if (defined(MODE_UKOS_S))
+
+#else
   irq_remove_handler(USBCTRL_IRQ, dcd_rp2040_irq);
+#endif
 
   // reset usb hardware into initial state
   reset_block(RESETS_RESET_USBCTRL_BITS);

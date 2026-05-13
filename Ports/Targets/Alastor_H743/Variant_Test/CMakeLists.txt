@@ -162,12 +162,12 @@ add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/spi1/spi1.c CONFIG_MA
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/switch/switch.c CONFIG_MAN_SWITCH_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/temperature/temperature.c CONFIG_MAN_TEMPERATURE_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/watchdog/watchdog.c CONFIG_MAN_WATCHDOG_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/ble0/ble0.c CONFIG_MAN_BLE0_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt1/urt1.c CONFIG_MAN_URT1_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt2/urt2.c CONFIG_MAN_URT2_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt3/urt3.c CONFIG_MAN_URT3_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/wfi0/wfi0.c CONFIG_MAN_WFI0_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/storage/storage.c CONFIG_MAN_STORAGE_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/sdcard/sdcard.c CONFIG_MAN_SDCARD_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/serialFlash/serialFlash.c CONFIG_MAN_SERIAL_FLASH_S)
@@ -182,11 +182,11 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_peripherals/spi1/stub_spi1_sspi4.c
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
+	${PATH_BASE}/Lib_serials/ble0/stub_ble0_urt2.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart2.c
 	${PATH_BASE}/Lib_serials/urt1/stub_urt1_usart3.c
 	${PATH_BASE}/Lib_serials/urt2/stub_urt2_usart1.c
 	${PATH_BASE}/Lib_serials/urt3/stub_urt3_uart4.c
-	${PATH_BASE}/Lib_serials/wfi0/stub_wfi0_usart1_esp32_wifi_AP.c
 	${PATH_BASE}/Lib_storages/sdcard/stub_sdcard.c
 	${PATH_BASE}/Lib_storages/serialFlash/stub_serialFlash.c
 	${PATH_VARI}/Lib_peripherals/imager/stub_imager_mt9v03x.c

@@ -1,4 +1,10 @@
-pico2:
+pico2m33:
+  - dependency: null
+    soc: rp2350
+    profiles:
+      - cdc_cdc
+
+pico2riscv:
   - dependency: null
     soc: rp2350
     profiles:

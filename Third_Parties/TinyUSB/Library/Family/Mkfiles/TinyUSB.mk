@@ -67,6 +67,7 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_kernels/kern
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_kernels/kern/private
 
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/OSAL
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src
@@ -124,6 +125,10 @@ PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/pico
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/hardware_structs/include
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/hardware_regs/include
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/bazel/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
 
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime_init/include
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime/include
@@ -160,7 +165,7 @@ ifeq ($(PROVIDER), raspberrypi)
 SRC					+= $(shell find $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/pio_usb -name '*.c')
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/hcd_rp2040.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040/rp2040_usb.c
-SRC					+= $(PATH_TINYUSB)/Construction/Interface/Patches/mcu/raspberrypi/$(FAMILY)/dcd_rp2040.c
+SRC					+= $(PATH_TINYUSB)/Construction/Interface/Patches/mcu/raspberrypi/pico2/dcd_rp2040.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/claim.c
 SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_sync/critical_section.c
 SRC_A				+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S
@@ -173,6 +178,16 @@ SRC					+= $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
 CPPFLAGS			+= $(PATH_INCLUDES)
 ASFLAGS				+= $(CPUFLAGS) -x assembler-with-cpp
 CFLAGS				+= -D__not_in_flash\(x\)=
+
+# The pico-sdk RISC-V headers (e.g. hardware/riscv.h) use the GNU `asm`
+# keyword and statement expressions, so RISC-V builds need gnu23 instead
+# of strict c23. Hazard3 IRQ array CSRs are accessed via inline asm and
+# work on real silicon, but mainline GCC does not accept
+# '-march=...xh3irq', so define the macro manually.
+ifeq ($(CORE), RV32IMAC)
+STANDARD			:= -std=gnu23
+CFLAGS				+= -D__hazard3_extension_xh3irq=1
+endif
 endif
 
 vpath %.S $(sort $(dir $(SRC_A)))

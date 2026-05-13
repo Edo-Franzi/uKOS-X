@@ -50,8 +50,8 @@ SHELL			=  /bin/sh
 ifndef PATH_UKOS_X_PACKAGE
     $(error PATH_UKOS_X_PACKAGE is not defined)
 endif
-ifndef PATH_GCC_ARM
-    $(error PATH_GCC_ARM is not defined)
+ifndef PATH_GCC_RVXX
+    $(error PATH_GCC_RVXX is not defined)
 endif
 
 ifeq ($(origin CC), default)
@@ -73,8 +73,8 @@ PATH_TINYUSB		=  $(PATH_UKOS)/Third_Parties/TinyUSB
 # Target & Infrastructure
 
 PROVIDER			=  raspberrypi
-FAMILY				=  pico2
-CORE				=  CORTEX_M33
+FAMILY				=  pico2riscv
+CORE				=  RV32IMAC
 SOC					=  rp2350
 TINYUSB_FS			=  libTinyUSB_FS.a
 TINYUSB_HS			=  libTinyUSB_HS.a
@@ -83,11 +83,11 @@ PROFILE				=  cdc_cdc
 STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
 
-PREFIX				?= arm-none-eabi-
-PATH_COMPILER		=  $(PATH_GCC_ARM)
-FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m33 -mthumb
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -D$(SOC)_S -D$(CORE)_S
+PREFIX				?= riscv64-unknown-elf-
+PATH_COMPILER		=  $(PATH_GCC_RVXX)
+FLAGS_FP			=
+CPU_SPEC			=  -march=rv32imac_zicsr_zifencei -mabi=ilp32
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -D$(SOC)_S -D$(CORE)_S -DPICO_RISCV=1
 
 # The included makefiles
 

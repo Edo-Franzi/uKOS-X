@@ -78,7 +78,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # --------
 
 readonly package=0.20.0
-readonly hash=4e64f3e
+readonly hash=e1cb1b5
 
 export PATH="${PATH_GCC_ARM}/bin":"${PATH}"
 printf '%b%s%b\n' "${YELLOW}" "$(arm-none-eabi-gcc --version)" "${NC}"
@@ -110,6 +110,10 @@ cd pico-sdk
 git submodule update --init --recursive
 
 cd ../../..
+
+# Patch the package (for pico3 hazard3)
+echo "$PWD"
+patch -p1 < ./Construction/Interface/Patches/mcu/raspberrypi/pico2/hazard3.patch
 
 # Parse core.yaml file using yq
 parse_core_yaml() {

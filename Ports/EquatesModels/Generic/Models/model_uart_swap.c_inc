@@ -1,6 +1,6 @@
 /*
-; stub_ble0_urt1.
-; ===============
+; model_uart_swap.
+; ================
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -10,7 +10,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		stub for the connection of the "ble0" manager to the "urt1" manager.
+; Goal:		Model for the connection of the "DEVICE_IN" manager to the "DEVICE_OUT" manager.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,9 +47,82 @@
 ;------------------------------------------------------------------------
 */
 
-#include	"uKOS.h"
+#define	CAT_(a,b)	a##b
+#define	CAT(a,b)	CAT_(a,b)
 
-#define DEVICE_IN   ble0
-#define DEVICE_OUT  urt1
+/*
+ * \brief stub_DEVICE_OUT_reserve
+ *
+ * - Reserve the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _reserve))(reserveMode_t reserveMode, uint32_t timeout) {
 
-#include	"model_uart_swap.c_inc"
+	return(CAT(DEVICE_OUT, _reserve)(reserveMode, timeout));
+}
+
+/*
+ * \brief stub_DEVICE_OUT_release
+ *
+ * - Release the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _release))(reserveMode_t reserveMode) {
+
+	return(CAT(DEVICE_OUT, _release)(reserveMode));
+}
+
+/*
+ * \brief stub_DEVICE_OUT_configure
+ *
+ * - Configure the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _configure))(const urtxCnf_t *configure) {
+
+	return(CAT(DEVICE_OUT, _configure)(configure));
+}
+
+/*
+ * \brief stub_DEVICE_OUT_write
+ *
+ * - Write a buffer to the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _write))(const uint8_t *buffer, uint32_t size) {
+
+	return(CAT(DEVICE_OUT, _write)(buffer, size));
+}
+
+/*
+ * \brief stub_DEVICE_OUT_read
+ *
+ * - Read a buffer from the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _read))(uint8_t *buffer, uint32_t *size) {
+
+	return(CAT(DEVICE_OUT, _read)(buffer, size));
+}
+
+/*
+ * \brief stub_DEVICE_OUT_getIdSemaphore
+ *
+ * - Get the semaphore identifier of the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _getIdSemaphore))(uint8_t semaphore, char_t **identifier) {
+
+	return(CAT(DEVICE_OUT, _getIdSemaphore)(semaphore, identifier));
+}
+
+/*
+ * \brief stub_DEVICE_OUT_flush
+ *
+ * - Flush the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _flush))(void) {
+
+	return(CAT(DEVICE_OUT, _flush)());
+}

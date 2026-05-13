@@ -154,6 +154,7 @@ add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/switch/switch.c CONFI
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt1/urt1.c CONFIG_MAN_URT1_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/wfi0/wfi0.c CONFIG_MAN_WFI0_S)
 list(APPEND LIBX_P
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
 	${PATH_BASE}/Lib_generics/asmp/stub_asmp_msip.c
@@ -166,6 +167,7 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_peripherals/tft0/tft0.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_uart.c
 	${PATH_BASE}/Lib_serials/urt1/stub_urt1_uart.c
+	${PATH_BASE}/Lib_serials/wfi0/stub_wfi0_urt1.c
 )
 add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags)

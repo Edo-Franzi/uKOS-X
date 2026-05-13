@@ -56,11 +56,11 @@ PATH_OSYS			?= $(PATH_UKOS)/OS
 # M3.5.0/2	Start summer day in March (3), 5th occurance (5) of Sunday (0) @ 2am (/2)
 # M10.5.0/2	End summer day in October (10), 5th occurance (5) of Sunday (0) @ 2am (/2)
 #
-TZ_UTC_SHIFT	?= "CET-1"
-FLAGS_USER		+= -DTZ_UTC_SHIFT=\"$(TZ_UTC_SHIFT)\"
+TZ_UTC_SHIFT		?= "CET-1"
+FLAGS_USER			+= -DTZ_UTC_SHIFT=\"$(TZ_UTC_SHIFT)\"
 
-TZ_DST_SPEC		?= "CEST,M3.5.0/2,M10.5.0/2"
-FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
+TZ_DST_SPEC			?= "CEST,M3.5.0/2,M10.5.0/2"
+FLAGS_USER			+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 
 # Project paths
 
@@ -84,7 +84,7 @@ MICROPYTHON				=  libMicroPython
 PATH_LIB_TINYUSB		=  $(PATH_UKOS)/Third_Parties/TinyUSB/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 TINYUSB					=  libTinyUSB_$(SPEED)
 PROVIDER				=  raspberrypi
-FAMILY					=  pico2
+FAMILY					=  pico2m33
 SPEED					=  FS
 PROFILE					=  cdc_cdc
 
