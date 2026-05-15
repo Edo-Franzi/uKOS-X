@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; stub_urt0_usart1.
+; =================
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the connection of the "urt0" manager to the usart1 device.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +47,64 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+// Connect the physical device to the logical manager
+// --------------------------------------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#define	USART					USART1
+#define	USART_VECTOR_NUMBER		USART1_C0_IRQn
+#define	USART_FREQUENCY			KFREQUENCY_APB2
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#define	model_usart_init		stub_urt0_init
+#define	model_usart_configure	stub_urt0_configure
+#define	model_usart_write		stub_urt0_write
+#define	model_usart_read		stub_urt0_read
+#define	model_usart_flush		stub_urt0_flush
 
-// IWYU pragma: end_exports
+#define	KUSART_SEMA_RX_S
+#define	KUSART_SEMA_TX_S
+#define	KUSART_SEMAPHORE_RX		KURT0_SEMAPHORE_RX
+#define	KUSART_SEMAPHORE_TX		KURT0_SEMAPHORE_TX
 
-// uKOS-X main constants
-// -----------------------
+#define	KUSART_SZ_TX_BUF		128u
+#define	KUSART_SZ_RX_BUF		128u
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+// Model callbacks
+// ---------------
+
+/*
+ * \brief cb_enable
+ *
+ * - Enable the device (clock)
+ *
+ */
+static	void	cb_enable(void) {
+
+	RCC->APB1LENR |= RCC_APB1LENR_USART3EN;
+}
+
+/*
+ * \brief cb_CTSCheck
+ *
+ * - Verify the CTS state
+ *   If CTS =  1, then disable the uart TX interruptions
+ *
+ */
+static	bool	cb_CTSCheck(void) {
+
+	return (true);
+}
+
+/*
+ * \brief cb_init
+ *
+ * - Specific initialisations          __
+ *   i.e the hardware CTS interruption   \__
+ *
+ */
+static	void	cb_init(void) {
+
+}
+
+#include	"model_usart.c_inc"

@@ -749,38 +749,41 @@ static	void	local_FMC_Configuration(void) {
 
 	SDRAM_COMMAND_BANK_CTB1(0x0u, 0u,      0u    );		// Normal mode
 
-// FMC bank 5-6 & CE1 configuration in the synchronous mode
+// FMC bank 5-6 & CE0 configuration in the synchronous mode
 // - SDRAM is a AS4C4M16SA-6 speed grade, connected to bank 1 (0x70000000).
+//
+// For SDRAM bank 1, the active configuration is in SDCR[0] / SDTR[0].
+// Some bits in SDCR[1] and SDTR[1] are don't care for bank 1,
+// but keeping them at 0 avoids unwanted side effects.
 
 	FMC->SDCR1 = (1u * FMC_SDCR1_RPIPE_0)				// 1 clock delay after CAS latency
 			   | FMC_SDCR1_RBURST						// Read as bursts
-			   | (3u * FMC_SDCR1_SDCLK_0)				// SDRAM runs @ 66-MHz
+			   | (2u * FMC_SDCR1_SDCLK_0)				// SDRAM runs @ 120-MHz
 			   | (3u * FMC_SDCR1_CAS_0)					// CAS latency 3 cycles
 			   | FMC_SDCR1_NB							// 4 internal banks
 			   | (1u * FMC_SDCR1_MWID_0)				// 16-bit data bus
-			   | (1u * FMC_SDCR1_NR_0);					// 12-bit row address
+			   | (1u * FMC_SDCR1_NR_0)					// 12-bit row address
+			   | (0u * FMC_SDCR1_NC_0);					// 8-bit column address
 
-	FMC->SDCR2 = (1u * FMC_SDCR2_RPIPE_0)				// 1 clock delay after CAS latency
-			   | FMC_SDCR2_RBURST;						// Read as bursts
+	FMC->SDCR2 = 0u;
 
-// One SDRAM clock cycle is 1/66-MHz = 15-ns
+// One SDRAM clock cycle is 1/120-MHz = 8.3-ns
 
-	FMC->SDTR1 = ((2u - 1u) * FMC_SDTR1_TRCD_0)			// 2 cycle TRCD (30.x-ns > 18-ns)
-			   | ((2u - 1u) * FMC_SDTR1_TRP_0)			// 2 cycle TRP (30.x-ns > 18-ns)
-			   | ((1u - 1u) * FMC_SDTR1_TWR_0)			// 1 cycle TWR (>= (TRAS - TRCD))
-			   | ((4u - 1u) * FMC_SDTR1_TRC_0)			// 4 cycle TRC (60.x-ns > 60-ns)
-			   | ((3u - 1u) * FMC_SDTR1_TRAS_0)			// 3 cycle TRAS (45.x-ns > 42-ns)
-			   | ((5u - 1u) * FMC_SDTR1_TXSR_0)			// 5 cycle TXSR (75.x-ns > 61.5-ns)
+	FMC->SDTR1 = ((3u - 1u) * FMC_SDTR1_TRCD_0)			// 3 cycle TRCD (24.9-ns > 18-ns)
+			   | ((3u - 1u) * FMC_SDTR1_TRP_0)			// 3 cycle TRP (24.9-ns > 18-ns)
+			   | ((3u - 1u) * FMC_SDTR1_TWR_0)			// 3 cycle TWR (>= (TRAS - TRCD)
+			   | ((8u - 1u) * FMC_SDTR1_TRC_0)			// 8 cycle TRC (66.4-ns > 60-ns)
+			   | ((6u - 1u) * FMC_SDTR1_TRAS_0)			// 6 cycle TRAS (49.8-ns > 42-ns)
+			   | ((8u - 1u) * FMC_SDTR1_TXSR_0)			// 8 cycle TXSR (66.4-ns > 61.5-ns)
 			   | ((2u - 1u) * FMC_SDTR1_TMRD_0);		// 2 cycle TMRD
 
-	FMC->SDTR2 = ((2u - 1u) * FMC_SDTR2_TRP_0)			// 2 cycle TRP (30.x-ns > 18-ns)
-			   | ((4u - 1u) * FMC_SDTR2_TRC_0);			// 4 cycle TRC (60.x-ns > 60-ns)
+	FMC->SDTR2 = 0u;
 
 // SDRam mode register
 // Mode: 11 10 09 08   07 06 05 04   03 02 01 00
 //        -  -  1  0    0  0  1  1    0  0  0  0
 //
-// M9      = 1		Single location access
+// M9      = 1		Write node
 // M8 - M7 = 00		Standard operation
 // M6 - M4 = 011	CAS latency 3
 // M3	   = 0		Sequential
@@ -794,9 +797,9 @@ static	void	local_FMC_Configuration(void) {
 	SDRAM_COMMAND_BANK_CTB1(0x4u, 0x230u,  0u      );	// Command Load Mode Register (CAS latency = 3, burst len = 1 (only Read))
 
 // 64-ms/4096 = 15.625-us
-// 15.625-us * 66-MHz = 1031-20 = 1011
+// 15.625-us * 120-MHz = 1875-20 = 1855
 
-	FMC->SDRTR = (1011u * FMC_SDRTR_COUNT_0);			// Refresh timer count
+	FMC->SDRTR = (1855u * FMC_SDRTR_COUNT_0);			// Refresh timer count
 	FMC->BCR1 |= FMC_BCR1_FMCEN;
 }
 

@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; stub_i2c0_si2c2.
+; ================
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the connection of the "i2c0" manager to the si2c2 device.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +47,33 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+// Connect the physical device to the logical manager
+// --------------------------------------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#define	UNIT					"I2C2"
+#define	I2C						I2C2
+#define	I2C_VECTOR_NUMBER		I2C2_EV_C0_IRQn
+#define	I2C_FREQUENCY			KFREQUENCY_APB1
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#define	model_i2c_init			stub_i2c0_init
+#define	model_i2c_configure		stub_i2c0_configure
+#define	model_i2c_write			stub_i2c0_write
+#define	model_i2c_read			stub_i2c0_read
 
-// IWYU pragma: end_exports
+// Model callbacks
+// ---------------
 
-// uKOS-X main constants
-// -----------------------
+/*
+ * \brief cb_enable
+ *
+ * - Enable the device (clock)
+ *
+ */
+static	void	cb_enable(void) {
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+	RCC->APB1LENR |= RCC_APB1LENR_I2C2EN;
+}
+
+#include	"model_i2c.c_inc"

@@ -85,6 +85,8 @@ static	bool	vKillRequest[KNB_CORES] = MCSET(false);
 		void	TinyUSB_video_getImageSize(uint32_t *w, uint32_t *h);
 		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h, void (*callBack)(const void *argument), const void *argument);
 static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h);
+static	void	local_initialiseReal(uint8_t *output, uint32_t w, uint32_t h);
+static	void	local_scaleImage(volatile const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_convertToYUY2(volatile const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_transfer(void);
 static	void	aProcess_acquisition(const void *argument);
@@ -162,7 +164,7 @@ int32_t	viewer_uvc0_clean(uint32_t argc, const char_t *argv[]) {
 static	void	aProcess_acquisition(const void *argument) {
 				uint32_t		core;
 				uint32_t		w, h;
-				uint8_t			*imageYUY2;
+				uint8_t			*imageYUY2, *imageReal;
 				imagerCnf_t		configureIMAGER;
 	const		bool			*killRequest;
 	volatile	void			*imageOld, *imageXX = nullptr;
@@ -175,8 +177,9 @@ static	void	aProcess_acquisition(const void *argument) {
 	TinyUSB_video_init();
 	TinyUSB_video_getImageSize(&w, &h);
 
-	imageYUY2 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "viewer_uvc0_imager");
-	if (imageYUY2 == nullptr) {
+	imageYUY2 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "viewer_uvc0_YUY2");
+	imageReal = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h),		"viewer_uvc0_Real");
+	if ((imageYUY2 == nullptr) || (imageReal == nullptr)) {
 		LOG(KFATAL_USER, "viewer: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -190,8 +193,8 @@ static	void	aProcess_acquisition(const void *argument) {
 	configureIMAGER.oPixMode  = KIMAGER_PIX_8_BITS;
 	configureIMAGER.oStRows   = 0u;
 	configureIMAGER.oStCols   = 0u;
-	configureIMAGER.oNbRows	  = (uint16_t)h;
-	configureIMAGER.oNbCols   = (uint16_t)w;
+	configureIMAGER.oNbRows	  = (uint16_t)KNB_ROWS;
+	configureIMAGER.oNbCols   = (uint16_t)KNB_COLS;
 	configureIMAGER.oKernSync = 0u;
 	configureIMAGER.oHSync    = nullptr;
 	configureIMAGER.oFrame    = nullptr;
@@ -203,6 +206,7 @@ static	void	aProcess_acquisition(const void *argument) {
 	}
 
 	local_initialiseYUY2(imageYUY2, w, h);
+	local_initialiseReal(imageReal, w, h);
 
 // At the power-on the imager starts to send images.
 // Just after the SNAP initialisation it is necessary waiting for the end of the
@@ -222,7 +226,8 @@ static	void	aProcess_acquisition(const void *argument) {
 		if (imageXX != imageOld) {
 			imageOld = imageXX;
 
-			local_convertToYUY2((volatile const uint8_t *)imageXX, imageYUY2, w, h);
+			local_scaleImage((volatile const uint8_t *)imageXX, imageReal, w, h);
+			local_convertToYUY2((volatile const uint8_t *)imageReal, imageYUY2, w, h);
 			TinyUSB_video_sendImage(imageYUY2, w, h, nullptr, nullptr);
 		}
 		imager_acquisition();
@@ -272,6 +277,39 @@ static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h) {
 	for (i = 0u; i < (w * h); i += 2u) {
 		output[(i * 2u) + 1u] = 128u;
 		output[(i * 2u) + 3u] = 128u;
+	}
+}
+
+/*
+ * \brief local_initialiseReal
+ *
+ * - Prepare the Real image with an initial value
+ *
+ */
+static	void	local_initialiseReal(uint8_t *output, uint32_t w, uint32_t h) {
+
+	memset(output, 0u, (size_t)(w * h));
+}
+
+/*
+ * \brief local_scaleImage
+ *
+ * - Scale an image of KNB_ROWS x KNB_COLS to an image of h x w
+ *	 w has to be > KNB_COLS
+ *	 h has to be > KNB_ROWS
+ */
+static	void	local_scaleImage(volatile const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h) {
+	uint32_t	i, j;
+
+	(void)h;
+
+	for (i = 0u; i < KNB_ROWS; i++) {
+		for (j = 0u; j < KNB_COLS; j++) {
+			output[j] = input[j];
+		}
+
+		output = (uint8_t *)((uintptr_t)output + (uintptr_t)w);
+		input  = (uint8_t *)((uintptr_t)input  + (uintptr_t)KNB_COLS);
 	}
 }
 

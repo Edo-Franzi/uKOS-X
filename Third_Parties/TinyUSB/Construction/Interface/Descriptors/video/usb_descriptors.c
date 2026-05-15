@@ -499,7 +499,7 @@ char_t	const	*string_desc_arr [] = {
 	(const char[]) { 0x09, 0x04 },	// 0: is supported language is English (0x0409)
 	"TinyUSB",						// 1: Manufacturer
 	"uKOS-X Device",				// 2: Product
-	nullptr,							// 3: Serials will use unique ID if possible
+	nullptr,						// 3: Serials will use unique ID if possible
 	"uKOS-X Control",				// 4: UVC Interface
 	"UVC Streaming",				// 5: UVC Interface
 };

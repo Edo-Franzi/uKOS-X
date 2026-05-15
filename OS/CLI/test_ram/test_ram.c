@@ -93,7 +93,7 @@ enum {
 		KERR_032
 };
 
-#define	KSTART		0u
+#define	KSTART		((uintptr_t)linker_lnHeap)
 #define	KEND		((uintptr_t)linker_lnEXRAM)
 
 // Prototypes

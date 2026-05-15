@@ -1,16 +1,16 @@
 /*
-; link_p.
-; =======
+; link_pu.
+; ========
 
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
 ; Modifs:
 ;
 ; Project:	uKOS-X
 ; Goal:		Linker description for the uKOS-X system.
-;			Privileged only support
+;			Privileged / user support
 ;
 ;                       CODE
 ; linker_stTEXT			+-----------------+
@@ -21,15 +21,21 @@
 ; linker_enRODATA		|                 |
 ;						+-----------------+
 ; linker_stSignature	|				  |             DATA
-;						+-----------------+ ........... +-----------------+ linker_stDATA
-; linker_stINDATA		|                 |				|                 |
-;						| .data           |				| .data           |
-;						|                 |				|                 | linker_enDATA
+;						+-----------------+ ........... +-----------------+ linker_stDATA_p
+; linker_stINDATA_p		|                 |				|                 |
+;						| .data_p         |				| .data_p         |
+;						|                 |				|                 | linker_enDATA_p
+; linker_stINDATA_u		|                 |				|                 | linker_stDATA_u
+;						| .data_u         |				| .data_u         |
+;						|                 |				|                 | linker_enDATA_u
 ;						+-----------------+ ........... +-----------------+
-;														|                 | linker_stBSS
-;														| .bss            |
+;														|                 | linker_stBSS_p
+;														| .bss_p          |
 ;														| COMMON          |
-;														|                 | linker_enBSS
+;														|                 | linker_enBSS_p
+;														|                 | linker_stBSS_u
+;														| .bss_u          |
+;														|                 | linker_enBSS_u
 ;														+-----------------+
 ;
 ;   (c) 2025-2026, Edo. Franzi
@@ -73,12 +79,16 @@ INCLUDE		STM32H743xI.ld
 
 /* Mapping:													*/
 /*															*/
-/* RAM1:	stPrgmData			0x30000000					*/
+/* RAM1:	stPrgmData_u		0x30000000					*/
 /*			(128 + 128 + 32)K								*/
+/* RAM4:	stPrgmData_p		0x38000000					*/
+/*			64K												*/
 /* EXT:		stHeap				0x70000000					*/
-/*			32768K											*/
-/*			stUMemo				0x72000000					*/
-/*			32768K											*/
+/*			8192K											*/
+/*			stUMemo				0x70800000					*/
+/*			8192K											*/
+/*			stFrameBuffer		0x71000000					*/
+/*			16384K											*/
 
 /* IMPORTANT:												*/
 /* all the stacks have to be maintained aligned				*/
@@ -91,17 +101,20 @@ linker_sizeStackFirst_C0	= (2K);													/* Length of the First stack  					
 /* External memory, User (download application) and shared	*/
 
 linker_stEXRAM				= 0x70000000;											/* 0x70000000: EXRAM, start of the external memory			*/
-linker_lnEXRAM				= (65536K);												/* Length of the external memory	  						*/
+linker_lnEXRAM				= (32768K);												/* Length of the external memory	  						*/
 
-linker_stUMemo				= 0x72000000;											/* 0x72000000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (32768K);												/* Length of the user memory	  							*/
+linker_stFrameBuffer		= 0x71000000;											/* 0x71000000: FrameBuffer, start of the graphic memory 	*/
+linker_lnFrameBuffer		= (16384K);												/* Length of the graphic memory	  							*/
+
+linker_stUMemo				= 0x70800000;											/* 0x70800000: UMemo, start of the user memory 				*/
+linker_lnUMemo				= (8192K);												/* Length of the user memory	  							*/
 
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
 linker_stHeap				= 0x70000000;											/* 0x70000000: start of the heap							*/
-linker_lnHeap				= (32768K);												/* Length of the heap										*/
+linker_lnHeap				= (8192K);												/* Length of the heap										*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
@@ -109,8 +122,11 @@ linker_lnHeap				= (32768K);												/* Length of the heap										*/
 linker_stPrgmCode			= stm_stINTFLASH;										/* 0x08000000: PrgmCode, start of the Flash					*/
 linker_lnPrgmCode			= stm_lnINTFLASH;										/* Length of the the Flash									*/
 
-linker_stPrgmData			= stm_stSRAM1;											/* 0x30000000: PrgmData, start of the RAM					*/
-linker_lnPrgmData			= stm_lnSRAM123;										/* Length of the RAM										*/
+linker_stPrgmData_p			= stm_stSRAM4;											/* 0x38000000: PrgmData_p, start of the RAM					*/
+linker_lnPrgmData_p			= (64K);												/* Length_p of the RAM										*/
+
+linker_stPrgmData_u			= stm_stSRAM1;											/* 0x30000000: PrgmData_p, start of the RAM					*/
+linker_lnPrgmData_u			= stm_lnSRAM123;										/* Length of the RAM										*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v7 MPU regions				*/
@@ -125,15 +141,25 @@ linker_SZ_RAM_INT_0			= 18;													/* 512-K = 2^(SZ + 1), SZ = log2(512-K) 
 linker_ST_RAM_INT_1			= stm_stSRAM1;											/* 0x30000000: Privileged/User RAM							*/
 linker_SZ_RAM_INT_1			= 18;													/* 512-K = 2^(SZ + 1), SZ = log2(512-K) - 1					*/
 
-linker_ST_RAM_INT_2			= stm_stSRAM4;											/* 0x38000000: Privileged/User RAM							*/
-linker_SZ_RAM_INT_2			= 15;													/* 64-K = 2^(SZ + 1), SZ = log2(64-K) - 1					*/
+linker_ST_RAM_INT_2_OS		= stm_stSRAM4;											/* 0x38000000: Privileged RAM								*/
+linker_SZ_RAM_INT_2_OS		= 15;													/* 64-K = 2^(SZ + 1), SZ = log2(64-K) - 1					*/
 
 linker_ST_RAM_EXT_0			= linker_stEXRAM;										/* 0x70000000: Privileged/User RAM							*/
-linker_SZ_RAM_EXT_0			= 25;													/* 64-M = 2^(SZ + 1), SZ = log2(64-M) - 1					*/
+linker_SZ_RAM_EXT_0			= 23;													/* 16-M = 2^(SZ + 1), SZ = log2(16-M) - 1					*/
+
+linker_ST_RAM_EXT_1			= linker_stFrameBuffer;									/* 0x71000000: Privileged/User RAM (no cache)				*/
+linker_SZ_RAM_EXT_1			= 23;													/* 16-M = 2^(SZ + 1), SZ = log2(16-M) - 1					*/
+
+linker_ST_PERIPH_SOC		= stm_stPERIPH;											/* 0x40000000: Privileged PERIPHERALS						*/
+linker_SZ_PERIPH_SOC		= 28;													/* 512-M = 2^(SZ + 1), SZ = log2(512-M) - 1					*/
+
+linker_ST_PERIPH_CORE		= stm_stCORE;											/* 0xE0000000: Privileged PERIPHERALS						*/
+linker_SZ_PERIPH_CORE		= 27;													/* 256-M = 2^(SZ + 1), SZ = log2(256-M) - 1					*/
 
 MEMORY {
-	prgm_code (rx)	: ORIGIN = linker_stPrgmCode, LENGTH = linker_lnPrgmCode
-	prgm_data (rwx)	: ORIGIN = linker_stPrgmData, LENGTH = linker_lnPrgmData
+	prgm_code (rx)		: ORIGIN = linker_stPrgmCode,   LENGTH = linker_lnPrgmCode
+	prgm_data_p (rwx)	: ORIGIN = linker_stPrgmData_p, LENGTH = linker_lnPrgmData_p
+	prgm_data_u (rwx)	: ORIGIN = linker_stPrgmData_u, LENGTH = linker_lnPrgmData_u
 }
 
-INCLUDE		system_p.ld
+INCLUDE		system_pu.ld

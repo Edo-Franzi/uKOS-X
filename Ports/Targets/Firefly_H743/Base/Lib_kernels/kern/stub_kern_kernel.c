@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; stub_kern_kernel.
+; =================
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the connection of the "kern" manager to the uKernel device.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +47,22 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+// Connect the physical device to the logical manager
+// --------------------------------------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#define	model_kernel_init					stub_kern_init
+#define	model_kernel_runKernel				stub_kern_runKernel
+#define	model_kernel_setLowPower			stub_kern_setLowPower
+#define	model_kernel_setPreciseSignal		stub_kern_setPreciseSignal
+#define	model_kernel_readTickCount			stub_kern_readTickCount
+#define	model_kernel_newProcessTimeout		stub_kern_newProcessTimeout
+#define	model_kernel_stopProcessTimeout		stub_kern_stopProcessTimeout
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#define	KFREQUENCY_T2						KFREQUENCY_TIM
+#define	KFREQUENCY_T3						KFREQUENCY_TIM
+#define	KFREQUENCY_T4						KFREQUENCY_TIM
+#define	KFREQUENCY_T5						KFREQUENCY_TIM
 
-// IWYU pragma: end_exports
-
-// uKOS-X main constants
-// -----------------------
-
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#include	"model_kernel_tickless_tim_2_3_4_5_svc.c_inc"

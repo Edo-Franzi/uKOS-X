@@ -498,7 +498,7 @@ static	int32_t	local_confImag(const imagerCnf_t *configure) {
 
 // Configure the imager
 
-	status = cb_configure(configure); if (status != KERR_IMAGER_NOERR) { return (status); }
+	status = cb_configure(configure); if (status != KERR_IMAGER_NOERR) { dprintf(KSYST, "OK3\n"); return (status); }
 
 // The semaphore mode
 

@@ -1,16 +1,17 @@
 /*
-; uKOS.
-; =====
+; stub_TinyUSB.
+; =============
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the "TinyUSB" library.
+;			Multiple profiles
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +48,79 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+// Save the GCC diagnostic
+//
+#pragma GCC diagnostic	push
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+// Ignore the GCC diagnostic
+//
+#pragma GCC diagnostic	ignored	"-Wpedantic"
+#include	"tusb.h"
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+// Restore the GCC diagnostic
+//
+#pragma GCC	diagnostic	pop
 
-// IWYU pragma: end_exports
+#if (CFG_TUD_CDC > 0)
+#include	"TinyUSB/Construction/Interface/Models/model_TinyUSB_cdc.c_inc"
+#endif
 
-// uKOS-X main constants
-// -----------------------
+#if (CFG_TUD_MSC > 0)
+#include	"TinyUSB/Construction/Interface/Models/model_TinyUSB_msc.c_inc"
+#endif
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#if (CFG_TUD_VIDEO > 0)
+#include	"TinyUSB/Construction/Interface/Models/model_TinyUSB_video.c_inc"
+#endif
+
+uint32_t	SystemCoreClock = KFREQUENCY_CORE;
+
+// Prototypes
+
+static	void	local_OTG_FS_IRQHandler(void);
+
+// Init device stack on configured roothub port
+
+tusb_rhport_init_t deviceInit = {
+	.role  = TUSB_ROLE_DEVICE,
+	.speed = TUSB_SPEED_AUTO
+};
+
+/*
+ * \brief stub_TinyUSB_init
+ *
+ * - USB initialisation
+ *
+ */
+void	stub_TinyUSB_init(void) {
+
+	INTERRUPT_VECTOR(OTG_FS_C0_IRQn, local_OTG_FS_IRQHandler);
+	NVIC_SetPriority(OTG_FS_C0_IRQn, KINT_LEVEL_COMMUNICATIONS);
+
+	tusb_init(BOARD_TUD_RHPORT, &deviceInit);
+}
+
+/*
+ * \brief stub_TinyUSB_cyclic
+ *
+ * - USB management
+ *
+ */
+void	stub_TinyUSB_cyclic(void) {
+
+	tud_task();
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_OTG_FS_IRQHandler
+ *
+ */
+static	void	local_OTG_FS_IRQHandler(void) {
+
+	tud_int_handler(BOARD_TUD_RHPORT);
+}

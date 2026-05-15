@@ -78,7 +78,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # --------
 
 readonly package=0.20.0
-readonly hash=e1cb1b5
+readonly hash=7f146c9
 
 export PATH="${PATH_GCC_ARM}/bin":"${PATH}"
 printf '%b%s%b\n' "${YELLOW}" "$(arm-none-eabi-gcc --version)" "${NC}"
@@ -111,9 +111,21 @@ git submodule update --init --recursive
 
 cd ../../..
 
-# Patch the package (for pico3 hazard3)
-echo "$PWD"
-patch -p1 < ./Construction/Interface/Patches/mcu/raspberrypi/pico2/hazard3.patch
+# Patch the package (for pico2 hazard3)
+local patch_rc=0
+local patch_output
+patch_output=$(patch -p1 --forward < ./Construction/Interface/Patches/mcu/raspberrypi/pico2/hazard3.patch 2>&1) \
+    || patch_rc=$?
+
+if (( patch_rc == 0 )); then
+    print "  [patch] hazard3: applied."
+elif print "$patch_output" | grep -q "Reversed.*patch detected\|previously applied"; then
+    print "  [patch] hazard3: already applied, ignored."
+else
+    print "  [patch] hazard3: FAIL (rc=${patch_rc})" >&2
+    print "$patch_output" >&2
+    return 1
+fi
 
 # Parse core.yaml file using yq
 parse_core_yaml() {

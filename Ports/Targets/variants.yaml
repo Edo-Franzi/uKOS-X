@@ -26,6 +26,10 @@ Longan_Nano_F103:
   - name: Test
     core: riscv
 
+Firefly_H743:
+  - name: Test
+    core: arm
+
 # Multicores asymmetric
 Asmodee_H747:
   - name: Test_CM4

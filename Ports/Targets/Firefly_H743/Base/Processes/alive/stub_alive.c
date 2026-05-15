@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; stub_alive.
+; ===========
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		alive process; the system is working.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +47,39 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
+#include	"alive/alive.h"
 
-// IWYU pragma: begin_exports
+/*
+ * \brief stub_alive_process
+ *
+ * - Blink the LED alive
+ *
+ */
+[[noreturn]]
+void	stub_alive_process(const void *argument) {
+			uint8_t			led;
+			uint32_t		time[2];
+	const	bool			*killRequest;
+	const	aliveCnf_t		*configure;
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+	configure	= (const aliveCnf_t *)argument;
+	killRequest = configure->oKillRequest;
+	time[0]		= configure->oTime[0];
+	time[1]		= configure->oTime[1];
+	led			= configure->oLed;
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+	while (*killRequest == false) {
+		led_on(led);
+		kern_suspendProcess(time[0]);
+		led_off(led);
+		kern_suspendProcess(time[1]);
+	}
 
-// IWYU pragma: end_exports
+// Kill the process & the ressources
 
-// uKOS-X main constants
-// -----------------------
+	INTERRUPTION_OFF;
+	led_off(led);
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+	exit(EXIT_OS_SUCCESS);
+}

@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; board.
+; ======
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		Board mapping.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -49,46 +49,22 @@
 
 #pragma	once
 
-// IWYU pragma: begin_exports
+// System identifiers
+// ------------------
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#define	KCPU				"ARM-Cortex m7 H"
+#define	KCONTROLLER			"STM32H743"
+#define	KBOARD				"Firefly H743 (Variant_Test)"
+#define	KTARGET				"Firefly_H743"
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+// GPIO settings
+// -------------
 
-// IWYU pragma: end_exports
+#define KNB_LED				2u									// Number of LEDs
 
-// uKOS-X main constants
-// -----------------------
+// PORTs
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#define	BLED_0				0u									// PORT B 0, LED
+#define	BLED_1				1u									// PORT B 1, LED
+#define	BSW_0				0u									// PORT A 0, SW0 (WK_UP)
+#define	BSW_1				1u									// PORT A 1, SW1 (KEY0)

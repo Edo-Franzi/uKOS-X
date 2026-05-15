@@ -84,9 +84,9 @@ INCLUDE		STM32H743xI.ld
 /* RAM4:	stPrgmData_p		0x38000000					*/
 /*			64K												*/
 /* EXT:		stHeap				0x70000000					*/
-/*			2048K											*/
-/*			stUMemo				0x70200000					*/
-/*			6144K											*/
+/*			32768K											*/
+/*			stUMemo				0x72000000					*/
+/*			32768K											*/
 
 /* IMPORTANT:												*/
 /* all the stacks have to be maintained aligned				*/
@@ -99,17 +99,17 @@ linker_sizeStackFirst_C0	= (2K);													/* Length of the First stack  					
 /* External memory, User (download application) and shared	*/
 
 linker_stEXRAM				= 0x70000000;											/* 0x70000000: EXRAM, start of the external memory			*/
-linker_lnEXRAM				= (8192K);												/* Length of the external memory	  						*/
+linker_lnEXRAM				= (65536K);												/* Length of the external memory	  						*/
 
-linker_stUMemo				= 0x70200000;											/* 0x70200000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (6144K);												/* Length of the user memory	  							*/
+linker_stUMemo				= 0x72000000;											/* 0x72000000: UMemo, start of the user memory 				*/
+linker_lnUMemo				= (32768K);												/* Length of the user memory	  							*/
 
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
 linker_stHeap				= 0x70000000;											/* 0x70000000: start of the heap							*/
-linker_lnHeap				= (2048K);												/* Length of the heap										*/
+linker_lnHeap				= (32768K);												/* Length of the heap										*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
@@ -140,7 +140,7 @@ linker_ST_RAM_INT_2_OS		= stm_stSRAM4;											/* 0x38000000: Privileged RAM		
 linker_SZ_RAM_INT_2_OS		= 15;													/* 64-K = 2^(SZ + 1), SZ = log2(64-K) - 1					*/
 
 linker_ST_RAM_EXT_0			= linker_stEXRAM;										/* 0x70000000: Privileged/User RAM							*/
-linker_SZ_RAM_EXT_0			= 22;													/* 8-M = 2^(SZ + 1), SZ = log2(8-M) - 1						*/
+linker_SZ_RAM_EXT_0			= 25;													/* 64-M = 2^(SZ + 1), SZ = log2(64-M) - 1					*/
 
 linker_ST_PERIPH_SOC		= stm_stPERIPH;											/* 0x40000000: Privileged PERIPHERALS						*/
 linker_SZ_PERIPH_SOC		= 28;													/* 512-M = 2^(SZ + 1), SZ = log2(512-M) - 1					*/

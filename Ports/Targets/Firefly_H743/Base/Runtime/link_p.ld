@@ -5,7 +5,7 @@
 ; SPDX-License-Identifier: MIT
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
 ; Modifs:
 ;
 ; Project:	uKOS-X
@@ -76,9 +76,11 @@ INCLUDE		STM32H743xI.ld
 /* RAM1:	stPrgmData			0x30000000					*/
 /*			(128 + 128 + 32)K								*/
 /* EXT:		stHeap				0x70000000					*/
-/*			32768K											*/
-/*			stUMemo				0x72000000					*/
-/*			32768K											*/
+/*			8192K											*/
+/*			stUMemo				0x70800000					*/
+/*			8192K											*/
+/*			stFrameBuffer		0x71000000					*/
+/*			16384K											*/
 
 /* IMPORTANT:												*/
 /* all the stacks have to be maintained aligned				*/
@@ -91,17 +93,20 @@ linker_sizeStackFirst_C0	= (2K);													/* Length of the First stack  					
 /* External memory, User (download application) and shared	*/
 
 linker_stEXRAM				= 0x70000000;											/* 0x70000000: EXRAM, start of the external memory			*/
-linker_lnEXRAM				= (65536K);												/* Length of the external memory	  						*/
+linker_lnEXRAM				= (32768K);												/* Length of the external memory	  						*/
 
-linker_stUMemo				= 0x72000000;											/* 0x72000000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (32768K);												/* Length of the user memory	  							*/
+linker_stFrameBuffer		= 0x71000000;											/* 0x71000000: FrameBuffer, start of the graphic memory 	*/
+linker_lnFrameBuffer		= (16384K);												/* Length of the graphic memory	  							*/
+
+linker_stUMemo				= 0x70800000;											/* 0x70800000: UMemo, start of the user memory 				*/
+linker_lnUMemo				= (8192K);												/* Length of the user memory	  							*/
 
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
 linker_stHeap				= 0x70000000;											/* 0x70000000: start of the heap							*/
-linker_lnHeap				= (32768K);												/* Length of the heap										*/
+linker_lnHeap				= (8192K);												/* Length of the heap										*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
@@ -129,7 +134,7 @@ linker_ST_RAM_INT_2			= stm_stSRAM4;											/* 0x38000000: Privileged/User RA
 linker_SZ_RAM_INT_2			= 15;													/* 64-K = 2^(SZ + 1), SZ = log2(64-K) - 1					*/
 
 linker_ST_RAM_EXT_0			= linker_stEXRAM;										/* 0x70000000: Privileged/User RAM							*/
-linker_SZ_RAM_EXT_0			= 25;													/* 64-M = 2^(SZ + 1), SZ = log2(64-M) - 1					*/
+linker_SZ_RAM_EXT_0			= 24;													/* 32-M = 2^(SZ + 1), SZ = log2(32-M) - 1					*/
 
 MEMORY {
 	prgm_code (rx)	: ORIGIN = linker_stPrgmCode, LENGTH = linker_lnPrgmCode

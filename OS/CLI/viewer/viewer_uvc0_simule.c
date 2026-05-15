@@ -253,51 +253,36 @@ static	void	local_callBack(const void *argument) {
  *
  */
 static	void	local_prepareImage(uint8_t *image, uint32_t w, uint32_t h, uint32_t position) {
-			size_t		i, j, idx;
-			uint8_t		*p;
-	const	size_t		half = (size_t)w / 2u;
-	const	size_t		rowBytes = (size_t)w * 2u;
-	const	size_t		span = ((size_t)w) / (2u * 8u);
-	const	uint8_t		*end;
-
-
-// EBU color bars: https://stackoverflow.com/questions/6939422
-
+					uint32_t	i, x, y, bar;
+					uint32_t	shiftPairs;
+					uint32_t	pairsPerLine;
 	static	const	uint8_t		aColorBars[8][4] = {
+									{ 235u, 128u, 235u, 128u },		// White
+									{ 219u,  16u, 219u, 138u },		// Yellow
+									{ 188u, 154u, 188u,  16u },		// Cyan
+									{ 173u,  42u, 173u,  26u },		// Green
+									{  78u, 214u,  78u, 230u },		// Magenta
+									{  63u, 102u,  63u, 240u },		// Red
+									{  32u, 240u,  32u, 118u },		// Blue
+									{  16u, 128u,  16u, 128u },		// Black
+								};
 
-//		     Y,    U,    Y,    V
-		{ 235u, 128u, 235u, 128u },		// 100% White
-		{ 219u,  16u, 219u, 138u },		// Yellow
-		{ 188u, 154u, 188u,  16u },		// Cyan
-		{ 173u,  42u, 173u,  26u },		// Green
-		{  78u, 214u,  78u, 230u },		// Magenta
-		{  63u, 102u,  63u, 240u },		// Red
-		{  32u, 240u,  32u, 118u },		// Blue
-		{  16u, 128u,  16u, 128u },		// Black
-	};
-
-// Generate the 1st line
-
-	end = &image[rowBytes];
-	idx = (half - 1u) - ((size_t)position % half);
-	p = &image[idx * 4u];
-
-	for (i = 0u; i < 8u; i++) {
-		for (j = 0u; j < span; j++) {
-			memcpy(p, &aColorBars[i][0], 4u);
-			p += 4u;
-			if (p == end) {
-				p = image;
-			}
-		}
+	if ((w & 1u) != 0u) {
+		return;
 	}
 
-// Duplicate the 1st line to the others
+	pairsPerLine = w / 2u;
+	shiftPairs = position % pairsPerLine;
 
-	p = &image[rowBytes];
-	for (i = 1u; i < (size_t)h; i++) {
+	for (y = 0u; y < h; y++) {
+		uint8_t	*p = image + ((size_t)y * (size_t)w * 2u);
 
-		memcpy(p, image, rowBytes);
-		p = &p[rowBytes];
-	}
+		for (i = 0u; i < pairsPerLine; i++) {
+			x = (i + shiftPairs) % pairsPerLine;
+			bar = (x * 8u) / pairsPerLine;
+
+            memcpy(p, aColorBars[bar], 4u);
+            p += 4u;
+        }
+    }
 }

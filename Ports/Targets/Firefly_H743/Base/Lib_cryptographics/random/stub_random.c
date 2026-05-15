@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; stub_random.
+; ============
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the "random" manager module.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +47,43 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+// Prototypes
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+void	model_random_soft_init(void);
+void	model_random_soft_read(uint32_t *number);
+void	model_random_hard_init(void);
+void	model_random_hard_read(uint32_t *number);
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+/*
+ * \brief stub_random_init
+ *
+ * - Initialise some specific CPU parts
+ *
+ */
+int32_t	stub_random_init(void) {
 
-// IWYU pragma: end_exports
+	model_random_soft_init();
+	model_random_hard_init();
+	return (KERR_RANDOM_NOERR);
+}
 
-// uKOS-X main constants
-// -----------------------
+/*
+ * \brief stub_random_read
+ *
+ * - Return the random number
+ *
+ */
+int32_t	stub_random_read(randomGenerator_t generator, uint32_t *number) {
 
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+	if (generator == KRANDOM_SOFT) { model_random_soft_read(number); return (KERR_RANDOM_NOERR); }
+	if (generator == KRANDOM_HARD) { model_random_hard_read(number); return (KERR_RANDOM_NOERR); }
+	return (KERR_RANDOM_GEERR);
+}
+
+// Local routines
+// ==============
+
+#include	"model_random_soft.c_inc"
+#include	"model_random_hard.c_inc"

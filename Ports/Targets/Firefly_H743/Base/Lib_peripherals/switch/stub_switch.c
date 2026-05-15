@@ -1,16 +1,16 @@
 /*
-; uKOS.
-; =====
+; stub_switch.
+; ============
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Edo. Franzi		The 2026-05-14
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		stub for the "switch" manager module.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -47,48 +47,31 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"uKOS.h"
 
-// IWYU pragma: begin_exports
+/*
+ * \brief stub_switch_init
+ *
+ * - Initialise some specific hardware parts
+ *
+ */
+int32_t	stub_switch_init(void) {
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+	return (KERR_SWITCH_NOERR);
+}
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+/*
+ * \brief stub_switch_read
+ *
+ * - Read the jumper configuration
+ *
+ */
+int32_t	stub_switch_read(uint32_t *mode) {
+	uint32_t	switches = 0u;
 
-// IWYU pragma: end_exports
-
-// uKOS-X main constants
-// -----------------------
-
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.4.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		4
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+	INTERRUPTION_OFF;
+	switches |= ((GPIOB->IDR & (1u<<BSW_0)) == 0u) ? (0x1u) : (0u);
+	switches |= ((GPIOB->IDR & (1u<<BSW_1)) == 0u) ? (0x2u) : (0u);
+	*mode = (switches & 0x03u);
+	RETURN_INT_RESTORE(KERR_SWITCH_NOERR);
+}

@@ -75,8 +75,8 @@
 ENTRY(aStart)
 
 MEMORY {
-	prgm_code (rx)	: ORIGIN = 0x70200000, LENGTH = 4096K
-	prgm_data (rwx)	: ORIGIN = 0x70600000, LENGTH = 2048K
+	prgm_code (rx)	: ORIGIN = 0x72000000, LENGTH = 16384K
+	prgm_data (rwx)	: ORIGIN = 0x72800000, LENGTH = 16384K
 }
 
 INCLUDE		application.ld
