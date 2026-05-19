@@ -68,9 +68,11 @@ static				uint8_t		*vImageE0  		  = nullptr;
 static				uint8_t		*vImageE1  		  = nullptr;
 static	volatile	uint32_t	vNDTR      		  = 0u;
 static	volatile	uint32_t	vSize      		  = 1u;
-static	volatile	uint32_t	vNbRows    		  = 0u;
-static	volatile	uint32_t	vNbCols    		  = 0u;
-static	volatile	uint32_t	vNbPixels  		  = 0u;
+static	volatile	uint32_t	vImagerNbRows     = 0u;
+static	volatile	uint32_t	vImagerNbCols	  = 0u;
+static	volatile	uint32_t	vFrameNbRows	  = 0u;
+static	volatile	uint32_t	vFrameNbCols      = 0u;
+static	volatile	uint32_t	vFrameNbPixels	  = 0u;
 static  volatile	uint8_t		vAcqMode   		  = KIMAGER_SNAP;
 static				uint32_t	vRowXX[2048];
 static				sema_t		*vSemaphore_IM;
@@ -133,11 +135,13 @@ int32_t	model_imager_configure(const imagerCnf_t *configure) {
 	DCMI->CR   = 0x00000000u;
 	DCMI->IER  = 0x00000000u;
 
-	vAcqMode  	  = configure->oAcqMode & (uint8_t)~KIMAGER_SINGLE_BUFFER;
-	vNbRows   	  = configure->oNbRows;
-	vNbCols   	  = configure->oNbCols;
-	vNbPixels 	  = (uint32_t)configure->oNbRows * (uint32_t)configure->oNbCols;
-	vSingleBuffer = ((configure->oAcqMode & KIMAGER_SINGLE_BUFFER) != 0u) ? (true) : (false);
+	vAcqMode  	   = configure->oAcqMode & (uint8_t)~KIMAGER_SINGLE_BUFFER;
+	vImagerNbRows  = configure->oImagerNbRows;
+	vImagerNbCols  = configure->oImagerNbCols;
+	vFrameNbRows   = configure->oFrameNbRows;
+	vFrameNbCols   = configure->oFrameNbCols;
+	vFrameNbPixels = (uint32_t)configure->oFrameNbRows * (uint32_t)configure->oFrameNbCols;
+	vSingleBuffer  = ((configure->oAcqMode & KIMAGER_SINGLE_BUFFER) != 0u) ? (true) : (false);
 
 // Configure the manager
 
@@ -201,7 +205,7 @@ int32_t	model_imager_acquisition(void) {
 
 	INTERRUPTION_OFF;
 	const	void		*add   = (void *)vRowXX;
-	const	uint32_t	cols   = (uint32_t)vNbCols;
+	const	uint32_t	cols   = (uint32_t)vImagerNbCols;
 	const	uint32_t	size   = (uint32_t)vSize;
 	const	uint64_t	prod64 = (uint64_t)cols * (uint64_t)size;
 
@@ -305,7 +309,7 @@ static	int32_t	local_initDCMI(void) {
  */
 static	int32_t	local_initDMA2(void) {
 
-	INTERRUPT_VECTOR(DMA2_STR1_IRQn, local_DMA2_Stream1_IRQHandler);
+	INTERRUPT_VECTOR(DMA2_STR1_C0_IRQn, local_DMA2_Stream1_IRQHandler);
 	NVIC_SetPriority(DMA2_STR1_C0_IRQn, KINT_LEVEL_PERIPHERALS);
 	NVIC_EnableIRQ(DMA2_STR1_C0_IRQn);
 
@@ -410,16 +414,16 @@ static	int32_t	local_confMode(const imagerCnf_t *configure) {
 static	int32_t	local_confPixe(const imagerCnf_t *configure) {
 
 	vSize = 2;
-	DMA2->S1NDTR = vNbCols / 2u;
-	vNDTR 		 = vNbCols / 2u;
+	DMA2->S1NDTR = vImagerNbCols / 2u;
+	vNDTR 		 = vImagerNbCols / 2u;
 
 	switch (configure->oPixMode) {
 		default:
 		case KIMAGER_PIX_8_BITS: {
 			vSize = 1;
 			cb_control(KIMG_PIXEL_MODE, 8u);
-			DMA2->S1NDTR = vNbCols / 4u;
-			vNDTR 		 = vNbCols / 4u;
+			DMA2->S1NDTR = vImagerNbCols / 4u;
+			vNDTR 		 = vImagerNbCols / 4u;
 			break;
 		}
 		case KIMAGER_PIX_10_BITS: {
@@ -449,7 +453,7 @@ static	int32_t	local_confPixe(const imagerCnf_t *configure) {
  */
 static	int32_t	local_confMemo(const imagerCnf_t *configure) {
 			int32_t		status = KERR_IMAGER_NOERR;
-	const	size_t		nbPixels = (size_t)vNbPixels;
+	const	size_t		nbPixels = (size_t)vFrameNbPixels;
 	const	size_t		elemSize = (size_t)vSize;
 	const	size_t		nbBytes	 = nbPixels * elemSize;
 
@@ -460,21 +464,24 @@ static	int32_t	local_confMemo(const imagerCnf_t *configure) {
 
 	if (vSingleBuffer == true) {
 
-// Single buffer
+// Single buffer (reserve the frame size)
 
 		vPage	 = 0u;
 		vImageE0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (uint32_t)nbBytes, "dcmi");
 		if (vImageE0 == nullptr) { status = KERR_IMAGER_NOMEM; }
+		memset(vImageE0, 0u, nbBytes);
 	}
 	else {
 
-// Double buffer
+// Double buffer (reserve the frame size)
 
 		vPage	 = 1u;
 		vImageE0 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (uint32_t)nbBytes, "dcmi");
 		vImageE1 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (uint32_t)nbBytes, "dcmi");
 		if (vImageE0 == nullptr) { status = KERR_IMAGER_NOMEM; }
 		if (vImageE1 == nullptr) { status = KERR_IMAGER_NOMEM; }
+		memset(vImageE0, 0u, nbBytes);
+		memset(vImageE1, 0u, nbBytes);
 	}
 	DMA2->S1M0AR = (uint32_t)vRowXX;
 	return (status);
@@ -491,14 +498,17 @@ static	int32_t	local_confImag(const imagerCnf_t *configure) {
 
 // The crop window area
 
-	if ((configure->oNbRows + configure->oStRows) > KNB_ROWS) { return (KERR_IMAGER_CNERR); }
-	if ((configure->oNbCols + configure->oStCols) > KNB_COLS) { return (KERR_IMAGER_CNERR); }
-	DCMI->CWSIZE = (uint32_t)((configure->oNbRows - 1u)<<16u) | (configure->oNbCols - 1u);
-	DCMI->CWSTRT = (uint32_t)( configure->oStRows      <<16u) | (configure->oStCols);
+	if ((configure->oImagerNbRows + configure->oStRows) > KIMAGER_NB_ROWS) { return (KERR_IMAGER_CNERR); }
+	if ((configure->oImagerNbCols + configure->oStCols) > KIMAGER_NB_COLS) { return (KERR_IMAGER_CNERR); }
+	if ( configure->oImagerNbRows > configure->oFrameNbRows)			   { return (KERR_IMAGER_CNERR); }
+	if ( configure->oImagerNbCols > configure->oFrameNbCols)			   { return (KERR_IMAGER_CNERR); }
+
+	DCMI->CWSIZE = (uint32_t)((configure->oImagerNbRows - 1u)<<16u) | (configure->oImagerNbCols - 1u);
+	DCMI->CWSTRT = (uint32_t)( configure->oStRows<<16u)				| (configure->oStCols);
 
 // Configure the imager
 
-	status = cb_configure(configure); if (status != KERR_IMAGER_NOERR) { dprintf(KSYST, "OK3\n"); return (status); }
+	status = cb_configure(configure); if (status != KERR_IMAGER_NOERR) { return (status); }
 
 // The semaphore mode
 
@@ -584,16 +594,16 @@ static	void	local_DMA2_Stream1_IRQHandler(void) {
 	DMA2->LIFCR = DMA_LIFCR_CTCIF1;
 	row++;
 
-// 1. Normal line acquisition, (row < vNbRows): The DMA registers (specially the NDTR)
+// 1. Normal line acquisition, (row < vImagerNbRows): The DMA registers (specially the NDTR)
 // are updated with the activation of DMA EN.
-// 2. End of acquisition, (row == vNbRows): The DMA registers (specially the NDTR)
+// 2. End of acquisition, (row == vImagerNbRows): The DMA registers (specially the NDTR)
 // are updated with the activation of DMA EN of the call xyz_acquisition.
 
-	if (row < vNbRows) { DMA2->S1CR |= DMA_S1CR_EN; }
+	if (row < vImagerNbRows) { DMA2->S1CR |= DMA_S1CR_EN; }
 
 // Continue the row transfer
 
-	const	size_t		cols0 = (size_t)vNbCols;
+	const	size_t		cols0 = (size_t)vFrameNbCols;
 	const	size_t		size0 = (size_t)vSize;
 	const	size_t		r	  = (row > 0u) ? ((size_t)row - 1u) : (0u);
 	const	uint8_t		page  = (uint8_t)vPage;
@@ -608,7 +618,7 @@ static	void	local_DMA2_Stream1_IRQHandler(void) {
 // Copy the line into the image memory
 
 	const	void		*add    = (void *)vRowXX;
-	const	uint32_t	cols1   = (uint32_t)vNbCols;
+	const	uint32_t	cols1   = (uint32_t)vFrameNbCols;
 	const	uint32_t	size1   = (uint32_t)vSize;
 	const	uint64_t	prod64  = (uint64_t)cols1 * (uint64_t)size1;
 	const	size_t		limit   = ((size_t)cols1 * (size_t)size1) / (size_t)4;
@@ -620,7 +630,7 @@ static	void	local_DMA2_Stream1_IRQHandler(void) {
 		image[i] = vRowXX[i];
 	}
 
-	if (row == vNbRows) {
+	if (row == vImagerNbRows) {
 
 // Terminated: the image is fully transfered
 

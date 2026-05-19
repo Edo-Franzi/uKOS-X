@@ -157,26 +157,28 @@ static	void	aProcess_1(const void *argument) {
 
 	volatile		uint8_t			*image;
 	static	const	imagerCnf_t	configureIMG0 = {
-										.oAcqMode  = KIMAGER_SNAP,
-										.oImgCnf   = nullptr,
-										.oPixMode  = KIMAGER_PIX_8_BITS,
-										.oStRows   = 0,
-										.oStCols   = 0,
-										.oNbRows   = KAPP_NB_ROWS,
-										.oNbCols   = KAPP_NB_COLUMNS,
-										.oKernSync = 0,
-										.oHSync    = nullptr,
-										.oFrame    = nullptr,
-										.oVSync    = local_transfer,
-										.oDMAEc    = nullptr
+										.oAcqMode		= KIMAGER_SNAP,
+										.oImgCnf		= nullptr,
+										.oPixMode		= KIMAGER_PIX_8_BITS,
+										.oStRows		= 0,
+										.oStCols		= 0,
+										.oImagerNbRows	= KAPP_NB_ROWS,
+										.oImagerNbCols	= KAPP_NB_COLUMNS,
+										.oFrameNbRows	= KAPP_NB_ROWS,
+										.oFrameNbCols	= KAPP_NB_COLUMNS,
+										.oKernSync		= 0,
+										.oHSync			= nullptr,
+										.oFrame			= nullptr,
+										.oVSync			= local_transfer,
+										.oDMAEc			= nullptr
 									};
 
 	static	const	urtxCnf_t		configureURTx = {
-										.oNBBits   = KSERIAL_NB_BITS_8,
-										.oStopBits = KSERIAL_STOPBITS_1,
-										.oParity   = KSERIAL_PARITY_NONE,
-										.oBaudRate = KSERIAL_BAUDRATE_3000000,
-										.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)
+										.oNBBits		= KSERIAL_NB_BITS_8,
+										.oStopBits		= KSERIAL_STOPBITS_1,
+										.oParity		= KSERIAL_PARITY_NONE,
+										.oBaudRate		= KSERIAL_BAUDRATE_3000000,
+										.oKernSync		= ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)
 									};
 
 	if (kern_createSemaphore(aStrAcqu, 0, 1, &vSemaphore_IM) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sema G"); exit(EXIT_OS_FAILURE); }

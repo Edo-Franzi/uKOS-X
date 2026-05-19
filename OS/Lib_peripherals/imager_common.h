@@ -77,9 +77,11 @@ struct imagerCnf {
 			uint8_t		oAcqMode;								// Acquisition mode
 			uint8_t		oPixMode;								// Pixel mode
 			uint16_t	oStRows;								// Start of rows
-			uint16_t	oNbRows;								// Number of rows
 			uint16_t	oStCols;								// Start of cols
-			uint16_t	oNbCols;								// Number of cols
+			uint16_t	oImagerNbCols;							// Number of the imager cols
+			uint16_t	oImagerNbRows;							// Number of the imager rows
+			uint16_t	oFrameNbCols;							// Number of the frame cols
+			uint16_t	oFrameNbRows;							// Number of the frame rows
 			uint8_t		oKernSync;								// uKernel synchro
 			void		*oImgCnf;								// Imager configuration table
 			void		(*oHSync)(void);						// Ptr on the callback HSync routine

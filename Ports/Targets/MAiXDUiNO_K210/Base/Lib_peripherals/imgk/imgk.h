@@ -77,11 +77,11 @@ struct cnfImgk {
 			#define		KPIX_8_BITS				0u						// KPIX_8_BITS  = 8-bit resolution
 
 			uint16_t	oStRows;										// Start of rows
-			uint16_t	oNbRows;										// Number of rows
+			uint16_t	oStCols;										// Start of cols
+			uint16_t	oImagerNbRows;									// Number of rows
 			#define		KIMAGER_NB_ROWS_QVGA	240u					// Number of rows (QVGA)
 
-			uint16_t	oStCols;										// Start of cols
-			uint16_t	oNbCols;										// Number of cols
+			uint16_t	oImagerNbCols;									// Number of cols
 			#define		KIMAGER_NB_COLS_QVGA	320u					// Number of columns (QVGA)
 };
 
@@ -184,9 +184,9 @@ extern	int32_t	imgk_release(reserveMode_t reserveMode);
  *
  * int32_t    status;
  * const      cnfImgk_t    configure = {
- *                             .oPixMode  = PIX8BITS;
- *                             .oNbRows   = 60;
- *                             .oNbCols   = 60;
+ *                             .oPixMode      = PIX8BITS;
+ *                             .oImagerNbRows = 60;
+ *                             .oImagerNbCols = 60;
  *                         };
  *
  *    status = imgk_configure(&configure);

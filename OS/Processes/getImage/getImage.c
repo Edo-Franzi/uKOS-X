@@ -180,18 +180,20 @@ static	void	local_process(const void *argument) {
 	volatile		void			*image;
 			const	bool			*killRequest;
 	static	const	imagerCnf_t	configureIMG0 = {
-										.oAcqMode  = KIMAGER_SNAP,
-										.oPixMode  = KIMAGER_PIX_8_BITS,
-										.oStRows   = 0u,
-										.oStCols   = 0u,
-										.oNbRows   = KIMAGER_NB_ROWS_QVGA,
-										.oNbCols   = KIMAGER_NB_COLS_QVGA,
-										.oKernSync = 0u,
-										.oImgCnf   = aTab328248F,
-										.oHSync    = nullptr,
-										.oFrame    = nullptr,
-										.oVSync	   = local_transfer,
-										.oDMAEc    = nullptr,
+										.oAcqMode		= KIMAGER_SNAP,
+										.oPixMode		= KIMAGER_PIX_8_BITS,
+										.oStRows		= 0u,
+										.oStCols		= 0u,
+										.oImagerNbRows	= KIMAGER_NB_ROWS_QVGA,
+										.oImagerNbCols	= KIMAGER_NB_COLS_QVGA,
+										.oFrameNbRows	= KIMAGER_NB_ROWS_QVGA,
+										.oFrameNbCols	= KIMAGER_NB_COLS_QVGA,
+										.oKernSync		= 0u,
+										.oImgCnf		= aTab328248F,
+										.oHSync			= nullptr,
+										.oFrame			= nullptr,
+										.oVSync			= local_transfer,
+										.oDMAEc			= nullptr,
 									};
 
 	RESERVE(IMG0, KMODE_READ_WRITE);

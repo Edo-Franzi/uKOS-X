@@ -134,7 +134,10 @@ linker_ST_RAM_INT_2			= stm_stSRAM4;											/* 0x38000000: Privileged/User RA
 linker_SZ_RAM_INT_2			= 15;													/* 64-K = 2^(SZ + 1), SZ = log2(64-K) - 1					*/
 
 linker_ST_RAM_EXT_0			= linker_stEXRAM;										/* 0x70000000: Privileged/User RAM							*/
-linker_SZ_RAM_EXT_0			= 24;													/* 32-M = 2^(SZ + 1), SZ = log2(32-M) - 1					*/
+linker_SZ_RAM_EXT_0			= 23;													/* 32-M = 2^(SZ + 1), SZ = log2(32-M) - 1					*/
+
+linker_ST_RAM_EXT_1			= linker_stFrameBuffer;									/* 0x71000000: Privileged/User RAM (no cache)				*/
+linker_SZ_RAM_EXT_1			= 23;													/* 16-M = 2^(SZ + 1), SZ = log2(16-M) - 1					*/
 
 MEMORY {
 	prgm_code (rx)	: ORIGIN = linker_stPrgmCode, LENGTH = linker_lnPrgmCode

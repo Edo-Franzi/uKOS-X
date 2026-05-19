@@ -213,30 +213,30 @@ int32_t	imager_release(reserveMode_t reserveMode) {
  * *
  * #if (defined(SINGLE_BUFFER_S))
  * const    cnfImgx_t    configure = {
- *                           .oAcqMode  = KIMAGER_CONT | KIMAGER_SINGLE_BUFFER;
- *                           .oPixMode  = KIMAGER_PIX_8_BITS;
- *                           .oNbRows   = 60;
- *                           .oNbCols   = 60;
- *                           .oKernSync = (1u<<BIMAGER_SEMAPHORE_IM) | (1u<<BIMAGER_SEMAPHORE_VS);
- *                           .oHSync    = nullptr;
- *                           .oFrame    = nullptr;
- *                           .oVSync    = nullptr;
- *                           .oDMAEc    = _myRoutine;
- *                           .oImgCnf   = (void *)aTab060060F;
+ *                           .oAcqMode      = KIMAGER_CONT | KIMAGER_SINGLE_BUFFER;
+ *                           .oPixMode      = KIMAGER_PIX_8_BITS;
+ *                           .oImagerNbRows = 60;
+ *                           .oImagerNbCols = 60;
+ *                           .oKernSync     = (1u<<BIMAGER_SEMAPHORE_IM) | (1u<<BIMAGER_SEMAPHORE_VS);
+ *                           .oHSync        = nullptr;
+ *                           .oFrame        = nullptr;
+ *                           .oVSync        = nullptr;
+ *                           .oDMAEc        = _myRoutine;
+ *                           .oImgCnf       = (void *)aTab060060F;
  *                       };
  *
  * #else
  * const    cnfImgx_t    configure = {
- *                           .oAcqMode  = KIMAGER_CONT;
- *                           .oPixMode  = KIMAGER_PIX_8_BITS;
- *                           .oNbRows   = 60;
- *                           .oNbCols   = 60;
- *                           .oKernSync = (1u<<BIMAGER_SEMAPHORE_IM) | (1u<<BIMAGER_SEMAPHORE_VS);
- *                           .oHSync    = nullptr;
- *                           .oFrame    = nullptr;
- *                           .oVSync    = nullptr;
- *                           .oDMAEc    = _myRoutine;
- *                           .oImgCnf   = (void *)aTab060060F;
+ *                           .oAcqMode      = KIMAGER_CONT;
+ *                           .oPixMode      = KIMAGER_PIX_8_BITS;
+ *                           .oImagerNbRows = 60;
+ *                           .oImagerNbCols = 60;
+ *                           .oKernSync     = (1u<<BIMAGER_SEMAPHORE_IM) | (1u<<BIMAGER_SEMAPHORE_VS);
+ *                           .oHSync        = nullptr;
+ *                           .oFrame        = nullptr;
+ *                           .oVSync        = nullptr;
+ *                           .oDMAEc        = _myRoutine;
+ *                           .oImgCnf       = (void *)aTab060060F;
  *                       };
  * #endif
  *

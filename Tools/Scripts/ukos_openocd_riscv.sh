@@ -143,13 +143,14 @@ case "$(uname)" in
 	"Darwin")
 		export PKG_CONFIG_PATH="${DIRLOCAL}"/lib/pkgconfig
 		export CFLAGS="-I${DIRLOCAL}/include/libusb-1.0"
+		export LDFLAGS="-L${DIRLOCAL}/lib -Wl,-headerpad_max_install_names"
 		"${PACKS}"/configure \
 			"${OPENOCD_CONFIG[@]}" \
 			CC=clang \
 			--program-suffix=-${MACHINE} \
 			--prefix="${prefix}" --with-sysroot="${DIRLOCAL}" \
 			--libdir="${DIRLOCAL}"/lib		|| { echo "Error configuring openocd"; exit 1; }
-		make "LDFLAGS = -L${DIRLOCAL}/lib"	|| { echo "Error building openocd";	   exit 1; }
+		make								|| { echo "Error building openocd";	   exit 1; }
 		;;
 	"Linux")
 		export LDFLAGS="-pthread"

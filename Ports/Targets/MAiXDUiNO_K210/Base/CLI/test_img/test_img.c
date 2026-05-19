@@ -150,11 +150,11 @@ static	void	local_process(const void *argument) {
 
 // Image settings
 
-	configure.oPixMode  = KPIX_8_BITS;
-	configure.oStRows   = 0u;
-	configure.oNbRows   = KIMAGER_NB_ROWS_QVGA;
-	configure.oStCols   = 0u;
-	configure.oNbCols   = KIMAGER_NB_COLS_QVGA;
+	configure.oPixMode		= KPIX_8_BITS;
+	configure.oStRows		= 0u;
+	configure.oImagerNbRows	= KIMAGER_NB_ROWS_QVGA;
+	configure.oStCols		= 0u;
+	configure.oImagerNbCols	= KIMAGER_NB_COLS_QVGA;
 
 	imgk_configure(&configure);
 	if (kern_getSemaphoreById(KIMGK_SEMAPHORE_IM, &semaphore) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "test_img: get semaphore"); exit(EXIT_OS_FAILURE); }

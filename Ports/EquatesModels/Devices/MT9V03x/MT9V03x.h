@@ -64,8 +64,8 @@ struct mt9v03x {
 
 // Max image size
 
-#define	KNB_ROWS							480u							// Max 480 rows
-#define	KNB_COLS							752u							// Max 752 cols
+#define	KIMAGER_NB_ROWS						480u							// Max 480 rows
+#define	KIMAGER_NB_COLS						752u							// Max 752 cols
 
 // Constant for the temperature
 //

@@ -65,11 +65,11 @@
 #include	<sys/statistics.h>
 #include	<unistd.h>
 
-#define KNB_COLS				752											// Number of cols
-#define KNB_ROWS				480											// Number of rows
-#define	KXFER_NB_PACKETS		80											// Number of packets (has to be divisible by 2). See xfer.h
-#define KPACKETSIZE				((KNB_COLS * KNB_ROWS) / KXFER_NB_PACKETS)	// Packet size (for a 480 x 480 buffer)
-#define	KMAXIMAGEREAD			(2000 * KNB_COLS * KNB_ROWS)				// Nb of images to read before stopping
+#define KIMAGER_NB_COLS			752															// Number of cols
+#define KIMAGER_NB_ROWS			480															// Number of rows
+#define	KXFER_NB_PACKETS		80															// Number of packets (has to be divisible by 2). See xfer.h
+#define KPACKETSIZE				((KIMAGER_NB_COLS * KIMAGER_NB_ROWS) / KXFER_NB_PACKETS)	// Packet size (for a 480 x 480 buffer)
+#define	KMAXIMAGEREAD			(2000 * KIMAGER_NB_COLS * KIMAGER_NB_ROWS)					// Nb of images to read before stopping
 
 enum {
 		KPIPE = 0,

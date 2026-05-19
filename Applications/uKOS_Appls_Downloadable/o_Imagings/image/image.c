@@ -147,18 +147,20 @@ static	void	aProcess_acquisition(const void *argument) {
 
 // Configurations for an imager APTINA
 
-	configureIMG0.oAcqMode  = KIMAGER_SNAP;
-	configureIMG0.oImgCnf   = nullptr;
-	configureIMG0.oPixMode  = KIMAGER_PIX_8_BITS;
-	configureIMG0.oStRows   = 0u;
-	configureIMG0.oStCols   = 0u;
-	configureIMG0.oNbRows	= (uint16_t)vH;
-	configureIMG0.oNbCols	= (uint16_t)vW;
-	configureIMG0.oKernSync = 0u;
-	configureIMG0.oHSync    = nullptr;
-	configureIMG0.oFrame    = nullptr;
-	configureIMG0.oVSync    = local_transfer;
-	configureIMG0.oDMAEc    = nullptr;
+	configureIMG0.oAcqMode		= KIMAGER_SNAP;
+	configureIMG0.oImgCnf		= nullptr;
+	configureIMG0.oPixMode		= KIMAGER_PIX_8_BITS;
+	configureIMG0.oStRows		= 0u;
+	configureIMG0.oStCols		= 0u;
+	configureIMG0.oImagerNbRows	= KIMAGER_NB_ROWS;
+	configureIMG0.oImagerNbCols	= KIMAGER_NB_COLS;
+	configureIMG0.oFrameNbRows	= (uint16_t)vH;
+	configureIMG0.oFrameNbCols	= (uint16_t)vW;
+	configureIMG0.oKernSync		= 0u;
+	configureIMG0.oHSync		= nullptr;
+	configureIMG0.oFrame		= nullptr;
+	configureIMG0.oVSync		= local_transfer;
+	configureIMG0.oDMAEc		= nullptr;
 
 	if (imager_configure(&configureIMG0) != KERR_IMAGER_NOERR) {
 		(void)dprintf(KSYST, "img0 manager problem\n");
