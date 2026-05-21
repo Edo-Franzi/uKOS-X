@@ -58,7 +58,7 @@
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _reserve))(reserveMode_t reserveMode, uint32_t timeout) {
 
-	return(CAT(DEVICE_OUT, _reserve)(reserveMode, timeout));
+	return (CAT(DEVICE_OUT, _reserve)(reserveMode, timeout));
 }
 
 /*
@@ -69,7 +69,7 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _reserve))(reserveMode_t reserveMode, uint32_t
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _release))(reserveMode_t reserveMode) {
 
-	return(CAT(DEVICE_OUT, _release)(reserveMode));
+	return (CAT(DEVICE_OUT, _release)(reserveMode));
 }
 
 /*
@@ -80,7 +80,7 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _release))(reserveMode_t reserveMode) {
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _configure))(const urtxCnf_t *configure) {
 
-	return(CAT(DEVICE_OUT, _configure)(configure));
+	return (CAT(DEVICE_OUT, _configure)(configure));
 }
 
 /*
@@ -91,7 +91,7 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _configure))(const urtxCnf_t *configure) {
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _write))(const uint8_t *buffer, uint32_t size) {
 
-	return(CAT(DEVICE_OUT, _write)(buffer, size));
+	return (CAT(DEVICE_OUT, _write)(buffer, size));
 }
 
 /*
@@ -102,7 +102,7 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _write))(const uint8_t *buffer, uint32_t size)
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _read))(uint8_t *buffer, uint32_t *size) {
 
-	return(CAT(DEVICE_OUT, _read)(buffer, size));
+	return (CAT(DEVICE_OUT, _read)(buffer, size));
 }
 
 /*
@@ -113,7 +113,7 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _read))(uint8_t *buffer, uint32_t *size) {
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _getIdSemaphore))(uint8_t semaphore, char_t **identifier) {
 
-	return(CAT(DEVICE_OUT, _getIdSemaphore)(semaphore, identifier));
+	return (CAT(DEVICE_OUT, _getIdSemaphore)(semaphore, identifier));
 }
 
 /*
@@ -124,5 +124,5 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _getIdSemaphore))(uint8_t semaphore, char_t **
  */
 int32_t	CAT(stub_, CAT(DEVICE_IN, _flush))(void) {
 
-	return(CAT(DEVICE_OUT, _flush)());
+	return (CAT(DEVICE_OUT, _flush)());
 }

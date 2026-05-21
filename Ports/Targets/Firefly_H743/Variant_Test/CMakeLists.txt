@@ -2,6 +2,7 @@
 # ===========
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2025-01-01
@@ -60,7 +61,7 @@ include(set-project-paths)
 include(select-arm-toolchain)
 
 project(
-	Nucleo_H743_Variant_Test
+	Firefly_H743_Variant_Test
 	VERSION 1.0
 	LANGUAGES C
 )
@@ -166,17 +167,15 @@ add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/cdc0/cdc0.c CONFIG_MAN_CD
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/cdc1/cdc1.c CONFIG_MAN_CDC1_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt1/urt1.c CONFIG_MAN_URT1_S)
 list(APPEND LIBX_P
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
 	${PATH_BASE}/Lib_generics/machine/stub_machine.c
 	${PATH_BASE}/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
 	${PATH_BASE}/Lib_peripherals/led/stub_led.c
-	${PATH_BASE}/Lib_peripherals/spi0/stub_spi0_sspi3.c
+	${PATH_BASE}/Lib_peripherals/spi0/stub_spi0_sspi1.c
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
-	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart3.c
-	${PATH_BASE}/Lib_serials/urt1/stub_urt1_usart2.c
+	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart1.c
 )
 add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})

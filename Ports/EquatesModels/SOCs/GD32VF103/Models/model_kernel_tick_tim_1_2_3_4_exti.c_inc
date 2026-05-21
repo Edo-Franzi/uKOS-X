@@ -570,7 +570,7 @@ uintptr_t	*local_newContextPRE(uintptr_t *stack) {
 // Return the stack of the new process
 
 	ECLIC->MTH = (uint8_t)vKern_stackProc[KCORE_0][3];
-	return(vKern_stackProc[KCORE_0]);
+	return (vKern_stackProc[KCORE_0]);
 }
 
 /*
@@ -693,7 +693,7 @@ uintptr_t	*local_newContextTOU(uintptr_t *stack) {
 // Return the stack of the new process
 
 	ECLIC->MTH = (uint8_t)vKern_stackProc[KCORE_0][3];
-	return(vKern_stackProc[KCORE_0]);
+	return (vKern_stackProc[KCORE_0]);
 }
 
 /*
@@ -821,7 +821,7 @@ uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message) {
 // Return the stack of the new process
 
 	ECLIC->MTH = (uint8_t)vKern_stackProc[KCORE_0][3];
-	return(vKern_stackProc[KCORE_0]);
+	return (vKern_stackProc[KCORE_0]);
 }
 
 /*

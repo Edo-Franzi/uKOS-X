@@ -2,6 +2,7 @@
 # ========
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2026-04-01
@@ -79,10 +80,18 @@ function(derive_soc_properties SOC_NAME)
 
 	# Raspberry Pi
 	# Pattern: rp[0-9]...
+	# rp2350 has both ARM Cortex-M33 and Hazard3 RV32IMAC variants; the SOC
+	# name alone is ambiguous. Disambiguate via the CORE variable that the
+	# variant CMakeLists.txt sets before calling add_TinyUSB().
 	if(SOC_NAME MATCHES "^rp([0-9]+)")
 		set(PROVIDER "raspberrypi" PARENT_SCOPE)
-		set(FAMILY "pico2" PARENT_SCOPE)
-		message(STATUS "Derived properties for ${SOC_NAME}: PROVIDER=raspberrypi, FAMILY=pico2")
+		if(DEFINED CORE AND CORE STREQUAL "RV32IMAC")
+			set(FAMILY "pico2riscv" PARENT_SCOPE)
+			message(STATUS "Derived properties for ${SOC_NAME}: PROVIDER=raspberrypi, FAMILY=pico2riscv")
+		else()
+			set(FAMILY "pico2m33" PARENT_SCOPE)
+			message(STATUS "Derived properties for ${SOC_NAME}: PROVIDER=raspberrypi, FAMILY=pico2")
+		endif()
 		return()
 	endif()
 

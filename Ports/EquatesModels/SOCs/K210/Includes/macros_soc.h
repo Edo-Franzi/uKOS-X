@@ -92,24 +92,27 @@ enum {
 		KINT_LEVEL_KERNEL_TIMERS,
 		KINT_LEVEL_PERIPHERALS,
 		KINT_LEVEL_COMMUNICATIONS,
+		KINT_LEVEL_VERY_HS_PERIPHERALS,
 		KINT_LEVEL_KERNEL_SWI
 };
 
 // Reserved names: all the possible masks
 // Masks used to filter some priorities
-// KINT_IMASK_ALL				Allows all
-// KINT_IMASK_KERNEL_PREEMPTION	Allows only NMI, SWI, communications, peripherals, kernel timers, kernel preemptions
-// KINT_IMASK_PERIPHERALS		Allows only NMI, SWI, communications, peripherals
-// KINT_IMASK_COMMUNICATIONS	Allows only NMI, SWI, communications
-// KINT_IMASK_KERNEL_TIMERS		Allows only NMI, SWI, communications, peripherals, kernel timers
-// KINT_IMASK_KERNEL_SWI		Allows only NMI, SWI
-// KINT_IMASK_OFF				Allows only NMI, SWI
+// KINT_IMASK_OFF					Allows only NMI, SWI
+// KINT_IMASK_KERNEL_SWI			Allows only NMI, SWI
+// KINT_LEVEL_VERY_HS_PERIPHERALS	Allows only NMI, SWI, HS peripherals, communications
+// KINT_IMASK_COMMUNICATIONS		Allows only NMI, SWI, HS peripherals, communications
+// KINT_IMASK_PERIPHERALS			Allows only NMI, SWI, HS peripherals, communications, peripherals
+// KINT_IMASK_KERNEL_TIMERS			Allows only NMI, SWI, HS peripherals, communications, peripherals, kernel timers
+// KINT_IMASK_KERNEL_PREEMPTION		Allows only NMI, SWI, HS peripherals, communications, peripherals, kernel timers, kernel preemptions
+// KINT_IMASK_ALL					Allows all
 
 #define	KINT_IMASK_ALL					(KINT_LEVEL_ALL - 1u)
 #define	KINT_IMASK_KERNEL_PREEMPTION	(KINT_LEVEL_KERNEL_PREEMPTION - 1u)
 #define	KINT_IMASK_KERNEL_TIMERS		(KINT_LEVEL_KERNEL_TIMERS - 1u)
 #define	KINT_IMASK_PERIPHERALS			(KINT_LEVEL_PERIPHERALS - 1u)
 #define	KINT_IMASK_COMMUNICATIONS		(KINT_LEVEL_COMMUNICATIONS - 1u)
+#define	KINT_IMASK_VERY_HS_PERIPHERALS	(KINT_LEVEL_VERY_HS_PERIPHERALS - 1u)
 #define	KINT_IMASK_KERNEL_SWI			(KINT_LEVEL_KERNEL_SWI - 1u)
 #define	KINT_IMASK_OFF					KINT_LEVEL_KERNEL_SWI
 

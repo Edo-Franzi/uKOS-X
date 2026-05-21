@@ -81,7 +81,7 @@ OpenOCD Variants:
 
 ```
 On T1: openocd-stm -f interface/stlink-dap.cfg -f target/stm32u5x.cfg
-On T2: /opt/uKOS/cross/gcc-15.2.0/arm/bin/arm-none-eabi-gdb coherence.elf
+On T2: /opt/uKOS/cross/gcc-16.1.0/arm/bin/arm-none-eabi-gdb coherence.elf
 On T2: target extended-remote localhost:3333
 On T2: load
 ```
@@ -107,7 +107,7 @@ In the **gdb** terminal session **(T2)** we need to load the program:
 
 </div>
 
-The loaded program (**coherence.elf**) executes 2 processes. Imagine that we want to run the program and to stop it at the line **204** only if the variable **lastMessage.oCharMessage == ‘A’**.
+The loaded program (**coherence.elf**) executes 2 processes. Imagine that we want to run the program and to stop it at the line **228 only if the variable **lastMessage.oCharMessage == ‘A’**.
 
 ![](Annex_A_04.png)
 
@@ -116,7 +116,7 @@ On the **gdb** session **(T2)** set a conditional breakpoint and execute the pro
 In the **gdb** terminal session **(T2)** we need to load the program:
 
 ```bash
-hbreak 204 if (lastMessage.oCharMessage == 'A')
+hbreak 228 if (lastMessage.oCharMessage == 'A')
 c
 ```
 

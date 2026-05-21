@@ -93,7 +93,7 @@ This clear division between portable and hardware-specific components supports a
 
 This folder contains all the **equates** (such as chip definitions, macros, and constants) as well as the various **functional models** (e.g. UARTs, I²C interfaces, SD card drivers, etc.) used throughout the system. More specifically, it is organised into the following subdirectories:
 
-1. **Cores** – This directory includes libraries that are **hardware-independent but specific to a particular processor core**. Examples include support for **Cortex-M4**, **Cortex-M7**, **Cortex-M33**, and **RISC-V cores** such as **RV64IMAFDC**. These libraries provide core-level functionality without tying it to a specific chip or board.
+1. **Cores** – This directory includes libraries that are **hardware-independent but specific to a particular processor core**. Examples include support for **Cortex-M3, Cortex-M4**, **Cortex-M7**, **Cortex-M33, Cortex-M55, Cortex-M85**, and **RISC-V cores** such as **RV64IMAFDC**. These libraries provide core-level functionality without tying it to a specific chip or board.
 2. **Devices** – Contains the **definitions and configuration files for peripheral chips** used by the project. These include components such as external sensors, converters, and communication interfaces.
 3. **Generic** – This folder provides **reusable models and services** that are common across multiple projects, such as **temperature sensing**, **SD card handling**, or other general-purpose modules. The focus here is on functional reusability and abstraction.
 4. **SOCs** – Holds all definitions, macros, and models that are **specific to individual System-on-Chip (SoC) implementations**. These files provide the necessary low-level configuration to integrate with SoC-specific peripherals and architectural constraints.
@@ -402,6 +402,7 @@ static int32_t prgm(uint32_t argc, char_t *argv[]) {
 ;
 ;------------------------------------------------------------------------
 */
+
 #include    "uKOS.h"
 
 extern int32_t      a_start(uint32_t argc, const char_t *argv[]);

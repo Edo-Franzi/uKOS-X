@@ -70,7 +70,7 @@
 // ----------
 
 #define	KIMAGER_SEMAPHORE_VS	"imager - V synchro"
-#define	KIMAGER_SEMAPHORE_IM	"imager - imge OK"
+#define	KIMAGER_SEMAPHORE_IM	"imager - image ready"
 #define	KIMAGER_MUTEX_RESERVE	"Reserve_imager"
 
 // Prototypes

@@ -97,7 +97,7 @@ tusb_rhport_init_t deviceInit = {
 void	stub_TinyUSB_init(void) {
 
 	INTERRUPT_VECTOR(OTG_FS_C0_IRQn, local_OTG_FS_IRQHandler);
-	NVIC_SetPriority(OTG_FS_C0_IRQn, KINT_LEVEL_COMMUNICATIONS);
+	NVIC_SetPriority(OTG_FS_C0_IRQn, KINT_LEVEL_VERY_HS_PERIPHERALS);
 
 	tusb_init(BOARD_TUD_RHPORT, &deviceInit);
 }

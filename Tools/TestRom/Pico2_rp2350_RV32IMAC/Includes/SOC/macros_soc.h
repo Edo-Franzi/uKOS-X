@@ -54,9 +54,9 @@
 // Multicore macro
 // ---------------
 
-#define	KNB_CORES				2U
-#define	KCORE_0					0U
-#define	KCORE_1					1U
+#define	KNB_CORES				2u
+#define	KCORE_0					0u
+#define	KCORE_1					1u
 
 #ifndef GET_RUNNING_CORE
 #if defined(__riscv)
@@ -69,11 +69,11 @@
 #else
 	// ARM: Use SIO CPUID register
 	#ifdef SECURE_S
-	#define	GET_RUNNING_CORE		(SIO_S->CPUID & 1U)
+	#define	GET_RUNNING_CORE		(SIO_S->CPUID & 1u)
 	#elif (defined(SECURE_NS))
-	#define	GET_RUNNING_CORE		(SIO_NS->CPUID & 1U)
+	#define	GET_RUNNING_CORE		(SIO_NS->CPUID & 1u)
 	#else
-	#define	GET_RUNNING_CORE		(SIO_S->CPUID & 1U)
+	#define	GET_RUNNING_CORE		(SIO_S->CPUID & 1u)
 	#endif
 #endif
 #endif
@@ -93,17 +93,14 @@
 
 #define	BAUDRATE(UART, ck, baudrate)																							\
 	do {																														\
-		const uint32_t _den  = 16U * (uint32_t)(baudrate);																		\
+		const uint32_t _den  = 16u * (uint32_t)(baudrate);																		\
 		const uint32_t _ibrd = (uint32_t)((uint32_t)(ck) / _den);																\
 		const uint32_t _rem  = (uint32_t)((uint32_t)(ck) % _den);																\
 																																\
-		const uint32_t _fbrd = (uint32_t)((((uint64_t)_rem * (uint64_t)64U) + ((uint64_t)_den / 2U)) / (uint64_t)_den);			\
+		const uint32_t _fbrd = (uint32_t)((((uint64_t)_rem * (uint64_t)64u) + ((uint64_t)_den / 2u)) / (uint64_t)_den);			\
 		REG(UART)->UARTIBRD = _ibrd;																							\
 		REG(UART)->UARTFBRD = _fbrd;																							\
 	} while (0)
-
-// Interruption macros
-// -------------------
 
 enum {
 
@@ -111,7 +108,8 @@ enum {
 // Priorities used to set the NVIC. levels indicated with _KERNEL_
 // are reserved for the uKernel (!!! do not change those values)
 
-		KINT_LEVEL_KERNEL_SWI = 1U,
+		KINT_LEVEL_KERNEL_SWI = 1u,
+		KINT_LEVEL_VERY_HS_PERIPHERALS,
 		KINT_LEVEL_COMMUNICATIONS,
 		KINT_LEVEL_PERIPHERALS,
 		KINT_LEVEL_KERNEL_TIMERS,
@@ -121,21 +119,23 @@ enum {
 
 // Reserved names: all the possible masks
 // Masks used to filter some priorities
-// KINT_IMASK_OFF				Allows only NMI, SWI
-// KINT_IMASK_KERNEL_SWI		Allows only NMI, SWI
-// KINT_IMASK_COMMUNICATIONS	Allows only NMI, SWI, communications
-// KINT_IMASK_PERIPHERALS		Allows only NMI, SWI, communications, peripherals
-// KINT_IMASK_KERNEL_TIMERS		Allows only NMI, SWI, communications, peripherals, kernel timers
-// KINT_IMASK_KERNEL_PREEMPTION	Allows only NMI, SWI, communications, peripherals, kernel timers, kernel preemptions
-// KINT_IMASK_ALL				Allows all
+// KINT_IMASK_OFF					Allows only NMI, SWI
+// KINT_IMASK_KERNEL_SWI			Allows only NMI, SWI
+// KINT_LEVEL_VERY_HS_PERIPHERALS	Allows only NMI, SWI, HS peripherals, communications
+// KINT_IMASK_COMMUNICATIONS		Allows only NMI, SWI, HS peripherals, communications
+// KINT_IMASK_PERIPHERALS			Allows only NMI, SWI, HS peripherals, communications, peripherals
+// KINT_IMASK_KERNEL_TIMERS			Allows only NMI, SWI, HS peripherals, communications, peripherals, kernel timers
+// KINT_IMASK_KERNEL_PREEMPTION		Allows only NMI, SWI, HS peripherals, communications, peripherals, kernel timers, kernel preemptions
+// KINT_IMASK_ALL					Allows all
 
-#define	KINT_IMASK_OFF					(KINT_LEVEL_KERNEL_SWI + 1U)
-#define	KINT_IMASK_KERNEL_SWI			(KINT_LEVEL_KERNEL_SWI + 1U)
-#define	KINT_IMASK_COMMUNICATIONS		(KINT_LEVEL_COMMUNICATIONS + 1U)
-#define	KINT_IMASK_PERIPHERALS			(KINT_LEVEL_PERIPHERALS + 1U)
-#define	KINT_IMASK_KERNEL_TIMERS		(KINT_LEVEL_KERNEL_TIMERS + 1U)
-#define	KINT_IMASK_KERNEL_PREEMPTION	(KINT_LEVEL_KERNEL_PREEMPTION + 1U)
-#define	KINT_IMASK_ALL					(KINT_LEVEL_ALL + 1U)
+#define	KINT_IMASK_OFF					(KINT_LEVEL_KERNEL_SWI + 1u)
+#define	KINT_IMASK_KERNEL_SWI			(KINT_LEVEL_KERNEL_SWI + 1u)
+#define	KINT_IMASK_VERY_HS_PERIPHERALS	(KINT_LEVEL_VERY_HS_PERIPHERALS + 1u)
+#define	KINT_IMASK_COMMUNICATIONS		(KINT_LEVEL_COMMUNICATIONS + 1u)
+#define	KINT_IMASK_PERIPHERALS			(KINT_LEVEL_PERIPHERALS + 1u)
+#define	KINT_IMASK_KERNEL_TIMERS		(KINT_LEVEL_KERNEL_TIMERS + 1u)
+#define	KINT_IMASK_KERNEL_PREEMPTION	(KINT_LEVEL_KERNEL_PREEMPTION + 1u)
+#define	KINT_IMASK_ALL					(KINT_LEVEL_ALL + 1u)
 
 // Names for the user applications
 
@@ -147,8 +147,8 @@ enum {
 // 2^4 priority levels
 // Priority shift inside the NVIC->PR (P3 P2 P1 P0 x x x x) !!! Vendor specific
 
-#define	KNVIC_PRIORITY_BITS		4U
-#define	KNVIC_PRIORITY_SHIFT	(8U - KNVIC_PRIORITY_BITS)
+#define	KNVIC_PRIORITY_BITS		4u
+#define	KNVIC_PRIORITY_SHIFT	(8u - KNVIC_PRIORITY_BITS)
 
 // Preemption mechanism
 // ---------------------
@@ -156,13 +156,13 @@ enum {
 #if defined(__riscv)
 // RISC-V: Use machine software interrupt for preemption and messaging
 // Trigger via SIO RISCV_SOFTIRQ register
-#define	BKERN_PREEMPTION		0U	// MSIP - Machine Software Interrupt
-#define	BKERN_MESSAGES			0U	// Same as preemption - handled in software interrupt
-#define	PREEMPTION				REG(SIO)->RISCV_SOFTIRQ = (1U << GET_RUNNING_CORE)
-#define	SET_MESSAGE				REG(SIO)->RISCV_SOFTIRQ = (1U << GET_RUNNING_CORE)
+#define	BKERN_PREEMPTION		0u	// MSIP - Machine Software Interrupt
+#define	BKERN_MESSAGES			0u	// Same as preemption - handled in software interrupt
+#define	PREEMPTION				REG(SIO)->RISCV_SOFTIRQ = (1u<<GET_RUNNING_CORE)
+#define	SET_MESSAGE				REG(SIO)->RISCV_SOFTIRQ = (1u<<GET_RUNNING_CORE)
 #else
 // ARM: PENDSVSET used for preemption (change the context)
-#define	BKERN_PREEMPTION		28U
+#define	BKERN_PREEMPTION		28u
 #define	PREEMPTION				do { SCB->ICSR = SCB_ICSR_PENDSVSET_Msk; } while (0)
 #endif
 

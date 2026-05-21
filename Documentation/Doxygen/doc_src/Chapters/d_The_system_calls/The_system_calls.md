@@ -128,27 +128,27 @@ urt0_configure(&configure);
 
 <div class="full_width_table">
 
-| **serial System Calls**             |                                                              |
-| :---------------------------------- | :----------------------------------------------------------- |
-| serial_reserve                      | Reserve the serial communication manager                     |
-| serial_release                      | Release the serial  communication manager                    |
-| serial_configure                    | Configure the serial  communication manager                  |
-| serial_write                        | Write a buffer to the serial  communication manager          |
-| serial_read                         | Read a buffer from the serial  communication manager         |
-| serial_flush                        | Flush the serial  communication manager                      |
-| serial_getIdSemaphore               | Get the RX-TX semaphore id of the serial  communication manager |
-| serial_getDefSerialManager          | Get the default serial  communication manager                |
-| serial_setDefSerialManager          | Set the default serial  communication manager                |
-| serial_getFatherSerialManager       | Get the father (or older) serial  communication manager      |
-|                                     |                                                              |
-| **xyzt = urtx, cdcx, System Calls** |                                                              |
-| xyzt_reserve                        | Reserve the xyzt Serial Communication Manager                |
-| xyzt_release                        | Release the xyzt Serial Communication Manager                |
-| xyzt_configure                      | Configure the xyzt Serial Communication Manager              |
-| xyzt_write                          | Write a buffer to the xyzt Serial Communication Manager      |
-| xyzt_read                           | Read a buffer on the xyzt Serial Communication Manager       |
-| xyzt_flush                          | Flush of the xyzt Serial Communication Manager               |
-| xyzt_getIdSemaphore                 | Get the RX-TX semaphore id of the xyzt Serial Communication Manager |
+| **serial System Calls**                   |                                                              |
+| :---------------------------------------- | :----------------------------------------------------------- |
+| serial_reserve                            | Reserve the serial communication manager                     |
+| serial_release                            | Release the serial  communication manager                    |
+| serial_configure                          | Configure the serial  communication manager                  |
+| serial_write                              | Write a buffer to the serial  communication manager          |
+| serial_read                               | Read a buffer from the serial  communication manager         |
+| serial_flush                              | Flush the serial  communication manager                      |
+| serial_getIdSemaphore                     | Get the RX-TX semaphore id of the serial  communication manager |
+| serial_getDefSerialManager                | Get the default serial  communication manager                |
+| serial_setDefSerialManager                | Set the default serial  communication manager                |
+| serial_getFatherSerialManager             | Get the father (or older) serial  communication manager      |
+|                                           |                                                              |
+| **xyzt = urtx, cdcx, wfi0, System Calls** |                                                              |
+| xyzt_reserve                              | Reserve the xyzt Serial Communication Manager                |
+| xyzt_release                              | Release the xyzt Serial Communication Manager                |
+| xyzt_configure                            | Configure the xyzt Serial Communication Manager              |
+| xyzt_write                                | Write a buffer to the xyzt Serial Communication Manager      |
+| xyzt_read                                 | Read a buffer on the xyzt Serial Communication Manager       |
+| xyzt_flush                                | Flush of the xyzt Serial Communication Manager               |
+| xyzt_getIdSemaphore                       | Get the RX-TX semaphore id of the xyzt Serial Communication Manager |
 
 </div>
 
@@ -215,21 +215,11 @@ The **Lib_cryptographics** library in **µKOS-X** provides a framework for integ
 
 This manager handles the random number generator. If the hardware platform implements a dedicated interface (usually **NIST-certified**), it will be used. The initial seed is computed at system restart, taking advantage of the random memory pattern present in RAM when power is switched on. This seed is fairly good, although it is not suitable for high-security applications. For applications requiring cryptographically secure random numbers, it is recommended to combine this seed with additional entropy sources or to use a hardware-based true random number generator when available.
 
-$$
-
-$$
-
-$$
-X_{n+1} = \left( K_a \cdot X_n + K_c \right) \bmod(K_m)
-$$
-
-$$
-K_a = 1103515245, K_c = 12345, K_m = 2^{31} - 1
-$$
-
-$$
-X_0 = \text{initial seed}
-$$
+| Linear Congruential Generator |                                                             |
+| ----------------------------- | ----------------------------------------------------------- |
+| New random number             | $$X_{n+1} = \left( K_a \cdot X_n + K_c \right) \bmod(K_m)$$ |
+| Constants Ka & Kc             | $$K_a = 1103515245, K_c = 12345, K_m = 2^{31} - 1$$         |
+| Initial seed                  | $$X_0 = \text{initial seed}$$                               |
 
 <div class="full_width_table">
 
@@ -450,7 +440,6 @@ KVALIDATION    = [
                       [0.266116,    0.944208,    0.00,    0.98],
                      [-0.002230,   -0.117944,    0.00,    0.98]
                  ]
-
 ```
 
 #### Training step
@@ -741,7 +730,6 @@ int main(uint32_t argc, const char_t *argv[]) {
     LOG(KINFO_USER, "Application launched");
     return (EXIT_OS_SUCCESS_CLI);
 }
-
 ```
 
 <div class="full_width_table">

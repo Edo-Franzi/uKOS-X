@@ -133,6 +133,7 @@ static	void	local_init(void);
  *
  */
 void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *identifier) {
+	void				*address;
 	memoMab_t			*curBlock, *newBlock, *nexBlock;
 	uint32_t			core, wkSize = size, nb, nbBlocks, available, pad;
 	uintptr_t			startNewBlock, paddedStartNewBlock, deltaNewBlock;
@@ -214,11 +215,13 @@ void	*memo_malloc(memoAlignement_t memoAlignement, uint32_t size, const char_t *
 			heapInfo->oUsdMemory	+= (uint32_t)(sizeof(memoMab_t) + (deltaNewBlock + wkSize));
 			heapInfo->oUsdMaxMemory =  (heapInfo->oUsdMemory > heapInfo->oUsdMaxMemory) ? (heapInfo->oUsdMemory) : (heapInfo->oUsdMaxMemory);
 
+			address = ((void *)((uintptr_t)newBlock + (uintptr_t)sizeof(memoMab_t)));
+
 			kern_unlockMutex(vMutex[core]);
 			SPIN_UNLOCK(vMemo);
 
 			PRIVILEGE_RESTORE;
-			return ((void *)((uintptr_t)newBlock + (uintptr_t)sizeof(memoMab_t)));
+			return (address);
 		}
 
 		curBlock = curBlock->oPtrNexBlock;

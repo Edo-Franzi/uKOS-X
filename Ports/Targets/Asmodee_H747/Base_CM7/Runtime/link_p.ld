@@ -3,6 +3,7 @@
 ; =======
 
 ; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -127,7 +128,7 @@ linker_SZ_FLASH_INT_0		= 19;													/* 1-M = 2^(SZ + 1), SZ = log2(2-M) - 1
 linker_ST_RAM_INT_0			= stm_stAXISRAM;										/* 0x24000000: Privileged RAM/User RAM						*/
 linker_SZ_RAM_INT_0			= 18;													/* 512-K = 2^(SZ + 1), SZ = log2(512-K) - 1					*/
 
-linker_ST_RAM_EXT_0			= linker_stEXRAM;										/* 0x70000000: Privileged/User RAM							*/
+linker_ST_RAM_EXT_0			= (linker_stEXRAM + 2048K);								/* 0x70200000: Privileged/User RAM							*/
 linker_SZ_RAM_EXT_0			= 22;													/* 8-M = 2^(SZ + 1), SZ = log2(8-M) - 1						*/
 
 linker_ST_RAM_INT_1_SHARED	= linker_stShare;										/* 0x38000000: Privileged/User RAM							*/

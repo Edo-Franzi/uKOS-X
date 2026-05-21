@@ -569,7 +569,7 @@ uintptr_t	*local_newContextPRE(uintptr_t *stack) {
 
 // Return the stack of the new process
 
-	return(vKern_stackProc[KCORE_0]);
+	return (vKern_stackProc[KCORE_0]);
 }
 
 /*
@@ -687,7 +687,7 @@ uintptr_t	*local_newContextTOU(uintptr_t *stack) {
 
 // Return the stack of the new process
 
-	return(vKern_stackProc[KCORE_0]);
+	return (vKern_stackProc[KCORE_0]);
 }
 
 /*
@@ -808,7 +808,7 @@ uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message) {
 // Return the stack of the new process
 
 	vPriv_insideSVC[KCORE_0] = false;
-	return(vKern_stackProc[KCORE_0]);
+	return (vKern_stackProc[KCORE_0]);
 }
 
 /*

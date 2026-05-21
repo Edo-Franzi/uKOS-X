@@ -81,6 +81,7 @@
 #define	KMPU_R_ALL						6u
 
 #define	KMPU_TEX_LEVEL0					0u
+#define	KMPU_TEX_LEVEL1					1u
 #define	KMPU_TEX_LEVEL6					6u
 
 #define	KMPU_SHAREABLE					1u

@@ -191,7 +191,7 @@ static void local_newContextTOU(void) {
 }
 ```
 
-#### Change of the context for cortex -M4 -M7 -M33 -M55 cores
+#### Change of the context for cortex -M4 -M7 -M33 -M55-M85 cores
 
 ```c
 /*
@@ -1447,7 +1447,7 @@ struct stts {
     uint16_t    oTimeEMax;        // Max CPU time used by the Exceptions
     uint16_t    oTimeEAvg;        // Avg CPU time used by the Exceptions
     uint64_t    oTimeECum;        // Cum CPU time used by the Exceptions
-    };
+};
 ```
 
 ![](The_uKernel_16.png)

@@ -73,9 +73,7 @@ STRG_GLB_CONST(aStrHelp[])		  = "Acquire & send an image to the computer\n"
 
 STRG_LOC_CONST(aStrIden_acquisition[]) = "Process_Acquisition";
 STRG_LOC_CONST(aStrText_acquisition[]) = "Process Acquisition.                      (c) EFr-2026";
-STRG_LOC_CONST(aStrImageReady[])	   = "image - Ready";
 
-static	sema_t	*vSemaphore_IM[KNB_CORES];
 static	bool	vKillRequest[KNB_CORES] = MCSET(false);
 
 // Prototypes
@@ -86,7 +84,6 @@ static	bool	vKillRequest[KNB_CORES] = MCSET(false);
 		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h, void (*callBack)(const void *argument), const void *argument);
 static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_convertToYUY2(volatile const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
-static	void	local_transfer(void);
 static	void	aProcess_acquisition(const void *argument);
 
 /*
@@ -143,7 +140,6 @@ int32_t	viewer_uvc0_clean(uint32_t argc, const char_t *argv[]) {
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;
-
 	return (EXIT_OS_SUCCESS);
 }
 
@@ -160,15 +156,13 @@ int32_t	viewer_uvc0_clean(uint32_t argc, const char_t *argv[]) {
  */
 [[noreturn]]
 static	void	aProcess_acquisition(const void *argument) {
-				int32_t			status;
-				uint32_t		core;
 				uint32_t		w, h;
 				uint8_t			*imageYUY2;
+				sema_t			*semaphore;
 				imagerCnf_t		configureIMAGER;
 	const		bool			*killRequest;
 	volatile	void			*imageXX = nullptr;
 
-	core = GET_RUNNING_CORE;
 	killRequest	= (const bool *)argument;
 
 	PRIVILEGE_ELEVATE;
@@ -176,13 +170,13 @@ static	void	aProcess_acquisition(const void *argument) {
 	TinyUSB_video_init();
 	TinyUSB_video_getImageSize(&w, &h);
 
-	imageYUY2 = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (w * h * 2u), "viewer_uvc0_YUY2");
+	imageYUY2 = (uint8_t *)memo_malloc(KMEMO_ALIGN_32, (w * h * 2u), "viewer_uvc0_YUY2");
 	if (imageYUY2 == nullptr) {
 		LOG(KFATAL_USER, "viewer: out of memory");
 		exit(EXIT_OS_FAILURE);
 	}
 
-	if (kern_createSemaphore(aStrImageReady, 0, 1, &vSemaphore_IM[core]) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "viewer: create sema"); exit(EXIT_OS_FAILURE); }
+	while (kern_getSemaphoreById(KIMAGER_SEMAPHORE_IM, &semaphore) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
 // Configurations for an imager APTINA
 
@@ -195,11 +189,12 @@ static	void	aProcess_acquisition(const void *argument) {
 	configureIMAGER.oImagerNbCols	= KIMAGER_NB_COLS;
 	configureIMAGER.oFrameNbRows	= (uint16_t)h;
 	configureIMAGER.oFrameNbCols	= (uint16_t)w;
-	configureIMAGER.oKernSync		= 0u;
+	configureIMAGER.oKernSync		= (0u);
+	configureIMAGER.oKernSync		= (1u<<BIMAGER_SEMAPHORE_IM);
 	configureIMAGER.oHSync			= nullptr;
 	configureIMAGER.oFrame			= nullptr;
 	configureIMAGER.oVSync			= nullptr;
-	configureIMAGER.oDMAEc			= local_transfer;
+	configureIMAGER.oDMAEc			= nullptr;
 
 	if (imager_configure(&configureIMAGER) != KERR_IMAGER_NOERR) {
 		(void)dprintf(KSYST, "img0 manager problem\n");
@@ -215,11 +210,12 @@ static	void	aProcess_acquisition(const void *argument) {
 	imager_acquisition();
 
 	while (*killRequest == false) {
+		kern_suspendProcess(50u);
 
-// Waiting for the semaphore "vSemaphore_IM"
+// Waiting for the semaphore "imager - image ready"
 
-		status = kern_waitSemaphore(vSemaphore_IM[core], 1000u);
-		if (status == KERR_KERN_TIMEO) {
+		if (kern_waitSemaphore(semaphore, 1000u) == KERR_KERN_TIMEO) {
+			TinyUSB_video_sendImage(imageYUY2, w, h, nullptr, nullptr);
 			imager_acquisition();
 		}
 		else {
@@ -239,25 +235,9 @@ static	void	aProcess_acquisition(const void *argument) {
 	RELEASE(IMAGER, KMODE_READ_WRITE);
 
 	TinyUSB_video_clean();
-	kern_killSemaphore(vSemaphore_IM[core]);
+	kern_killSemaphore(semaphore);
 	memo_free(imageYUY2);
 	exit(EXIT_OS_SUCCESS);
-}
-
-/*
- * \brief local_transfer
- *
- * - Signal end of the acquisition
- *
- * - !!! This is an interrupt call-back function
- *       Not all the system calls are allowed inside this portion of code
- *
- */
-static	void	local_transfer(void) {
-	uint32_t	core;
-
-	core = GET_RUNNING_CORE;
-	kern_signalSemaphore(vSemaphore_IM[core]);
 }
 
 /*
@@ -290,7 +270,7 @@ static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h) {
 static	void	local_convertToYUY2(volatile const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h) {
 	uint32_t	i;
 
-	for (i = 0u; i < (w * h); i += 2) {
+	for (i = 0u; i < (w * h); i += 2u) {
 
 // Conversion Gray scale to YUY2
 

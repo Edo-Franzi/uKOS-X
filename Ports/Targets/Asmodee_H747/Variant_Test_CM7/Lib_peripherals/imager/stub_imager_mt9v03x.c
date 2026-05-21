@@ -64,7 +64,7 @@
 #define	model_imager_exposure		stub_imager_exposure
 
 #define	KIMAGER_DCMI_SEMA_IM_S
-#define	KIMAGER_DCMI_SEMA_VS_S
+#undef	KIMAGER_DCMI_SEMA_VS_S
 #define	KIMAGER_DCMI_SEMAPHORE_IM	KIMAGER_SEMAPHORE_IM
 #define	KIMAGER_DCMI_SEMAPHORE_VS	KIMAGER_SEMAPHORE_VS
 

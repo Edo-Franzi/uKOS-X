@@ -73,7 +73,7 @@
 
 #pragma	once
 
-#define	FRAME_WIDTH			752
+#define	FRAME_WIDTH			768
 #define	FRAME_HEIGHT		480
 #define	FRAME_RATE			50
 
