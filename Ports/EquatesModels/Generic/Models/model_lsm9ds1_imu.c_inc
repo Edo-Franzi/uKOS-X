@@ -131,7 +131,7 @@ int32_t	model_lsM9ds1imu_configure(const imuCnf_t *configure) {
 	switch (configure->oGyroMode) {
 		case KIMU_MAX_245DPS:  { vSensGyro = KGYRSEN245DPS;  reg1 = 0x60u; break; }
 		case KIMU_MAX_500DPS:  { vSensGyro = KGYRSEN500DPS;  reg1 = 0x70u; break; }
-		case KIMU_MAX_2000DPS: { vSensGyro = KGYRSEN2000DPS; reg1 = 0x78u; break; }
+		case KIMU_MAX_2000DPS:
 		default:			   { vSensGyro = KGYRSEN2000DPS; reg1 = 0x78u; break; }
 	}
 
@@ -218,16 +218,16 @@ static	void	local_caliImu(void) {
 	for (i = 0u; i < 32u; i++) {
 
 // Read the values
-//      The accelerometer										// The gyroscope									// The magnetometer
+//      The accelerometer													// The gyroscope									// The magnetometer
 
-		cb_readAcceGyro(LSM9DS1_OUT_X_L_XL, xsbAcce, 2u);		cb_readAcceGyro(LSM9DS1_OUT_X_L_G, xsbGyro, 2u);	cb_readMagn(LSM9DS1_OUT_X_L_M, xsbMagn, 2u);
-		acce[0] = (int16_t)(xsbAcce[1]<<8u | xsbAcce[0]);		gyro[0] = (int16_t)(xsbGyro[1]<<8u | xsbGyro[0]);	magn[0] = (int16_t)(xsbMagn[1]<<8u | xsbMagn[0]);
+		cb_readAcceGyro(LSM9DS1_OUT_X_L_XL, xsbAcce, 2u);					cb_readAcceGyro(LSM9DS1_OUT_X_L_G, xsbGyro, 2u);	cb_readMagn(LSM9DS1_OUT_X_L_M, xsbMagn, 2u);
+		acce[0] = (int16_t)(xsbAcce[1]<<8u | xsbAcce[0]);					gyro[0] = (int16_t)(xsbGyro[1]<<8u | xsbGyro[0]);	magn[0] = (int16_t)(xsbMagn[1]<<8u | xsbMagn[0]);
 
-		cb_readAcceGyro(LSM9DS1_OUT_Y_L_XL, xsbAcce, 2u);		cb_readAcceGyro(LSM9DS1_OUT_Y_L_G, xsbGyro, 2u);	cb_readMagn(LSM9DS1_OUT_Y_L_M, xsbMagn, 2u);
-		acce[1] = (int16_t)(xsbAcce[1]<<8u | xsbAcce[0]);		gyro[1] = (int16_t)(xsbGyro[1]<<8u | xsbGyro[0]);	magn[1] = (int16_t)(xsbMagn[1]<<8u | xsbMagn[0]);
+		cb_readAcceGyro(LSM9DS1_OUT_Y_L_XL, xsbAcce, 2u);					cb_readAcceGyro(LSM9DS1_OUT_Y_L_G, xsbGyro, 2u);	cb_readMagn(LSM9DS1_OUT_Y_L_M, xsbMagn, 2u);
+		acce[1] = (int16_t)(xsbAcce[1]<<8u | xsbAcce[0]);					gyro[1] = (int16_t)(xsbGyro[1]<<8u | xsbGyro[0]);	magn[1] = (int16_t)(xsbMagn[1]<<8u | xsbMagn[0]);
 
-		cb_readAcceGyro(LSM9DS1_OUT_Z_L_XL, xsbAcce, 2u);		cb_readAcceGyro(LSM9DS1_OUT_Z_L_G, xsbGyro, 2u);	cb_readMagn(LSM9DS1_OUT_Z_L_M, xsbMagn, 2u);
-		acce[2] = (int16_t)(xsbAcce[1]<<8u | xsbAcce[0]) + v1G;	gyro[2] = (int16_t)(xsbGyro[1]<<8u | xsbGyro[0]);	magn[2] = (int16_t)(xsbMagn[1]<<8u | xsbMagn[0]);
+		cb_readAcceGyro(LSM9DS1_OUT_Z_L_XL, xsbAcce, 2u);					cb_readAcceGyro(LSM9DS1_OUT_Z_L_G, xsbGyro, 2u);	cb_readMagn(LSM9DS1_OUT_Z_L_M, xsbMagn, 2u);
+		acce[2] = (int16_t)((int16_t)(xsbAcce[1]<<8u | xsbAcce[0]) + v1G);	gyro[2] = (int16_t)(xsbGyro[1]<<8u | xsbGyro[0]);	magn[2] = (int16_t)(xsbMagn[1]<<8u | xsbMagn[0]);
 
 // Cumulate for the mean
 

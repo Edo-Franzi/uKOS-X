@@ -64,12 +64,12 @@ struct	boot {
 				uint8_t				oBaudrate;			// Baudrate
 		};
 
-static	const	char_t	*argv_cnsUrt0[] = { "console", "urt0" };
-static	const	char_t	*argv_mpyUrt0[] = { "mpy",     "urt0", "-internal", "100000" };
+static	const	char_t	*argv_cnsUrt0[] = { "console",	   "urt0"			};
+static	const	char_t	*argv_mpyUrt0[] = { "microPython", "urt0", "100000" };
 
 static	const	boot_t	aFunction[] = {
-							{ "console", KURT0, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 },
-							{ "mpy",	 KURT0, argv_mpyUrt0, 4u, 0x01u, KSERIAL_BAUDRATE_460800 }
+							{ "console",	 KURT0, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 },
+							{ "microPython", KURT0, argv_mpyUrt0, 3u, 0x01u, KSERIAL_BAUDRATE_460800 }
 						};
 
 #define	KDEF_COMM		KURT0
@@ -84,8 +84,8 @@ STRG_GLB_CONST(aStartUp_StrHelp[]) = "StartUp process\n"
 									 "460800-bit/s, 8-bits, 2-stop-bits, no parity.\n\n"
 
 									 "   SW3\n"
-									 "    0   KURT0, console (460800-bit/s).\n"
-									 "    1   KURT0, mpy     (460800-bit/s).\n\n";
+									 "    0   KURT0, console     (460800-bit/s).\n"
+									 "    1   KURT0, microPython (460800-bit/s).\n\n";
 
 STRG_LOC_CONST(aStrLogo[]) = STRG_LOGO;
 

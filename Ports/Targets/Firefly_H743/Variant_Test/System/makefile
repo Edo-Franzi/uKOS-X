@@ -115,7 +115,7 @@ FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 # With the DATA cache
 CONF_SYSTEM		+= -DCACHE_D_S
 
-BURN			?= stm32programmer
+BURN			?= jlinkexe
 
 # The really first pcs of code (privileged)
 
@@ -293,6 +293,7 @@ CLI_U			+= $(PATH_OSYS)/CLI/run/run.c
 CLI_U			+= $(PATH_OSYS)/CLI/semaphore/semaphore.c
 CLI_U			+= $(PATH_OSYS)/CLI/sloader/sloader.c
 CLI_U			+= $(PATH_OSYS)/CLI/szkern/szkern.c
+CLI_U			+= $(PATH_OSYS)/CLI/test_malloc/test_malloc.c
 CLI_U			+= $(PATH_OSYS)/CLI/test_ram/test_ram.c
 CLI_U			+= $(PATH_OSYS)/CLI/uKOS/uKOS.c
 CLI_U			+= $(PATH_OSYS)/CLI/wki2c/wki2c.c

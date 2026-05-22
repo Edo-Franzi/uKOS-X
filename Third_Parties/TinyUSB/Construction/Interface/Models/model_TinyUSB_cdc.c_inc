@@ -97,10 +97,10 @@ void	TinyUSB_cdc_write(uint8_t itf, const uint8_t *buffer, uint32_t size) {
  			tud_cdc_n_write_flush(itf);
 
 			offset += written;
-            retry = 0u;
-        }
-        else {
- 			tud_cdc_n_write_flush(itf);
+			retry = 0u;
+		}
+		else {
+			tud_cdc_n_write_flush(itf);
 			retry++;
 
 			if ((vConnected[itf] == KDISCONNECTED) && (retry > 10u)) {

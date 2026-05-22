@@ -70,8 +70,8 @@ int32_t	stub_switch_read(uint32_t *mode) {
 	uint32_t	switches = 0u;
 
 	INTERRUPTION_OFF;
-	switches |= ((GPIOB->IDR & (1u<<BSW_0)) == 0u) ? (0x1u) : (0u);
-	switches |= ((GPIOB->IDR & (1u<<BSW_1)) == 0u) ? (0x2u) : (0u);
+	switches |= ((GPIOA->IDR & (1u<<BSW_0)) == 0u) ? (0x1u) : (0u);
+	switches |= ((GPIOA->IDR & (1u<<BSW_1)) == 0u) ? (0x2u) : (0u);
 	*mode = (switches & 0x03u);
 	RETURN_INT_RESTORE(KERR_SWITCH_NOERR);
 }

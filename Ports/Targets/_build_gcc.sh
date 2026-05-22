@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2025-01-01
@@ -13,8 +14,8 @@
 #			cd ${PATH_UKOS_X_PACKAGE}/Ports/Targets
 #			./_build_gcc.sh [-U] [-Y] [-v|-w]
 #
-#   (c) 2025-2026, Edo. Franzi
-#   --------------------------
+#   (c) 2025-2026, Laurent von Allmen
+#   ---------------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 #   5-Route de Cheseaux                / / / / ,< / / / /\__ \

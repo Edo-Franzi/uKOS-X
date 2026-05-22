@@ -649,6 +649,7 @@ While Python offers exceptional flexibility and ease of integration, other **vis
 
 ```python
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
 # Author:     Edo. Franzi    The 2025-01-01

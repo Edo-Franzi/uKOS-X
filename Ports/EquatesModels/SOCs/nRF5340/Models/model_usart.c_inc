@@ -194,7 +194,7 @@ int32_t	model_usart_write(const uint8_t *buffer, uint32_t size) {
 		while (cb_CTSCheck() == false) { kern_suspendProcess(1u); }
 
 		USART->TXD_PTR	  = (uint32_t)vSndBuffer;
-		USART->TXD_MAXCNT = (uint32_t)newSize;
+		USART->TXD_MAXCNT = newSize;
 		USART->INTENSET	  = (1u<<8);
 		USART->TASKS_STARTTX = 1u;
 	}

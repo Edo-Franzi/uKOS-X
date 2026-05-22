@@ -224,7 +224,7 @@ int32_t	model_imager_acquisition(void) {
 int32_t	model_imager_read(volatile void **image) {
 
 	if (vPage == 0u) { *image = vImageE0; return (KERR_IMAGER_NOERR); }
-	else			 { *image = vImageE1; return (KERR_IMAGER_NOERR); }
+					 { *image = vImageE1; return (KERR_IMAGER_NOERR); }
 }
 
 /*

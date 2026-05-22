@@ -26,6 +26,7 @@ Once this is done, additional required packages must be downloaded and installed
 
 ```bash
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
 # Author:     Edo. Franzi    The 2025-01-01
@@ -155,6 +156,7 @@ pip3 install -r requirements.txt
 
 ```bash
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
 # Author:     Edo. Franzi    The 2025-01-01
