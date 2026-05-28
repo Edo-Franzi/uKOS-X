@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -51,10 +52,10 @@
 
 // Prototypes
 
-void	model_random_soft_init(void);
-void	model_random_soft_read(uint32_t *number);
-void	model_random_hard_init(void);
-void	model_random_hard_read(uint32_t *number);
+static	void	model_random_soft_init(void);
+static	void	model_random_soft_read(uint32_t *number);
+static	void	model_random_hard_init(void);
+static	void	model_random_hard_read(uint32_t *number);
 
 /*
  * \brief stub_random_init

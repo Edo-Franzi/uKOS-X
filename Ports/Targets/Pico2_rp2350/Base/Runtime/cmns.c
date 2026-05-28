@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -125,12 +126,10 @@ void	cmns_init(void) {
  * \note This function does not return a value (None).
  *
  */
-void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
+void	cmns_send([[maybe_unused]] serialManager_t serialManager, const char_t *ascii) {
 			uint8_t		data;
 			uint32_t	core;
 	const	char_t		*wkAscii = ascii;
-
-	UNUSED(serialManager);
 
 	core = GET_RUNNING_CORE;
 
@@ -186,11 +185,9 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
  * \note This function does not return a value (None).
  *
  */
-void	cmns_receive(serialManager_t serialManager, char_t *data) {
+void	cmns_receive([[maybe_unused]] serialManager_t serialManager, char_t *data) {
 	uint32_t	core;
 	uint32_t	dr;
-
-	UNUSED(serialManager);
 
 	core = GET_RUNNING_CORE;
 
@@ -222,16 +219,30 @@ void	cmns_receive(serialManager_t serialManager, char_t *data) {
 /*
  * \brief cmns_wait
  *
- * \param[in]	us		Delay in us
+ * - Simple delay loop
+ *
+ * \param[in]	us		Delay in microseconds (approximate)
  *
  * \note This function does not return a value (None).
  *
  */
+#if (defined(__riscv))
+// Calibrated for ~150 MHz Hazard3 with cache.
+// The compiled busy-loop body is addi/nop/bltu — 4 cycles per
+// iteration in steady state. wkUs = (us/4) * (clock/1e6) gives
+// the iteration count needed to span `us` microseconds.
+#define	CYCLES_PER_ITERATION		4u
+
+#else
+#define	CYCLES_PER_ITERATION		7u
+#endif
 void	cmns_wait(uint32_t us) {
 	uint32_t	wkUs = us, time;
 
-	wkUs = (wkUs / 7u) * (KFREQUENCY_CORE / 1000000u);
+	wkUs = (wkUs / CYCLES_PER_ITERATION) * (KFREQUENCY_CORE / 1000000u);
 
-	wkUs = (wkUs == 0u) ? (1u) : (wkUs);
-	for (time = 0; time < wkUs; time++) { NOP; }
+	wkUs = (wkUs == 0u) ? 1u : wkUs;
+	for (time = 0; time < wkUs; time++) {
+		NOP;
+	}
 }

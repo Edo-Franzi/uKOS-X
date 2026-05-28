@@ -65,7 +65,7 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 
 # Project paths
 
-# - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(V)/makefile
+# - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(VARIANT)/makefile
 # - PATH_COMX	--> Commun folders				--> OS_Kernel-X/Ports/Targets/$(BOARD)/Base_CMx
 
 # Paths overloaded
@@ -73,7 +73,7 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 # - PATH_UKOS	PATH_UKOS ?= $(PATH_UKOS_X_PACKAGE)
 # - PATH_PORT	PATH_PORT ?= $(PATH_UKOS_X_PACKAGE)/Ports
 # - PATH_BASE	PATH_BASE ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/Base
-# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(V)
+# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(VARIANT)
 # - PATH_MAPP	PATH_MAPP ?= $(PATH_BASE)/Runtime
 
 PATH_MKFILE				:= $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -89,10 +89,23 @@ FAMILY					=  h7
 SPEED					=  FS
 PROFILE					=  cdc_cdc
 
+STORAGE					=  sdcard
+PATH_LIB_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs/Library/$(CORE)/$(STORAGE)
+FATFS					=  libFatFs
+
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Construction/Interface/Includes/mcu/$(PROVIDER)
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Construction/Interface/OSAL
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
+
+DISPLAY					=  WKS43WV067_5_Inches
+PATH_LVGL				=  $(PATH_UKOS)/Third_Parties/LVGL
+PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+LVGL					=  libLVGL
+
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/LVGL-current
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
 
 # Target & Infrastructure
 
@@ -104,7 +117,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Firefly_H743
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  STM32H743
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os
@@ -115,7 +128,7 @@ FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 # With the DATA cache
 CONF_SYSTEM		+= -DCACHE_D_S
 
-BURN			?= jlinkexe
+BURN			?= dfu-util
 
 # The really first pcs of code (privileged)
 
@@ -212,6 +225,12 @@ CONF_SYSTEM		+= -DCONFIG_MAN_CDC1_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/cdc1/cdc1.c
 # With the RANDOM manager
 CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
+# With the STORAGE manager
+CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
+# With the SDCARD manager
+CONF_SYSTEM		+= -DCONFIG_MAN_SDCARD_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdcard/sdcard.c
 LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
@@ -220,6 +239,7 @@ LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/spi0/stub_spi0_sspi1.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart1.c
+LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 
 # The Lib_xxxx components (user)
@@ -295,6 +315,7 @@ CLI_U			+= $(PATH_OSYS)/CLI/sloader/sloader.c
 CLI_U			+= $(PATH_OSYS)/CLI/szkern/szkern.c
 CLI_U			+= $(PATH_OSYS)/CLI/test_malloc/test_malloc.c
 CLI_U			+= $(PATH_OSYS)/CLI/test_ram/test_ram.c
+CLI_U			+= $(PATH_OSYS)/CLI/test_sdcard/test_sdcard.c
 CLI_U			+= $(PATH_OSYS)/CLI/uKOS/uKOS.c
 CLI_U			+= $(PATH_OSYS)/CLI/wki2c/wki2c.c
 CLI_U			+= $(PATH_OSYS)/CLI/wkserial/wkserial.c
@@ -311,6 +332,12 @@ UKOS_COMPONENTS	+= $(MICROPYTHON).a
 # With the TinyUSB library
 CONF_SYSTEM		+= -DSYSTEM_TINYUSB_$(SPEED)_S
 UKOS_COMPONENTS	+= $(TINYUSB).a
+# With the LVGL library
+CONF_SYSTEM		+= -DSYSTEM_LVGL_S
+UKOS_COMPONENTS	+= $(LVGL).a
+# With the FATFS manager (File system)
+CONF_SYSTEM		+= -DCONFIG_MAN_FATFS_S
+UKOS_COMPONENTS	+= $(FATFS).a
 
 # The included makefiles
 

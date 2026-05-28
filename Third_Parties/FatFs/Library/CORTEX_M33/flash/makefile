@@ -72,7 +72,7 @@ PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
 
 # Target & Infrastructure
 
-CORE				=  CORTEX_M4
+CORE				=  CORTEX_M33
 FATFS				=  libFatFs.a
 
 STANDARD			=  -std=c23
@@ -80,9 +80,9 @@ OPTIMISATION		=  -Os
 
 PREFIX				?= arm-none-eabi-
 PATH_COMPILER		=  $(PATH_GCC_ARM)
-FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv4-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m4 -mthumb
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
+FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
+CPU_SPEC			=  -mcpu=cortex-m33 -mthumb
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S -DFLASH_S
 
 # The included makefiles
 

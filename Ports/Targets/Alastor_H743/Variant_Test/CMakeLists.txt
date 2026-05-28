@@ -169,9 +169,9 @@ add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_UR
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt1/urt1.c CONFIG_MAN_URT1_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt2/urt2.c CONFIG_MAN_URT2_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt3/urt3.c CONFIG_MAN_URT3_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/storage/storage.c CONFIG_MAN_STORAGE_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/sdcard/sdcard.c CONFIG_MAN_SDCARD_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/serialFlash/serialFlash.c CONFIG_MAN_SERIAL_FLASH_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/storage/storage.c CONFIG_MAN_STORAGE_S)
 list(APPEND LIBX_P
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
 	${PATH_BASE}/Lib_generics/machine/stub_machine.c
@@ -291,7 +291,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u shar_p proc_p proc_u tool
 
 # Optional managers
 add_MicroPython()
-add_FatFs()
+add_FatFs(STORAGE sdcard_flash)
 
 # System configuration flags
 

@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -49,13 +50,9 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m33 U"
-#define	KCONTROLLER			"rp23450"
-#define	KBOARD				"Pico2 rp2350 (Variant_Test)"
-#define	KTARGET				"Pico2_rp2350"
+#if (!defined(Pico2_rp2350_S))
+#define	Pico2_rp2350_S
+#endif
 
 // GPIO settings
 // -------------
@@ -78,7 +75,7 @@
 
 #define KNB_LED				4u											// Number of LEDs
 
-// PORTs
+// GPIO pin assignments
 
 #define	BLED_s				25u											// GPIO25, LED system
 #define	BLED_0				11u											// GPIO11, LED yellow

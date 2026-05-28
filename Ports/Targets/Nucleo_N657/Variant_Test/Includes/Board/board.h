@@ -49,14 +49,6 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m55 N"
-#define	KCONTROLLER			"STM32N657"
-#define	KBOARD				"Nucleo N657 (Variant_Test)"
-#define	KTARGET				"Nucleo_N657"
-
 // GPIO settings
 // -------------
 

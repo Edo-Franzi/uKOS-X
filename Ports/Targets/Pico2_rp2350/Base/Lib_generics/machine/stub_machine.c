@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -53,7 +54,7 @@
  * \brief stub_machine_restart
  *
  * - Disable all the system interruption
- * - Restart
+ * - Restart via RP2350 watchdog
  *
  */
 int32_t	stub_machine_restart(void) {
@@ -72,6 +73,34 @@ int32_t	stub_machine_restart(void) {
 
 	return (KERR_SYSTEM_NOERR);
 }
+
+#if (defined(__riscv))
+/*
+ * \brief stub_machine_readPC
+ *
+ * - Return the PC of the selected process
+ *	 RV32IMAC KERN_SAVE_FRAME layout: sp[0] = mepc
+ *
+ */
+int32_t	stub_machine_readPC(const uintptr_t *stackProcess, uintptr_t *pc) {
+
+	*pc = stackProcess[0];
+	return (KERR_SYSTEM_NOERR);
+}
+
+/*
+ * \brief stub_machine_readFunctionName
+ *
+ * - Return the function name that belongs to a given PC
+ *
+ */
+int32_t stub_machine_readFunctionName([[maybe_unused]] const uintptr_t pc, const char_t **function) {
+
+	*function = nullptr;
+	return (KERR_SYSTEM_NOERR);
+}
+
+#else
 
 /*
  * \brief stub_machine_readPC
@@ -139,3 +168,4 @@ int32_t	stub_machine_readFunctionName(const uintptr_t pc, const char_t **functio
 	*function = nullptr;
 	return (KERR_SYSTEM_NOERR);
 }
+#endif

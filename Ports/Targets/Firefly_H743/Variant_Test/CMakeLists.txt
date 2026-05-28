@@ -84,7 +84,7 @@ add_compile_definitions(
 )
 
 # Flash programming script selection
-set(BURN stm32programmer)
+set(BURN dfu-util)
 
 # Extra compilation options
 add_compile_options(
@@ -167,6 +167,8 @@ add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/cdc0/cdc0.c CONFIG_MAN_CD
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/cdc1/cdc1.c CONFIG_MAN_CDC1_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
 add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/sdcard/sdcard.c CONFIG_MAN_SDCARD_S)
+add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_storages/storage/storage.c CONFIG_MAN_STORAGE_S)
 list(APPEND LIBX_P
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
 	${PATH_BASE}/Lib_generics/machine/stub_machine.c
@@ -176,6 +178,7 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart1.c
+	${PATH_BASE}/Lib_storages/sdcard/stub_sdcard.c
 )
 add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
@@ -243,7 +246,9 @@ list(APPEND CLI_U
 	${PATH_OSYS}/CLI/semaphore/semaphore.c
 	${PATH_OSYS}/CLI/sloader/sloader.c
 	${PATH_OSYS}/CLI/szkern/szkern.c
+	${PATH_OSYS}/CLI/test_malloc/test_malloc.c
 	${PATH_OSYS}/CLI/test_ram/test_ram.c
+	${PATH_OSYS}/CLI/test_sdcard/test_sdcard.c
 	${PATH_OSYS}/CLI/uKOS/uKOS.c
 	${PATH_OSYS}/CLI/wki2c/wki2c.c
 	${PATH_OSYS}/CLI/wkserial/wkserial.c
@@ -257,6 +262,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 
 # Optional manager
 add_MicroPython()
+add_FatFs(STORAGE sdcard)
 
 # System configuration flags
 

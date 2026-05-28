@@ -52,7 +52,7 @@ ifndef PATH_LVGL
 $(error PATH_LVGL is not defined)
 endif
 
-LIB_SYS_DIR			=  $(PATH_LVGL)/Construction/System
+LIB_SYS_DIR			= $(PATH_LVGL)/Construction/System
 LIB_SRC_DIR			= $(PATH_LVGL)/LVGL-current/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
@@ -86,7 +86,7 @@ CFLAGS				+= -Wno-missing-braces
 CFLAGS				+= -Wno-misleading-indentation
 
 ifneq ($(PREFIX),llvm-)
-ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55))
+ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55 CORTEX_M85))
 CFLAGS += -mpoke-function-name
 endif
 endif

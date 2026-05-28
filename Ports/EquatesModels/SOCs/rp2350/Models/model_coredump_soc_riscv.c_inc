@@ -1,0 +1,184 @@
+/*
+; model_coredump_soc_riscv.
+; =========================
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
+
+;------------------------------------------------------------------------
+; Author:	Laurent von Allmen	The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for the core dump (SOC specific).
+;
+; Pico2_rp2350_RV32IMAC – coreDump SOC model, RISC-V variant.
+; Adapted from model_coredump_soc.c_inc (ARM/Cortex-M33).
+; Key differences:
+;  - core_getIPSR()  → core_getCSR(RV_CSR_MCAUSE) & 0x7FFFFFFFU
+;  - ARM register names (SPP/PSP/PC) → RISC-V names (sp/epcm)
+;  - Function signature: void(void) instead of void(uintptr_t, uintptr_t*)
+;
+; Note: the general-purpose register snapshot captured by CORE_DUMP_SAVE_STACK_FRAME
+; reflects register state at the dispatch level (first_handle_trap + dispatch chain),
+; not the original exception-time values.  The CSR values (mcause, mepc, …) reported
+; by local_printCore() are fully accurate.
+;
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+// Prototypes
+
+static	void	local_processInterruption(uintptr_t *stackBefore, uintptr_t *stackAfter);
+static	void	local_printInterruption(const char_t **vectorName);
+
+/*
+ * \brief model_coreDump_displayInterruptions
+ *
+ * RISC-V naked entry – saves the full register frame then jumps to
+ * local_processInterruption, which does the actual printing.
+ * Registered in vExce_indIntVectors[] by exce_init().
+ *
+ */
+[[gnu::naked]]
+static	void	model_coreDump_displayInterruptions(void) {
+
+	CORE_DUMP_SAVE_STACK_FRAME;
+
+	JUMP_FNCT(local_processInterruption);
+}
+
+/*
+ * \brief local_processInterruption
+ *
+ * - Collect the stack frame
+ * - Display the interruption name
+ * - Display the fault routine & process
+ * - Display the core information
+ * - Display the user trace
+ * - Display the stack frame
+ *
+ */
+[[gnu::noinline, gnu::used]] [[noreturn]]
+static	void	local_processInterruption(uintptr_t *stackBefore, uintptr_t *stackAfter) {
+			uint32_t	core, i;
+	const	uintptr_t	*ptr;
+	const	char_t		*vectorName;
+
+	core = GET_RUNNING_CORE;
+
+	vExceptionNb[core] = (core_getCSR(RV_CSR_MCAUSE) & 0x7FFFFFFFu);
+	vStackBefore[core] = stackBefore;
+	vStackAfter[core]  = stackAfter;
+
+	ptr = vStackAfter[core];
+	for (i = sp; i < ENDREG; i++) {
+		vStackCoreDump[core][i] = *ptr;
+		ptr++;
+	}
+
+	local_printInterruption(&vectorName);
+	local_printFunction(vStackCoreDump[core][epcm], vectorName, "Interruption: ");
+	local_printCore();
+	local_printTrace();
+	local_printLog();
+	local_printStackFrame();
+	cb_signal(KINTERRUPTION);
+}
+
+/*
+ * \brief local_printInterruption
+ *
+ * - Display the RP2350 peripheral interrupt name.
+ *
+ */
+[[gnu::noinline]]
+static	void	local_printInterruption(const char_t **vectorName) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+
+	cmns_send(KDEF0, "\n\n\n\n");
+	cmns_send(KDEF0, "System dead! Core DUMP!!\n");
+	cmns_send(KDEF0, "========================\n\n");
+	switch (vExceptionNb[core]) {
+		case 0u:   { *vectorName = "TIMER0_IRQ_0_IRQ";		break; }
+		case 1u:   { *vectorName = "TIMER0_IRQ_1_IRQ";		break; }
+		case 2u:   { *vectorName = "TIMER0_IRQ_2_IRQ";		break; }
+		case 3u:   { *vectorName = "TIMER0_IRQ_3_IRQ";		break; }
+		case 4u:   { *vectorName = "TIMER1_IRQ_0_IRQ";		break; }
+		case 5u:   { *vectorName = "TIMER1_IRQ_1_IRQ";		break; }
+		case 6u:   { *vectorName = "TIMER1_IRQ_2_IRQ";		break; }
+		case 7u:   { *vectorName = "TIMER1_IRQ_3_IRQ";		break; }
+		case 8u:   { *vectorName = "PWM_IRQ_WRAP_0_IRQ";	break; }
+		case 9u:   { *vectorName = "PWM_IRQ_WRAP_1_IRQ";	break; }
+		case 10u:  { *vectorName = "DMA_IRQ_0_IRQ";			break; }
+		case 11u:  { *vectorName = "DMA_IRQ_1_IRQ";			break; }
+		case 12u:  { *vectorName = "DMA_IRQ_2_IRQ";			break; }
+		case 13u:  { *vectorName = "DMA_IRQ_3_IRQ";			break; }
+		case 14u:  { *vectorName = "USBCTRL_IRQ_IRQ";		break; }
+		case 15u:  { *vectorName = "PIO0_IRQ_0_IRQ";		break; }
+		case 16u:  { *vectorName = "PIO0_IRQ_1_IRQ";		break; }
+		case 17u:  { *vectorName = "PIO1_IRQ_0_IRQ";		break; }
+		case 18u:  { *vectorName = "PIO1_IRQ_1_IRQ";		break; }
+		case 19u:  { *vectorName = "PIO2_IRQ_0_IRQ";		break; }
+		case 20u:  { *vectorName = "PIO2_IRQ_1_IRQ";		break; }
+		case 21u:  { *vectorName = "IO_IRQ_BANK0_IRQ";		break; }
+		case 22u:  { *vectorName = "IO_IRQ_BANK0_NS_IRQ";	break; }
+		case 23u:  { *vectorName = "IO_IRQ_QSPI_IRQ";		break; }
+		case 24u:  { *vectorName = "IO_IRQ_QSPI_NS_IRQ";	break; }
+		case 25u:  { *vectorName = "SIO_IRQ_FIFO_IRQ";		break; }
+		case 26u:  { *vectorName = "SIO_IRQ_BELL_IRQ";		break; }
+		case 27u:  { *vectorName = "SIO_IRQ_FIFO_NS_IRQ";	break; }
+		case 28u:  { *vectorName = "SIO_IRQ_BELL_NS_IRQ";	break; }
+		case 29u:  { *vectorName = "SIO_IRQ_MTIMECMP_IRQ";	break; }
+		case 30u:  { *vectorName = "CLOCKS_IRQ_IRQ";		break; }
+		case 31u:  { *vectorName = "SPI0_IRQ_IRQ";			break; }
+		case 32u:  { *vectorName = "SPI1_IRQ_IRQ";			break; }
+		case 33u:  { *vectorName = "UART0_IRQ_IRQ";			break; }
+		case 34u:  { *vectorName = "UART1_IRQ_IRQ";			break; }
+		case 35u:  { *vectorName = "ADC_IRQ_FIFO_IRQ";		break; }
+		case 36u:  { *vectorName = "I2C0_IRQ_IRQ";			break; }
+		case 37u:  { *vectorName = "I2C1_IRQ_IRQ";			break; }
+		case 38u:  { *vectorName = "OTP_IRQ_IRQ";			break; }
+		case 39u:  { *vectorName = "TRNG_IRQ_IRQ";			break; }
+		case 42u:  { *vectorName = "PLL_SYS_IRQ_IRQ";		break; }
+		case 43u:  { *vectorName = "PLL_USB_IRQ_IRQ";		break; }
+		case 44u:  { *vectorName = "POWMAN_IRQ_POW_IRQ";	break; }
+		case 45u:  { *vectorName = "POWMAN_IRQ_TIMER_IRQ";	break; }
+		default:   { *vectorName = "Unknown";				break; }
+	}
+}

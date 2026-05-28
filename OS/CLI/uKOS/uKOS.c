@@ -62,7 +62,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "The uKOS-X information\n"
 									"This tool gives information about the uKOS-X\n"
 									"uKernel.\n\n"
 
-									"Input format:  uKOS\n"
+									"Input format:  uKOS {-history}\n"
 									"Output format: [result]\n\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
@@ -87,14 +87,75 @@ MODULE(
 STRG_LOC_CONST(aStruKOS[])	  = STRG_STRIP;
 STRG_LOC_CONST(aStrShowRev[]) = SW_VERSION;
 
+// Prototypes
+
+static	void	local_displayTarget(void);
+static	void	local_displayHistory(void);
+
 /*
  * \brief Main entry point
  *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+	int32_t		status;
+	bool		equals;
+	enum		{ KERR_NOT, KERR_INA } error = KERR_NOT;
 
-	UNUSED(argc);
-	UNUSED(argv);
+// Analyse the command line
+// ------------------------
+//
+// Example:
+//
+// uKOS				Display the uKOS-X target implementation
+// uKOS -history	Display the uKOS-X history
+
+	switch (argc) {
+		case 2u: {
+			text_checkAsciiBuffer(argv[1], "-history", &equals); if (equals == true) { local_displayHistory(); break; }
+			error = KERR_INA;
+			break;
+		}
+		default: {
+			local_displayTarget();
+			break;
+		}
+	}
+
+	switch (error) {
+		case KERR_NOT: { (void)dprintf(KSYST, "%s", aStruKOS);			   status = EXIT_OS_SUCCESS_CLI; break; }
+		case KERR_INA: { (void)dprintf(KSYST, "Incorrect arguments.\n\n"); status = EXIT_OS_FAILURE;     break; }
+		default:	   {												   status = EXIT_OS_FAILURE;     break; }
+	}
+	return (status);
+}
+
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_displayTarget
+ *
+ * - Display the uKOS-X target implementation
+ *
+ */
+static	void	local_displayTarget(void) {
+
+	(void)dprintf(KSYST, "\nTarget:\n");
+	(void)dprintf(KSYST, "Board:   %s\n",   STRG(BOARD));
+	(void)dprintf(KSYST, "Variant: %s\n",   STRG(VARIANT));
+	(void)dprintf(KSYST, "SoC:     %s\n",   STRG(SOC));
+	(void)dprintf(KSYST, "Core:    %s\n\n", STRG(CORE));
+	(void)dprintf(KSYST, "VCS#:    %s\n\n", aStrShowRev);
+}
+
+/*
+ * \brief local_displayHistory
+ *
+ * - Display the uKOS-X history
+ *
+ */
+static	void	local_displayHistory(void) {
 
 	(void)dprintf(KSYST, "uKOS History\n\n");
 
@@ -126,8 +187,4 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	(void)dprintf(KSYST, "   Laurent von Allmen        - New ideas, LLVM and CMake toolchain integration,\n");
 	(void)dprintf(KSYST, "                               quality, testing, rigour\n");
 	(void)dprintf(KSYST, "   Antonio Jose Restrepo Zea - New ideas, quality, testing, rigour\n\n");
-
-	(void)dprintf(KSYST, "VCS#: %s\n\n", aStrShowRev);
-	(void)dprintf(KSYST, "%s", aStruKOS);
-	return (EXIT_OS_SUCCESS_CLI);
 }

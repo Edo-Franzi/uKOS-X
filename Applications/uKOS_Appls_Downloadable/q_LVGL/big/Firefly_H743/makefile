@@ -9,9 +9,9 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X for building the libFatFs.a module.
+# Goal:		makefile for the "big" application.
 #
-#   (c) 2025-2026, Edo. Franzi
+#   (c) 2025-20xx, Edo. Franzi
 #   --------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
@@ -45,48 +45,23 @@
 #
 #------------------------------------------------------------------------
 
-SHELL			=  /bin/sh
+PROJECT			=  big
 
-ifndef PATH_UKOS_X_PACKAGE
-    $(error PATH_UKOS_X_PACKAGE is not defined)
-endif
-ifndef PATH_GCC_RVXX
-    $(error PATH_GCC_RVXX is not defined)
-endif
-
-ifeq ($(origin CC), default)
-CC					=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
-AR					=  $(PATH_COMPILER)/bin/$(PREFIX)ar
-ST					=  $(PATH_COMPILER)/bin/$(PREFIX)strip
-RANLIB				=  $(PATH_COMPILER)/bin/$(PREFIX)ranlib
-endif
-
-# Project paths
-
-# - PATH_UKOS		--> Main uKOS-X folder			--> OS_Kernel-X
-# - PATH_PORT		--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
-# - PATH_FATFS		--> FatFs package
-
-PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
-PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
+DISPLAY			=  WKS43WV067_5_Inches
+PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure
 
-CORE				=  RV32IMAC
-FATFS				=  libFatFs.a
+PREFIX			?=  arm-none-eabi-
+COMPILER_FAMILY	?=  gcc
 
-STANDARD			=  -std=c23
-OPTIMISATION		=  -Os
+BOARD			=  Firefly_H743
+VARIANT			=  Variant_Test
+SOC				=  STM32H743
+CORE			=  CORTEX_M7
+OPTIMISATION	=  -Os
 
-PREFIX				?= riscv64-unknown-elf-
-PATH_COMPILER		=  $(PATH_GCC_RVXX)
-FLAGS_FP			=  -mabi=ilp32
-CPU_SPEC			=  -march=rv32imac_zicsr_zifencei
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
+CFLAGS			+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)
+CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 
-# The included makefiles
-
-include	$(PATH_FATFS)/Library/Mkfiles/FatFs.mk
-DEP					:= $(OBJ:.o=.d)
--include $(DEP)
-.PHONY : all clr_all clr build archive
+include ../../../../Mkfiles/common.mk

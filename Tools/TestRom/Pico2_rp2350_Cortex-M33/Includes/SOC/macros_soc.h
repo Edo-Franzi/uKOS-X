@@ -61,9 +61,9 @@
 #endif
 
 #if (!defined(MCSET))
-#if		(KNB_CORES == 1)
+#if (KNB_CORES == 1)
 #define MCSET(v)				{ (v) }
-#elif	(KNB_CORES == 2)
+#elif (KNB_CORES == 2)
 #define	MCSET(v)				{ (v), (v) }
 #else
 #error	"*** The number of cores (KNB_CORES) exceed 2"

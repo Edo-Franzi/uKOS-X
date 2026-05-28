@@ -49,14 +49,6 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m33"
-#define	KCONTROLLER			"nRF5340"
-#define	KBOARD				"DevKit_nRF5340 (Variant_Test)"
-#define	KTARGET				"DevKit_nRF5340"
-
 // GPIO settings
 // -------------
 

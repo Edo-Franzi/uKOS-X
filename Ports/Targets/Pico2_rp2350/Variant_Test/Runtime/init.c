@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -53,6 +54,399 @@
 
 #include	"uKOS.h"
 #include	"linker.h"
+
+#if (defined(__riscv))
+
+#include	"init.h"
+#include	"memo/private/private_memo.h"
+
+// RISC-V specific runtime
+// =======================
+
+static	inline	void	fence(void) { __asm volatile ("fence" ::: "memory");		  }
+static	inline	void	sev(void)   { __asm volatile ("slt x0, x0, x1" ::: "memory"); }
+
+// Prototypes
+
+static	void		local_PLL_Configuration(void);
+static	void		local_USB_Configuration(void);
+static	void		local_emptyRxFifo(void);
+static	void		local_writeRTxFifo(uint32_t data);
+static	uint32_t	local_readRxFifo(void);
+static	void		init_C0_init(void);
+
+extern	void		first_handle_trap(void);
+extern	void		Reset_C1_Handler(void);
+extern	void		cmns_wait(uint32_t us);
+extern	uint8_t		linker_topStackFirst_C1[];
+
+/*
+ * \brief init_init
+ *
+ * - Configure PLLs and clocks (common to both cores, run by core 0 only).
+ *	 GPIO and pad configuration is core-0-specific and lives in init_C0.c.
+ *
+ * \note This function does not return a value (None).
+ *
+ */
+void	init_init(void) {
+
+	local_PLL_Configuration();
+	init_C0_init();
+
+	if (GET_RUNNING_CORE == KCORE_0) {
+		local_USB_Configuration();
+
+		// NOTE: Core 1 launch is deferred to init_relocate() below.
+		// crt0 calls init_init() before BSS clear and __stack_chk_guard setup;
+		// releasing Core 1 here would let it run canary-protected functions
+		// while __stack_chk_guard is still 0, producing a "Stack smashing!"
+		// panic when Core 0 later writes the real guard value.
+	}
+}
+
+/*
+ * \brief init_relocate
+ *
+ * - Hook called by crt0 after BSS clear, heap init, and
+ *	 __stack_chk_guard = KSTACK_GUARD_VALUE.
+ * - Safe point to release Core 1 from reset: by now any canary-protected
+ *	 function it runs will see the stable, final guard value.
+ *
+ */
+void	init_relocate(void) {
+
+	if (GET_RUNNING_CORE == KCORE_0) {
+		init_launchCore_1(Reset_C1_Handler);
+	}
+}
+
+/*
+ * \brief local_PLL_Configuration
+ *
+ * - Configure PLLs and clocks for 150 MHz system
+ * - Same configuration as ARM version (registers are identical)
+ *
+ */
+static	void	local_PLL_Configuration(void) {
+
+#define PLL_USB_PWR_PD				PLL_SYS_PWR_PD
+#define PLL_USB_PWR_VCOPD			PLL_SYS_PWR_VCOPD
+#define PLL_USB_PWR_POSTDIVPD		PLL_SYS_PWR_POSTDIVPD
+#define PLL_USB_CS_LOCK				PLL_SYS_CS_LOCK
+#define PLL_USB_PRIM_POSTDIV1_0		PLL_SYS_PRIM_POSTDIV1_0
+#define PLL_USB_PRIM_POSTDIV2_0		PLL_SYS_PRIM_POSTDIV2_0
+
+// Disable clock resuscitation (may have been enabled by bootrom)
+
+	REG(CLOCKS)->CLK_SYS_RESUS_CTRL = 0x0u;
+
+// Before touching PLLs or XOSC, switch clk_sys and clk_ref to safe
+// default sources (ROSC). This prevents killing the clock if the
+// bootrom left clk_sys running from PLL or clk_ref running from XOSC.
+
+	REG(CLOCKS)->CLK_SYS_CTRL &= ~CLOCKS_CLK_SYS_CTRL_SRC;
+	while ((REG(CLOCKS)->CLK_SYS_SELECTED & 0x1u) == 0x0u) { }
+
+	REG(CLOCKS)->CLK_REF_CTRL &= ~CLOCKS_CLK_REF_CTRL_SRC;
+	while ((REG(CLOCKS)->CLK_REF_SELECTED & 0x1u) == 0x0u) { }
+
+// Turn on the 12-MHz crystal oscillator
+
+	REG(XOSC)->CTRL	   = XOSC_CTRL_FREQ_RANGE_1_15MHZ;
+	REG(XOSC)->STARTUP = 0x00C4u;
+	REG(XOSC)->CTRL	  |= XOSC_CTRL_ENABLE_ENABLE;
+	while ((REG(XOSC)->STATUS & XOSC_STATUS_STABLE) == 0x0u) { }
+
+// Switch clk_ref to XOSC (glitchless)
+
+	REG(CLOCKS)->CLK_REF_DIV  = 1u * CLOCKS_CLK_REF_DIV_INT_0;
+	REG(CLOCKS)->CLK_REF_CTRL = (REG(CLOCKS)->CLK_REF_CTRL & ~0x3u) | 0x2u;
+	while ((REG(CLOCKS)->CLK_REF_SELECTED & (1u<<0x2u)) == 0x0u) { }
+
+// Reset PLL_SYS
+
+	REG(RESETS)->RESET |= RESETS_RESET_PLL_SYS;
+	cmns_wait(10);
+	REG(RESETS)->RESET &= ~RESETS_RESET_PLL_SYS;
+	while ((REG(RESETS)->RESET_DONE & RESETS_RESET_DONE_PLL_SYS) == 0x0u) { }
+
+	REG(PLL_SYS)->PWR |= (PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD | PLL_SYS_PWR_POSTDIVPD);
+
+// Configure PLL_SYS for 150 MHz
+// VCO = 1500 MHz, REFDIV = 1, FBDIV = 125 (12 * 125 = 1500)
+// postdiv1 = 5, postdiv2 = 2 => 1500 / (5 * 2) = 150 MHz
+
+	REG(PLL_SYS)->CS		= 0x1u;
+	REG(PLL_SYS)->FBDIV_INT = 125u;
+
+// Turn on the VCO
+
+	REG(PLL_SYS)->PWR &= ~(PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD);
+	while ((REG(PLL_SYS)->CS & PLL_SYS_CS_LOCK) == 0u) { }
+
+	REG(PLL_SYS)->PRIM = (5u * PLL_SYS_PRIM_POSTDIV1_0) | (2u * PLL_SYS_PRIM_POSTDIV2_0);
+	REG(PLL_SYS)->PWR &= ~PLL_SYS_PWR_POSTDIVPD;
+
+// Switch clk_sys to PLL_SYS (glitchless via SRC/AUXSRC)
+
+	REG(CLOCKS)->CLK_SYS_DIV  = 1u * CLOCKS_CLK_SYS_DIV_INT_0;
+	REG(CLOCKS)->CLK_SYS_CTRL = (REG(CLOCKS)->CLK_SYS_CTRL & ~(0x7u<<5u)) | (0x0u<<5u);
+	REG(CLOCKS)->CLK_SYS_CTRL = (REG(CLOCKS)->CLK_SYS_CTRL & ~0x1u) | 0x1u;
+	while ((REG(CLOCKS)->CLK_SYS_SELECTED & (1u<<0x1u)) == 0x0u) { }
+
+// Configure clk_peri = clk_sys (for UART, etc.)
+
+	REG(CLOCKS)->CLK_PERI_CTRL = (0x0u<<5u) | (1u<<0x0Bu);
+
+// The USB PLL
+// -----------
+
+// Reset the PLL_USB
+
+	REG(RESETS)->RESET |= RESETS_RESET_PLL_USB;
+	cmns_wait(10u);
+	REG(RESETS)->RESET &= ~RESETS_RESET_PLL_USB;
+	while ((REG(RESETS)->RESET_DONE & RESETS_RESET_DONE_PLL_USB) == 0x0u) { }
+
+	REG(PLL_USB)->PWR |= (PLL_USB_PWR_PD | PLL_USB_PWR_VCOPD | PLL_USB_PWR_POSTDIVPD);
+
+// Configure PLL_USB for 48-MHz
+// - VCO = 480-MHz, REFDIV = 1, FBDIV = 40 (12 * 40 = 480)
+// - postdiv1 = 5, postdiv2 = 2	 => 480 / (5 * 2) = 48-MHz
+
+	REG(PLL_USB)->CS		= 0x1u;
+	REG(PLL_USB)->FBDIV_INT = 40u;
+
+// Turn on the VCO
+
+	REG(PLL_USB)->PWR &= ~(PLL_USB_PWR_PD | PLL_USB_PWR_VCOPD);
+	while ((REG(PLL_USB)->CS & PLL_USB_CS_LOCK) == 0u) { }
+
+	REG(PLL_USB)->PRIM = (5u * PLL_USB_PRIM_POSTDIV1_0) | (2u * PLL_USB_PRIM_POSTDIV2_0);
+	REG(PLL_USB)->PWR &= ~PLL_USB_PWR_POSTDIVPD;
+
+// Switch the clk_usb on the PLL_USB (via SRC/AUXSRC)
+
+	REG(CLOCKS)->CLK_USB_DIV  = 1u * CLOCKS_CLK_USB_DIV_INT_0;
+	REG(CLOCKS)->CLK_USB_CTRL = (REG(CLOCKS)->CLK_USB_CTRL & ~(0x7u<<5u)) | (0x0u<<5u);
+	REG(CLOCKS)->CLK_USB_CTRL = (REG(CLOCKS)->CLK_USB_CTRL | CLOCKS_CLK_USB_CTRL_ENABLE);
+
+// The timer clocks
+// ----------------
+
+// Timer 0 clocked to 1-MHz
+
+	REG(TICKS)->TIMER0_CTRL	  = TICKS_TIMER0_CTRL_ENABLE;
+	REG(TICKS)->TIMER0_CYCLES = KCRYSTAL / KFREQUENCY_TIM;
+	REG(TIMER0)->SOURCE		  = 0u;
+
+// Timer 1 clocked to 1-MHz
+
+	REG(TICKS)->TIMER1_CTRL	  = TICKS_TIMER1_CTRL_ENABLE;
+	REG(TICKS)->TIMER1_CYCLES = KCRYSTAL / KFREQUENCY_TIM;
+	REG(TIMER1)->SOURCE		  = 0u;
+}
+
+/*
+ * \brief local_USB_Configuration
+ *
+ * - Release the USB controller from reset and enable the PHY
+ *
+ */
+static	void	local_USB_Configuration(void) {
+
+	REG(RESETS)->RESET &= ~RESETS_RESET_USBCTRL;
+	while ((REG(RESETS)->RESET_DONE & RESETS_RESET_DONE_USBCTRL) == 0x0u) { }
+
+	REG(USB)->MAIN_CTRL &= ~USB_MAIN_CTRL_PHY_ISO;
+	REG(USB)->MAIN_CTRL |= USB_MAIN_CTRL_CONTROLLER_EN;
+}
+
+/*
+ * \brief init_launchCore_1
+ *
+ * - Launch the core 1 using the RP2350 SIO FIFO mailbox protocol
+ * - Sends {0, 0, 1, vtor, sp, pc} sequence and waits for echoes
+ *
+ */
+void	init_launchCore_1(void (*entry)(void)) {
+			uint32_t	i, cmd, echo;
+	const	uint32_t	vtor   = (uint32_t)(uintptr_t)first_handle_trap;
+	const	uint32_t	sptr   = (uint32_t)(uintptr_t)linker_topStackFirst_C1;
+	const	uint32_t	pc	   = (uint32_t)(uintptr_t)entry;
+	const	uint32_t	seq[6] = { 0u, 0u, 1u, vtor, sptr, pc };
+
+	i = 0u;
+	do {
+		cmd = seq[i];
+
+// Before each 0 : empty RX + SEV
+
+		if (cmd == 0u) { local_emptyRxFifo(); sev(); }
+
+// Send and waiting for the echo
+
+		local_writeRTxFifo(cmd);
+		fence();
+
+		echo = local_readRxFifo();
+		i = (echo == cmd) ? (i + 1u) : (0u);
+	} while (i < 6u);
+}
+
+/*
+ * \brief local_emptyRxFifo
+ *
+ * - Empty the Rx SIO fifo
+ *
+ */
+static	void	local_emptyRxFifo(void) {
+	uint8_t		i;
+
+	for (i = 0u; i < 8u; i++) {
+		if ((REG(SIO)->FIFO_ST & SIO_FIFO_ST_VLD) != 0u) {
+			(void)REG(SIO)->FIFO_RD;
+		}
+		else { break; }
+	}
+}
+
+/*
+ * \brief local_writeRTxFifo
+ *
+ * - Send a word to the Tx SIO fifo
+ *
+ */
+static	void	local_writeRTxFifo(uint32_t data) {
+
+// Waiting for a room in the Tx fifo, and write
+// Wake-up the core 1
+
+	while ((REG(SIO)->FIFO_ST & SIO_FIFO_ST_RDY) == 0u) { }
+	REG(SIO)->FIFO_WR = data;
+	sev();
+}
+
+/*
+ * \brief local_readRxFifo
+ *
+ * - Read a word from the Rx SIO fifo
+ *
+ */
+static	uint32_t	local_readRxFifo(void) {
+
+// Waiting for data in the Rx fifo, and read
+
+	while ((REG(SIO)->FIFO_ST & SIO_FIFO_ST_VLD) == 0u) { }
+	return (REG(SIO)->FIFO_RD);
+}
+
+/*
+ * init_C0.c
+ * Pico2_rp2350_RV32IMAC – Core-0 GPIO and pad initialisation.
+ */
+
+/*
+ * \brief init_C0_init
+ *
+ * - Release IO_BANK0 and PADS_BANK0 from reset
+ * - Configure GPIO pins for the system and user LEDs
+ * - Mux GPIO16/17 to UART0 TX/RX (core 0 serial console)
+ * - Mux GPIO4/5   to UART1 TX/RX (core 1 serial console)
+ *
+ * \note This function does not return a value (None).
+ *
+ */
+void	init_C0_init(void) {
+
+// Release IO_BANK0 and PADS_BANK0 from reset
+
+	REG(RESETS)->RESET &= ~(RESETS_RESET_IO_BANK0 | RESETS_RESET_PADS_BANK0);
+	while ((REG(RESETS)->RESET_DONE & (RESETS_RESET_IO_BANK0 | RESETS_RESET_PADS_BANK0)) !=
+		   (RESETS_RESET_IO_BANK0 | RESETS_RESET_PADS_BANK0)) { }
+
+// LED outputs — clear ISO bit, set to SIO function, enable output
+
+	REG(PADS_BANK0)->GPIO11 &= ~PADS_BANK0_GPIO11_ISO;
+	REG(PADS_BANK0)->GPIO12 &= ~PADS_BANK0_GPIO12_ISO;
+	REG(PADS_BANK0)->GPIO13 &= ~PADS_BANK0_GPIO13_ISO;
+	REG(PADS_BANK0)->GPIO25 &= ~PADS_BANK0_GPIO25_ISO;
+
+	REG(IO_BANK0)->GPIO11_CTRL = IO_BANK0_GPIO11_CTRL_FUNCSEL_SIOB_PROC_11;
+	REG(IO_BANK0)->GPIO12_CTRL = IO_BANK0_GPIO12_CTRL_FUNCSEL_SIOB_PROC_12;
+	REG(IO_BANK0)->GPIO13_CTRL = IO_BANK0_GPIO13_CTRL_FUNCSEL_SIOB_PROC_13;
+	REG(IO_BANK0)->GPIO25_CTRL = IO_BANK0_GPIO25_CTRL_FUNCSEL_SIOB_PROC_25;
+
+	REG(SIO)->GPIO_OE_SET = (1u << BLED_s) | (1u << BLED_0) | (1u << BLED_1) | (1u << BLED_2);
+
+// UART0: GPIO16 (TX) output, GPIO17 (RX) input with Schmitt trigger
+
+	REG(PADS_BANK0)->GPIO16	   = PADS_BANK0_GPIO16_SCHMITT;
+	REG(PADS_BANK0)->GPIO17	   = PADS_BANK0_GPIO17_IE | PADS_BANK0_GPIO17_SCHMITT;
+	REG(IO_BANK0)->GPIO16_CTRL = IO_BANK0_GPIO16_CTRL_FUNCSEL_UART0_TX;
+	REG(IO_BANK0)->GPIO17_CTRL = IO_BANK0_GPIO17_CTRL_FUNCSEL_UART0_RX;
+
+// UART1: GPIO4 (TX) output, GPIO5 (RX) input with Schmitt trigger
+
+	REG(PADS_BANK0)->GPIO4	  = PADS_BANK0_GPIO4_SCHMITT;
+	REG(PADS_BANK0)->GPIO5	  = PADS_BANK0_GPIO5_IE | PADS_BANK0_GPIO5_SCHMITT;
+	REG(IO_BANK0)->GPIO4_CTRL = IO_BANK0_GPIO4_CTRL_FUNCSEL_UART1_TX;
+	REG(IO_BANK0)->GPIO5_CTRL = IO_BANK0_GPIO5_CTRL_FUNCSEL_UART1_RX;
+}
+
+/*
+ * \brief init_C1_init
+ *
+ * - Pico2_rp2350_RV32IMAC – Core-1 specific initialisation and entry point.
+ * - Enable machine interrupts so Core 1 can receive ecalls and timer events.
+ *
+ */
+static	void	init_C1_init(void) {
+
+// Heap-init race guard. memo.c's local_init() runs the heap-descriptor
+// initialisation only on KCORE_0 and *outside* its own cross-core spinlock,
+// so on RV32 (where Core 1 boots roughly in parallel with Core 0) Core 1's
+// first memo_malloc can walk an uninitialised or partially-initialised
+// first heap block. The ARM Pico2 port doesn't hit this because its
+// Core 1 bootrom release is much slower than Hazard3's.
+//
+// Spin until Core 0 has executed local_init(): vMemo_heapInfo.oNbBlocks is
+// 0 in BSS at reset and gets set to 1 as part of the heap-init sequence.
+// This happens when Core 0's launcher creates the first KID_FAM_PROCESSES
+// process via PROCESS_STACKMALLOC.
+
+	while (vMemo_heapInfo.oNbBlocks == 0U) {
+		__asm volatile ("nop");
+	}
+	__asm volatile ("fence r,r" ::: "memory");
+
+	INTERRUPTION_ON_HARD;
+}
+
+/*
+ * \brief main_C1
+ *
+ * - Core 1 entry point (strong override of the weak symbol in first-riscv.c).
+ * - Called from Reset_C1_Handler after gp, mtvec, and sp are set up.
+ * - Mirrors core 0's tail of crt0(): per-core exception-vector init, then
+ *	 into boot() which installs the per-core idle daemon and launcher
+ *	 process. The launcher then iterates the module table and creates
+ *	 any process whose oExecutionCore mask includes core 1 (e.g.,
+ *	 startUp running its core-1 branch on UART0).
+ *
+ */
+// NOLINTNEXTLINE(misc-use-internal-linkage)
+extern	void	init_relocate(void);
+
+void	main_C1(void) {
+	init_C1_init();
+	exce_init();
+	init_relocate();
+	exit(boot());
+}
+
+#else
 
 // uKOS-X specific (see the module.h)
 // ==================================
@@ -519,3 +913,4 @@ static	uint32_t	local_readRxFifo(void) {
 	while ((REG(SIO)->FIFO_ST & SIO_FIFO_ST_VLD) == 0u) { wfe(); }
 	return (REG(SIO)->FIFO_RD);
 }
+#endif

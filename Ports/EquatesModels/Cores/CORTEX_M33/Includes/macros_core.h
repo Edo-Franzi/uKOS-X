@@ -320,6 +320,17 @@ extern	void	model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp);
 								}
 #endif
 
+// Vector registration macros
+// --------------------------
+
+// Moved from macros_soc.h for IWYU compliance (eliminates circular dependency)
+
+#define	EXCEPTION_VECTOR(vectorNb, address)																						\
+								vExce_indExcVectors[GET_RUNNING_CORE][(int32_t)vectorNb + (int32_t)KNB_EXCEPTIONS] = address
+
+#define	INTERRUPT_VECTOR(vectorNb, address)																						\
+								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address
+
 // Misc assembler macro
 // --------------------
 

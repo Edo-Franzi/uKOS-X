@@ -49,13 +49,8 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m33 U"
-#define	KCONTROLLER			"rp23450"
-#define	KBOARD				"Pico2 rp2350 (Variant_Test)"
-#define	KTARGET				"Pico2_rp2350"
+// GPIO settings
+// -------------
 
 #define	LED_SYSTEM_ON		(REG(SIO)->GPIO_OUT_SET = (1<<BLED_s))		//
 #define	LED_SYSTEM_OFF		(REG(SIO)->GPIO_OUT_CLR = (1<<BLED_s))		//

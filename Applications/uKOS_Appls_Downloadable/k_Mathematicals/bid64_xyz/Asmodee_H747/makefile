@@ -62,7 +62,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Asmodee_H747
-V				=  Variant_Test_CM7
+VARIANT			=  Variant_Test_CM7
 SOC				=  STM32H747
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os

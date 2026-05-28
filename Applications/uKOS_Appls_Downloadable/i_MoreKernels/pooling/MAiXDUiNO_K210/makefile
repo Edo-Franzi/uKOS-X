@@ -53,7 +53,7 @@ PREFIX			?=  riscv64-unknown-elf-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  MAiXDUiNO_K210
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  K210
 CORE			=  RV64IMAFDC
 OPTIMISATION	=  -Os

@@ -51,14 +51,6 @@
 
 #include	"MT9V03x/MT9V03x.h"
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m7 H"
-#define	KCONTROLLER			"STM32H747"
-#define	KBOARD				"Asmodee H747 (Variant_Test_CM7)"
-#define	KTARGET				"Asmodee_H747"
-
 // GPIO settings
 // -------------
 

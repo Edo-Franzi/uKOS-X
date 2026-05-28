@@ -96,8 +96,8 @@ linker_sizeStackFirst_C0	= (2K);													/* Length of the First stack  					
 linker_stEXRAM				= 0x70000000;											/* 0x70000000: EXRAM, start of the external memory			*/
 linker_lnEXRAM				= (32768K);												/* Length of the external memory	  						*/
 
-linker_stFrameBuffer		= 0x71000000;											/* 0x71000000: FrameBuffer, start of the graphic memory 	*/
-linker_lnFrameBuffer		= (16384K);												/* Length of the graphic memory	  							*/
+linker_stLCD_F_BUFFER		= 0x71000000;											/* 0x71000000: FrameBuffer, start of the graphic memory 	*/
+linker_lnLCD_F_BUFFER		= (16384K);												/* Length of the graphic memory	  							*/
 
 linker_stUMemo				= 0x70800000;											/* 0x70800000: UMemo, start of the user memory 				*/
 linker_lnUMemo				= (8192K);												/* Length of the user memory	  							*/

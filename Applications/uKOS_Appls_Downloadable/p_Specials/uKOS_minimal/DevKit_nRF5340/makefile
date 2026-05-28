@@ -59,7 +59,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  DevKit_nRF5340
-V				=  Variant_Test_App
+VARIANT			=  Variant_Test_App
 SOC				=  nRF5340
 CORE			=  CORTEX_M33
 OPTIMISATION	=  -Os

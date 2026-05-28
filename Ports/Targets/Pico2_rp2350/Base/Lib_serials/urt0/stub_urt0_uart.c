@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -48,6 +49,10 @@
 */
 
 #include	"uKOS.h"
+
+#if (defined(__riscv))
+#include	"Registers/nvic.h"
+#endif
 
 // Model callbacks
 // ---------------

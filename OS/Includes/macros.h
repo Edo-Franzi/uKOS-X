@@ -64,7 +64,7 @@
 #define uKOS_COMPILER_VERSION	((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + (__GNUC_PATCHLEVEL__))
 #endif
 
-#define	uKOS_KBOARD				KBOARD PRIVILEGE_USER_MODE
+#define	uKOS_KBOARD				STRG(BOARD) PRIVILEGE_USER_MODE
 
 #if (defined(PRIVILEGED_USER_S))
 #define	PRIVILEGE_USER_MODE		", privileged-user mode"

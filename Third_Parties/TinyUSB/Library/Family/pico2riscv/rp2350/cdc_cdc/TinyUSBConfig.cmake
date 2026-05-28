@@ -19,7 +19,7 @@
 #   SOC:      rp2350
 #   PROFILE:  cdc_cdc
 #   PROVIDER: raspberrypi
-#   FAMILY:   pico2riscv
+#   FAMILY:   pico2m33
 
 # Ensure PATH_TINYUSB is defined
 if(NOT DEFINED PATH_TINYUSB)
@@ -37,17 +37,16 @@ endif()
 
 # Build the list of interface include directories
 set(TINYUSB_INTERFACE_INCLUDES
-    ${PATH_TINYUSB}/Library/Include
-    ${PATH_TINYUSB}/Library/Include/Interface/OSAL
-    ${PATH_TINYUSB}/Library/Include/TinyUSB-current/src
-    ${PATH_TINYUSB}/Library/Include/TinyUSB-current/src/common
-    ${PATH_TINYUSB}/Library/Include/TinyUSB-current/src/device
-    ${PATH_TINYUSB}/Library/Include/TinyUSB-current/src/class
+    ${PATH_TINYUSB}/Construction/Interface/OSAL
+    ${PATH_TINYUSB}/TinyUSB-current/src
+    ${PATH_TINYUSB}/TinyUSB-current/src/common
+    ${PATH_TINYUSB}/TinyUSB-current/src/device
+    ${PATH_TINYUSB}/TinyUSB-current/src/class
     ${CMAKE_CURRENT_LIST_DIR}
 )
 list(APPEND TINYUSB_INTERFACE_INCLUDES
-    ${PATH_TINYUSB}/Library/Include/Interface/Includes/mcu/raspberrypi
-    ${PATH_TINYUSB}/Library/Include/TinyUSB-current/src/portable/raspberrypi/rp2040
+    ${PATH_TINYUSB}/Construction/Interface/Includes/mcu/raspberrypi
+    ${PATH_TINYUSB}/TinyUSB-current/src/portable/raspberrypi/rp2040
 )
 
 # Define imported target for Full Speed library

@@ -50,8 +50,8 @@ SHELL			=  /bin/sh
 ifndef PATH_UKOS_X_PACKAGE
     $(error PATH_UKOS_X_PACKAGE is not defined)
 endif
-ifndef PATH_GCC_ARM
-    $(error PATH_GCC_ARM is not defined)
+ifndef PATH_GCC_RVXX
+    $(error PATH_GCC_RVXX is not defined)
 endif
 
 ifeq ($(origin CC), default)
@@ -72,17 +72,17 @@ PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
 
 # Target & Infrastructure
 
-CORE				=  CORTEX_M55
+CORE				=  RV32IMAC
 FATFS				=  libFatFs.a
 
 STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
 
-PREFIX				?= arm-none-eabi-
-PATH_COMPILER		=  $(PATH_GCC_ARM)
-FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m55 -mthumb
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
+PREFIX				?= riscv64-unknown-elf-
+PATH_COMPILER		=  $(PATH_GCC_RVXX)
+FLAGS_FP			=  -mabi=ilp32
+CPU_SPEC			=  -march=rv32imac_zicsr_zifencei
+FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S -DSDCARD_S -DFLASH_S
 
 # The included makefiles
 

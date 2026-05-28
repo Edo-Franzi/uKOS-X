@@ -58,6 +58,8 @@ get_filename_component(PATH_UKOS "${PATH_PORT}/.." ABSOLUTE)
 cmake_path(GET CMAKE_SOURCE_DIR PARENT_PATH TARGET_DIR)
 set(PATH_VARI ${CMAKE_SOURCE_DIR})
 set(PATH_OSYS ${PATH_UKOS}/OS)
+get_filename_component(VARIANT "${PATH_VARI}" NAME)
+get_filename_component(BOARD "${TARGET_DIR}" NAME)
 
 # Assumptions
 # For multi-processor board, each processor is labelled with '_procID'

@@ -65,7 +65,7 @@ FLAGS_USER			+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 
 # Project paths
 
-# - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(V)/makefile
+# - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(VARIANT)/makefile
 # - PATH_COMX	--> Commun folders				--> OS_Kernel-X/Ports/Targets/$(BOARD)/Base_CMx
 
 # Paths overloaded
@@ -73,7 +73,7 @@ FLAGS_USER			+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 # - PATH_UKOS	PATH_UKOS ?= $(PATH_UKOS_X_PACKAGE)
 # - PATH_PORT	PATH_PORT ?= $(PATH_UKOS_X_PACKAGE)/Ports
 # - PATH_BASE	PATH_BASE ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/Base
-# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(V)
+# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(VARIANT)
 # - PATH_MAPP	PATH_MAPP ?= $(PATH_BASE)/Runtime
 
 PATH_MKFILE				:= $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -85,7 +85,6 @@ MICROPYTHON				=  libMicroPython
 PATH_LIB_TINYUSB		=  $(PATH_UKOS)/Third_Parties/TinyUSB/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 TINYUSB					=  libTinyUSB_$(SPEED)
 PROVIDER				=  raspberrypi
-FAMILY					=  pico2m33
 SPEED					=  FS
 PROFILE					=  cdc_cdc
 
@@ -100,13 +99,10 @@ PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
 # - VERSIONING	--> GIT
 # - VERSIONING	--> NONE
 
-PREFIX			?=  arm-none-eabi-
-COMPILER_FAMILY	?=  gcc
-
 BOARD			=  Pico2_rp2350
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  rp2350
-CORE			=  CORTEX_M33
+CORE			?= CORTEX_M33
 OPTIMISATION	=  -Os
 VERSIONING		=  GIT
 FLAGS_UKOS		+= -DSECURE_S
@@ -114,7 +110,18 @@ FLAGS_UKOS		+= -D__DYNAMIC_REENT__
 FLAGS_USER		+= -DuKOS_NAME=''
 FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 
-BURN			?= picotool
+ifeq ($(CORE),RV32IMAC)
+PREFIX			?=  riscv64-unknown-elf-
+COMPILER_FAMILY	?=  gcc
+BURN			?=  picotool-riscv
+FAMILY			=   pico2riscv
+
+else
+PREFIX			?=  arm-none-eabi-
+COMPILER_FAMILY	?=  gcc
+BURN			?=  picotool-arm
+FAMILY			=   pico2m33
+endif
 
 # The really first pcs of code (privileged)
 

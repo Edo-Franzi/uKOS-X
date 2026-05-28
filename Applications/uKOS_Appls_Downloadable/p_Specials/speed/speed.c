@@ -159,7 +159,7 @@ static	void	aProcess_0(const void *argument) {
 
 	if (kern_createSignalGroup("Synchro", &group) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); exit(EXIT_OS_FAILURE); }
 
-	(void)dprintf(KSYST, "Target: "KTARGET"\n");
+	(void)dprintf(KSYST, "Target: "STRG(BOARD)"\n");
 
 	while (true) {
 		kern_suspendProcess(1000u);

@@ -9,7 +9,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X for building the libFatFs.a module.
+# Goal:		makefile for uKOS-X for building the libLVGL.a module.
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -65,15 +65,16 @@ endif
 
 # - PATH_UKOS		--> Main uKOS-X folder			--> OS_Kernel-X
 # - PATH_PORT		--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
-# - PATH_FATFS		--> FatFs package
+# - PATH_LVGL		--> LVGL package
 
 PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
-PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
+PATH_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure
 
 CORE				=  CORTEX_M7
-FATFS				=  libFatFs.a
+LVGL				=  libLVGL.a
+DISPLAY				=  WKS43WV067_5_Inches
 
 STANDARD			=  -std=c23
 OPTIMISATION		=  -Os
@@ -86,7 +87,7 @@ FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
 
 # The included makefiles
 
-include	$(PATH_FATFS)/Library/Mkfiles/FatFs.mk
+include	$(PATH_LVGL)/Library/Mkfiles/LVGL.mk
 DEP					:= $(OBJ:.o=.d)
 -include $(DEP)
 .PHONY : all clr_all clr build archive

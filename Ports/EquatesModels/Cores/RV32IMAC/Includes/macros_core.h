@@ -54,6 +54,19 @@
 // uKernel macros
 // --------------
 
+// For selecting Secure/NSecure (RISC-V M-mode maps to the Secure world on RP2350)
+
+#if (defined(SECURE_S))
+#define REG(x)					(x ## _S)
+#elif (defined(SECURE_NS))
+#define REG(x)					(x ## _NS)
+#else
+#define REG(x)					(x ## _S)
+#endif
+
+#define SEC(x)					(x ## _S)
+#define NONSEC(x)				(x ## _NS)
+
 // Core machine in bits
 
 #define	KMACHINE_BITS			(32u)
@@ -115,6 +128,12 @@
 
 #if (!defined(KPROCESS_INIT_MCAUSE))
 #define	KPROCESS_INIT_MCAUSE	(MCAUSE_INTERRUPT | RVBB_MCAUSE_MPP(3u) | RVBB_MCAUSE_MPIE | 11u)
+#endif
+
+#ifndef RETURN_INT_RESTORE
+#define	RETURN_INT_RESTORE(status)																								\
+								INTERRUPTION_RESTORE;																			\
+								return (status)
 #endif
 
 #if (!defined(INTERRUPTION_OFF_HARD))
@@ -215,12 +234,40 @@ extern	bool	vExce_isException[KNB_CORES];
 #define	INTERRUPT_SPECIFIC_HANDLER(irq)
 #endif
 
+// Vector registration macros
+// --------------------------
+
+// Moved from macros_soc.h for IWYU compliance (eliminates circular dependency)
+
+#define	EXCEPTION_VECTOR(vectorNb, address)																						\
+								vExce_indExcVectors[GET_RUNNING_CORE][vectorNb] = address
+
+#define	INTERRUPT_VECTOR(vectorNb, address)																						\
+								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address
+
 // Misc assembler macro
 // --------------------
 
 #if (!defined(NOP))
 #define	NOP 					__asm volatile ("																			 \n \
-								nop"																						 	\
+								nop"																							\
+								)
+#endif
+
+#if (!defined(INST_SYNC_BARRIER))
+#if (defined(__riscv_zifencei))
+#define INST_SYNC_BARRIER		__asm volatile ("fence.i" ::: "memory")
+#else
+#define INST_SYNC_BARRIER		__asm volatile ("fence" ::: "memory")  // fallback, weaker
+#endif
+#endif
+
+#ifndef DATA_SYNC_BARRIER
+#define DATA_SYNC_BARRIER		__asm volatile ("																			 \n \
+								fence"																							\
+								:																								\
+								:																								\
+								: "memory"																						\
 								)
 #endif
 

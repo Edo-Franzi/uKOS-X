@@ -1,18 +1,18 @@
-# makefile.
-# =========
+# CMakeLists.
+# ===========
 
 # SPDX-License-Identifier: MIT
-# SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 #------------------------------------------------------------------------
-# Author:	Edo. Franzi		The 2025-01-01
+# Author:	Laurent von Allmen	The 2025-01-01
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X for building the libFatFs.a module.
+# Goal:		CMake file to set up the building for uKOS-X system.
 #
-#   (c) 2025-2026, Edo. Franzi
-#   --------------------------
+#   (c) 2025-20xx, Laurent von Allmen
+#   ---------------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 #   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -45,48 +45,49 @@
 #
 #------------------------------------------------------------------------
 
-SHELL			=  /bin/sh
+cmake_minimum_required(VERSION 3.26)
 
-ifndef PATH_UKOS_X_PACKAGE
-    $(error PATH_UKOS_X_PACKAGE is not defined)
-endif
-ifndef PATH_GCC_RVXX
-    $(error PATH_GCC_RVXX is not defined)
-endif
+# Applications CMake module setup
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../../Mkfiles/cmake")
 
-ifeq ($(origin CC), default)
-CC					=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
-AR					=  $(PATH_COMPILER)/bin/$(PREFIX)ar
-ST					=  $(PATH_COMPILER)/bin/$(PREFIX)strip
-RANLIB				=  $(PATH_COMPILER)/bin/$(PREFIX)ranlib
-endif
+include(set-project-paths)
 
-# Project paths
+include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-arm-toolchain.cmake)
 
-# - PATH_UKOS		--> Main uKOS-X folder			--> OS_Kernel-X
-# - PATH_PORT		--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
-# - PATH_FATFS		--> FatFs package
+project(
+	big
+	VERSION 1.0
+	LANGUAGES C
+)
 
-PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
-PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
+set(DISPLAY WKS43WV067_5_Inches)
+set(PATH_LVGL ${PATH_UKOS}/Third_Parties/LVGL)
 
-# Target & Infrastructure
+# Microcontroller description (mandatory variables)
+set(SOC STM32H743)
+set(CORE CORTEX_M7)
 
-CORE				=  RV64IMAFDC
-FATFS				=  libFatFs.a
+# Target
+set(BOARD Firefly_H743)
+set(VARIANT Variant_Test)
 
-STANDARD			=  -std=c23
-OPTIMISATION		=  -Os
+# Extra compilation options
+add_compile_options(
+	-g3 # include extra information for debugger
+	-Os # optimisation
+	-Wno-sign-conversion
+)
 
-PREFIX				?= riscv64-unknown-elf-
-PATH_COMPILER		=  $(PATH_GCC_RVXX)
-FLAGS_FP			=  -mabi=lp64d
-CPU_SPEC			=  -march=rv64imafdc_zicsr_zifencei -mcmodel=medany
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
+set(PATH_INCLUDES
+	${PATH_LVGL}/Library/${CORE}/${DISPLAY}
+	${PATH_LVGL}/LVGL-current
+	${PATH_LVGL}/LVGL-current/src
+)
 
-# The included makefiles
+set(OBJ
+    ${PROJECT_SOURCE_DIR}/../lvgl.c
+    ${PROJECT_SOURCE_DIR}/../ui.c
+    ${PROJECT_SOURCE_DIR}/stub.c
+)
 
-include	$(PATH_FATFS)/Library/Mkfiles/FatFs.mk
-DEP					:= $(OBJ:.o=.d)
--include $(DEP)
-.PHONY : all clr_all clr build archive
+include(common)

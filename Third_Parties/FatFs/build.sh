@@ -107,7 +107,19 @@ rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/FatFs-${package}/source/ffcon
 rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/FatFs-${package}/source/diskio.c"
 
 build_core() {
-	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}"
+	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/flash"
+	echo "Start of building: $(date)" > libFatFs_temp.log
+	make -j all
+	echo "End of building: $(date)" >> libFatFs_temp.log
+	mv libFatFs_temp.log libFatFs_ready.txt
+
+	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/sdcard"
+	echo "Start of building: $(date)" > libFatFs_temp.log
+	make -j all
+	echo "End of building: $(date)" >> libFatFs_temp.log
+	mv libFatFs_temp.log libFatFs_ready.txt
+
+	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/sdcard_flash"
 	echo "Start of building: $(date)" > libFatFs_temp.log
 	make -j all
 	echo "End of building: $(date)" >> libFatFs_temp.log

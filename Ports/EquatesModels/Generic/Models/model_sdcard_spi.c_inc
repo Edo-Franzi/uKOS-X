@@ -214,8 +214,8 @@ int32_t	model_sdcard_initialise(sdcard_specification_t *specification) {
 
 	for (i = 0u; i < 1u; i++) {	   (void)cb_writeRead(0xFFu); }
 	for (i = 0u; i < 5u; i++) { ocr[i] = cb_writeRead(0xFFu); }
-	specification->oCapacityStatus	  = (ocr[0] & 0x40u) ? ((uint8_t)KSDCARD_CT_SD2 | (uint8_t)KSDCARD_CT_BLOCK) : ((uint8_t)KSDCARD_CT_SD2);
-	specification->oVoltage			  = (uint16_t)(((uint32_t)ocr[1]<<8u | (ocr[2] & 0x80u))>>7u);
+	specification->oCapacityStatus	   = (ocr[0] & 0x40u) ? ((uint8_t)KSDCARD_CT_SD2 | (uint8_t)KSDCARD_CT_BLOCK) : ((uint8_t)KSDCARD_CT_SD2);
+	specification->oVoltage			   = (uint16_t)(((uint32_t)ocr[1]<<8u | (ocr[2] & 0x80u))>>7u);
 
 // Read the CID (sdcard IDs)
 
@@ -227,7 +227,7 @@ int32_t	model_sdcard_initialise(sdcard_specification_t *specification) {
 	while (cb_writeRead(0xFFu) != KDATA_TOKEN_FE) { ; }
 	for (i = 0u; i < 16u; i++) { cid[i] = cb_writeRead(0xFFu);				  }
 	for (i = 0u; i <  5u; i++) { specification->oProductName[i] = cid[3u + i]; }
-	specification->oProductName[5] = 0;
+	specification->oProductName[5] = 0u;
 	specification->oManufacturer   = cid[0];
 	specification->oSerialNumber   = (uint32_t)(cid[8]<<24u | cid[9]<<16u | cid[10]<<8u | cid[11]);
 
@@ -240,7 +240,7 @@ int32_t	model_sdcard_initialise(sdcard_specification_t *specification) {
 
 	while (cb_writeRead(0xFFu) != KDATA_TOKEN_FE) { ; }
 	for (i = 0u; i < 16u; i++) { csd[i] = cb_writeRead(0xFFu); }
-	specification->oSize = (uint64_t)((((csd[7] & 0x3Fu)<<16u | (uint32_t)csd[8]<<8u | csd[9]) + 1LL) * 512u * 1024u);
+	specification->oSize = (uint64_t)((((csd[7] & 0x3Fu)<<16u | (uint32_t)csd[8]<<8u | csd[9]) + 1llu) * 512llu * 1024llu);
 
 	switch (csd[3] & 0x07u) {
 		case 0x0u: { speed = 100000u;	   		break; }

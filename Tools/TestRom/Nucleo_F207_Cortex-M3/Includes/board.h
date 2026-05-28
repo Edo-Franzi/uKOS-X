@@ -49,14 +49,6 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m3"
-#define	KCONTROLLER			"STM32F207"
-#define	KBOARD				"Nucleo F207 (Variant_Test)"
-#define	KTARGET				"Nucleo_F207"
-
 // GPIO settings
 // -------------
 

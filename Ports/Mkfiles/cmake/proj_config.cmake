@@ -393,6 +393,10 @@ endfunction()
 
 function(configure_riscv_core)
 	add_link_options($<$<C_COMPILER_ID:GNU>:-Wl,--no-warn-rwx-segment>)
+	target_compile_options(core_compiler_flags INTERFACE
+		$<$<C_COMPILER_ID:Clang>:-ffunction-sections>
+		$<$<C_COMPILER_ID:Clang>:-fdata-sections>
+	)
 
 	# RISC-V core configurations
 	if(${CORE} STREQUAL "RV32IMAC")
@@ -496,10 +500,23 @@ macro(add_MicroPython)
 endmacro()
 
 # FATFS (File system) integration
+# Usage example:
+#	add_FatFs(STORAGE flash)
 macro(add_FatFs)
-	add_compile_definitions(CONFIG_MAN_FATFS_S)
-	find_library(FATFS FatFs ${PATH_UKOS}/Third_Parties/FatFs/Library/${CORE})
-	file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCONFIG_MAN_FATFS_S ")
+	cmake_parse_arguments(FATFS "" "STORAGE" "" ${ARGN})
+
+	# Validate mandatory arguments
+	if(NOT DEFINED FATFS_STORAGE)
+		message(FATAL_ERROR "add_FatFS: STORAGE is mandatory (flash, or sdcard, or sdcard_flash)")
+	endif()
+
+	# Validate STORAGE value
+	if(NOT FATFS_STORAGE STREQUAL "flash" AND NOT FATFS_STORAGE STREQUAL "sdcard" AND NOT FATFS_STORAGE STREQUAL "sdcard_flash")
+		message(FATAL_ERROR "add_FatFs: STORAGE must be flash, or sdcard, or sdcard_flash, got '${FATFS_STORAGE}'")
+	endif()
+
+	add_compile_definitions(CONFIG_MAN_STORAGE_S)
+	find_library(FATFS FatFs ${PATH_UKOS}/Third_Parties/FatFs/Library/${CORE}/${FATFS_STORAGE})
 	list(APPEND UKOS_COMPONENTS ${FATFS})
 endmacro()
 

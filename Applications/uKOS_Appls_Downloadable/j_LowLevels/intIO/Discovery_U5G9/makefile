@@ -53,7 +53,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Discovery_U5G9
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  STM32U5G9
 CORE			=  CORTEX_M33
 OPTIMISATION	=  -Os

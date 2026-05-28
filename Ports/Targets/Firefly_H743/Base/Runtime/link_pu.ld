@@ -104,8 +104,8 @@ linker_sizeStackFirst_C0	= (2K);													/* Length of the First stack  					
 linker_stEXRAM				= 0x70000000;											/* 0x70000000: EXRAM, start of the external memory			*/
 linker_lnEXRAM				= (32768K);												/* Length of the external memory	  						*/
 
-linker_stFrameBuffer		= 0x71000000;											/* 0x71000000: FrameBuffer, start of the graphic memory 	*/
-linker_lnFrameBuffer		= (16384K);												/* Length of the graphic memory	  							*/
+linker_stLCD_F_BUFFER		= 0x71000000;											/* 0x71000000: FrameBuffer, start of the graphic memory 	*/
+linker_lnLCD_F_BUFFER		= (16384K);												/* Length of the graphic memory	  							*/
 
 linker_stUMemo				= 0x70800000;											/* 0x70800000: UMemo, start of the user memory 				*/
 linker_lnUMemo				= (8192K);												/* Length of the user memory	  							*/
@@ -148,7 +148,7 @@ linker_SZ_RAM_INT_2_OS		= 15;													/* 64-K = 2^(SZ + 1), SZ = log2(64-K) 
 linker_ST_RAM_EXT_0			= linker_stEXRAM;										/* 0x70000000: Privileged/User RAM							*/
 linker_SZ_RAM_EXT_0			= 23;													/* 16-M = 2^(SZ + 1), SZ = log2(16-M) - 1					*/
 
-linker_ST_RAM_EXT_1			= linker_stFrameBuffer;									/* 0x71000000: Privileged/User RAM (no cache)				*/
+linker_ST_RAM_EXT_1			= linker_stLCD_F_BUFFER;								/* 0x71000000: Privileged/User RAM (no cache)				*/
 linker_SZ_RAM_EXT_1			= 23;													/* 16-M = 2^(SZ + 1), SZ = log2(16-M) - 1					*/
 
 linker_ST_PERIPH_SOC		= stm_stPERIPH;											/* 0x40000000: Privileged PERIPHERALS						*/

@@ -53,7 +53,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Nucleo_L4R5
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  STM32L4R5
 CORE			=  CORTEX_M4
 OPTIMISATION	=  -Os

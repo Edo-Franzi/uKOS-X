@@ -219,8 +219,11 @@
 #define	RV_CSR_MISA										0x301u				//
 #define	RV_CSR_MEDELEG									0x302u				//
 #define	RV_CSR_MIDELEG									0x303u				//
-#define	RV_CSR_MIE										0x304u				//
-#define	RV_CSR_MTVEC									0x305u				//
+#define RV_CSR_MIE										0x304u				//
+#define MIE_MSIE										(1u<<3u)			//
+#define MIE_MTIE										(1u<<7u)			//
+#define MIE_MEIE										(1u<<11u)			//
+#define RV_CSR_MTVEC									0x305u				//
 #define	RV_CSR_MCOUNTEREN								0x306u				//
 #define	RV_CSR_MSTATUSH									0x310u				//
 

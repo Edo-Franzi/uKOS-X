@@ -60,6 +60,7 @@ extern	"C" {
 
 extern	int32_t		aStart(uint32_t argc, const char_t *argv[]);
 extern	int32_t		boot(void);
+extern	void		crt0(void);
 extern	void		exit_terminate(void);
 
 extern	void		init_init(void);

@@ -70,6 +70,9 @@ project(
 set(SOC nRF5340)
 set(CORE CORTEX_M33)
 
+# Core without fpu nor dsp
+add_compile_definitions( "NOFPU_S" )
+set(CPU_FEATURES "nodsp;nofp")
 # Apply project settings
 include(proj_config)
 
@@ -81,10 +84,6 @@ add_compile_definitions(
 	"ONLY_ONE_NVIC_S"
 	"SECURE_NS"
 )
-
-# Core without fpu nor dsp
-add_compile_definitions( "NOFPU_S" )
-set(CPU_FEATURES "nodsp;nofp")
 
 # Flash programming script selection
 set(BURN jlinkexe)

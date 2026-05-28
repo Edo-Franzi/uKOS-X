@@ -19,7 +19,7 @@
 #   SOC:      rp2350
 #   PROFILE:  cdc_cdc
 #   PROVIDER: raspberrypi
-#   FAMILY:   pico2
+#   FAMILY:   pico2m33
 
 # Ensure PATH_TINYUSB is defined
 if(NOT DEFINED PATH_TINYUSB)

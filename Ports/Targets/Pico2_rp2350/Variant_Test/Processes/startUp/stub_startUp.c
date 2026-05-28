@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -75,10 +76,10 @@ static	const	char_t	*argv_cnsCdc0_C0[] = { "console", "cdc0" };
 static	const	char_t	*argv_cnsUrt0_C1[] = { "console", "urt0" };
 
 static	const	boot_t	aFunction_C0[] = {
-							{ "console", KCDC0, argv_cnsCdc0_C0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 }
+							{ .oFunction="console", .oSerialManager=KCDC0, .oArgV=argv_cnsCdc0_C0, .oArgC=2u, .oSW=0x00u, .oBaudrate=KSERIAL_BAUDRATE_460800 }
 						};
 static	const	boot_t	aFunction_C1[] = {
-							{ "console", KURT0, argv_cnsUrt0_C1, 2u, 0x00u, KSERIAL_BAUDRATE_460800 }
+							{ .oFunction="console", .oSerialManager=KURT0, .oArgV=argv_cnsUrt0_C1, .oArgC=2u, .oSW=0x00u, .oBaudrate=KSERIAL_BAUDRATE_460800 }
 						};
 
 #define	KDEF_COMM_C0		KCDC0

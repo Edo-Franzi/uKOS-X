@@ -60,7 +60,7 @@
 #endif
 
 #if (!defined(MCSET))
-#if		(KNB_CORES == 1)
+#if (KNB_CORES == 1)
 #define MCSET(v)				{ (v) }
 #else
 #error	"*** The number of cores (KNB_CORES) exceed 1"
@@ -167,12 +167,6 @@ enum {
 
 #if (!defined(INTERRUPTION_RESTORE))
 #define	INTERRUPTION_RESTORE	ECLIC->MTH = (uint8_t)__saveECLIC_msk
-#endif
-
-#if (!defined(RETURN_INT_RESTORE))
-#define	RETURN_INT_RESTORE(status)																								\
-								INTERRUPTION_RESTORE;																			\
-								return (status)
 #endif
 
 #if (!defined(INTERRUPTION_OFF_CRITICAL))

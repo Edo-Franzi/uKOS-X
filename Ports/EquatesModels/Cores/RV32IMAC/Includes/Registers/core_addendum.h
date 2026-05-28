@@ -48,3 +48,18 @@
 */
 
 #pragma	once
+
+// Hazard3 external-interrupt controller CSR addresses (Xh3irq extension)
+
+#define HAZARD3_CSR_MEIEA		0xBE0u	// External Interrupt Enable Array
+#define HAZARD3_CSR_MEIPA		0xBE1u	// External Interrupt Pending Array
+#define HAZARD3_CSR_MEIFA		0xBE2u	// External Interrupt Force Array
+#define HAZARD3_CSR_MEIPRA		0xBE3u	// External Interrupt Priority Array
+#define HAZARD3_CSR_MEINEXT		0xBE4u	// Next external interrupt (read-to-claim)
+#define HAZARD3_CSR_MEICONTEXT	0xBE5u	// Interrupt preemption context
+
+// meinext bit fields
+
+#define MEINEXT_NOIRQ			0x1u	// Bit 0: set when no interrupt is pending
+#define MEINEXT_IRQ_MASK		0x3FCu	// Bits [9:2]: interrupt source number
+#define MEINEXT_IRQ_SHIFT		2u		// Right-shift to extract the IRQ index

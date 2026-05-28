@@ -49,14 +49,6 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m7 H"
-#define	KCONTROLLER			"STM32H743"
-#define	KBOARD				"Firefly H743 (Variant_Test)"
-#define	KTARGET				"Firefly_H743"
-
 // GPIO settings
 // -------------
 
@@ -68,3 +60,6 @@
 #define	BLED_1				1u									// PORT B 1, LED
 #define	BSW_0				0u									// PORT A 0, SW0 (WK_UP)
 #define	BSW_1				1u									// PORT A 1, SW1 (KEY0)
+#define	BLCD_POWER			1u									// PORT C 1, LCD power
+#define	BLCD_RST			11u									// PORT D 11, LCD reset
+#define	BBL_CTRL			14u									// PORT B 14, LCD backlignt

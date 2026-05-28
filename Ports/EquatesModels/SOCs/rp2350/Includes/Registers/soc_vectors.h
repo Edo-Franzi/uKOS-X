@@ -113,8 +113,11 @@ typedef enum IRQn {
 	POWMAN_IRQ_TIMER_IRQn	= 45,	//
 } IRQn_Type;
 
+#if (!defined(RV32IMAC_S))
 #define	KNB_EXCEPTIONS		14u
-#define	KNB_INTERRUPTIONS	46u
+#endif
+
+#define KNB_INTERRUPTIONS	46u
 
 // For the core 0
 // --------------
@@ -243,6 +246,56 @@ typedef enum IRQn {
 #define	POWMAN_IRQ_TIMER_C1_IRQn	POWMAN_IRQ_TIMER_IRQn
 
 // Prototypes
+
+#if (defined(RV32IMAC_S))
+
+#define KNB_EXCEPTIONS		16u
+
+// RISC-V mcause exception codes — used as vExce_indExcVectors table indices.
+// Cx_IRQn aliases share the same standard code on both harts.
+
+#define InstructionAddressMisaligned_C0_IRQn	0u
+#define InstructionAddressMisaligned_C1_IRQn	0u
+#define InstructionAccessFault_C0_IRQn			1u
+#define InstructionAccessFault_C1_IRQn			1u
+#define IllegalInstruction_C0_IRQn				2u
+#define IllegalInstruction_C1_IRQn				2u
+#define Breakpoint_C0_IRQn						3u
+#define Breakpoint_C1_IRQn						3u
+#define LoadAddressMisaligned_C0_IRQn			4u
+#define LoadAddressMisaligned_C1_IRQn			4u
+#define LoadAccessFault_C0_IRQn					5u
+#define LoadAccessFault_C1_IRQn					5u
+#define StoreAddressMisaligned_C0_IRQn			6u
+#define StoreAddressMisaligned_C1_IRQn			6u
+#define StoreAccessFault_C0_IRQn				7u
+#define StoreAccessFault_C1_IRQn				7u
+#define ECallUser_C0_IRQn						8u
+#define ECallUser_C1_IRQn						8u
+
+// 9  = ECallSupervisor — no S-mode on Hazard3; unreachable
+// 10 = reserved
+
+#define ECallMachine_C0_IRQn					11u
+#define ECallMachine_C1_IRQn					11u
+#define InstructionPageFault_C0_IRQn			12u
+#define InstructionPageFault_C1_IRQn			12u
+#define LoadPageFault_C0_IRQn					13u
+#define LoadPageFault_C1_IRQn					13u
+
+// 14 = reserved
+
+#define StorePageFault_C0_IRQn					15u		// > KNB_EXCEPTIONS; unreachable (no MMU on Hazard3)
+#define StorePageFault_C1_IRQn					15u
+
+// Machine Software (mip.MSIP bit 3) and Timer (mip.MTIP bit 7) interrupt indices
+
+#define MSIP_C0_IRQn							3u
+#define MSIP_C1_IRQn							3u
+#define MTIP_C0_IRQn							7u
+#define MTIP_C1_IRQn							7u
+
+#endif
 
 #if (defined(__cplusplus))
 extern	"C" {

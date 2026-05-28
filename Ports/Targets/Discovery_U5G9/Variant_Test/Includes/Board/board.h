@@ -49,14 +49,6 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"ARM-Cortex m33 U"
-#define	KCONTROLLER			"STM32U5G9"
-#define	KBOARD				"Discovery U5G9 (Variant_Test)"
-#define	KTARGET				"Discovery_U5G9"
-
 // GPIO settings
 // -------------
 

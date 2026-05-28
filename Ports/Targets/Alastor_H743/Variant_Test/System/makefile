@@ -65,7 +65,7 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 
 # Project paths
 
-# - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(V)/makefile
+# - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(VARIANT)/makefile
 # - PATH_COMX	--> Commun folders				--> OS_Kernel-X/Ports/Targets/$(BOARD)/Base_CMx
 
 # Paths overloaded
@@ -73,7 +73,7 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 # - PATH_UKOS	PATH_UKOS ?= $(PATH_UKOS_X_PACKAGE)
 # - PATH_PORT	PATH_PORT ?= $(PATH_UKOS_X_PACKAGE)/Ports
 # - PATH_BASE	PATH_BASE ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/Base
-# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(V)
+# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(VARIANT)
 # - PATH_MAPP	PATH_MAPP ?= $(PATH_BASE)/Runtime
 
 PATH_MKFILE				:= $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -82,7 +82,8 @@ PATH_PORT				=  $(PATH_UKOS)/Ports
 PATH_LIB_MICROPYTHON	=  $(PATH_UKOS)/Third_Parties/MicroPython/Library/$(CORE)
 MICROPYTHON				=  libMicroPython
 
-PATH_LIB_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs/Library/$(CORE)
+STORAGE					=  sdcard_flash
+PATH_LIB_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs/Library/$(CORE)/$(STORAGE)
 FATFS					=  libFatFs
 
 # Target & Infrastructure
@@ -95,7 +96,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Alastor_H743
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  STM32H743
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os

@@ -77,6 +77,11 @@
 extern	"C" {
 #endif
 
+#if (defined(UKOS_S))
+extern	volatile	bool	vPriv_insideSVC[KNB_CORES];
+extern	volatile	bool	vPriv_insideException[KNB_CORES];
+#endif
+
 extern	void	privileges_init(void);
 
 /*!

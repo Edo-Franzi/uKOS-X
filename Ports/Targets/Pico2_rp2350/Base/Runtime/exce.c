@@ -4,7 +4,8 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -83,9 +84,6 @@ void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 // Prototypes
 
 extern	void	cmns_wait(uint32_t us);
-static	void	local_setLEDs(uint8_t ledNb);
-static	void	local_clrLEDs(uint8_t ledNb);
-static	void	local_cpyLEDs(uint8_t value);
 
 // Model callbacks
 // ---------------
@@ -93,40 +91,77 @@ static	void	local_cpyLEDs(uint8_t value);
 /*
  * \brief cb_signal
  *
- * - Signal an exception or an interruption
- *   - Exception
- *   - Interruption
+ * - Fault halt: all LEDs on, then blink one LED to distinguish type.
+ *	 - KEXCEPTION	 → blink green LED (BLED_1)
+ *	 - KINTERRUPTION → blink red   LED (BLED_2)
+ *
+ * Called by the coreDump models after they have printed the full register dump.
  *
  */
 [[noreturn]]
 static	void	cb_signal(uint8_t mode) {
+	uint32_t ledPin;
 
 	switch (mode) {
 		default:
 		case KEXCEPTION: {
-			local_cpyLEDs(0xFFu);
-			while (true) {
-				cmns_wait(1000000u);
-				local_setLEDs(1u);
-				cmns_wait(1000000u);
-				local_clrLEDs(1u);
-			}
+			LED_GREEN_OFF;
+			ledPin = BLED_1;
+			break;
 		}
 		case KINTERRUPTION: {
-			local_cpyLEDs(0xFFu);
-			while (true) {
-				cmns_wait(1000000u);
-				local_setLEDs(2u);
-				cmns_wait(1000000u);
-				local_clrLEDs(2u);
-			}
+			LED_RED_OFF;
+			ledPin = BLED_2;
+			break;
 		}
+	}
+
+	LED_SYSTEM_ON;
+	LED_YELLOW_ON;
+	LED_GREEN_ON;
+	LED_RED_ON;
+
+	while (true) {
+		cmns_wait(1000000u);
+		REG(SIO)->GPIO_OUT_CLR = (1u<<ledPin);
+		cmns_wait(1000000u);
+		REG(SIO)->GPIO_OUT_SET = (1u<<ledPin);
 	}
 }
 
 #include	"model_coreDump_tracing.c_inc"
 #include	"model_coreDump_generic.c_inc"
 #include	"model_coreDump_core.c_inc"
+
+#if (defined(__riscv))
+
+bool		vExce_isException[KNB_CORES] = MCSET(false);
+#include	"model_coredump_soc_riscv.c_inc"
+#include	"syscallDispatcher.h"
+
+/*
+ * \brief exce_init
+ *
+ * - Register coreDump handlers in all exception and interrupt vector slots
+ *	 for the running core.	Any unhandled exception or interrupt will produce
+ *	 a full register dump on the UART before halting with a blinking LED.
+ *
+ * \note This function does not return a value (None).
+ *
+ */
+void	exce_init(void) {
+	uint8_t		n;
+	uint8_t		core = (uint8_t)GET_RUNNING_CORE;
+
+	for (n = 0u; n < KNB_EXCEPTIONS;	n++) { vExce_indExcVectors[core][n] = model_coreDump_displayExceptions;	   }
+	for (n = 0u; n < KNB_INTERRUPTIONS; n++) { vExce_indIntVectors[core][n] = model_coreDump_displayInterruptions; }
+
+	// Slot 11 = M-mode ecall; route to the syscall dispatcher, not coreDump.
+	vExce_indExcVectors[core][11U] = syscallDispatcher;
+}
+
+#else
+
 #include	"model_coredump_soc.c_inc"
 
 /*
@@ -153,61 +188,4 @@ void	exce_init(void) {
 	REG(SCB)->SHCSR |= SCB_SHCSR_MEMFAULTENA | SCB_SHCSR_BUSFAULTENA | SCB_SHCSR_USGFAULTENA | SCB_SHCSR_SECUREFAULTENA;
 }
 
-// Local routines
-// ==============
-
-/*
- * \brief local_setLEDs
- *
- * - Turn on a LED
- *
- */
-static	void	local_setLEDs(uint8_t ledNb) {
-
-	switch (ledNb) {
-		case 1: { REG(SIO)->GPIO_OUT_SET = (1u<<BLED_1); break; }
-		case 2: { REG(SIO)->GPIO_OUT_SET = (1u<<BLED_2); break; }
-		default: {
-
-// Make MISRA happy :-)
-
-			break;
-		}
-	}
-}
-
-/*
- * \brief local_clrLEDs
- *
- * - Turn off a LED
- *
- */
-static	void	local_clrLEDs(uint8_t ledNb) {
-
-	switch (ledNb) {
-		case 1: { REG(SIO)->GPIO_OUT_CLR = (1u<<BLED_1); break; }
-		case 2: { REG(SIO)->GPIO_OUT_CLR = (1u<<BLED_2); break; }
-		default: {
-
-// Make MISRA happy :-)
-
-			break;
-		}
-	}
-}
-
-/*
- * \brief local_cpyLEDs
- *
- * - Write on the LEDs
- *
- */
-static	void	local_cpyLEDs(uint8_t value) {
-	uint8_t		led, mask;
-
-	mask = 0x01u;
-	for (led = 0u; led < 2u; led++) {
-		(value & mask) ? (local_setLEDs(led)) : (local_clrLEDs(led));
-		mask = (uint8_t)(mask<<1);
-	}
-}
+#endif

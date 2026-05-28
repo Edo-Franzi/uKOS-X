@@ -49,16 +49,8 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"RISC-V RV64IMAFDC"
-#define	KCONTROLLER			"K210"
-#define	KBOARD				"MAiXDUiNO K210 RISC-V (Variant_Test)"
-#define	KTARGET				"MAiXDUiNO_K210"
-
-// GPIOHS settings
-// ---------------
+// GPIO settings
+// -------------
 
 #define	LED_GREEN_OFF		(gpiohs->output_val.u32[0] |=			 (1u<<BLED_0))	//
 #define	LED_GREEN_ON		(gpiohs->output_val.u32[0] &= (uint32_t)~(1u<<BLED_0))	//

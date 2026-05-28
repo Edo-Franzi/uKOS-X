@@ -66,6 +66,7 @@
 // ADC 1,2,3								ck = PLL2 P
 // RNG										ck = PLL1 Q
 // USB										ck = PLL3 Q
+// LTDC										ck = PLL3 R
 // LPTIM 1									ck = rcc_pclk1 -> APB1
 // LPTIM 2,3,4,5							ck = rcc_pclk4 -> APB4
 // TIM 1,2,3,4,5,6,7,8,12,13,14,15,16,17	ck = ??? -> A??
@@ -79,7 +80,7 @@
 #define KFREQUENCY_PLL2R	25000000u									// PLL 2 R bus frequency of 25-MHz
 #define KFREQUENCY_PLL3P	120000000u									// PLL 3 P bus frequency of 120-MHz
 #define KFREQUENCY_PLL3Q	48000000u									// PLL 3 Q bus frequency of 48-MHz
-#define KFREQUENCY_PLL3R	120000000u									// PLL 3 R bus frequency of 120-MHz
+#define KFREQUENCY_PLL3R	24000000u									// PLL 3 R bus frequency of 24-MHz
 
 #define KD1CPRE				1u											// Div 1
 #define KHPRE				2u											// Div 2

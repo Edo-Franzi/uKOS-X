@@ -66,6 +66,7 @@ Checks: >
   -cert-msc24-c,
   -cert-msc33-c,
   -cert-dcl51-cpp,
+  -cert-dcl16-c,
 
   performance-*,
   -performance-no-int-to-ptr,

@@ -162,3 +162,19 @@ static	inline	void	core_clrBitCSR(uint32_t reg, uint32_t mask) {
 		);
 	}
 }
+
+/*
+ * \brief core_getNextExternalIRQ
+ *
+ * - Read the Hazard3 meinext CSR (0xBE4) to claim the highest-priority
+ *   pending external interrupt. Returns MEINEXT_NOIRQ (bit 0 set) when
+ *   the queue is empty; otherwise bits [9:2] hold the IRQ index.
+ *
+ */
+[[gnu::always_inline]]
+static	inline	uint32_t	core_getNextExternalIRQ(void) {
+	uint32_t	value;
+
+	__asm volatile ("csrr %0, 0xBE4" : "=r" (value));
+	return (value);
+}

@@ -1,0 +1,360 @@
+/*
+; model_kernel_tim1_ecal_C1.
+; ==========================
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
+
+;------------------------------------------------------------------------
+; Author:	Laurent von Allmen	The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Kernel model for Core 1.
+;
+; Resources used:
+;   TIMER1 ALARM0 – 1-ms reference tick  (scheduler_callBackFast)
+;   TIMER1 ALARM1 – 20-ms process quota  (Phase 3.3: timeout tracking only,
+;                                          no preemptive stack switch)
+;   ecall slot 11 – kernel message path  (kernel_message_C1 via ecall)
+;
+; Preemptive context switching from interrupt context requires saving the full
+; 35-word process frame (KERN_SAVE_FRAME) and setting vSaveStack from the MEI
+; handler. This is deferred to Phase 3.4. For Phase 3.3, context switches
+; happen exclusively via ecall (process-initiated kernel calls).
+;
+; Exported routines:
+;   model_kernel_init_C1
+;   model_kernel_runKernel_C1
+;   model_kernel_setLowPower_C1
+;   model_kernel_readTickCount_C1
+;   model_kernel_newProcessTimeout_C1
+;   model_kernel_stopProcessTimeout_C1
+;   kernel_message_C1   (called from syscallDispatcher via exce slot 11)
+;
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#include	"Registers/RP2350_resets.h"
+#include	"Registers/RP2350_timer.h"
+#include	"Registers/nvic.h"
+#include	"clockTree.h"
+#include	"exce.h"
+#include	"macros_core_stackFrame.h"
+#include	"kern/private/private_processes.h"
+#include	"kern/private/private_scheduler.h"
+#include	"kern/private/private_temporal.h"
+
+#define K1ms_C1			((float64_t)(0.001))
+
+#define KTIC_DELTA_C1	((uint32_t)(KFREQUENCY_TIM * KKERN_TIC_TIME	 * K1ms_C1))		// 1-ms tick
+#define KTOUT_DELTA_C1	((uint32_t)(KFREQUENCY_TIM * KKERN_PROC_TIMEOUT * K1ms_C1))		// 20-ms quota
+
+static	volatile	uint32_t	vTimeStart_C1	  = 0u;
+static	volatile	uint32_t	vTimeStop_C1	  = 0u;
+static	volatile	uint32_t	vTimeLastStart_C1 = 0u;
+static	volatile	uint64_t	vTickCount_C1	  = 0u;
+
+// External: set/restored by first_handle_trap ecall path (per-hart arrays).
+
+extern	volatile	uintptr_t	vSaveStack[KNB_CORES];
+extern	volatile	uint32_t	vMessage[KNB_CORES];
+
+// Prototypes
+
+static	void	local_TIM1_ALA0_IRQHandler_C1(void);
+static	void	local_TIM1_ALA1_IRQHandler_C1(void);
+static	void	local_timeStmp_C1(bool overflow);
+static	void	local_timeStart_C1(void);
+static	void	local_timeStop_C1(void);
+
+/*
+ * \brief model_kernel_init_C1
+ *
+ * - Reset TIMER1, register interrupt vectors, set priorities, arm both alarms.
+ *
+ */
+static	void	model_kernel_init_C1(void) {
+
+	REG(RESETS)->RESET &= ~RESETS_RESET_TIMER1;
+	while ((REG(RESETS)->RESET_DONE & RESETS_RESET_TIMER1) != RESETS_RESET_TIMER1) { ; }
+
+	TIMER_C1->INTR = 0xFFFFFFFFu;
+
+	INTERRUPT_VECTOR(TIMER_ALA0_VECTOR_NUMBER_C1, local_TIM1_ALA0_IRQHandler_C1);
+	INTERRUPT_VECTOR(TIMER_ALA1_VECTOR_NUMBER_C1, local_TIM1_ALA1_IRQHandler_C1);
+
+	h3irq_SetPriority(TIMER_ALA0_VECTOR_NUMBER_C1, KINT_LEVEL_KERNEL_TIMERS);
+	h3irq_SetPriority(TIMER_ALA1_VECTOR_NUMBER_C1, KINT_LEVEL_KERNEL_TIMERS);
+
+	TIMER_C1->ALARM0 = TIMER_C1->TIMERAWL + KTIC_DELTA_C1;
+	TIMER_C1->ALARM1 = TIMER_C1->TIMERAWL + KTOUT_DELTA_C1;
+}
+
+/*
+ * \brief model_kernel_runKernel_C1
+ *
+ * - Enable and arm both timer alarms; reset the 64-bit tick counter.
+ *
+ */
+static	void	model_kernel_runKernel_C1(void) {
+
+	TIMER_C1->INTE = TIMER_C1->INTE | TIMER_INTE_ALARM_0;
+	TIMER_C1->INTE = TIMER_C1->INTE | TIMER_INTE_ALARM_1;
+
+	h3irq_ClearPendingIRQ(TIMER_ALA0_VECTOR_NUMBER_C1);
+	h3irq_ClearPendingIRQ(TIMER_ALA1_VECTOR_NUMBER_C1);
+
+	h3irq_EnableIRQ(TIMER_ALA0_VECTOR_NUMBER_C1);
+	h3irq_EnableIRQ(TIMER_ALA1_VECTOR_NUMBER_C1);
+
+// Enable Machine External Interrupt in mie CSR (per-hart) so Hazard3 routes
+// MEIEA-enabled peripheral IRQs to Core 1.
+
+	core_setBitCSR(RV_CSR_MIE, MIE_MEIE);
+
+	vTickCount_C1 = 0u;
+}
+
+/*
+ * \brief Set the low power mode
+ *
+ * - Set the low power mode
+ *
+ * KKERN_CPU_MODE_NORMAL		-> Normal mode
+ * KKERN_CPU_MODE_DEEP_SLEEP	-> CPU in a deep sleep mode
+ * KKERN_CPU_MODE_HIBERNATE		-> CPU in a hibernate mode
+ * KKERN_CPU_MODE_STOP			-> CPU in a stop mode
+ *
+ */
+static	void	model_kernel_setLowPower_C1(uint8_t mode) {
+
+	switch (mode) {
+		case KKERN_CPU_MODE_NORMAL:
+		case KKERN_CPU_MODE_DEEP_SLEEP:
+		case KKERN_CPU_MODE_HIBERNATE:
+		case KKERN_CPU_MODE_STOP:
+		default: {
+			WAITING_INTERRUPTION;
+			break;
+		}
+	}
+}
+
+/*
+ * \brief model_kernel_readTickCount_C1
+ *
+ * - Return the 64-bit 1-us tick counter.
+ *
+ */
+static	void	model_kernel_readTickCount_C1(uint64_t *tickCount) {
+
+	INTERRUPTION_OFF;
+	local_timeStmp_C1(false);
+	*tickCount = vTickCount_C1;
+	INTERRUPTION_RESTORE;
+}
+
+/*
+ * \brief model_kernel_newProcessTimeout_C1
+ *
+ * - Arm ALARM1 for the next process's 20-ms quota.
+ *
+ */
+static	void	model_kernel_newProcessTimeout_C1(void) {
+
+	TIMER_C1->INTE = TIMER_C1->INTE & (uint32_t)~TIMER_INTE_ALARM_1;
+	TIMER_C1->INTR = TIMER_INTR_ALARM_1;
+
+	h3irq_ClearPendingIRQ(TIMER_ALA1_VECTOR_NUMBER_C1);
+	h3irq_EnableIRQ(TIMER_ALA1_VECTOR_NUMBER_C1);
+
+	TIMER_C1->ALARM1 = TIMER_C1->TIMERAWL + KTOUT_DELTA_C1;
+	TIMER_C1->INTE	 = TIMER_C1->INTE | TIMER_INTE_ALARM_1;
+}
+
+/*
+ * \brief model_kernel_stopProcessTimeout_C1
+ *
+ * - Stop the process timeout
+ *
+ */
+static	void	model_kernel_stopProcessTimeout_C1(void) {
+
+	h3irq_DisableIRQ(TIMER_ALA1_VECTOR_NUMBER_C1);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_TIM1_ALA0_IRQHandler_C1
+ *
+ * - Fine time interruption
+ * - Verify the timeout condition of the suspended processes
+ *
+ */
+static	void	local_TIM1_ALA0_IRQHandler_C1(void) {
+
+	TIMER_C1->INTR	 = TIMER_INTR_ALARM_0;
+	TIMER_C1->ALARM0 = TIMER_C1->TIMERAWL + KTIC_DELTA_C1;
+
+	local_timeStmp_C1(false);
+
+// Guard: only call scheduler if at least one process has been installed.
+// local_updateDynaPriority() dereferences oFirst which is nullptr until
+// the first process is connected to the execution list.
+
+	if (vKern_listExec[GET_RUNNING_CORE].oNbElements > 0u) {
+		scheduler_callBackFast(1u);
+	}
+}
+
+/*
+ * \brief local_TIM0_ALA1_IRQHandler_C1
+ *
+ * - 20-ms quota expiry: acknowledge and disarm.
+ *	 Preemptive context switch from interrupt context requires saving the full
+ *	 35-word process frame; that work is deferred to Phase 3.4. For Phase 3.3,
+ *	 the process runs until it makes the next kernel call (SET_MESSAGE/ecall).
+ *
+ */
+static	void	local_TIM1_ALA1_IRQHandler_C1(void) {
+
+	TIMER_C1->INTE = TIMER_C1->INTE & (uint32_t)~TIMER_INTE_ALARM_1;
+	TIMER_C1->INTR = TIMER_INTR_ALARM_1;
+	h3irq_ClearPendingIRQ(TIMER_ALA1_VECTOR_NUMBER_C1);
+}
+
+/*
+ * \brief kernel_message_C1
+ *
+ * - ecall-based context switch for Core 1.
+ *	 Called from syscallDispatcher (exception vector slot 11) after
+ *	 first_handle_trap has:
+ *	   1. saved the full 28-word process frame (16 caller-saved + 12 callee-saved)
+ *	   2. stored a0 (the kernel message) in vMessage
+ *	   3. stored sp in vSaveStack
+ *
+ * - On return, first_handle_trap reads the new vSaveStack (updated by the
+ *	 scheduler) and restores the next process's context before executing mret.
+ *
+ */
+void	kernel_message_C1(void) {
+
+	vKern_stackProc[KCORE_1] = (uintptr_t *)vSaveStack[KCORE_1];
+	vPriv_insideSVC[KCORE_1] = true;
+
+	local_timeStop_C1();
+
+	INTERRUPTION_SET_PERIPH;
+
+	CHECK_STACK_SANITY(KCORE_1);
+
+	scheduler_callBackTrap(vMessage[KCORE_1]);
+	local_timeStart_C1();
+
+	vSaveStack[KCORE_1] = (uintptr_t)vKern_stackProc[KCORE_1];
+
+// Statistics
+
+	#if (KKERN_WITH_STATISTICS_S == true)
+	INTERRUPTION_OFF;
+	const	uint32_t	timeStart = vTimeStart_C1;
+	const	uint32_t	timeStop  = vTimeStop_C1;
+	const	uint32_t	timeLast  = vTimeLastStart_C1;
+	const	uint32_t	tExc	  = vKern_TimeException[KCORE_1];
+			proc_t		*proc	  = vKern_backwardProc[KCORE_1];
+	INTERRUPTION_RESTORE;
+
+	statistics_statistic(proc, timeStart, timeStop, timeLast, tExc);
+	vKern_TimeException[KCORE_1] = 0u;
+	#endif
+
+	vPriv_insideSVC[KCORE_1] = false;
+}
+
+/*
+ * \brief local_timeStart_C1
+ *
+ * - Give a new time-stamp (1-us of resolution)
+ *   - 0x00000000 to 0xFFFFFFFF incremental counter
+ *
+ */
+static	void	local_timeStart_C1(void) {
+
+	INTERRUPTION_OFF;
+	vTimeLastStart_C1 = vTimeStart_C1;
+	vTimeStart_C1	  = TIMER_C1->TIMERAWL;
+	INTERRUPTION_RESTORE;
+}
+
+/*
+ * \brief local_timeStop_C1
+ *
+ * - Give a new time-stamp (1-us of resolution)
+ *   - 0x00000000 to 0xFFFFFFFF incremental counter
+ *
+ */
+static	void	local_timeStop_C1(void) {
+
+	INTERRUPTION_OFF;
+	vTimeStop_C1 = TIMER_C1->TIMERAWL;
+	INTERRUPTION_RESTORE;
+}
+
+/*
+ * \brief local_timeStmp_C1
+ *
+ * - Maintain a 64-bit timer with 1-us of resolution
+ *
+ */
+static	void	local_timeStmp_C1(bool overflow) {
+	uint32_t	newTime;
+
+	INTERRUPTION_OFF;
+	newTime = TIMER_C1->TIMERAWL;
+
+	if (overflow) {
+		vTickCount_C1 = (vTickCount_C1 & 0xFFFFFFFF00000000u) + 0x100000000u;
+		INTERRUPTION_RESTORE;
+		return;
+	}
+
+	if (newTime > 0u) {
+		vTickCount_C1 = (vTickCount_C1 & 0xFFFFFFFF00000000u) | newTime;
+	}
+	INTERRUPTION_RESTORE;
+}

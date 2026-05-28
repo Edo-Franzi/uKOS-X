@@ -262,7 +262,7 @@ static	void	local_process(const void *argument) {
 		if (status != KERR_STORAGE_NOERR) {
 			local_error(KERR_WRITE, status, sector, wBuffer, rBuffer);
 		}
-		(void)dprintf(KSYST, "Write time for 100 sectors:  %"PRIu32"-us, sector nb %"PRIu32"\n", (uint32_t)(tStamp[1] - tStamp[0]), sector);
+		(void)dprintf(KSYST, "Write time for 100 sectors:  %10"PRIu32"-us, sector nb %10"PRIu32"\n", (uint32_t)(tStamp[1] - tStamp[0]), sector);
 
 		kern_suspendProcess(1u);
 
@@ -272,7 +272,7 @@ static	void	local_process(const void *argument) {
 		if (status != KERR_STORAGE_NOERR) {
 			local_error(KERR_READ, status, sector, wBuffer, rBuffer);
 		}
-		(void)dprintf(KSYST, "Read  time for 100 sectors:  %"PRIu32"-us, sector nb %"PRIu32"\n", (uint32_t)(tStamp[1] - tStamp[0]), sector);
+		(void)dprintf(KSYST, "Read  time for 100 sectors:  %10"PRIu32"-us, sector nb %10"PRIu32"\n", (uint32_t)(tStamp[1] - tStamp[0]), sector);
 
 		kern_suspendProcess(1u);
 

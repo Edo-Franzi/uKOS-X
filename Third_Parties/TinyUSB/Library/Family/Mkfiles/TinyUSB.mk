@@ -130,6 +130,14 @@ PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
 
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
+
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
+
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime_init/include
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime/include
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/include
@@ -176,7 +184,7 @@ SRC					+= $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_plat
 SRC					+= $(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/init.c
 
 CPPFLAGS			+= $(PATH_INCLUDES)
-ASFLAGS				+= $(CPUFLAGS) -x assembler-with-cpp
+ASFLAGS				+= $(CPU_SPEC) $(FLAGS_FP) -x assembler-with-cpp
 CFLAGS				+= -D__not_in_flash\(x\)=
 
 # The pico-sdk RISC-V headers (e.g. hardware/riscv.h) use the GNU `asm`
@@ -220,7 +228,7 @@ CFLAGS				+= -Wno-error=strict-prototypes
 CFLAGS				+= -Wno-missing-braces
 
 ifneq ($(PREFIX),llvm-)
-ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55))
+ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55 CORTEX_M85))
 CFLAGS += -mpoke-function-name
 endif
 endif

@@ -73,7 +73,7 @@
 SECTIONS {
 	. = ORIGIN(prgm_code);
 
-	.vectors ALIGN(512) : {
+	.vectors ALIGN(64) : {
 		linker_stVECTORS = ABSOLUTE(.);
 		KEEP(*(.isr_vector))
 		linker_enVECTORS = ABSOLUTE(.);
@@ -90,6 +90,7 @@ SECTIONS {
 		libkern_p.a(.text .text.* .text*)
 		linker_enTEXT_KERN_p = ABSOLUTE(.);
 		*(.text .text.*)
+		. = ALIGN(4);
 		linker_enTEXT = ABSOLUTE(.);
 	} > prgm_code
 
@@ -99,7 +100,17 @@ SECTIONS {
 		KEEP(*(.directory))
 		LONG(0x00000000)
 		LONG(0x00000000)
+		. = ALIGN(4);
 		linker_enDirectory = ABSOLUTE(.);
+	} > prgm_code
+
+	.preinit_array : {
+		. = ALIGN(4);
+		linker_stPreInitArray = ABSOLUTE(.);
+		KEEP(*(SORT_BY_INIT_PRIORITY(.preinit_array.*)))
+		KEEP(*(.preinit_array))
+		. = ALIGN(4);
+		linker_enPreInitArray = ABSOLUTE(.);
 	} > prgm_code
 
 	.init_array : {
@@ -107,6 +118,7 @@ SECTIONS {
 		linker_stInitArray = ABSOLUTE(.);
 		KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)))
 		KEEP(*(.init_array))
+		. = ALIGN(4);
 		linker_enInitArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -115,6 +127,7 @@ SECTIONS {
 		linker_stFiniArray = ABSOLUTE(.);
 		KEEP(*(SORT_BY_INIT_PRIORITY(.fini_array.*)))
 		KEEP(*(.fini_array))
+		. = ALIGN(4);
 		linker_enFiniArray = ABSOLUTE(.);
 	} > prgm_code
 
@@ -137,6 +150,7 @@ SECTIONS {
 		libkern_p.a(.rodata .rodata.* .rodata*)
 		linker_enRODATA_KERN_p = ABSOLUTE(.);
 		*(.rodata .rodata.*)
+		*(.srodata .srodata.*)
 		. = ALIGN(4);
 		linker_enRODATA = ABSOLUTE(.);
 	} > prgm_code
@@ -156,6 +170,18 @@ SECTIONS {
 		. += linker_sizeStackSystem_C0;
 		. = ALIGN(8);
 		linker_topStackSystem_C0 = ABSOLUTE(.) - 8;
+
+		. = ALIGN(8);
+		linker_lowStackFirst_C1 = ABSOLUTE(.);
+		. += linker_sizeStackFirst_C1;
+		. = ALIGN(8);
+		linker_topStackFirst_C1 = ABSOLUTE(.) - 8;
+
+		. = ALIGN(8);
+		linker_lowStackSystem_C1 = ABSOLUTE(.);
+		. += linker_sizeStackSystem_C1;
+		. = ALIGN(8);
+		linker_topStackSystem_C1 = ABSOLUTE(.) - 8;
 	} > prgm_data
 
 	.data : AT (linker_stINDATA) {
@@ -163,10 +189,10 @@ SECTIONS {
 		linker_stDATA = ABSOLUTE(.);
 		linker_stDATA_KERN_p = ABSOLUTE(.);
 		libkern_p.a(.data .data.* .data*)
+		libkern_p.a:*(.sdata .sdata.*)
 		linker_enDATA_KERN_p = ABSOLUTE(.);
+		*(.sdata .sdata.*)
 		*(.data .data.*)
-		. = ALIGN(4);
-		*(vtable)
 		. = ALIGN(4);
 		linker_enDATA = ABSOLUTE(.);
 	} > prgm_data
@@ -185,12 +211,30 @@ SECTIONS {
 		KEEP(*(.user))
 		linker_stBSS_KERN_p = ABSOLUTE(.);
 		libkern_p.a(.bss .bss.*)
+		libkern_p.a:*(.sbss .sbss.*)
 		linker_enBSS_KERN_p = ABSOLUTE(.);
+		*(.sbss .sbss.*)
 		*(.bss .bss.*)
 		*(COMMON)
 		. = ALIGN(4);
 		linker_enBSS = ABSOLUTE(.);
 	} > prgm_data
 
-	_end = ABSOLUTE(.);
+/* Thread-local storage BSS section - treated as regular BSS for bare-metal */
+
+	.tbss (NOLOAD) : {
+		linker_stTBSS = ABSOLUTE(.);
+		*(.tbss .tbss.*)
+		linker_enTBSS = ABSOLUTE(.);
+
+/* Standard symbol used by C library for heap start			*/
+/* Placed after .tbss so heap doesn't overlap with TLS data */
+
+		end = ABSOLUTE(.);
+		_end = ABSOLUTE(.);
+	} > prgm_data
+
+/* Global pointer for RISC-V (optional)						*/
+
+	__global_pointer$ = MIN(linker_stDATA + 0x800, MAX(linker_stDATA + 0x800, linker_enBSS - 0x800));
 }

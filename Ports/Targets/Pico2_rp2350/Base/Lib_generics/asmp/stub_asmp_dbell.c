@@ -4,6 +4,7 @@
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
@@ -11,6 +12,8 @@
 ;
 ; Project:	uKOS-X
 ; Goal:		stub for the managemen of the "asmp" manager with msip,
+;           Inter-core messaging via SIO doorbell.
+;           SIO registers and IRQ dispatch are identical on ARM and Hazard3.
 ;
 ;			The messages coming from the API are routed to the respective
 ;			msip for the IPC management.
@@ -81,13 +84,16 @@
 */
 
 #include	"uKOS.h"
+#if (defined(__riscv))
+#include	"Registers/nvic.h"
+#endif
 
 #define	KMESSAGE_SENT	(1u<<0u)				// Door bell to indicate that the message was sent to the other core
 #define	KMESSAGE_ACK	(1u<<1u)				// Door bell to indicate to the other core the the message was read
 
 const				char_t		*tableCoreReference[KNB_CORES] = {
-									"cortex-m33_C0",
-									"cortex-m33_C1"
+									"core_0",
+									"core_1"
 								};
 
 extern				asmpShared_t	*vAsmp_InterCore;

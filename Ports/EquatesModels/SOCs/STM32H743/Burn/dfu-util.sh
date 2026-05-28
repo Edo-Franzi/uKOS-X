@@ -1,15 +1,17 @@
-# makefile.
-# =========
+#!/usr/bin/env zsh
 
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 #------------------------------------------------------------------------
-# Author:	Edo. Franzi		The 2025-01-01
+# Author:	Edo. Franzi		The 2026-05-25
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for uKOS-X for building the libFatFs.a module.
+# Goal:		script for burning the arm flash via the dfu-util.
+#
+#			- Usage:
+#			 ./dfu-util.sh
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -45,48 +47,6 @@
 #
 #------------------------------------------------------------------------
 
-SHELL			=  /bin/sh
+set -e
 
-ifndef PATH_UKOS_X_PACKAGE
-    $(error PATH_UKOS_X_PACKAGE is not defined)
-endif
-ifndef PATH_GCC_ARM
-    $(error PATH_GCC_ARM is not defined)
-endif
-
-ifeq ($(origin CC), default)
-CC					=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
-AR					=  $(PATH_COMPILER)/bin/$(PREFIX)ar
-ST					=  $(PATH_COMPILER)/bin/$(PREFIX)strip
-RANLIB				=  $(PATH_COMPILER)/bin/$(PREFIX)ranlib
-endif
-
-# Project paths
-
-# - PATH_UKOS		--> Main uKOS-X folder			--> OS_Kernel-X
-# - PATH_PORT		--> Main uKOS-X port folders	--> OS_Kernel-X/Ports
-# - PATH_FATFS		--> FatFs package
-
-PATH_UKOS			=  $(PATH_UKOS_X_PACKAGE)
-PATH_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs
-
-# Target & Infrastructure
-
-CORE				=  CORTEX_M4
-FATFS				=  libFatFs.a
-
-STANDARD			=  -std=c23
-OPTIMISATION		=  -Os
-
-PREFIX				?= arm-none-eabi-
-PATH_COMPILER		=  $(PATH_GCC_ARM)
-FLAGS_FP			=  -mfloat-abi=hard -mfpu=fpv4-sp-d16
-CPU_SPEC			=  -mcpu=cortex-m4 -mthumb
-FLAGS_UKOS			=  -DTHIRD_PARTY_S -DSECURE_S
-
-# The included makefiles
-
-include	$(PATH_FATFS)/Library/Mkfiles/FatFs.mk
-DEP					:= $(OBJ:.o=.d)
--include $(DEP)
-.PHONY : all clr_all clr build archive
+dfu-util -d 0483:df11 --alt 0 --dfuse-address 0x08000000 --download FLASH.bin --reset

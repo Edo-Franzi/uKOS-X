@@ -53,7 +53,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Pico2_rp2350
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  rp2350
 CORE			=  CORTEX_M33
 OPTIMISATION	=  -Os

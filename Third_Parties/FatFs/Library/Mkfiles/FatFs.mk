@@ -89,7 +89,7 @@ CFLAGS				+= -Wno-missing-braces
 CFLAGS				+= -Wno-misleading-indentation
 
 ifneq ($(PREFIX),llvm-)
-ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55))
+ifneq (,$(filter $(CORE),CORTEX_M3 CORTEX_M4 CORTEX_M7 CORTEX_M33 CORTEX_M55 CORTEX_M85))
 CFLAGS += -mpoke-function-name
 endif
 endif

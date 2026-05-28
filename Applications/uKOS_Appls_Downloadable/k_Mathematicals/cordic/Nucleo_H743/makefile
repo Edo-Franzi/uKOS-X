@@ -53,7 +53,7 @@ PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 
 BOARD			=  Nucleo_H743
-V				=  Variant_Test
+VARIANT			=  Variant_Test
 SOC				=  STM32H743
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os

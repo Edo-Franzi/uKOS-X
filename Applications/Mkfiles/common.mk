@@ -59,7 +59,7 @@ PATH_UKOS_X_PACKAGE	?= $(abspath ../../../../..)
 # - PATH_UKOS	PATH_UKOS ?= $(PATH_UKOS_X_PACKAGE)
 # - PATH_PORT	PATH_PORT ?= $(PATH_UKOS_X_PACKAGE)/Ports
 # - PATH_BASE	PATH_BASE ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/Base
-# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(V)
+# - PATH_VARI	PATH_VARI ?= $(PATH_UKOS_X_PACKAGE)/Ports/Targets/$(BOARD)/$(VARIANT)
 
 PATH_MKFILE		=  $(shell pwd)
 PATH_MYPR		=  $(abspath $(PATH_MKFILE)/..)

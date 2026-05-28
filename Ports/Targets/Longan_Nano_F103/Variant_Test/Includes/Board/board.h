@@ -49,14 +49,6 @@
 
 #pragma	once
 
-// System identifiers
-// ------------------
-
-#define	KCPU				"RISC-V RV32IMAC"
-#define	KCONTROLLER			"GD32VF103CB"
-#define	KBOARD				"Logan_Nano F103 RISC-V (Variant_Test)"
-#define	KTARGET				"Logan_Nano_F103"
-
 // GPIO settings
 // -------------
 

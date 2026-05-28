@@ -1,0 +1,631 @@
+/*
+; stub.
+; =====
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2026-05-24
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Hardware specific stub.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#include	"uKOS.h"
+
+// Definitions for the SDC commands
+
+#define	KCMD0_GO_IDLE_STATE				0u								// GO_IDLE_STATE
+#define KSEND_OP_COND_MMC				1u								// KSEND_OP_COND_MMC
+#define	KCMD2_ALL_SEND_CID				2u								// KCMD2_ALL_SEND_CID
+#define	KCMD3_SEND_REL_ADDR				3u								// KCMD3_SEND_REL_ADDR
+#define	KACMD6_SET_BUS_WIDTH			6u								// KACMD6_SET_BUS_WIDTH
+#define	KCMD7_SELECT_CARD				7u								// KCMD7_SELECT_CARD
+#define	KCMD8_SEND_IF_COND				8u								// KCMD8_SEND_IF_COND
+#define	KCMD9_SEND_CSD					9u								// KCMD9_SEND_CSD
+#define	KCMD10_SEND_CID					10u								// KCMD10_SEND_CID
+#define	KCMD12_STOP_TRANSMISSION		12u								// KCMD12_STOP_TRANSMISSION
+#define	KCMD13_SEND_STATUS				13u								// KCMD13_SEND_STATUS
+#define	KCMD16_SET_BLOCKLEN				16u								// KCMD16_SET_BLOCKLEN
+#define	KCMD17_READ_SINGLE_BLOCK		17u								// KCMD17_READ_SINGLE_BLOCK
+#define	KCMD18_READ_MULTIPLE_BLOCK		18u								// KCMD18_READ_MULTIPLE_BLOCK
+#define	KCMD24_WRITE_BLOCK				24u								// KCMD24_WRITE_BLOCK
+#define	KCMD25_WRITE_MULTIPLE_BLOCK		25u								// KCMD25_WRITE_MULTIPLE_BLOCK
+#define	KACMD41_SD_SEND_OP_COND			41u								// KACMD41_SD_SEND_OP_COND
+#define	KCMD55_APP_CMD					55u								// KCMD55_APP_CMD
+#define	KCMD58_SEND_OCR					58u								// KCMD58_SEND_OCR
+
+#define	SDMMC_RESP_NONE					0u								// NO response
+#define	SDMMC_RESP_SHORT				1u								// Short response
+#define	SDMMC_RESP_LONG					3u								// Long response
+
+#define	SDMMC_TIMEOUT					1000000u						// 1s timeout
+
+// Prototypes
+
+static	bool	local_readBlock(uint8_t *destination, uint32_t sector);
+static	bool	local_readSector(uint8_t *destination, uint32_t size);
+static	bool	local_writeBlock(const uint8_t *source, uint32_t sector);
+static	bool	local_writeSector(const uint8_t *source, uint32_t size);
+static	void	local_clockSpeed(uint32_t speed);
+static	bool	local_writeCommand(uint32_t command, uint32_t argument, uint32_t response);
+static	bool	local_commandReady(void);
+static	bool	local_readCSD(uint8_t csd[16]);
+static	bool	local_readCID(uint8_t cid[16]);
+
+static	sdcard_specification_t	vSdCard;
+static	uint32_t				vRca;
+
+/*
+ * \brief model_sdcard_init
+ *
+ * - Initialise some specific parts
+ *
+ */
+int32_t	model_sdcard_init(void) {
+
+	cb_control(KSDCARD_INIT);
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_sdcard_readStatus
+ *
+ * - Read the status of the card (only if it is inserted)
+ *
+ */
+int32_t	model_sdcard_readStatus(void) {
+	int32_t		status;
+
+	#if (defined(WITH_SD_INSERTED_S))
+	status = (cb_cardInserted() == true)	? (KERR_STORAGE_NOERR) : (KERR_STORAGE_NODEV);
+
+	#else
+	status = KERR_STORAGE_NOERR;
+	#endif
+
+	return (status);
+}
+
+/*
+ * \brief model_sdcard_initialise
+ *
+ * - Initialise the SDMCC sdcard
+ *	 - Waiting for > than 1-ms after the power-on
+ *	 - Place the interface in a slow mode (< 400-KHz) and disable the sdcard
+ *	 - Send the KGO_IDLE_STATE (software reset)
+ *	   - if R1 == 0x01u OK, else, unknown sdcard
+ *
+ *	 - Send the KSEND_IF_COND (Check the voltage range)
+ *	   - if R1 == 0x01u       OK, else, unknown sdcard
+ *	   - if R7 == 0x000001AAu OK, else, unknown sdcard
+ *
+ *	 - Send the KSEND_OP_COND_SDC(0x40000000u) (sdcard initialisation process)
+ *	   - if R1 == 0x00u OK, else, waiting under timeout, then, unknown sdcard
+ *
+ *	 - Send the KREAD_OCR (Read the ocr)
+ *	   - if R1 == 0x01u sdcard V 2.0 (Block address)
+ *	   - if R1 == 0x00u sdcard V 2.0 (Byte address)
+ *
+ */
+int32_t	model_sdcard_initialise(sdcard_specification_t *specification) {
+	int32_t		status;
+	uint8_t		i, csd[16], cid[16];
+	uint32_t	ocr, speed;
+
+	vSdCard = (sdcard_specification_t){ 0 };
+
+	status = model_sdcard_readStatus();
+	if (status != KERR_STORAGE_NOERR) { return (status); }
+
+// Waiting for > than 1-ms after the power-on
+
+	local_clockSpeed(400000u);
+	kern_suspendProcess(5u);
+
+// CMD0: Reset card, enter Idle state
+// CMD8: Check voltage range and SD version
+
+	if (local_writeCommand(KCMD0_GO_IDLE_STATE, 0u, SDMMC_RESP_NONE) == false)					 { return (KERR_STORAGE_CANRE); }
+	if (local_writeCommand(KCMD8_SEND_IF_COND, 0x000001AAu, SDMMC_RESP_SHORT) == false)			 { return (KERR_STORAGE_CANRE); }
+	if ((SDMMC->RESP1R & 0xFFFu) != 0x1AAu)														 { return (KERR_STORAGE_CANRE); }
+
+// ACMD41: Start card initialization process
+
+	for (i = 0u; i < 200u; i++) {
+		if (local_writeCommand(KCMD55_APP_CMD, 0u, SDMMC_RESP_SHORT) == false)					 { return (KERR_STORAGE_CANRE); }
+		if (local_writeCommand(KACMD41_SD_SEND_OP_COND, 0x40300000u, SDMMC_RESP_SHORT) == false) { return (KERR_STORAGE_CANRE); }
+
+		ocr = SDMMC->RESP1R;
+		if ((ocr & 0x80000000u) != 0u) { break; }
+		kern_suspendProcess(1u);
+	}
+	if ((ocr & 0x80000000u) == 0u)																 { return (KERR_STORAGE_CANRE); }
+
+	specification->oCapacityStatus = ((ocr & 0x40000000u) != 0u) ? ((uint8_t)KSDCARD_CT_SD2 | (uint8_t)KSDCARD_CT_BLOCK) : ((uint8_t)KSDCARD_CT_SD2);
+
+// CMD2:  Read CID register
+// CMD3:  Get Relative Card Address (RCA)
+// CMD9:  Read CSD register
+// CMD7:  Select card via RCA (0xFFFF0000u)
+// ACMD6: Set bus width of 4-bit bus
+// CMD16: Set block length = 512
+
+	if (local_writeCommand(KCMD2_ALL_SEND_CID, 0u, SDMMC_RESP_LONG) == false)					 { return (KERR_STORAGE_CANRE); }
+	if (local_writeCommand(KCMD3_SEND_REL_ADDR, 0u, SDMMC_RESP_SHORT) == false)					 { return (KERR_STORAGE_CANRE); }
+	vRca = SDMMC->RESP1R & 0xFFFF0000u;
+
+	if (local_readCSD(csd) == false)															 { return (KERR_STORAGE_CANRE); }
+	if (local_readCID(cid) == false)															 { return (KERR_STORAGE_CANRE); }
+	if (local_writeCommand(KCMD7_SELECT_CARD, vRca, SDMMC_RESP_SHORT) == false)					 { return (KERR_STORAGE_CANRE); }
+	if (local_writeCommand(KCMD55_APP_CMD, vRca, SDMMC_RESP_SHORT) == false)					 { return (KERR_STORAGE_CANRE); }
+	if (local_writeCommand(KACMD6_SET_BUS_WIDTH, 2u, SDMMC_RESP_SHORT) == false)				 { return (KERR_STORAGE_CANRE); }
+	SDMMC->CLKCR &= ~SDMMC_CLKCR_WIDBUS;
+	SDMMC->CLKCR |=  (1u * SDMMC_CLKCR_WIDBUS_0);
+
+	if (local_writeCommand(KCMD16_SET_BLOCKLEN, KSDCARD_SZ_SECTOR, SDMMC_RESP_SHORT) == false)	 { return (KERR_STORAGE_CANRE); }
+
+// Extract "Product name"
+// Extract "Manufacturer"
+// Extract "Serial number"
+
+	for (i = 0u; i < 5u; i++) { specification->oProductName[i] = cid[3u + i]; }
+	specification->oProductName[5] = 0;
+	specification->oManufacturer   = cid[0];
+	specification->oSerialNumber   = ((uint32_t)cid[8]<<24u)
+								   |  ((uint32_t)cid[9]<<16u)
+								   |  ((uint32_t)cid[10]<<8u)
+								   |  ((uint32_t)cid[11]);
+
+// Extract "Voltage"
+// Extract "Device size"
+// Extract "Speed"
+
+	specification->oVoltage = (uint16_t)((ocr>>15) & 0x1FFu);
+	specification->oSize	= (uint64_t)(((((uint32_t)(csd[7] & 0x3Fu)<<16u)
+							|				((uint32_t)csd[8]<<8u)
+							|				((uint32_t)csd[9])) + 1llu) * 512llu * 1024llu);
+
+	switch (csd[3] & 0x07u) {
+		case 0x0u: { speed = 100000u;	   		break; }
+		case 0x1u: { speed = 1000000u;   		break; }
+		case 0x2u: { speed = 10000000u;  		break; }
+		case 0x3u: { speed = 100000000u; 		break; }
+		default:   { speed = 100000u;	   		break; }
+	}
+	switch ((csd[3] & 0xF8u)>>3u) {
+		case 0x1u: { speed = speed * 10u / 10u; break; }
+		case 0x2u: { speed = speed * 12u / 10u; break; }
+		case 0x3u: { speed = speed * 13u / 10u; break; }
+		case 0x4u: { speed = speed * 15u / 10u; break; }
+		case 0x5u: { speed = speed * 20u / 10u; break; }
+		case 0x6u: { speed = speed * 25u / 10u; break; }
+		case 0x7u: { speed = speed * 30u / 10u; break; }
+		case 0x8u: { speed = speed * 35u / 10u; break; }
+		case 0x9u: { speed = speed * 40u / 10u; break; }
+		case 0xAu: { speed = speed * 45u / 10u; break; }
+		case 0xBu: { speed = speed * 50u / 10u; break; }
+		case 0xCu: { speed = speed * 55u / 10u; break; }
+		case 0xDu: { speed = speed * 60u / 10u; break; }
+		case 0xEu: { speed = speed * 70u / 10u; break; }
+		case 0xFu: { speed = speed * 80u / 10u; break; }
+		default:   { speed = speed * 10u / 10u; break; }
+	}
+	specification->oSpeed = speed;
+
+// Extract "Product name"
+
+	for (i = 0u; i <  5u; i++) { specification->oProductName[i] = cid[3u + i]; }
+	specification->oProductName[5] = 0u;
+
+// Activate the high-speed clock
+
+	local_clockSpeed(speed);
+	vSdCard = *specification;
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_sdcard_read
+ *
+ * - Read from the sdcard 1 or more sectors
+ *
+ */
+int32_t	model_sdcard_read(const sdcard_specification_t *specification, uint8_t *buffer, uint8_t nbSectors, uint32_t sector) {
+	int32_t		status;
+	uint8_t		i;
+	bool		error = false;
+
+	status = model_sdcard_readStatus();
+	if (status != KERR_STORAGE_NOERR) { return (status);			 }
+	if (nbSectors == 0u)			  { return (KERR_STORAGE_LNBU0); }
+
+	local_clockSpeed(specification->oSpeed);
+
+	for (i = 0u; i < nbSectors; i++) {
+		if (local_readBlock(&buffer[(uint32_t)i * KSDCARD_SZ_SECTOR], sector + i) == false) {
+			error = true;
+			break;
+		}
+	}
+
+	return ((error == true) ? KERR_STORAGE_TRANT : KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_sdcard_write
+ *
+ * - Write on the sdcard 1 or more sectors
+ *
+ */
+int32_t	model_sdcard_write(const sdcard_specification_t *specification, const uint8_t *buffer, uint8_t nbSectors, uint32_t sector) {
+	int32_t		status;
+	uint8_t		i;
+	bool		error = false;
+
+	status = model_sdcard_readStatus();
+	if (status != KERR_STORAGE_NOERR) { return (status);			 }
+	if (nbSectors == 0u)			  { return (KERR_STORAGE_LNBU0); }
+
+	local_clockSpeed(specification->oSpeed);
+
+	for (i = 0u; i < nbSectors; i++) {
+		if (local_writeBlock(&buffer[(uint32_t)i * KSDCARD_SZ_SECTOR], sector + i) == false) {
+			error = true;
+			break;
+		}
+	}
+
+	return ((error == true) ? KERR_STORAGE_TRANT : KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_sdcard_ioctl
+ *
+ * - Read some card parameters
+ *
+ */
+int32_t	model_sdcard_ioctl(storageIoctl_t command, void *buffer) {
+
+	switch (command) {
+		case KGET_BLOCK_SIZE: {
+			*(uint32_t *)buffer = 1u;
+			break;
+		}
+		case KGET_SECTOR_SIZE: {
+			*(uint16_t *)buffer = KSDCARD_SZ_SECTOR;
+			break;
+		}
+		case KGET_SECTOR_COUNT: {
+			*(uint32_t *)buffer = (uint32_t)(vSdCard.oSize / KSDCARD_SZ_SECTOR);
+			break;
+		}
+		default: {
+
+// Make MISRA happy :-)
+
+			break;
+		}
+	}
+	return (KERR_STORAGE_NOERR);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_readBlock
+ *
+ * - Read data block
+ *
+ */
+static	bool	local_readBlock(uint8_t *destination, uint32_t sector) {
+
+	if (local_commandReady() == false) {
+		return (false);
+	}
+
+	SDMMC->DTIMER = 0xFFFFFFFFu;
+	SDMMC->DLENR  = KSDCARD_SZ_SECTOR;
+	SDMMC->DCTRL  = (9u * SDMMC_DCTRL_DBLOCKSIZE_0) | SDMMC_DCTRL_DTDIR | SDMMC_DCTRL_DTEN;
+
+	if (local_writeCommand(KCMD17_READ_SINGLE_BLOCK, sector, SDMMC_RESP_SHORT) == false) {
+		return (false);
+	}
+
+	return (local_readSector(destination, KSDCARD_SZ_SECTOR));
+}
+
+/*
+ * \brief local_readSector
+ *
+ * - Read data
+ *
+ */
+static	bool	local_readSector(uint8_t *destination, uint32_t size) {
+	uint64_t	time[2];
+	uint32_t	data, i, words;
+
+	words = size / 4u;
+
+	kern_readTickCount(&time[0]);
+	while (words > 0u) {
+		if ((SDMMC->STAR & SDMMC_STAR_RXFIFOHF) != 0u) {
+			for (i = 0u; (i < 8u) && (words > 0u); i++) {
+				data = SDMMC->FIFOR;
+
+				*destination++ = (uint8_t)(data>>0u);
+				*destination++ = (uint8_t)(data>>8u);
+				*destination++ = (uint8_t)(data>>16u);
+				*destination++ = (uint8_t)(data>>24u);
+				words--;
+			}
+		}
+
+		if ((SDMMC->STAR & (SDMMC_STAR_DTIMEOUT | SDMMC_STAR_DCRCFAIL | SDMMC_STAR_RXOVERR)) != 0u) {
+			SDMMC->ICR = 0xFFFFFFFFu;
+			return (false);
+		}
+
+		kern_switchFast();
+		kern_readTickCount(&time[1]);
+		if ((time[1] - time[0]) >= SDMMC_TIMEOUT) { SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+
+	}
+
+	kern_readTickCount(&time[0]);
+	while ((SDMMC->STAR & SDMMC_STAR_DATAEND) == 0u) {
+		if ((SDMMC->STAR & (SDMMC_STAR_DTIMEOUT | SDMMC_STAR_DCRCFAIL | SDMMC_STAR_RXOVERR)) != 0u) {
+			SDMMC->ICR = 0xFFFFFFFFu;
+			return (false);
+		}
+
+		kern_switchFast();
+		kern_readTickCount(&time[1]);
+		if ((time[1] - time[0]) >= SDMMC_TIMEOUT) { SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+	}
+
+	SDMMC->ICR = 0xFFFFFFFFu;
+	return (true);
+}
+
+/*
+ * \brief local_writeBlock
+ *
+ * - Write data block
+ *
+ */
+static	bool	local_writeBlock(const uint8_t *source, uint32_t sector) {
+
+	if (local_commandReady() == false) {
+		return (false);
+	}
+
+	SDMMC->DTIMER = 0xFFFFFFFFu;
+	SDMMC->DLENR  = KSDCARD_SZ_SECTOR;
+	SDMMC->DCTRL  = (9u * SDMMC_DCTRL_DBLOCKSIZE_0) | SDMMC_DCTRL_DTEN;
+
+	if (local_writeCommand(KCMD24_WRITE_BLOCK, sector, SDMMC_RESP_SHORT) == false) {
+		return (false);
+    }
+
+	return (local_writeSector(source, KSDCARD_SZ_SECTOR));
+}
+
+/*
+ * \brief local_writeSector
+ *
+ * - Write data
+ *
+ */
+static	bool	local_writeSector(const uint8_t *source, uint32_t size) {
+	uint64_t	time[2];
+	uint32_t	i, data, words;
+
+	words = size / 4u;
+
+	kern_readTickCount(&time[0]);
+	while (words > 0u) {
+		if ((SDMMC->STAR & SDMMC_STAR_TXFIFOHE) != 0u) {
+			for (i = 0u; (i < 8u) && (words > 0u); i++) {
+				data = ((uint32_t)source[0]<<0u)
+					 | ((uint32_t)source[1]<<8u)
+					 | ((uint32_t)source[2]<<16u)
+					 | ((uint32_t)source[3]<<24u);
+
+				SDMMC->FIFOR = data;
+				source += 4u;
+				words--;
+			}
+		}
+
+		if ((SDMMC->STAR & (SDMMC_STAR_DTIMEOUT | SDMMC_STAR_DCRCFAIL | SDMMC_STAR_TXUNDERR)) != 0u) {
+			SDMMC->ICR = 0xFFFFFFFFu;
+			return (false);
+		}
+
+		kern_switchFast();
+		kern_readTickCount(&time[1]);
+		if ((time[1] - time[0]) >= SDMMC_TIMEOUT) { SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+
+	}
+
+	kern_readTickCount(&time[0]);
+	while ((SDMMC->STAR & SDMMC_STAR_DATAEND) == 0u) {
+		if ((SDMMC->STAR & (SDMMC_STAR_DTIMEOUT | SDMMC_STAR_DCRCFAIL | SDMMC_STAR_TXUNDERR)) != 0u) {
+			SDMMC->ICR = 0xFFFFFFFFu;
+			return (false);
+		}
+
+		kern_switchFast();
+		kern_readTickCount(&time[1]);
+		if ((time[1] - time[0]) >= SDMMC_TIMEOUT) { SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+	}
+
+	SDMMC->ICR = 0xFFFFFFFFu;
+	return (true);
+}
+
+/*
+ * \brief local_clockSpeed
+ *
+ */
+static	void	local_clockSpeed(uint32_t speed) {
+	uint32_t	sdmmcKernelClock = SDMMC_FREQUENCY;
+	uint32_t	wideBus = SDMMC->CLKCR & SDMMC_CLKCR_WIDBUS;
+	uint32_t	div = (sdmmcKernelClock + ((2u * speed) - 1u)) / (2u * speed);
+
+	if (div == 0u)    { div = 1u;	  }
+	if (div > 0x3FFu) { div = 0x3FFu; }
+
+// Power-off
+// Set the clock to xxx-MHz
+
+	SDMMC->POWER = 0u;
+	SDMMC->CLKCR = 0u;
+	SDMMC->CLKCR = (div * SDMMC_CLKCR_CLKDIV_0)
+				 | SDMMC_CLKCR_HWFC_EN
+				 | wideBus;
+
+// Power-on
+
+	SDMMC->POWER = (3u * SDMMC_POWER_PWRCTRL_0);
+}
+
+/*
+ * \brief local_writeCommand
+ *
+ */
+static	bool	local_writeCommand(uint32_t command, uint32_t argument, uint32_t response) {
+	uint64_t	time[2];
+
+	SDMMC->ICR  = 0xFFFFFFFFu;
+	SDMMC->ARGR = argument;
+	SDMMC->CMDR = (command & 0x3Fu)
+				| (response * SDMMC_CMDR_WAITRESP_0)
+				| SDMMC_CMDR_CPSMEN;
+
+	kern_readTickCount(&time[0]);
+	while ((SDMMC->STAR & (SDMMC_STAR_CTIMEOUT | SDMMC_STAR_CCRCFAIL | SDMMC_STAR_CMDREND | SDMMC_STAR_CMDSENT)) == 0u) {
+		kern_switchFast();
+		kern_readTickCount(&time[1]);
+		if ((time[1] - time[0]) >= SDMMC_TIMEOUT)																				{ SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+	}
+
+// CMD0 has no response
+// R3/R7 may not use CRC the same way; ignore CCRCFAIL for ACMD41
+
+	if ((response == SDMMC_RESP_NONE) && ((SDMMC->STAR & SDMMC_STAR_CMDSENT) != 0u))											{ SDMMC->ICR = 0xFFFFFFFFu; return (true);  }
+	if ((SDMMC->STAR & SDMMC_STAR_CTIMEOUT) != 0u)																				{ SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+	if ((command != KACMD41_SD_SEND_OP_COND) && (command != KCMD8_SEND_IF_COND) && ((SDMMC->STAR & SDMMC_STAR_CCRCFAIL) != 0u)) { SDMMC->ICR = 0xFFFFFFFFu; return (false); }
+
+	SDMMC->ICR = 0xFFFFFFFFu;
+	return (true);
+}
+
+/*
+ * \brief local_commandReady
+ *
+ */
+static	bool	local_commandReady(void) {
+	uint32_t	status;
+	uint64_t	time[2];
+
+	kern_readTickCount(&time[0]);
+	do {
+		if (local_writeCommand(KCMD13_SEND_STATUS, vRca, SDMMC_RESP_SHORT) == false) { return (false); }
+
+		status = SDMMC->RESP1R;
+		if (((status & 0x00000100u) != 0u) && (((status>>9u) & 0x0Fu) == 4u))		 { return (true);  }
+
+		kern_switchFast();
+		kern_readTickCount(&time[1]);
+	} while ((time[1] - time[0]) < SDMMC_TIMEOUT);
+	return (false);
+}
+
+/*
+ * \brief local_readCSD
+ *
+ */
+static	bool	local_readCSD(uint8_t csd[16]) {
+	uint32_t	r[4];
+
+	if (local_writeCommand(KCMD9_SEND_CSD, vRca, SDMMC_RESP_LONG) == false) {
+		return (false);
+	}
+
+	r[0] = SDMMC->RESP1R;
+	r[1] = SDMMC->RESP2R;
+	r[2] = SDMMC->RESP3R;
+	r[3] = SDMMC->RESP4R;
+
+	for (uint8_t i = 0u; i < 4u; i++) {
+		csd[(i * 4u) + 0u] = (uint8_t)(r[i]>>24u);
+		csd[(i * 4u) + 1u] = (uint8_t)(r[i]>>16u);
+		csd[(i * 4u) + 2u] = (uint8_t)(r[i]>>8u);
+		csd[(i * 4u) + 3u] = (uint8_t)(r[i]);
+    }
+    return (true);
+}
+
+/*
+ * \brief local_readCID
+ *
+ */
+static	bool	local_readCID(uint8_t cid[16]) {
+	uint32_t	r[4];
+
+	if (local_writeCommand(KCMD10_SEND_CID, vRca, SDMMC_RESP_LONG) == false) {
+		return (false);
+	}
+
+	r[0] = SDMMC->RESP1R;
+	r[1] = SDMMC->RESP2R;
+	r[2] = SDMMC->RESP3R;
+	r[3] = SDMMC->RESP4R;
+
+	for (uint8_t i = 0u; i < 4u; i++) {
+		cid[(i * 4u) + 0u] = (uint8_t)(r[i]>>24u);
+		cid[(i * 4u) + 1u] = (uint8_t)(r[i]>>16u);
+		cid[(i * 4u) + 2u] = (uint8_t)(r[i]>>8u);
+		cid[(i * 4u) + 3u] = (uint8_t)(r[i]);
+    }
+    return (true);
+}
