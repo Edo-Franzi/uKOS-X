@@ -10,7 +10,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		stub for the connection of the "serialFlash" manager 1-Wire device by spi1 device.
+; Goal:		stub for the connection of the "serialFlash" manager 1-Wire device by spi0 device.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

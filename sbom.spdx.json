@@ -2,8 +2,8 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.5.4)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.5.4-2026-05-27",
+  "name": "uKOS-X SBOM (0.5.7)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.5.7-2026-06-02",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -32,7 +32,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.5.4",
+      "versionInfo": "0.5.7",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -42,7 +42,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.5.4",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.5.7",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -68,7 +68,7 @@
     {
       "name": "decnumber",
       "SPDXID": "SPDXRef-Package-decnumber",
-      "versionInfo": "3.68 commit ace3fa6",
+      "versionInfo": "3.68 commit a941bd3",
       "downloadLocation": "https://github.com/raitechnology/libdecnumber.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-decnumber",
@@ -194,7 +194,7 @@
     {
       "name": "tflite-micro",
       "SPDXID": "SPDXRef-Package-TFLiteMicro",
-      "versionInfo": "commit cc99d05",
+      "versionInfo": "commit 730449f",
       "downloadLocation": "https://github.com/tensorflow/tflite-micro.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -212,7 +212,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 commit 6f59b79",
+      "versionInfo": "0.20.0 commit f78715d",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",

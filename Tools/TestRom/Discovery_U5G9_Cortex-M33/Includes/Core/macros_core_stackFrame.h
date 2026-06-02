@@ -494,9 +494,15 @@
 								ldr			r1,[r0,#24]																		 \n \
 								ldrb.w		r1,[r1,#-2]																		 \n \
 								cmp			r1,#0																			 \n \
-								beq.w		kernel_message_C0																 \n \
+								bne.w		1f																				 \n \
+								ldr.w		r2,=kernel_message_C0															 \n \
+								bx			r2																				 \n \
+								1:																							 \n \
 								cmp			r1,#1																			 \n \
-								beq.w		kern_privilegeElevate															 \n \
+								bne.w		2f																				 \n \
+								ldr.w		r2,=kern_privilegeElevate														 \n \
+								bx			r2																				 \n \
+								2:																							 \n \
 								push		{lr}																			 \n \
 								bl			syscall																			 \n \
 								pop			{lr}																			 \n \
@@ -517,7 +523,10 @@
 								ldr			r1,[r0,#24]																		 \n \
 								ldrb.w		r1,[r1,#-2]																		 \n \
 								cmp			r1,#0																			 \n \
-								beq.w		kernel_message_C0																 \n \
+								bne.w		1f																				 \n \
+								ldr.w		r2,=kernel_message_C0															 \n \
+								bx			r2																				 \n \
+								1:																							 \n \
 								push		{lr}																			 \n \
 								bl			syscall																			 \n \
 								pop			{lr}																			 \n \
@@ -541,9 +550,15 @@
 								ldr			r1,[r0,#24]																		 \n \
 								ldrb.w		r1,[r1,#-2]																		 \n \
 								cmp			r1,#0																			 \n \
-								beq.w		kernel_message_C1																 \n \
+								bne.w		1f																				 \n \
+								ldr.w		r2,=kernel_message_C1															 \n \
+								bx			r2																				 \n \
+								1:																							 \n \
 								cmp			r1,#1																			 \n \
-								beq.w		kern_privilegeElevate															 \n \
+								bne.w		2f																				 \n \
+								ldr.w		r2,=kern_privilegeElevate														 \n \
+								bx			r2																				 \n \
+								2:																							 \n \
 								push		{lr}																			 \n \
 								bl			syscall																			 \n \
 								pop			{lr}																			 \n \

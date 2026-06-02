@@ -80,7 +80,7 @@ PATH_MKFILE				:= $(abspath $(lastword $(MAKEFILE_LIST)))
 PATH_PORT				=  $(PATH_UKOS)/Ports
 
 DISPLAY					=  TFT_2_4_Inches
-PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(DISPLAY)/$(CORE)
 LVGL					=  libLVGL
 
 PATH_LIB_MICROPYTHON	=  $(PATH_UKOS)/Third_Parties/MicroPython/Library/$(CORE)

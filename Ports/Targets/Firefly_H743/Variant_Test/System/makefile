@@ -100,12 +100,12 @@ PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
 
 DISPLAY					=  WKS43WV067_5_Inches
 PATH_LVGL				=  $(PATH_UKOS)/Third_Parties/LVGL
-PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(DISPLAY)/$(CORE)
 LVGL					=  libLVGL
 
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/LVGL-current
-PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/Library/$(DISPLAY)/$(CORE)
 
 # Target & Infrastructure
 

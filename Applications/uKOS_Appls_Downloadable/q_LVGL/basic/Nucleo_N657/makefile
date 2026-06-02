@@ -47,13 +47,13 @@
 
 PROJECT			=  basic
 
-DISPLAY			=  WaveShare_2_Inches
+DISPLAY			?= WaveShare_2_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure
 
-PREFIX			?=  arm-none-eabi-
-COMPILER_FAMILY	?=  gcc
+PREFIX			?= arm-none-eabi-
+COMPILER_FAMILY	?= gcc
 
 BOARD			=  Nucleo_N657
 VARIANT			=  Variant_Test
@@ -61,7 +61,8 @@ SOC				=  STM32N657
 CORE			=  CORTEX_M55
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)
+CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)
+CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
 CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 
 include ../../../../Mkfiles/common.mk

@@ -95,7 +95,7 @@ PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/Construction/Interface/O
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/TinyUSB/TinyUSB-current/src
 
 DISPLAY					=  WaveShare_2_Inches
-PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(CORE)/$(DISPLAY)
+PATH_LIB_LVGL			=  $(PATH_UKOS)/Third_Parties/LVGL/Library/$(DISPLAY)/$(CORE)
 LVGL					=  libLVGL
 
 # Target & Infrastructure

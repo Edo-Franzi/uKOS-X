@@ -10,7 +10,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		EEPROM W25X80L equates.
+; Goal:		Flash W25X80L equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -51,29 +51,32 @@
 
 // Memory structure
 
-#define	KSPIM_SZ_SECTOR						4096u							// Sector size
-#define	KSPIM_SZ_PAGE						256u							// Page size
-#define	KSPIM_NB_SECTOR_BLOC				16u								// Number of sector by block
-#define	KSPIM_NB_BLOC						16u								// Number of blocks
-#define	KSPIM_SZ_FLASH						(KSZBLOC * KSPIM_NB_BLOC)		// EEPROM size
+#define	KFLASH_SPI_SZ_FLASH					(1u * 1024u * 1024u)							// FLASH size
+#define	KFLASH_SPI_SZ_SECTOR				4096u											// Sector size
+#define	KFLASH_SPI_NB_SECTOR				(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_SECTOR)	// Number of sectors
+#define	KFLASH_SPI_SZ_PAGE					256u											// Page size
+#define	KFLASH_SPI_NB_PAGE					(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_PAGE)		// Number of pages
+#define	KFLASH_SPI_SZ_BLOC					65536u											// Bloc size
+#define	KFLASH_SPI_NB_BLOC					(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_BLOC)		// Number of blocs
 
 // Commands for the chip W25X80L
 
-#define	KCMD_WR_STATUS						0x01u							// EEPROM write status command
-#define	KCMD_WRITE							0x02u							// EEPROM write command
-#define	KCMD_READ							0x03u							// EEPROM read command
-#define	KCMD_WR_DISABLE						0x04u							// EEPROM write disable command
-#define	KCMD_RD_STATUS						0x05u							// EEPROM read status command
-#define	KCMD_WR_ENABLE						0x06u							// EEPROM write enable command
-#define	KCMD_ERASE_SECTOR					0x20u							// EEPROM erase sector command
-#define	KCMD_BULK_ERASE						0xC7u							// EEPROM bulk erase command
+#define	KFLASH_SPI_CMD_WRITE_STATUS			0x01u											// FLASH write status command
+#define	KFLASH_SPI_CMD_WRITE				0x02u											// FLASH write command (pages of 256 bytes)
+#define	KFLASH_SPI_CMD_READ					0x03u											// FLASH read command
+#define	KFLASH_SPI_CMD_WRITE_DISABLE		0x04u											// FLASH write disable command
+#define	KFLASH_SPI_CMD_READ_STATUS			0x05u											// FLASH read status command
+#define	KFLASH_SPI_CMD_WRITE_ENABLE			0x06u											// FLASH write enable command
+#define	KFLASH_SPI_CMD_ERASE_SECTOR			0x20u											// FLASH erase sector command
+#define	KFLASH_SPI_CMD_ERASE_BLOC			0xD8u											// FLASH erase bloc command
+#define	KFLASH_SPI_CMD_ERASE_BULK			0xC7u											// FLASH bulk erase command
 
 // Status bits for the chip W25X80L
 
-#define	BBUSY								0u								// Erase or write in progress
-#define	BWEL								1u								// Write enable latch
-#define	BBP0								2u								// Block protect block 0
-#define	BBP1								3u								// Block protect block 1
-#define	BBP2								4u								// Block protect block 2
-#define	BTB									5u								// Top/Bottom write protect
-#define	BSRP								7u								// Status register protect
+#define	BFLASH_SPI_BUSY						0u												// Erase or write in progress
+#define	BFLASH_SPI_WEL						1u												// Write enable latch
+#define	BFLASH_SPI_BP0						2u												// Block protect block 0
+#define	BFLASH_SPI_BP1						3u												// Block protect block 1
+#define	BFLASH_SPI_BP2						4u												// Block protect block 2
+#define	BFLASH_SPI_TB						5u												// Top/Bottom write protect
+#define	BFLASH_SPI_SRWD						7u												// Status register protect

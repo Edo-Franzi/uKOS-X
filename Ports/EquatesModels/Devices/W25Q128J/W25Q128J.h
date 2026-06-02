@@ -1,6 +1,6 @@
 /*
-; MX25R6435.
-; ==========
+; W25Q128J.
+; =========
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -10,7 +10,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Flash MX25R6435 equates.
+; Goal:		Flash W25Q128J equates.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -51,7 +51,7 @@
 
 // Memory structure
 
-#define	KFLASH_SPI_SZ_FLASH					(8u * 1024u * 1024u)							// FLASH size
+#define	KFLASH_SPI_SZ_FLASH					(16u * 1024u * 1024u)							// FLASH size
 #define	KFLASH_SPI_SZ_SECTOR				4096u											// Sector size
 #define	KFLASH_SPI_NB_SECTOR				(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_SECTOR)	// Number of sectors
 #define	KFLASH_SPI_SZ_PAGE					256u											// Page size
@@ -59,7 +59,7 @@
 #define	KFLASH_SPI_SZ_BLOC					65536u											// Bloc size
 #define	KFLASH_SPI_NB_BLOC					(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_BLOC)		// Number of blocs
 
-// Commands for the chip MX25R6435
+// Commands for the chip W25Q128J
 
 #define	KFLASH_SPI_CMD_WRITE_STATUS			0x01u											// FLASH write status command
 #define	KFLASH_SPI_CMD_WRITE				0x02u											// FLASH write command (pages of 256 bytes)
@@ -71,12 +71,13 @@
 #define	KFLASH_SPI_CMD_ERASE_BLOC			0xD8u											// FLASH erase bloc command
 #define	KFLASH_SPI_CMD_ERASE_BULK			0xC7u											// FLASH bulk erase command
 
-// Status bits for the chip MX25R6435
+// Status bits for the chip W25Q128J
 
 #define	BFLASH_SPI_BUSY						0u												// Erase or write in progress
 #define	BFLASH_SPI_WEL						1u												// Write enable latch
 #define	BFLASH_SPI_BP0						2u												// Block protect block 0
 #define	BFLASH_SPI_BP1						3u												// Block protect block 1
 #define	BFLASH_SPI_BP2						4u												// Block protect block 2
-#define	BFLASH_SPI_BP3						5u												// Block protect block 3
+#define	BFLASH_SPI_TB						5u												// Top/Bottom write protect
+#define	BFLASH_SPI_SEC						6u												// Top/Bottom write protect
 #define	BFLASH_SPI_SRWD						7u												// Status register protect

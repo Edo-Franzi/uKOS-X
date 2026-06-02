@@ -49,54 +49,23 @@
 */
 
 #include	"uKOS.h"
+#include	"lcd_display.h"
 #include	"../../ulvgl.h"
 
-extern	uint32_t			linker_stLCD_F_BUFFER[];	//
-#define	FB_ADDR				linker_stLCD_F_BUFFER		// Frame buffer
+// Connect the physical device to the logical manager
+// --------------------------------------------------
 
-#define LCD_W				800u						// Active width
-#define LCD_H				480u						// Active hight
+extern	uint32_t					linker_stLCD_F_BUFFER[];
+#define	FB_ADDR						linker_stLCD_F_BUFFER
+#define	LCD_TFT						LTDC
 
-#define LCD_HSYNC			48u							// HSYNC width
-#define LCD_HBP				88u							// HSYNC HBP
-#define LCD_HFP				40u							// HSYNC HFP
+#define	model_lcd_tft_rgb8888_init	stub_LCD_On
 
-#define LCD_VSYNC			3u							// VSYNC width
-#define LCD_VBP				32u							// VSYNC VBP
-#define LCD_VFP				13u							// VSYNC VFP
+// Set the layer 1 and the number of bytes per lane
 
-#define	L1_W				800u						// Active layer 1 width
-#define	L1_H				480u						// Active layer 1 hight
-#define	L1_NB_BYTES_LINE	4u							// Active layer 1 nb bytes per liine
-
-// Prototypes
-
-static	void	local_setBackGroundColor(uint32_t rgb8888);
-static	void	local_setLayer(void);
-static	void	local_setPixelClock(void);
-static	void	local_fillFBX8888(uint32_t *addr, uint32_t rgb8888);
-
-/*
- * \brief stub_LCD_On
- *
- * - Initialise the LTDC
- *
- */
-void	stub_LCD_On(void) {
-
-	RCC->APB3ENR   |= RCC_APB3ENR_LTDCEN;
-	RCC->APB3LPENR |= RCC_APB3LPENR_LTDCLPEN;
-	STRONG_BARRIER;
-
-	kern_suspendProcess(10u);
-
-	local_setPixelClock();
-	local_fillFBX8888(FB_ADDR, 0x00000000u);
-
-//                             RRGGBB
-	local_setBackGroundColor(0xFF0000u);
-	local_setLayer();
-}
+#define	L1_W						LCD_W
+#define	L1_H						LCD_H
+#define	L1_NB_BYTES_LINE			4u
 
 /*
  * \brief stub_LCD_flush_cb
@@ -126,125 +95,22 @@ void	stub_LCD_flush_cb(lv_display_t *lv_display, const lv_area_t *area, uint8_t 
 	lv_display_flush_ready(lv_display);
 }
 
-// Local routines
-// ==============
+// Model callbacks
+// ---------------
 
 /*
- * \brief local_setBackGroundColor
+ * \brief cb_enable
  *
- * - Set the background color
+ * - Enable the device (clock)
  *
  */
-static	void	local_setBackGroundColor(uint32_t rgb8888) {
+static	void	cb_enable(uint32_t rgb8888) {
+				uint32_t	i, pixel;
+	volatile	uint32_t	*p = (volatile uint32_t *)FB_ADDR;
 
-// LTDC off during the configuration phase
-
-	LTDC->GCR &= ~LTDC_GCR_LTDCEN;
-
-// Full screen Timings
-
-	LTDC->SSCR = ((LCD_HSYNC - 1u) * LTDC_SSCR_HSW_0)
-			   | ((LCD_VSYNC - 1u) * LTDC_SSCR_VSH_0);
-	LTDC->BPCR = ((LCD_HSYNC + LCD_HBP - 1u) * LTDC_BPCR_AHBP_0)
-			   | ((LCD_VSYNC + LCD_VBP - 1u) * LTDC_BPCR_AVBP_0);
-	LTDC->AWCR = ((LCD_HSYNC + LCD_HBP + LCD_W - 1u) * LTDC_AWCR_AAV_0)
-			   | ((LCD_VSYNC + LCD_VBP + LCD_H - 1u) * LTDC_AWCR_AAH_0);
-	LTDC->TWCR = ((LCD_HSYNC + LCD_HBP + LCD_W + LCD_HFP - 1u) * LTDC_TWCR_TOTALW_0)
-			   | ((LCD_VSYNC + LCD_VBP + LCD_H + LCD_VFP - 1u) * LTDC_TWCR_TOTALH_0);
-
-// Polarities
-
-	LTDC->GCR &= ~(LTDC_GCR_HSPOL | LTDC_GCR_VSPOL | LTDC_GCR_DEPOL | LTDC_GCR_PCPOL);
-
-// Layers OFF
-
-	LTDC->L1CR = 0u;
-	LTDC->L2CR = 0u;
+	RCC->APB3ENR   |= RCC_APB3ENR_LTDCEN;
+	RCC->APB3LPENR |= RCC_APB3LPENR_LTDCLPEN;
 	STRONG_BARRIER;
-
-// Set the background
-
-	LTDC->BCCR = rgb8888 & 0x00FFFFFFu;
-    LTDC->SRCR = LTDC_SRCR_IMR;
-	LTDC->GCR |= LTDC_GCR_LTDCEN;
-    LTDC->SRCR = LTDC_SRCR_IMR;
-
-// Display powered
-// Backlight on
-
-	GPIOC->ODR |= (1u<<BLCD_POWER);
-	kern_suspendProcess(100);
-
-	GPIOB->ODR |= (1u<<BBL_CTRL);
-	kern_suspendProcess(100);
-
-// LTDC on
-
-	LTDC->GCR |= LTDC_GCR_LTDCEN;
-    LTDC->SRCR = LTDC_SRCR_IMR;
-}
-
-/*
- * \brief local_setLayer
- *
- * - Set the layer
- *
- */
-static	void	local_setLayer(void) {
-
-// Centered window in ACTIVE area coordinates
-
-	uint32_t	ahbp = (LTDC->BPCR>>16u) & 0x0FFFu;
-	uint32_t	avbp = (LTDC->BPCR>>0u)  & 0x0FFFu;
-	uint32_t	x0 = (ahbp + 1u) + ((LCD_W - L1_W) / 2u);
-	uint32_t	y0 = (avbp + 1u) + ((LCD_H - L1_H) / 2u);
-	uint32_t	x1 = x0 + L1_W - 1u;
-	uint32_t	y1 = y0 + L1_H - 1u;
-
-// Layer off during the configuration phase
-
-	LTDC->L1CR = 0u;
-
-// Window position
-
-	LTDC->L1WHPCR = ((x1 & 0x0FFFu)<<16u) | (x0 & 0x0FFFu);
-	LTDC->L1WVPCR = ((y1 & 0x0FFFu)<<16u) | (y0 & 0x0FFFu);
-
-// Fully opaque constant alpha
-// Pixel format ARGB8888
-// Blending factors (opaque layer): BF1=CA, BF2=1-CA
-
-	LTDC->L1CACR = 255u;
-	LTDC->L1PFCR = (0u * LTDC_L1PFCR_PF_0);
-	LTDC->L1BFCR = (4u * LTDC_L1BFCR_BF1_0) | (5u * LTDC_L1BFCR_BF2_0);
-
-// Frame buffer
-// Color Framebuffer lenght
-
-	LTDC->L1CFBAR  = (uint32_t)FB_ADDR;
-	LTDC->L1CFBLR  = (( L1_W * L1_NB_BYTES_LINE)	   * LTDC_L1CFBLR_CFBP_0)
-				   | (((L1_W * L1_NB_BYTES_LINE) + 7u) * LTDC_L1CFBLR_CFBLL_0);
-	LTDC->L1CFBLNR = L1_H;
-
-// Layer default background color
-//                        AARRGGBB
-	LTDC->L1DCCR = 0x00000000u;
-
-// Layer on
-
-	LTDC->L1CR = LTDC_L1CR_LEN;
-	LTDC->SRCR = LTDC_SRCR_IMR;
-
-	STRONG_BARRIER;
-}
-
-/*
- * \brief local_setPixelClock
- *
- * - Set the pixel clock
- *
- */
-static	void	local_setPixelClock(void) {
 
 // STM32H743 LTDC kernel clock selection.
 // PLL3_R as LTDC pixel clock source.
@@ -254,17 +120,7 @@ static	void	local_setPixelClock(void) {
 //
 // See init.c pll3 initialisation
 
-}
-
-/*
- * \brief local_fillFBX8888
- *
- * - Fill the layer 1 frame buffer
- *
- */
-static	void	local_fillFBX8888(uint32_t *addr, uint32_t rgb8888) {
-				uint32_t	i, pixel;
-	volatile	uint32_t	*p = (volatile uint32_t *)addr;
+// Initialise the frame buffer
 
 	pixel = rgb8888 & 0x00FFFFFFu;
 
@@ -272,3 +128,23 @@ static	void	local_fillFBX8888(uint32_t *addr, uint32_t rgb8888) {
 		p[i] = pixel;
 	}
 }
+
+/*
+ * \brief cb_powerLCD
+ *
+ * - Turn-on the LCD
+ *
+ */
+void	cb_powerLCD(void) {
+
+// Display powered
+// Backlight on
+
+	GPIOC->ODR |= (1u<<BLCD_POWER);
+	kern_suspendProcess(100);
+
+	GPIOB->ODR |= (1u<<BBL_CTRL);
+	kern_suspendProcess(100);
+}
+
+#include	"model_lcd_tft_rgb8888.c_inc"

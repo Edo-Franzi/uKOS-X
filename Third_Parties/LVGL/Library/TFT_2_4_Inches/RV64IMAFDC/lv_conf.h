@@ -58,14 +58,14 @@
 #define	LV_CONF_H
 
 // COLOR SETTINGS
-// ==============
+// --------------
 
 // Color depth: 1 (I1), 8 (L8), 16 (RGB565), 24 (RGB888), 32 (XRGB8888)
 //
 #define	LV_COLOR_DEPTH									16
 
 // STDLIB WRAPPER SETTINGS
-// =======================
+// -----------------------
 
 // Possible values
 // - LV_STDLIB_BUILTIN: LVGL's built in implementation
@@ -104,7 +104,7 @@
 #define	LV_STDARG_INCLUDE								<stdarg.h>
 
 // HAL SETTINGS
-// ============
+// ------------
 
 // Default display refresh, input device read and animation step period i ms
 //
@@ -120,14 +120,14 @@
 #define	LV_VER_RES_MAX									240
 
 // OPERATING SYSTEM
-// ================
+// ----------------
 
 // Select operating system to use
 //
 #define	LV_USE_OS										LV_OS_NONE
 
 // RENDERING CONFIGURATION
-// =======================
+// -----------------------
 
 #define	LV_DRAW_BUF_STRIDE_ALIGN						1
 #define	LV_DRAW_BUF_ALIGN								4
@@ -165,7 +165,7 @@
 #endif
 
 // FEATURE CONFIGURATION
-// =====================
+// ---------------------
 
 // Logging
 //
@@ -196,7 +196,7 @@
 #define	LV_USE_OBJ_PROPERTY_NAME						1
 
 // FONT USAGE
-// ==========
+// ----------
 
 #define	LV_FONT_MONTSERRAT_8							0
 #define	LV_FONT_MONTSERRAT_10							0
@@ -234,7 +234,7 @@
 #define	LV_USE_FONT_PLACEHOLDER							1
 
 // TEXT SETTINGS
-// =============
+// -------------
 
 #define	LV_TXT_ENC										LV_TXT_ENC_UTF8
 #define	LV_TXT_BREAK_CHARS								" ,.;:-_)]}"
@@ -247,7 +247,7 @@
 #define	LV_TXT_COLOR_CMD								"#"
 
 // WIDGETS
-// =======
+// -------
 
 #define	LV_WIDGETS_HAS_DEFAULT_VALUE					1
 #define	LV_USE_ANIMIMG									1
@@ -308,7 +308,7 @@
 #define	LV_USE_WIN										1
 
 // THEMES
-// ======
+// ------
 
 #define	LV_USE_THEME_DEFAULT							0
 #if LV_USE_THEME_DEFAULT
@@ -320,7 +320,7 @@
 #define	LV_USE_THEME_MONO								0
 
 // BUILD OPTIONS
-// =============
+// -------------
 
 #define	LV_DISABLE_API_MAPPING							1
 #define	LV_BUILD_EXAMPLES								0

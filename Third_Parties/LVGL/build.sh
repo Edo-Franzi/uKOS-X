@@ -99,16 +99,16 @@ build_core() {
 	mv libLVGL_temp.log libLVGL_ready.txt
 }
 
-printf '\n%bBuilding for cortex M7! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M7 WKS43WV067_5_Inches
+printf '\n%bBuilding for WKS43WV067_5_Inches! ...%b\n' "${BOLD}" "${NC}"
+build_core WKS43WV067_5_Inches CORTEX_M7
 
-printf '\n%bBuilding for cortex M55! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M55 WaveShare_2_Inches
+printf '\n%bBuilding for WaveShare_2_Inches! ...%b\n' "${BOLD}" "${NC}"
+build_core WaveShare_2_Inches CORTEX_M55
 
-printf '\n%bBuilding for cortex M85! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M85 RK050HR18_5_Inches
+printf '\n%bBuilding for RK050HR18_5_Inches! ...%b\n' "${BOLD}" "${NC}"
+build_core RK050HR18_5_Inches CORTEX_M85
 
-printf '\n%bBuilding for RV64IMAFDC! ...%b\n' "${BOLD}" "${NC}"
-build_core RV64IMAFDC TFT_2_4_Inches
+printf '\n%bBuilding for TFT_2_4_Inches! ...%b\n' "${BOLD}" "${NC}"
+build_core TFT_2_4_Inches RV64IMAFDC
 
 printf '\n🎉 %bBuild Complete%b\n\n' "${GREEN}" "${NC}"

@@ -1,0 +1,174 @@
+/*
+; model_lcd_tft_rgb8888.
+; ======================
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for controlling the "lcd_tft" device (for rgb8888).
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+// Prototypes
+
+static	void	local_setBackGroundColor(uint32_t rgb8888);
+static	void	local_setLayer(void);
+
+/*
+ * \brief model_lcd_tft_rgb8888_init
+ *
+ * - Initialise the manager
+ *
+ */
+void	model_lcd_tft_rgb8888_init(uint32_t rgb8888) {
+
+	cb_enable(rgb8888);
+	kern_suspendProcess(10u);
+
+// Set the lcd_tft and the backgroud
+
+	local_setBackGroundColor(rgb8888 & 0x00FFFFFF);
+	local_setLayer();
+}
+
+/*
+ * \brief local_setBackGroundColor
+ *
+ * - Set the background color
+ *
+ */
+static	void	local_setBackGroundColor(uint32_t rgb8888) {
+
+// LCD_TFT off during the configuration phase
+
+	LCD_TFT->GCR &= ~LTDC_GCR_LTDCEN;
+
+// Full screen Timings
+
+	LCD_TFT->SSCR = ((LCD_HSYNC - 1u) * LTDC_SSCR_HSW_0)
+				  | ((LCD_VSYNC - 1u) * LTDC_SSCR_VSH_0);
+	LCD_TFT->BPCR = ((LCD_HSYNC + LCD_HBP - 1u) * LTDC_BPCR_AHBP_0)
+				  | ((LCD_VSYNC + LCD_VBP - 1u) * LTDC_BPCR_AVBP_0);
+	LCD_TFT->AWCR = ((LCD_HSYNC + LCD_HBP + LCD_W - 1u) * LTDC_AWCR_AAV_0)
+				  | ((LCD_VSYNC + LCD_VBP + LCD_H - 1u) * LTDC_AWCR_AAH_0);
+	LCD_TFT->TWCR = ((LCD_HSYNC + LCD_HBP + LCD_W + LCD_HFP - 1u) * LTDC_TWCR_TOTALW_0)
+				  | ((LCD_VSYNC + LCD_VBP + LCD_H + LCD_VFP - 1u) * LTDC_TWCR_TOTALH_0);
+
+// Polarities
+
+	LCD_TFT->GCR &= ~(LTDC_GCR_HSPOL | LTDC_GCR_VSPOL | LTDC_GCR_DEPOL | LTDC_GCR_PCPOL);
+
+// Layers OFF
+
+	LCD_TFT->L1CR = 0u;
+	LCD_TFT->L2CR = 0u;
+	STRONG_BARRIER;
+
+// Set the background
+
+	LCD_TFT->BCCR = rgb8888 & 0x00FFFFFFu;
+    LCD_TFT->SRCR = LTDC_SRCR_IMR;
+	LCD_TFT->GCR |= LTDC_GCR_LTDCEN;
+    LCD_TFT->SRCR = LTDC_SRCR_IMR;
+
+// Display powered
+// Backlight on
+
+	cb_powerLCD();
+
+// LCD_TFT on
+
+	LCD_TFT->GCR |= LTDC_GCR_LTDCEN;
+    LCD_TFT->SRCR = LTDC_SRCR_IMR;
+}
+
+/*
+ * \brief local_setLayer
+ *
+ * - Set the layer
+ *
+ */
+static	void	local_setLayer(void) {
+
+// Centered window in ACTIVE area coordinates
+
+	uint32_t	ahbp = (LCD_TFT->BPCR>>16u) & 0x0FFFu;
+	uint32_t	avbp = (LCD_TFT->BPCR>>0u)  & 0x0FFFu;
+	uint32_t	x0 = (ahbp + 1u) + ((LCD_W - L1_W) / 2u);
+	uint32_t	y0 = (avbp + 1u) + ((LCD_H - L1_H) / 2u);
+	uint32_t	x1 = x0 + L1_W - 1u;
+	uint32_t	y1 = y0 + L1_H - 1u;
+
+// Layer off during the configuration phase
+
+	LCD_TFT->L1CR = 0u;
+
+// Window position
+
+	LCD_TFT->L1WHPCR = ((x1 & 0x0FFFu)<<16u) | (x0 & 0x0FFFu);
+	LCD_TFT->L1WVPCR = ((y1 & 0x0FFFu)<<16u) | (y0 & 0x0FFFu);
+
+// Fully opaque constant alpha
+// Pixel format ARGB8888
+// Blending factors (opaque layer): BF1=CA, BF2=1-CA
+
+	LCD_TFT->L1CACR = 255u;
+	LCD_TFT->L1PFCR = (0u * LTDC_L1PFCR_PF_0);
+	LCD_TFT->L1BFCR = (4u * LTDC_L1BFCR_BF1_0) | (5u * LTDC_L1BFCR_BF2_0);
+
+// Frame buffer
+// Color Framebuffer lenght
+
+	LCD_TFT->L1CFBAR  = (uint32_t)FB_ADDR;
+	LCD_TFT->L1CFBLR  = (( L1_W * L1_NB_BYTES_LINE)	   * LTDC_L1CFBLR_CFBP_0)
+					  | (((L1_W * L1_NB_BYTES_LINE) + 7u) * LTDC_L1CFBLR_CFBLL_0);
+	LCD_TFT->L1CFBLNR = L1_H;
+
+// Layer default background color
+//             			AARRGGBB
+	LCD_TFT->L1DCCR = 0x00000000u;
+
+// Layer on
+
+	LCD_TFT->L1CR = LTDC_L1CR_LEN;
+	LCD_TFT->SRCR = LTDC_SRCR_IMR;
+	STRONG_BARRIER;
+}

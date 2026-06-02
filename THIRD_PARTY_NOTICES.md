@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-05-20
+(c) 2025-2026, Edo. Franzi, 2026-06-02
 
 
 
@@ -37,7 +37,7 @@ the third-party components shipped in this repository.
 ### 2.2) decnumber
 - Location: `Third_Parties/decnumber/`
 - Upstream: https://github.com/raitechnology/libdecnumber.git
-- Version: 3.68 / commit ace3fa6
+- Version: 3.68 / commit a941bd3
 - License: See `,LICENSES/License_DecNumbers.txt`
 - Copyright:
   -  See upstream project copyright notices in source headers
@@ -95,7 +95,7 @@ the third-party components shipped in this repository.
 ### 2.9) Tflite-micro
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/tensorflow/tflite-micro.git
-- Version: commit cc99d05
+- Version: commit 730449f
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2020 The TensorFlow Authors. All rights reserved.
@@ -103,7 +103,7 @@ the third-party components shipped in this repository.
 ### 2.10) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 6f59b79
+- Version: 0.20.0 / commit f78715d
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

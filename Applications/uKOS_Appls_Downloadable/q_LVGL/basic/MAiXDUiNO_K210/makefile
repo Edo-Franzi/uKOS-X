@@ -47,13 +47,13 @@
 
 PROJECT			=  basic
 
-DISPLAY			=  TFT_2_4_Inches
+DISPLAY			?= TFT_2_4_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure
 
-PREFIX			?=  riscv64-unknown-elf-
-COMPILER_FAMILY	?=  gcc
+PREFIX			?= riscv64-unknown-elf-
+COMPILER_FAMILY	?= gcc
 
 BOARD			=  MAiXDUiNO_K210
 VARIANT			=  Variant_Test
@@ -61,7 +61,8 @@ SOC				=  K210
 CORE			=  RV64IMAFDC
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)
+CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)
+CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
 CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 
 include ../../../../Mkfiles/common.mk

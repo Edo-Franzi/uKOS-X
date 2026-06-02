@@ -56,7 +56,7 @@ LIB_SYS_DIR			= $(PATH_LVGL)/Construction/System
 LIB_SRC_DIR			= $(PATH_LVGL)/LVGL-current/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
-PATH_INCLUDES		+= -I$(PATH_LVGL)/Library/$(CORE)/$(DISPLAY)
+PATH_INCLUDES		+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
 PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
 
 SRC					=  $(LIB_SYS_DIR)/headerLVGL.c
