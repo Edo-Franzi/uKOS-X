@@ -1,5 +1,5 @@
-# app.
-# ====
+# app_class_Py.
+# =============
 
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -9,7 +9,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for including apps in uKOS-X system.
+# Goal:		makefile for including the application class_Py in uKOS-X system.
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -45,8 +45,8 @@
 #
 #------------------------------------------------------------------------
 
-FLAGS_UKOS		+= -DWITHAPP_S
+FLAGS_UKOS		+= -DWITHAPP_class_Py_S
 
 PATH_APPL		=  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
 
-CLI_U			+= $(PATH_APPL)/b_MailBoxes/coherence/coherence.c
+CLI_U			+= $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/l_MLPs/class_Py/class_Py.c

@@ -12,6 +12,49 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Process: Aladin          0  Counter: 0
+;	Process: Marsupilami     1  Counter: 10000
+;	Process: Aladin          0  Counter: 1
+;	Process: Fraggle Rock    2  Counter: 100000
+;	Process: Aladin          0  Counter: 2
+;	Process: Lupo de Lupis   3  Counter: 1000000
+;	Process: Marsupilami     1  Counter: 10001
+;	Process: Aladin          0  Counter: 3
+;	Process: Muppet show     4  Counter: 10000000
+;	Process: Aladin          0  Counter: 4
+;	Process: Max le voyageur 5  Counter: 100000000
+;	Process: Fraggle Rock    2  Counter: 100001
+;	Process: Marsupilami     1  Counter: 10002
+;	Process: Aladin          0  Counter: 5
+;	Process: Aladin          0  Counter: 6
+;	Process: Lupo de Lupis   3  Counter: 1000001
+;	Process: Marsupilami     1  Counter: 10003
+;	Process: Aladin          0  Counter: 7
+;	Process: Fraggle Rock    2  Counter: 100002
+;	Process: Aladin          0  Counter: 8
+;	Process: Muppet show     4  Counter: 10000001
+;	Process: Marsupilami     1  Counter: 10004
+;	Process: Aladin          0  Counter: 9
+;	Process: Aladin          0  Counter: 10
+;	Process: Max le voyageur 5  Counter: 100000001
+;	Process: Lupo de Lupis   3  Counter: 1000002
+;	Process: Fraggle Rock    2  Counter: 100003
+;	Process: Marsupilami     1  Counter: 10005
+;	Process: Aladin          0  Counter: 11
+;	Process: Aladin          0  Counter: 12
+;	Process: Marsupilami     1  Counter: 10006
+;	Process: Aladin          0  Counter: 13
+;	Process: Muppet show     4  Counter: 10000002
+;	Process: Fraggle Rock    2  Counter: 100004
+;	Process: Aladin          0  Counter: 1
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

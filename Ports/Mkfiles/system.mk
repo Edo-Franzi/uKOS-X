@@ -155,7 +155,7 @@ CFLAGS				+= $(CFLAGS_APPEND)
 # The included app makefile
 
 ifneq ($(WITHAPP),)
-	include	app.mk
+	include	app_$(WITHAPP).mk
 endif
 
 all :
@@ -397,7 +397,7 @@ help : help_core
 	@echo "VERBOSE=1              Display the compiler command line."
 	@echo "TARGET=name            Name is the final result name (i.e. name.bin, name.s3, name.elf, etc)."
 	@echo "NOCANARY=1             Suppress detection if a buffer overflow in stack"
-	@echo "WITHAPP=1              Integrate a user application into the system"
+	@echo "WITHAPP=xyz            Integrate the user application xyz into the system"
 
 ifeq ($(NOCLEAN),)
 burn :

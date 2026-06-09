@@ -102,10 +102,10 @@ MAIN_ENTRY(argc, const char_t *argv[]) {
 
 ### Adaptation of the main µKOS-X makefile
 
-Add the file /Target/Alastor_H743/Variant_Test/System/app.mk.
+Add the file /Target/Alastor_H743/Variant_Test/System/app_class_Py.mk.
 
 ```makefile
-FLAGS_UKOS  += -DWITHAPP_S
+FLAGS_UKOS  += -DWITHAPP_class_Py_S
 
 PATH_APPL   =  $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable
 
@@ -116,6 +116,6 @@ CLI_U       += $(PATH_UKOS)/Applications/uKOS_Appls_Downloadable/ \
 Build the system to include the app.
 
 ```bash
-make -j USER_MODE=1 WITHAPP=1
+make -j USER_MODE=1 WITHAPP=class_Py
 ```
 

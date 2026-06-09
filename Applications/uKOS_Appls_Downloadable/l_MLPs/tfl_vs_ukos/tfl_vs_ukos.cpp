@@ -22,6 +22,36 @@
 ;				  Compute the inference for the uKOS-X model
 ;				  Display the inference execution times
 ;
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Exec time for TensorFlowLite, min = 259 [us], max = 259 [us]
+;	Exec time for MLPN uKOS-X,    min = 163 [us], max = 163 [us]
+;
+;	Exec time for TensorFlowLite, min = 252 [us], max = 259 [us]
+;	Exec time for MLPN uKOS-X,    min = 162 [us], max = 163 [us]
+;
+;	Exec time for TensorFlowLite, min = 252 [us], max = 262 [us]
+;	Exec time for MLPN uKOS-X,    min = 160 [us], max = 163 [us]
+;
+;	Exec time for TensorFlowLite, min = 252 [us], max = 262 [us]
+;	Exec time for MLPN uKOS-X,    min = 159 [us], max = 163 [us]
+;
+;	Exec time for TensorFlowLite, min = 252 [us], max = 262 [us]
+;	Exec time for MLPN uKOS-X,    min = 159 [us], max = 163 [us]
+;
+;	Exec time for TensorFlowLite, min = 251 [us], max = 262 [us]
+;	Exec time for MLPN uKOS-X,    min = 159 [us], max = 163 [us]
+;
+;	Exec time for TensorFlowLite, min = 251 [us], max = 262 [us]
+;	Exec time for MLPN uKOS-X,    min = 159 [us], max = 163 [us]
+;
+;	.....
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____

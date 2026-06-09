@@ -48,7 +48,7 @@ PROJECT_NAME           = "uKOS-X"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.5.7
+PROJECT_NUMBER         = 0.5.8
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -985,7 +985,8 @@ INPUT                  = $(PATH_UKOS_X_PACKAGE)/Documentation/Doxygen/doc_src/Ch
                          $(PATH_UKOS_X_PACKAGE)/OS/Processes \
                          $(PATH_UKOS_X_PACKAGE)/Ports \
                          $(PATH_UKOS_X_PACKAGE)/Documentation/Doxygen/doc_src \
-                         $(PATH_UKOS_X_PACKAGE)/Applications/uKOS_Appls_Downloadable
+                         $(PATH_UKOS_X_PACKAGE)/Applications/uKOS_Appls_Downloadable \
+                         $(PATH_UKOS_X_PACKAGE)/Applications/uKOS_Demos
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

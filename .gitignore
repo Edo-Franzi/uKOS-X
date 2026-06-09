@@ -12,7 +12,9 @@
 *.lst
 *.dis
 *.log
+*.map
 *.stack
+*.su
 *_ready.txt
 *_temp.txt
 *.uf2

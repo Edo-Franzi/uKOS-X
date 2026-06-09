@@ -12,6 +12,95 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Rows
+;
+;	Result = 127
+;	45
+;	55
+;	65
+;	75
+;	85
+;	95
+;	105
+;	115
+;	125
+;	136
+;
+;	Cols
+;
+;	46
+;	55
+;	65
+;	75
+;	85
+;	95
+;	105
+;	115
+;	125
+;	135
+;	Result = 127
+;
+;	Rows
+;
+;	90
+;	110
+;	130
+;	150
+;	170
+;	190
+;	210
+;	230
+;	250
+;	272
+;
+;	Cols
+;
+;	92
+;	110
+;	130
+;	150
+;	170
+;	190
+;	210
+;	230
+;	250
+;	270
+;	Result = 127
+;
+;	Rows
+;
+;	135
+;	165
+;	195
+;	225
+;	255
+;	285
+;	315
+;	345
+;	375
+;	408
+;
+;	Cols
+;
+;	138
+;	165
+;	195
+;	225
+;	255
+;	285
+;	315
+;	345
+;	375
+;	405
+;	Result = 127
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

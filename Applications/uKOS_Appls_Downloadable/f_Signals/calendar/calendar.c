@@ -12,6 +12,39 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000003, Epoch = 15488095, Local time: Thu Jan  1 01:00:15 1970
+;	Signal: 00000003, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000003, Epoch = 16488071, Local time: Thu Jan  1 01:00:16 1970
+;	Signal: 00000003, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	Signal: 00000002, Alarme
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

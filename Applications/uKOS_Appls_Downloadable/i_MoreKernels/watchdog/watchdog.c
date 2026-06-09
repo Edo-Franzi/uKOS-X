@@ -12,6 +12,65 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Watchdog in automatic mode (trying for 10'000-ms)
+;	Watchdog in manual mode    (trying for 10'000-ms)
+;
+;	Now waiting 20-s for the watchdog restart
+;	Elapsed 0-s!
+;	Elapsed 1-s!
+;	Elapsed 2-s!
+;	Elapsed 3-s!
+;	Elapsed 4-s!
+;	Elapsed 5-s!
+;	Elapsed 6-s!
+;	Elapsed 7-s!
+;	Elapsed 8-s!
+;	Elapsed 9-s!
+;	Elapsed 10-s!
+;	Elapsed 11-s!
+;	Elapsed 12-s!
+;	Elapsed 13-s!
+;	Elapsed 14-s!
+;	Elapsed 15-s!
+;	Elapsed 16-s!
+;	Elapsed 17-s!
+;	Elapsed 18-s!
+;	Elapsed 19-s!
+;	Elapsed 20-s!
+;
+;	uKOS-X, (c) 2025-2026, Edo. Franzi
+;	__________________________________
+;
+;	                 _/    _/    _/_/      _/_/_/            _/      _/
+;	      _/    _/  _/  _/    _/    _/  _/                    _/  _/         ______   uKernel Operating System
+;	     _/    _/  _/_/      _/    _/    _/_/    _/_/_/_/_/    _/           ______    edo.franzi@ukos.ch
+;	    _/    _/  _/  _/    _/    _/        _/              _/  _/
+;	   _/_/_/_/  _/    _/    _/_/    _/_/_/              _/      _/
+;	  _/
+;	 _/
+;
+;	Design & Development by Edo. Franzi
+;	All rights reserved.
+;
+;	Signature:
+;	79489dfb3bc28c397c72a2d93f59e6d5db40f3e35b298181098cd6b3278ae58f
+;
+;	Firefly_H743, privileged-user mode, V.0.5.7
+;	(c) LvA, Jun  7 2026  08:41:18
+;	gcc-16.1.0, git: a55ba3e003
+;	sw = 0
+;
+;	Console core 0.
+;	Jun  7 2026  08:41:18 (c) EFr-2026
+;
+;	uKOS-X >
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

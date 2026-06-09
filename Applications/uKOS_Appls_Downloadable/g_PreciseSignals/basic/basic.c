@@ -12,6 +12,34 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 556, T2 = 2839, T3 = 2519, T4 = 329
+;	T1 = 556, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 558, T2 = 2839, T3 = 2519, T4 = 327
+;	T1 = 557, T2 = 2838, T3 = 2524, T4 = 328
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 557, T2 = 2839, T3 = 2524, T4 = 329
+;	T1 = 558, T2 = 2839, T3 = 2519, T4 = 327
+;	T1 = 556, T2 = 2839, T3 = 2519, T4 = 329
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 327
+;	T1 = 558, T2 = 2839, T3 = 2519, T4 = 327
+;	T1 = 557, T2 = 2838, T3 = 2519, T4 = 329
+;	T1 = 558, T2 = 2839, T3 = 2519, T4 = 327
+;	T1 = 557, T2 = 2839, T3 = 2519, T4 = 329
+;	T1 = 560, T2 = 2834, T3 = 2519, T4 = 327
+;	T1 = 559, T2 = 2839, T3 = 2519, T4 = 326
+;	T1 = 556, T2 = 2838, T3 = 2519, T4 = 327
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

@@ -12,6 +12,21 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Iteration = 0
+;	Iteration = 1000
+;	Iteration = 2000
+;	Iteration = 3000
+;	Iteration = 4000
+;	Iteration = 5000
+;	Iteration = 6000
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

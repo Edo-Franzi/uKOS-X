@@ -509,6 +509,9 @@ q_LVGL:
   big:
     - Firefly_H743
 
+  gan:
+    - Firefly_H743
+
   team:
     - MAiXDUiNO_K210
     - Nucleo_N657

@@ -12,6 +12,38 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 48; 0x0000000070000458 message -> P2: The quick brown fox jumps over the lazy dog.
+;	Message size = 72; 0x0000000070000740 message -> P3: I didn't know he was dead...I thought he was British. (Woody Allen).
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 48; 0x0000000070000458 message -> P2: The quick brown fox jumps over the lazy dog.
+;	Message size = 72; 0x0000000070000740 message -> P3: I didn't know he was dead...I thought he was British. (Woody Allen).
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 48; 0x0000000070000458 message -> P2: The quick brown fox jumps over the lazy dog.
+;	Message size = 72; 0x0000000070000740 message -> P3: I didn't know he was dead...I thought he was British. (Woody Allen).
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 48; 0x0000000070000458 message -> P2: The quick brown fox jumps over the lazy dog.
+;	Message size = 72; 0x0000000070000740 message -> P3: I didn't know he was dead...I thought he was British. (Woody Allen).
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 48; 0x0000000070000458 message -> P2: The quick brown fox jumps over the lazy dog.
+;	Message size = 72; 0x0000000070000740 message -> P3: I didn't know he was dead...I thought he was British. (Woody Allen).
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 83; 0x00000000700003E0 message -> P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	Message size = 48; 0x0000000070000458 message -> P2: The quick brown fox jumps over the lazy dog.
+;	Message size = 72; 0x0000000070000740 message -> P3: I didn't know he was dead...I thought he was British. (Woody Allen).
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

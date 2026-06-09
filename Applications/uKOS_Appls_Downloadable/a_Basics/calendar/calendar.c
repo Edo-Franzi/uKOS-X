@@ -12,6 +12,26 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Time now = 79
+;	Local time: Thu Jan  1 01:01:19 1970
+;	New timestamp (1 minute later): 139
+;	Formatted time: 01 AM
+;	Execution time: 0.000007 seconds
+;	Execution time: 1.233993 seconds
+;	New Unix time 64-bits= 1743430020000000
+;
+;	Local time: Mon Mar 31 16:07:01 2025
+;	Local time: Mon Mar 31 16:07:02 2025
+;	Local time: Mon Mar 31 16:07:03 2025
+;	Local time: Mon Mar 31 16:07:04 2025
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

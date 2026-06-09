@@ -19,6 +19,21 @@
 ;				  Compute the inference
 ;				  Display the classes
 ;
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	In-0  0.794, In-1  0.124, result: Out-0   20.2%, Out-1   73.6%, Out-2    6.2%     Class C2 (inner-outer)  Exec time 254 [us]
+;	In-0 -0.410, In-1  0.143, result: Out-0   70.6%, Out-1   29.3%, Out-2    0.0%     Class C1 (ring)         Exec time 243 [us]
+;	In-0 -0.599, In-1  0.230, result: Out-0   84.7%, Out-1   15.3%, Out-2    0.0%     Class C1 (ring)         Exec time 236 [us]
+;	In-0 -0.374, In-1  0.123, result: Out-0   58.6%, Out-1   41.3%, Out-2    0.0%     Class C1 (ring)         Exec time 243 [us]
+;	In-0  0.993, In-1 -0.692, result: Out-0    0.4%, Out-1   98.8%, Out-2    0.8%     Class C2 (inner-outer)  Exec time 243 [us]
+;	In-0 -0.185, In-1 -0.794, result: Out-0   21.0%, Out-1   79.0%, Out-2    0.0%     Class C2 (inner-outer)  Exec time 239 [us]
+;	.....
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____

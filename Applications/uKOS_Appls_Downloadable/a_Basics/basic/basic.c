@@ -12,6 +12,26 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 0
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 0
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 1
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) -1
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 2
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) -2
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 3
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) -3
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 4
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) -4
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) 5
+;	output on the KSYST Serial Communication Manager (defined in the PROCESS macros) -5
+;	......
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

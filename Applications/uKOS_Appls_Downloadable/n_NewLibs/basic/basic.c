@@ -12,6 +12,37 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 1, Pi = 3.133333333 Time = 9
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 2, Pi = 2.846092796 Time = 10
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 3, Pi = 2.653938321 Time = 10
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 4, Pi = 2.514732720 Time = 18
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 5, Pi = 2.405836197 Time = 18
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 6, Pi = 2.316420392 Time = 17
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 7, Pi = 2.240572416 Time = 18
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 8, Pi = 2.174716608 Time = 18
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 9, Pi = 2.116526375 Time = 17
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 10, Pi = 2.064403060 Time = 18
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 11, Pi = 2.017200923 Time = 18
+;	P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.
+;	n = 12, Pi = 1.974070807 Time = 18
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

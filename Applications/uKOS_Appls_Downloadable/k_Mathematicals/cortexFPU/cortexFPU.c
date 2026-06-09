@@ -12,6 +12,55 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;
+;	uKOS-X >
+;	n = 1, Pi =  3.1333333 Time = 9
+;	n = 1, Pi =  2.4494897
+;	n = 2, Pi =  3.1414225 Time = 9
+;	n = 2, Pi =  2.7386128
+;	n = 3, Pi =  3.1415874 Time = 9
+;	n = 3, Pi =  2.8577380
+;	n = 4, Pi =  3.1415925 Time = 18
+;	n = 4, Pi =  2.9226130
+;	n = 5, Pi =  3.1415926 Time = 17
+;	n = 5, Pi =  2.9633877
+;	n = 6, Pi =  3.1415927 Time = 17
+;	n = 6, Pi =  2.9913765
+;	n = 7, Pi =  3.1415927 Time = 16
+;	n = 7, Pi =  3.0117739
+;	n = 8, Pi =  3.1415927 Time = 17
+;	n = 8, Pi =  3.0272979
+;	n = 9, Pi =  3.1415927 Time = 17
+;	n = 9, Pi =  3.0395076
+;	n = 10, Pi =  3.1415927 Time = 19
+;	n = 10, Pi =  3.0493616
+;	n = 11, Pi =  3.1415927 Time = 18
+;	n = 11, Pi =  3.0574815
+;	n = 12, Pi =  3.1415927 Time = 17
+;	n = 12, Pi =  3.0642878
+;	n = 13, Pi =  3.1415927 Time = 17
+;	n = 13, Pi =  3.0700754
+;	n = 14, Pi =  3.1415927 Time = 17
+;	n = 14, Pi =  3.0750569
+;	n = 15, Pi =  3.1415927 Time = 17
+;	n = 15, Pi =  3.0793898
+;	n = 16, Pi =  3.1415927 Time = 18
+;	n = 16, Pi =  3.0831930
+;	n = 17, Pi =  3.1415927 Time = 17
+;	n = 17, Pi =  3.0865580
+;	n = 18, Pi =  3.1415927 Time = 18
+;	n = 18, Pi =  3.0895564
+;	n = 19, Pi =  3.1415927 Time = 16
+;	n = 19, Pi =  3.0922451
+;	n = 20, Pi =  3.1415927 Time = 16
+;	n = 20, Pi =  3.0946695
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

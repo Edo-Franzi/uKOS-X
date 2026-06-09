@@ -12,6 +12,19 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	0.004565e-3 mul 1.747470e+4 = 0.07977200550
+;
+;	0.004565e-3 div 1.747470e+4 = 2.612348137593206E-10
+;
+;	Problem: Division by zero
+;	0.004565e-3 div 00000000000 = Infinity
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

@@ -12,6 +12,25 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Message Read: 10084043, Message Written: 10054036, Delta: 30007
+;	Message rec:    --> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+;
+;	Message Read: 10158048, Message Written: 10064036, Delta: 94012
+;	Message rec:  ! --> 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
+;
+;	Message Read: 10232057, Message Written: 10074036, Delta: 158021
+;	Message rec:  " --> 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59
+;
+;	Message Read: 10306067, Message Written: 10084037, Delta: 222030
+;	Message rec:  # --> 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

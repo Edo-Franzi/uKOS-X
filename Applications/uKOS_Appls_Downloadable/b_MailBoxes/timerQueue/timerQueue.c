@@ -12,6 +12,25 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Counter = 0
+;	Counter = 1
+;	Counter = 2
+;	Counter = 3
+;	Counter = 4
+;	Counter = 5
+;	Counter = 6
+;	Counter = 7
+;	Counter = 8
+;	Counter = 9
+;	Counter = 10
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

@@ -19,6 +19,20 @@
 ;				  Compute the inference
 ;				  Display the classes
 ;
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	In-0  0.584, In-1 -0.529, result: Out-0    0.0%, Out-1    0.0%, Out-2  100.0%     Class C3 (square)       Exec time 163 [us]
+;	In-0  0.415, In-1  0.500, result: Out-0    0.0%, Out-1    0.0%, Out-2  100.0%     Class C3 (square)       Exec time 135 [us]
+;	In-0  0.180, In-1 -0.022, result: Out-0    0.0%, Out-1    0.0%, Out-2  100.0%     Class C3 (square)       Exec time 132 [us]
+;	In-0 -0.942, In-1  0.821, result: Out-0    0.3%, Out-1   99.7%, Out-2    0.0%     Class C2 (inner-outer)  Exec time 153 [us]
+;	In-0  0.005, In-1 -0.255, result: Out-0    3.0%, Out-1   97.0%, Out-2    0.0%     Class C2 (inner-outer)  Exec time 132 [us]
+;	In-0  0.222, In-1  0.506, result: Out-0    0.0%, Out-1    0.0%, Out-2  100.0%     Class C3 (square)       Exec time 130 [us]
+;	.....
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____

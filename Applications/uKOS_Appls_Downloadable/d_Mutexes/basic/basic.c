@@ -12,6 +12,34 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	-1 --> Process 0, Field    0, Counter 1
+;	-1 --> Process 0, Field    0, Counter 2
+;	-1 --> Process 0, Field    0, Counter 3
+;	-1 --> Process 0, Field    0, Counter 4
+;	-1 --> Process 0, Field    0, Counter 5
+;	-1 --> Process 0, Field    0, Counter 6
+;	-1 --> Process 0, Field    0, Counter 7
+;	-1 --> Process 0, Field    0, Counter 8
+;	-1 --> Process 1, Field 1111, Counter 9
+;	-1 --> Process 0, Field    0, Counter 10
+;	-1 --> Process 0, Field    0, Counter 11
+;	-1 --> Process 0, Field    0, Counter 12
+;	-1 --> Process 0, Field    0, Counter 13
+;	-1 --> Process 0, Field    0, Counter 14
+;	-1 --> Process 0, Field    0, Counter 15
+;	-1 --> Process 0, Field    0, Counter 16
+;	-1 --> Process 0, Field    0, Counter 17
+;	-1 --> Process 1, Field 1111, Counter 18
+;	-1 --> Process 0, Field    0, Counter 19
+;	-1 --> Process 0, Field    0, Counter 20
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

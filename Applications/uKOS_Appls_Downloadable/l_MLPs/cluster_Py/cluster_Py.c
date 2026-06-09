@@ -19,6 +19,21 @@
 ;				  Compute the inference
 ;				  Display the classes
 ;
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	In-0  0.420, In-1 -0.593, result: Out-0    0.0%, Out-1    0.0%, Out-2    0.0%, Out-3  100.0%, Out-4    0.0%     Class D                 Exec time 28 [us]
+;	In-0 -0.949, In-1  0.554, result: Out-0   99.9%, Out-1    0.0%, Out-2    0.0%, Out-3    0.0%, Out-4    0.0%     Class A                 Exec time 17 [us]
+;	In-0 -0.281, In-1 -0.865, result: Out-0    0.0%, Out-1    0.0%, Out-2   99.9%, Out-3    0.1%, Out-4    0.0%     Class C                 Exec time 14 [us]
+;	In-0  0.339, In-1 -0.919, result: Out-0    0.0%, Out-1    0.0%, Out-2    0.0%, Out-3   99.9%, Out-4    0.0%     Class D                 Exec time 14 [us]
+;	In-0 -0.421, In-1 -0.419, result: Out-0    0.0%, Out-1    0.0%, Out-2  100.0%, Out-3    0.0%, Out-4    0.0%     Class C                 Exec time 14 [us]
+;	In-0  0.829, In-1 -0.673, result: Out-0    0.0%, Out-1    0.0%, Out-2    0.0%, Out-3  100.0%, Out-4    0.0%     Class D                 Exec time 14 [us]
+;	In-0 -0.437, In-1 -0.768, result: Out-0    0.0%, Out-1    0.0%, Out-2  100.0%, Out-3    0.0%, Out-4    0.0%     Class C                 Exec time 13 [us]
+;	.....
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____

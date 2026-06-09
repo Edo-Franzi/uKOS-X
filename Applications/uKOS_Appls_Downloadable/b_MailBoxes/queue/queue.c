@@ -12,6 +12,25 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Message = 0
+;	Message = 1
+;	Message = 2
+;	Message = 3
+;	Message = 4
+;	Message = 5
+;	Message = 6
+;	Message = 7
+;	Message = 8
+;	Message = 9
+;	Message = 10
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

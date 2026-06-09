@@ -67,13 +67,22 @@ set_property(CACHE CORE PROPERTY STRINGS
 include(set-project-paths)
 
 if(${CORE} STREQUAL "CORTEX_M33")
-    include(select-arm-toolchain)
+	include(select-arm-toolchain)
 	# Flash programming script selection
 	set(BURN picotool-arm)
+	add_compile_definitions(
+		"uKOS_NAME=ARM"
+	)
 else()
 	include(select-riscv-toolchain)
 	# Flash programming script selection
 	set(BURN picotool-riscv)
+	add_compile_definitions(
+		"uKOS_NAME=RISC-V"
+	)
+  # RISC-V ISA extensions per the RP2350 datasheet (Hazard3) + user/privileged split
+  # capability (M+U mode + PMP). Resulting -march: rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb
+  set(CPU_FEATURES "zicsr;zifencei;zba;zbb;zbs;zbkb;user_mode")
 endif()
 
 project(
@@ -85,9 +94,14 @@ project(
 # Apply project settings
 include(proj_config)
 
+# RISC-V privileged/user split uses a dedicated NAPOT-aligned linker script.
+# (The default link${MODE}.ld would resolve to the ARM-flavoured link_pu.ld.)
+if((CMAKE_SYSTEM_PROCESSOR STREQUAL "RISCV") AND (MODE STREQUAL "_pu"))
+	set(LINKS_LD "${PATH_BASE}/Runtime/link_pu-riscv.ld")
+endif()
+
 # Customisation of firmware copyright text
 add_compile_definitions(
-	"uKOS_NAME="
 	"uKOS_OWNER=(c) LvA"
 	"SECURE_S"
 	"__DYNAMIC_REENT__"
@@ -115,7 +129,8 @@ set(FIRST_P
 )
 
 # Runtime & common components (privileged) -> librtcb_p.a
-list(APPEND RTCB_P
+add_library(rtcb_p)
+target_sources(rtcb_p PRIVATE
 	${PATH_OSYS}/Boots/boot/boot.c
 	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_PORT}/EquatesModels/Cores/${CORE}/Runtime/syscallDispatcher.c
@@ -123,11 +138,11 @@ list(APPEND RTCB_P
 	${PATH_BASE}/Runtime/exce.c
 	${PATH_VARI}/Runtime/init.c
 )
-add_library(rtcb_p ${RTCB_P})
 target_link_libraries(rtcb_p PUBLIC system_compiler_flags)
 
 # uKernel components (privileged) -> libkern_p.a
-list(APPEND KERN_P
+add_library(kern_p)
+target_sources(kern_p PRIVATE
 	${PATH_OSYS}/Lib_kernels/kern/debug.c
 	${PATH_OSYS}/Lib_kernels/kern/identifier.c
 	${PATH_OSYS}/Lib_kernels/kern/kern.c
@@ -145,36 +160,35 @@ list(APPEND KERN_P
 	${PATH_OSYS}/Lib_kernels/kern/temporal.c
 	${PATH_BASE}/Lib_kernels/kern/stub_kern_kernel.c
 )
-add_library(kern_p ${KERN_P})
 target_link_libraries(kern_p PUBLIC system_compiler_flags)
 add_compile_definitions(
 	KKERN_NB_PRECISE_SIGNALS=0
 )
 
 # uKernel components (user) -> libkern_u.a
-list(APPEND KERN_U
+add_library(kern_u)
+target_sources(kern_u PRIVATE
 	${PATH_OSYS}/Lib_kernels/kern/privileges.c
 	${PATH_OSYS}/Lib_kernels/kern/xLibrary.c
 )
-add_library(kern_u ${KERN_U})
 target_link_libraries(kern_u PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (privileged) -> liblibx_p.a
-# (grouped by manager)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_cryptographics/random/random.c CONFIG_MAN_RANDOM_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/asmp/asmp.c CONFIG_MAN_ASMP_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/calendar/calendar.c CONFIG_MAN_CALENDAR_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/machine/machine.c CONFIG_MAN_MACHINE_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/memo/memo.c CONFIG_MAN_MEMO_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/record/record.c CONFIG_MAN_RECORD_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_generics/system/system.c CONFIG_MAN_SYSTEM_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/led/led.c CONFIG_MAN_LED_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_peripherals/switch/switch.c CONFIG_MAN_SWITCH_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/cdc0/cdc0.c CONFIG_MAN_CDC0_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/cdc1/cdc1.c CONFIG_MAN_CDC1_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
-add_source_with_define(LIBX_P ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
-list(APPEND LIBX_P
+add_library(libx_p)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_cryptographics/random/random.c CONFIG_MAN_RANDOM_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_generics/asmp/asmp.c CONFIG_MAN_ASMP_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_generics/calendar/calendar.c CONFIG_MAN_CALENDAR_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_generics/machine/machine.c CONFIG_MAN_MACHINE_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_generics/memo/memo.c CONFIG_MAN_MEMO_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_generics/record/record.c CONFIG_MAN_RECORD_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_generics/system/system.c CONFIG_MAN_SYSTEM_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_peripherals/led/led.c CONFIG_MAN_LED_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_peripherals/switch/switch.c CONFIG_MAN_SWITCH_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/cdc0/cdc0.c CONFIG_MAN_CDC0_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/cdc1/cdc1.c CONFIG_MAN_CDC1_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
+target_sources(libx_p PRIVATE
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
 	${PATH_BASE}/Lib_generics/asmp/stub_asmp_dbell.c
 	${PATH_BASE}/Lib_generics/machine/stub_machine.c
@@ -182,28 +196,28 @@ list(APPEND LIBX_P
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_uart.c
 )
-add_library(libx_p ${LIBX_P})
 target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
 
 # Lib_xxxx components (user) -> liblibx_u.a
-add_source_with_define(LIBX_U ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
-add_source_with_define(LIBX_U ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
-add_source_with_define(LIBX_U ${PATH_OSYS}/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
-add_library(libx_u ${LIBX_U})
+add_library(libx_u)
+add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
+add_source_with_define(libx_u ${PATH_OSYS}/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
 
 # Process components (privileged) -> libproc_p.a
-list(APPEND PROC_P
+add_library(proc_p)
+target_sources(proc_p PRIVATE
 	${PATH_OSYS}/Daemons/idle/idle.c
 	${PATH_OSYS}/Daemons/mcore/mcore.c
 	${PATH_OSYS}/Daemons/stack/stack.c
 	${PATH_OSYS}/Daemons/stimer/stimer.c
 )
-add_library(proc_p ${PROC_P})
 target_link_libraries(proc_p PUBLIC system_compiler_flags)
 
 # Process components (user) -> libproc_u.a
-list(APPEND PROC_U
+add_library(proc_u)
+target_sources(proc_u PRIVATE
 	${PATH_OSYS}/Processes/alive/alive.c
 	${PATH_OSYS}/Processes/launcher/launcher.c
 	${PATH_OSYS}/Processes/startUp/startUp.c
@@ -212,11 +226,11 @@ list(APPEND PROC_U
 	${PATH_BASE}/Processes/TinyUSB/stub_TinyUSB.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
 )
-add_library(proc_u ${PROC_U})
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})
 
 # CLI components (user) -> libtool_u.a
-list(APPEND CLI_U
+add_library(tool_u)
+target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/bangla/BaNgLa.c
 	${PATH_OSYS}/CLI/console/console.c
 	${PATH_OSYS}/CLI/cycle/cycle.c
@@ -246,7 +260,6 @@ list(APPEND CLI_U
 	${PATH_OSYS}/CLI/uKOS/uKOS.c
 	${PATH_OSYS}/CLI/wkserial/wkserial.c
 )
-add_library(tool_u ${CLI_U})
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
 
 # All library components

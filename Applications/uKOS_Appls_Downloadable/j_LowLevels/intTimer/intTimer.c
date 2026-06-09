@@ -12,6 +12,30 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	Timer = 100
+;	Timer = 200
+;	Timer = 300
+;	Timer = 400
+;	Timer = 500
+;	Timer = 600
+;	Timer = 700
+;	Timer = 800
+;	Timer = 900
+;	Timer = 1000
+;	Timer = 1100
+;	Timer = 1200
+;	Timer = 1300
+;	Timer = 1400
+;	Timer = 1500
+;	Timer = 1600
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------

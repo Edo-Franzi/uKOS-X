@@ -12,6 +12,43 @@
 ; Project:	uKOS-X
 ; Goal:		Demo of a C application.
 ;			This application shows how to operate with the uKOS-X uKernel.
+; Expected results:
+;			Serial terminal output
+;			uKOS-X > run
+;			Execute the downloaded application.
+;			Run the downloaded application...
+;
+;	uKOS-X >
+;	dprintf time_1 0 [us]
+;	Machine = Firefly_H743 cpt = 0  Firefly_H743, privileged-user mode, V.0.5.7
+;	(c) LvA, Jun  7 2026  08:41:18
+;	gcc-16.1.0, git: a55ba3e003
+;
+;	dprintf time_1 1006 [us]
+;	dprintf time_1 1005 [us]
+;	Machine = Firefly_H743 cpt = 1  Firefly_H743, privileged-user mode, V.0.5.7
+;	(c) LvA, Jun  7 2026  08:41:18
+;	gcc-16.1.0, git: a55ba3e003
+;
+;	dprintf time_1 1006 [us]
+;	TickCount time 3 [us]
+;	dprintf time_1 1006 [us]
+;	Machine = Firefly_H743 cpt = 2  Firefly_H743, privileged-user mode, V.0.5.7
+;	(c) LvA, Jun  7 2026  08:41:18
+;	gcc-16.1.0, git: a55ba3e003
+;
+;	dprintf time_1 1006 [us]
+;	dprintf time_1 1006 [us]
+;	Machine = Firefly_H743 cpt = 3  Firefly_H743, privileged-user mode, V.0.5.7
+;	(c) LvA, Jun  7 2026  08:41:18
+;	gcc-16.1.0, git: a55ba3e003
+;
+;	dprintf time_1 1006 [us]
+;	Machine = Firefly_H743 cpt = 4  Firefly_H743, privileged-user mode, V.0.5.7
+;	(c) LvA, Jun  7 2026  08:41:18
+;	gcc-16.1.0, git: a55ba3e003
+;
+;	.....
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
