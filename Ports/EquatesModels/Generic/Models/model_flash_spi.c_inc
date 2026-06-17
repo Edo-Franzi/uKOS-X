@@ -1,6 +1,6 @@
 /*
-; model_flash_1w_spi.
-; ===================
+; model_flash_spi.
+; ================
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -10,7 +10,7 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Model for controlling the "flash" 1-Wire device by an SPI.
+; Goal:		Model for controlling the "flash" device by an SPI.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -49,49 +49,49 @@
 
 // Prototypes
 
-static	void	local_flash_1w_erase(uint32_t size, uint32_t sector);
+static	void	local_flash_spi_erase(uint32_t size, uint32_t sector);
 
 /*
- * \brief model_flash_1w_init
+ * \brief model_flash_spi_init
  *
  * - Initialise some specific parts
  *
  */
-int32_t	model_flash_1w_init(void) {
+int32_t	model_flash_spi_init(void) {
 
 	cb_control(KFLASH_INIT);
 	return (KERR_STORAGE_NOERR);
 }
 
 /*
- * \brief model_flash_1w_initialise
+ * \brief model_flash_spi_initialise
  *
  * - Initialise the flash
  *
  */
-int32_t	model_flash_1w_initialise(void) {
+int32_t	model_flash_spi_initialise(void) {
 
 	return (KERR_STORAGE_NOERR);
 }
 
 /*
- * \brief model_flash_1w_readStatus
+ * \brief model_flash_spi_readStatus
  *
  * - Read the status of the card (only inserted)
  *
  */
-int32_t	model_flash_1w_readStatus(void) {
+int32_t	model_flash_spi_readStatus(void) {
 
 	return (KERR_STORAGE_NOERR);
 }
 
 /*
- * \brief model_flash_1w_read
+ * \brief model_flash_spi_read
  *
  * - Read from the flash 1 or more sectors
  *
  */
-int32_t	model_flash_1w_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
+int32_t	model_flash_spi_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
 	uint8_t		*wkBuffer = buffer;
 	uint32_t	address, index;
 
@@ -100,7 +100,7 @@ int32_t	model_flash_1w_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
 	}
 
 	cb_control(KFLASH_RESERVE_SPI);
-	address = sector * KFLASH_SPI_SZ_SECTOR;
+	address = sector * KFLASH_xSPI_SZ_SECTOR;
 
 // A read cycle 0x03u 0xAAu 0xAAu 0xAAu 0x00u
 // 0x03u --> Read order
@@ -108,7 +108,7 @@ int32_t	model_flash_1w_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
 
 	kern_waitAtLeast(1);
 	cb_control(KFLASH_SELECT);
-	cb_writeRead(KFLASH_SPI_CMD_READ);
+	cb_writeRead(KFLASH_xSPI_CMD_READ);
 	cb_writeRead((uint8_t)(address>>16u));
 	cb_writeRead((uint8_t)(address>>8u));
 	cb_writeRead((uint8_t)(address));
@@ -123,14 +123,14 @@ int32_t	model_flash_1w_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
 }
 
 /*
- * \brief model_flash_1w_write
+ * \brief model_flash_spi_write
  *
  * - Write pages
  * - This function writes pages. If a page is not complete
  *   this system call complete it with an unpredictable content
  *
  */
-int32_t	model_flash_1w_write(const uint8_t *buffer, uint32_t size, uint32_t sector) {
+int32_t	model_flash_spi_write(const uint8_t *buffer, uint32_t size, uint32_t sector) {
 			uint32_t	address, index, pages, nbPages;
 	const	uint8_t		*wkBuffer = buffer;
 
@@ -139,10 +139,10 @@ int32_t	model_flash_1w_write(const uint8_t *buffer, uint32_t size, uint32_t sect
 	}
 
 	cb_control(KFLASH_RESERVE_SPI);
-	local_flash_1w_erase(size, sector);
+	local_flash_spi_erase(size, sector);
 
-	address = sector * KFLASH_SPI_SZ_SECTOR;
-	nbPages = size / KFLASH_SPI_SZ_PAGE;
+	address = sector * KFLASH_xSPI_SZ_SECTOR;
+	nbPages = (size + KFLASH_xSPI_SZ_PAGE - 1u) / KFLASH_xSPI_SZ_PAGE;
 
 // Write complete pages of 256-bytes
 // In case of the page is not complete,
@@ -151,7 +151,7 @@ int32_t	model_flash_1w_write(const uint8_t *buffer, uint32_t size, uint32_t sect
 	for (pages = 0u; pages < nbPages; pages++) {
 		kern_waitAtLeast(1u);
 		cb_control(KFLASH_SELECT);
-		cb_writeRead(KFLASH_SPI_CMD_WRITE_ENABLE);
+		cb_writeRead(KFLASH_xSPI_CMD_WRITE_ENABLE);
 		cb_control(KFLASH_DESELECT);
 
 // Write a page 0x02u 0xAAu 0xAAu 0xAAu (256 x 0xDD) (waiting for 5-ms)
@@ -161,30 +161,30 @@ int32_t	model_flash_1w_write(const uint8_t *buffer, uint32_t size, uint32_t sect
 
 		kern_waitAtLeast(1);
 		cb_control(KFLASH_SELECT);
-		cb_writeRead(KFLASH_SPI_CMD_WRITE);
+		cb_writeRead(KFLASH_xSPI_CMD_WRITE);
 		cb_writeRead((uint8_t)(address>>16u));
 		cb_writeRead((uint8_t)(address>>8u));
 		cb_writeRead((uint8_t)(address));
 
-		for (index = 0u; index < KFLASH_SPI_SZ_PAGE; index++) {
+		for (index = 0u; index < KFLASH_xSPI_SZ_PAGE; index++) {
 			cb_writeRead(*wkBuffer);
 			wkBuffer++;
 		}
 		cb_control(KFLASH_DESELECT);
 		kern_suspendProcess(10u);
-		address += KFLASH_SPI_SZ_PAGE;
+		address += KFLASH_xSPI_SZ_PAGE;
 	}
 	cb_control(KFLASH_RELEASE_SPI);
 	return (KERR_STORAGE_NOERR);
 }
 
 /*
- * \brief model_flash_1w_ioctl
+ * \brief model_flash_spi_ioctl
  *
  * - Read some flash parameters
  *
  */
-int32_t	model_flash_1w_ioctl(storageIoctl_t command, void *buffer) {
+int32_t	model_flash_spi_ioctl(storageIoctl_t command, void *buffer) {
 
 	switch (command) {
 		case KGET_BLOCK_SIZE: {
@@ -192,11 +192,11 @@ int32_t	model_flash_1w_ioctl(storageIoctl_t command, void *buffer) {
 			break;
 		}
 		case KGET_SECTOR_SIZE: {
-			*(uint16_t *)buffer = KFLASH_SZ_SECTOR;
+			*(uint16_t *)buffer = KFLASH_xSPI_SZ_SECTOR;
 			break;
 		}
 		case KGET_SECTOR_COUNT: {
-			*(uint32_t *)buffer = KFLASH_NB_SECORS;
+			*(uint32_t *)buffer = KFLASH_xSPI_NB_SECTOR;
 			break;
 		}
 		default: {
@@ -213,21 +213,21 @@ int32_t	model_flash_1w_ioctl(storageIoctl_t command, void *buffer) {
 // ==============
 
 /*
- * \brief model_flash_1w_erase
+ * \brief model_flash_spi_erase
  *
  * - Erase sectors
  *
  */
-static	void	local_flash_1w_erase(uint32_t size, uint32_t sector) {
+static	void	local_flash_spi_erase(uint32_t size, uint32_t sector) {
 	uint32_t	nbSectors, address;
 
-	address	  = sector * KFLASH_SPI_SZ_SECTOR;
-	nbSectors = size / KFLASH_SPI_SZ_SECTOR;
+	address	  = sector * KFLASH_xSPI_SZ_SECTOR;
+	nbSectors = (size + KFLASH_xSPI_SZ_SECTOR - 1u) / KFLASH_xSPI_SZ_SECTOR;
 
 	for (sector = 0u; sector < nbSectors; sector++) {
 		kern_waitAtLeast(1u);
 		cb_control(KFLASH_SELECT);
-		cb_writeRead(KFLASH_SPI_CMD_WRITE_ENABLE);
+		cb_writeRead(KFLASH_xSPI_CMD_WRITE_ENABLE);
 		cb_control(KFLASH_DESELECT);
 
 // Erase a sector 4-KBytes
@@ -236,12 +236,12 @@ static	void	local_flash_1w_erase(uint32_t size, uint32_t sector) {
 
 		kern_waitAtLeast(1u);
 		cb_control(KFLASH_SELECT);
-		cb_writeRead(KFLASH_SPI_CMD_ERASE_SECTOR);
+		cb_writeRead(KFLASH_xSPI_CMD_ERASE_SECTOR);
 		cb_writeRead((uint8_t)(address>>16u));
 		cb_writeRead((uint8_t)(address>>8u));
 		cb_writeRead((uint8_t)(address));
 		cb_control(KFLASH_DESELECT);
 		kern_suspendProcess(240u);
-		address += KFLASH_SPI_SZ_SECTOR;
+		address += KFLASH_xSPI_SZ_SECTOR;
 	}
 }

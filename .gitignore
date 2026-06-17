@@ -18,6 +18,10 @@
 *_ready.txt
 *_temp.txt
 *.uf2
+*.keras
+*.tflite
+DB_faces/
+generated_faces/
 .cproject
 .project
 .DS_Store

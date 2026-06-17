@@ -6,11 +6,11 @@
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-06-16
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		stub for the connection of the "serialFlash" manager device by spi0 device.
+; Goal:		stub for the connection of the "serialFlash" manager device by qspi device.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,85 +48,35 @@
 */
 
 #include	"uKOS.h"
-#include	"MX25R6435/MX25R6435.h"
-#include	"shared_spi0/shared_spi0.h"
+#include	"W25Q128J/W25Q128J.h"
 
 // Connect the physical device to the logical manager
 // --------------------------------------------------
 
-#define	model_flash_spi_init		stub_serialFlash_init
-#define	model_flash_spi_readStatus	stub_serialFlash_readStatus
-#define	model_flash_spi_initialise	stub_serialFlash_initialise
-#define	model_flash_spi_read		stub_serialFlash_read
-#define	model_flash_spi_write		stub_serialFlash_write
-#define	model_flash_spi_ioctl		stub_serialFlash_ioctl
+#define	model_flash_qspi_init			stub_serialFlash_init
+#define	model_flash_qspi_readStatus		stub_serialFlash_readStatus
+#define	model_flash_qspi_initialise		stub_serialFlash_initialise
+#define	model_flash_qspi_read			stub_serialFlash_read
+#define	model_flash_qspi_write			stub_serialFlash_write
+#define	model_flash_qspi_ioctl			stub_serialFlash_ioctl
 
-enum {
-		KFLASH_INIT = 0u,
-		KFLASH_RESERVE_SPI,
-		KFLASH_RELEASE_SPI,
-		KFLASH_SELECT,
-		KFLASH_DESELECT
-};
+#define	QSPI							QUADSPI
+#define	KQSPI_SPEED						50000000u
+#define	KQSPI_FREQUENCY					KFREQUENCY_AHB3
+#define	KQSPI_READ_CHUNK				1024u
 
 // Model callbacks
 // ---------------
 
 /*
- * \brief cb_control
+ * \brief cb_enable
  *
- * - Control of the SPI interface
- *   - Initialise
- *   - Select
- *   - Deselect
+ * - Enable the qspi
  *
  */
-static	void	cb_control(uint8_t mode) {
+static	void	cb_enable(void) {
 
-	switch (mode) {
-		case KFLASH_INIT: {
-			GPIOB->ODR |= (1u<<BSEL_FLASH);
-
-			GPIOA->ODR |= (1u<<BRZ_FLASH);
-			kern_suspendProcess(1u);
-			GPIOA->ODR &= (uint32_t)~(1u<<BRZ_FLASH);
-			kern_suspendProcess(1u);
-
-			GPIOA->ODR |= (1u<<BRZ_FLASH);
-			break;
-		}
-		case KFLASH_RESERVE_SPI: {
-			RESERVE_SHARED_SPI0(KFLASH);
-			break;
-		}
-		case KFLASH_RELEASE_SPI: {
-			RELEASE_SHARED_SPI0;
-			break;
-		}
-		case KFLASH_SELECT: {
-			shared_spi0_select(KFLASH);
-			break;
-		}
-		default:
-		case KFLASH_DESELECT: {
-			shared_spi0_deselect(KFLASH);
-			break;
-		}
-	}
+	RCC->AHB3ENR |= RCC_AHB3ENR_QSPIEN;
 }
 
-/*
- * \brief cb_writeRead
- *
- * - Write / read
- *
- */
-static	uint8_t		cb_writeRead(uint8_t data) {
-	uint8_t		wRData;
-
-	wRData = data;
-	shared_spi0_writeRead(&wRData);
-	return (wRData);
-}
-
-#include	"model_flash_spi.c_inc"
+#include	"model_flash_qspi.c_inc"

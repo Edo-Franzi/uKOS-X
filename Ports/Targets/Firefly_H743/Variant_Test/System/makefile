@@ -89,7 +89,7 @@ FAMILY					=  h7
 SPEED					=  FS
 PROFILE					=  cdc_cdc
 
-STORAGE					=  sdcard
+STORAGE					=  sdcard_flash
 PATH_LIB_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs/Library/$(CORE)/$(STORAGE)
 FATFS					=  libFatFs
 
@@ -225,22 +225,26 @@ CONF_SYSTEM		+= -DCONFIG_MAN_CDC1_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/cdc1/cdc1.c
 # With the RANDOM manager
 CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
+LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
 # With the STORAGE manager
 CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
 # With the SDCARD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SDCARD_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdcard/sdcard.c
-LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/spi0/stub_spi0_sspi1.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart1.c
+# With the SERIAL_FLASH manager
+CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_FLASH_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/serialFlash/serialFlash.c
+LIBX_P			+=												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
+LIBX_P			+=												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
+LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
+LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
+LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
+LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/spi0/stub_spi0_sspi1.c
+LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
+LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
+LIBX_P			+=												$(PATH_BASE)/Lib_storages/serialFlash/stub_serialFlash.c
 
 # The Lib_xxxx components (user)
 

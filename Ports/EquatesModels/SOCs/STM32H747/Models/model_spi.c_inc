@@ -175,6 +175,9 @@ int32_t	model_spi_multipleWriteRead(const uint8_t *wData, uint16_t wSize, uint8_
 	return (status);
 }
 
+// Local routines
+// ==============
+
 /*
  * \brief local_SPI_IRQHandler
  *

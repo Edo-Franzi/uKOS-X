@@ -1,0 +1,462 @@
+/*
+; model_flash_qspi.
+; =================
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2026-06-16
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for controlling the "qspi" device.
+;
+;			Validated device:
+;				C8 40 18  GigaDevice GD25Q128 compatible
+;
+;			Compatible target:
+;				EF 40 18  Winbond W25Q128 compatible
+;
+;			Operational mode:
+;				- WREN / status / erase: 1-bit SPI commands through QUADSPI
+;				- Program: Quad Input Page Program 0x32
+;				- Read: Fast Read Quad I/O 0xEB
+;
+;			Important STM32 QUADSPI note:
+;				For transactions with address phase, configure CCR first, then write AR.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#define	KFLASH_SPI_READ_DUMMY_CYCLES	4u
+
+// Prototypes
+
+static	void	local_flash_qspi_write(const uint8_t *buffer, uint32_t size, uint32_t sector);
+static	void	local_flash_qspi_read(uint8_t *buffer, uint32_t size, uint32_t sector);
+static	void	local_flash_qspi_erase(uint32_t size, uint32_t sector);
+static	void	local_flash_qspi_wait_ready(void);
+static	void	local_flash_qspi_quad_enable(void);
+static	void	local_flash_qspi_write_enable(void);
+static	void	local_flash_qspi_command(uint8_t cmd);
+static	void	local_flash_qspi_read_U8(uint8_t cmd, uint8_t *value);
+static	void	local_flash_qspi_write_U8(uint8_t cmd, uint8_t value);
+
+/*
+ * \brief model_flash_qspi_init
+ *
+ * - Initialise some specific parts
+ *
+ */
+int32_t	model_flash_qspi_init(void) {
+
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_flash_qspi_initialise
+ *
+ * - Initialise the flash
+ *
+ */
+int32_t	model_flash_qspi_initialise(void) {
+	uint32_t	prescaler, size, log = 0u;
+
+	cb_enable();
+
+// Compute the log_2 of the size
+
+	size = KFLASH_xSPI_SZ_FLASH;
+	do { log++; size = size>>1; } while (size != 1u);
+
+// Initialise the QSPI
+
+	prescaler = KQSPI_FREQUENCY / KQSPI_SPEED;
+
+	if (prescaler != 0u)  { prescaler--;	  }
+	if (prescaler > 255u) { prescaler = 255u; }
+
+	QSPI->CR  = 0u;
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+	QSPI->DCR = ((log - 1u) * QUADSPI_DCR_FSIZE_0)
+			  | (1u * QUADSPI_DCR_CSHT_0);
+
+	QSPI->CR  = (prescaler * QUADSPI_CR_PRESCALER_0)
+			  | (0u * QUADSPI_CR_FTHRES_0)
+			  | QUADSPI_CR_EN;
+
+	local_flash_qspi_quad_enable();
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_flash_qspi_readStatus
+ *
+ * - Read the status of the card (only inserted)
+ *
+ */
+int32_t	model_flash_qspi_readStatus(void) {
+
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_flash_qspi_read
+ *
+ * - Read from the flash 1 or more sectors
+ *
+ */
+int32_t	model_flash_qspi_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
+
+	local_flash_qspi_read(buffer, size, sector);
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_flash_qspi_write
+ *
+ * - Write to the flash 1 or more sectors
+ *
+ */
+int32_t	model_flash_qspi_write(const uint8_t *buffer, uint32_t size, uint32_t sector) {
+
+	local_flash_qspi_write(buffer, size, sector);
+	return (KERR_STORAGE_NOERR);
+}
+
+/*
+ * \brief model_flash_qspi_ioctl
+ *
+ * - Read some flash parameters
+ *
+ */
+int32_t	model_flash_qspi_ioctl(storageIoctl_t command, void *buffer) {
+
+	switch (command) {
+		case KGET_BLOCK_SIZE: {
+			*(uint32_t *)buffer = 1u;
+			break;
+		}
+		case KGET_SECTOR_SIZE: {
+			*(uint16_t *)buffer = KFLASH_xSPI_SZ_SECTOR;
+			break;
+		}
+		case KGET_SECTOR_COUNT: {
+			*(uint32_t *)buffer = KFLASH_xSPI_NB_SECTOR;
+			break;
+		}
+		default: {
+
+// Make MISRA happy :-)
+
+			break;
+		}
+	}
+	return (KERR_STORAGE_NOERR);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_flash_qspi_read
+ *
+ * - Read
+ *
+ */
+static	void	local_flash_qspi_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
+	uint32_t	i, address, chunk, remaining;
+	uint8_t		*wkBuffer = buffer;
+
+	address	  = sector * KFLASH_xSPI_SZ_SECTOR;
+	remaining = size;
+
+	while (remaining > 0) {
+		chunk = remaining;
+		chunk = (chunk > KQSPI_READ_CHUNK) ? (KQSPI_READ_CHUNK) : (chunk);
+
+		while ((QSPI->SR & QUADSPI_SR_BUSY) != 0u) { kern_switchFast(); }
+
+// Fast Read Quad I/O 0xEB:
+// instruction on 1 line, address on 4 lines,
+// alternate byte on 4 lines, data on 4 lines
+
+		QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+		QSPI->DLR = chunk - 1u;
+		QSPI->ABR = 0xFFu;
+		QSPI->CCR = (KFLASH_QSPI_CMD_READ * QUADSPI_CCR_INSTRUCTION_0)
+				  | (1u * QUADSPI_CCR_IMODE_0)
+				  | (3u * QUADSPI_CCR_ADMODE_0)
+				  | (2u * QUADSPI_CCR_ADSIZE_0)
+				  | (3u * QUADSPI_CCR_ABMODE_0)
+				  | (0u * QUADSPI_CCR_ABSIZE_0)
+				  | (3u * QUADSPI_CCR_DMODE_0)
+				  | (KFLASH_SPI_READ_DUMMY_CYCLES * QUADSPI_CCR_DCYC_0)
+				  | (1u * QUADSPI_CCR_FMODE_0);
+
+		QSPI->AR = address;
+
+		for (i = 0u; i < chunk; i++) {
+			while ((QSPI->SR & QUADSPI_SR_FLEVEL) == 0u) { kern_switchFast(); }
+
+			*wkBuffer++ = *((volatile uint8_t *)&QSPI->DR);
+		}
+		while ((QSPI->SR & QUADSPI_SR_TCF) == 0u) { kern_switchFast(); }
+
+		QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+		address	  += chunk;
+		remaining -= chunk;
+	}
+}
+
+/*
+ * \brief local_flash_qspi_write
+ *
+ * - Program a page
+ *
+ */
+static	void	local_flash_qspi_write(const uint8_t *buffer, uint32_t size, uint32_t sector) {
+			uint32_t	i, address, chunk, remaining;
+	const	uint8_t		*wkBuffer = buffer;
+
+	address	  = sector * KFLASH_xSPI_SZ_SECTOR;
+	remaining = size;
+
+	local_flash_qspi_erase(size, sector);
+
+	while (remaining > 0) {
+		chunk = remaining;
+		chunk = (chunk > KFLASH_xSPI_SZ_PAGE) ? (KFLASH_xSPI_SZ_PAGE) : (chunk);
+
+// Write complete pages of 256-bytes
+// In case of the page is not complete,
+// the page is completed with dummy data
+
+		local_flash_qspi_write_enable();
+
+		while ((QSPI->SR & QUADSPI_SR_BUSY) != 0u) { kern_switchFast(); }
+
+// Quad Input Page Program 0x32:
+// instruction on 1 line, address on 1 line, data on 4 lines
+
+		QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+		QSPI->DLR = chunk - 1u;
+		QSPI->CCR = (KFLASH_QSPI_CMD_WRITE * QUADSPI_CCR_INSTRUCTION_0)
+				  | (1u * QUADSPI_CCR_IMODE_0)
+				  | (1u * QUADSPI_CCR_ADMODE_0)
+				  | (2u * QUADSPI_CCR_ADSIZE_0)
+				  | (3u * QUADSPI_CCR_DMODE_0)
+				  | (0u * QUADSPI_CCR_FMODE_0);
+
+		QSPI->AR = address;
+
+		for (i = 0u; i < chunk; i++) {
+			while ((QSPI->SR & QUADSPI_SR_FTF) == 0u) { kern_switchFast(); }
+
+			*((volatile uint8_t *)&QSPI->DR) = *wkBuffer++;
+		}
+
+		while ((QSPI->SR & QUADSPI_SR_TCF) == 0u) { kern_switchFast(); }
+		address	  += chunk;
+		remaining -= chunk;
+
+		QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+		local_flash_qspi_wait_ready();
+	}
+}
+
+/*
+ * \brief local_flash_qspi_erase
+ *
+ * - Erase a sector
+ *
+ */
+static	void	local_flash_qspi_erase(uint32_t size, uint32_t sector) {
+	uint32_t	nbSectors, address;
+
+	address	  = sector * KFLASH_xSPI_SZ_SECTOR;
+	nbSectors = (size + KFLASH_xSPI_SZ_SECTOR - 1u) / KFLASH_xSPI_SZ_SECTOR;
+
+	for (sector = 0u; sector < nbSectors; sector++) {
+		local_flash_qspi_write_enable();
+		while ((QSPI->SR & QUADSPI_SR_BUSY) != 0u) { kern_switchFast(); }
+
+// Configure CCR first, then write AR to launch the address phase
+
+		QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+		QSPI->CCR = (KFLASH_xSPI_CMD_ERASE_SECTOR * QUADSPI_CCR_INSTRUCTION_0)
+				  | (1u * QUADSPI_CCR_IMODE_0)
+				  | (1u * QUADSPI_CCR_ADMODE_0)
+				  | (2u * QUADSPI_CCR_ADSIZE_0)
+				  | (0u * QUADSPI_CCR_DMODE_0)
+				  | (0u * QUADSPI_CCR_FMODE_0);
+
+		QSPI->AR = address;
+
+		while ((QSPI->SR & QUADSPI_SR_TCF) == 0u) { kern_switchFast(); }
+		address += KFLASH_xSPI_SZ_SECTOR;
+
+		QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+		local_flash_qspi_wait_ready();
+	}
+}
+
+/*
+ * \brief local_flash_qspi_command
+ *
+ * - Send a commande
+ *
+ */
+static	void	local_flash_qspi_command(uint8_t cmd) {
+
+	while ((QSPI->SR & QUADSPI_SR_BUSY) != 0u) { kern_switchFast(); }
+
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+	QSPI->CCR = ((uint32_t)cmd * QUADSPI_CCR_INSTRUCTION_0)
+			  | (1u * QUADSPI_CCR_IMODE_0)
+			  | (0u * QUADSPI_CCR_ADMODE_0)
+			  | (0u * QUADSPI_CCR_DMODE_0)
+			  | (0u * QUADSPI_CCR_FMODE_0);
+
+	while ((QSPI->SR & QUADSPI_SR_TCF) == 0u) { kern_switchFast(); }
+
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+}
+
+/*
+ * \brief local_flash_qspi_read_U8
+ *
+ * - Read a uint8_t
+ *
+ */
+static	void	local_flash_qspi_read_U8(uint8_t cmd, uint8_t *value) {
+
+	while ((QSPI->SR & QUADSPI_SR_BUSY) != 0u) { kern_switchFast(); }
+
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+	QSPI->DLR = 0u;
+	QSPI->CCR = ((uint32_t)cmd * QUADSPI_CCR_INSTRUCTION_0)
+			  | (1u * QUADSPI_CCR_IMODE_0)
+			  | (0u * QUADSPI_CCR_ADMODE_0)
+			  | (1u * QUADSPI_CCR_DMODE_0)
+			  | (1u * QUADSPI_CCR_FMODE_0);
+
+	while ((QSPI->SR & QUADSPI_SR_FLEVEL) == 0u) { kern_switchFast(); }
+	*value = *((volatile uint8_t *)&QSPI->DR);
+
+	while ((QSPI->SR & QUADSPI_SR_TCF) == 0u) { kern_switchFast(); }
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+}
+
+/*
+ * \brief local_flash_qspi_write_U8
+ *
+ * - Write a uint8_t
+ *
+ */
+static	void	local_flash_qspi_write_U8(uint8_t cmd, uint8_t value) {
+
+	while ((QSPI->SR & QUADSPI_SR_BUSY) != 0u) { kern_switchFast(); }
+
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+	QSPI->DLR = 0u;
+	QSPI->CCR = ((uint32_t)cmd * QUADSPI_CCR_INSTRUCTION_0)
+			  | (1u * QUADSPI_CCR_IMODE_0)
+			  | (0u * QUADSPI_CCR_ADMODE_0)
+			  | (1u * QUADSPI_CCR_DMODE_0)
+			  | (0u * QUADSPI_CCR_FMODE_0);
+
+	*((volatile uint8_t *)&QSPI->DR) = value;
+
+	while ((QSPI->SR & QUADSPI_SR_TCF) == 0u) { kern_switchFast(); }
+	QSPI->FCR = QUADSPI_FCR_CTEF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTOF;
+}
+
+/*
+ * \brief local_flash_qspi_wait_ready
+ *
+ * - Waiting for Flash ready
+ *
+ */
+static	void	local_flash_qspi_wait_ready(void) {
+	uint8_t		sr1;
+
+	do {
+		local_flash_qspi_read_U8(KFLASH_xSPI_CMD_READ_STATUS, &sr1);
+		if ((sr1 & (1u<<BFLASH_xSPI_BUSY)) == 0u) {
+			return;
+		}
+		kern_suspendProcess(1u);
+	} while (true);
+}
+
+/*
+ * \brief local_flash_qspi_write_enable
+ *
+ * - Write enable
+ *
+ */
+static	void	local_flash_qspi_write_enable(void) {
+	uint8_t		sr1;
+
+	local_flash_qspi_command(KFLASH_xSPI_CMD_WRITE_ENABLE);
+
+	do {
+		local_flash_qspi_read_U8(KFLASH_xSPI_CMD_READ_STATUS, &sr1);
+		if ((sr1 & (1u<<BFLASH_xSPI_WEL)) != 0u) {
+			return;
+		}
+
+		kern_switchFast();
+	} while (true);
+}
+
+/*
+ * \brief local_flash_qspi_quad_enable
+ *
+ * - Enable the quad
+ *
+ */
+static	void	local_flash_qspi_quad_enable(void) {
+	uint8_t		sr2;
+
+	local_flash_qspi_read_U8(KFLASH_QSPI_CMD_READ_STATUS, &sr2);
+	sr2 |= (1u<<BFLASH_xSPI_QE);
+
+	local_flash_qspi_write_enable();
+	local_flash_qspi_write_U8(KFLASH_QSPI_CMD_WRITE_STATUS, sr2);
+	local_flash_qspi_wait_ready();
+}

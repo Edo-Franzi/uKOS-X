@@ -113,7 +113,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "This is a romable C application\n"
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
 
 MODULE(
-	Basic,							// Module name (the first letter has to be upper case)
+	Basic,								// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,						// Family (defined in the module.h)
 	KNUM_ROMABLE_0,						// Module identifier (defined in the module.h)
 	nullptr,							// Address of the initialisation code (early pre-init)

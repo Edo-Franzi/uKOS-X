@@ -12,6 +12,11 @@
 ; Project:	uKOS-X
 ; Goal:		Flash W25X80L equates.
 ;
+;			Notes: _xSPI_	usually available for spi, quad spi, octo spi, hexa spi
+;				   _QSPI_	available for quad spi
+;				   _OSPI_	available for octo spi
+;				   _HSPI_	available for hexa spi
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____
@@ -51,32 +56,32 @@
 
 // Memory structure
 
-#define	KFLASH_SPI_SZ_FLASH					(1u * 1024u * 1024u)							// FLASH size
-#define	KFLASH_SPI_SZ_SECTOR				4096u											// Sector size
-#define	KFLASH_SPI_NB_SECTOR				(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_SECTOR)	// Number of sectors
-#define	KFLASH_SPI_SZ_PAGE					256u											// Page size
-#define	KFLASH_SPI_NB_PAGE					(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_PAGE)		// Number of pages
-#define	KFLASH_SPI_SZ_BLOC					65536u											// Bloc size
-#define	KFLASH_SPI_NB_BLOC					(KFLASH_SPI_SZ_FLASH / KFLASH_SPI_SZ_BLOC)		// Number of blocs
+#define	KFLASH_xSPI_SZ_FLASH				(1u * 1024u * 1024u)							// FLASH size
+#define	KFLASH_xSPI_SZ_SECTOR				4096u											// Sector size
+#define	KFLASH_xSPI_NB_SECTOR				(KFLASH_xSPI_SZ_FLASH / KFLASH_xSPI_SZ_SECTOR)	// Number of sectors
+#define	KFLASH_xSPI_SZ_PAGE					256u											// Page size
+#define	KFLASH_xSPI_NB_PAGE					(KFLASH_xSPI_SZ_FLASH / KFLASH_xSPI_SZ_PAGE)	// Number of pages
+#define	KFLASH_xSPI_SZ_BLOC					65536u											// Bloc size
+#define	KFLASH_xSPI_NB_BLOC					(KFLASH_xSPI_SZ_FLASH / KFLASH_xSPI_SZ_BLOC)	// Number of blocs
 
 // Commands for the chip W25X80L
 
-#define	KFLASH_SPI_CMD_WRITE_STATUS			0x01u											// FLASH write status command
-#define	KFLASH_SPI_CMD_WRITE				0x02u											// FLASH write command (pages of 256 bytes)
-#define	KFLASH_SPI_CMD_READ					0x03u											// FLASH read command
-#define	KFLASH_SPI_CMD_WRITE_DISABLE		0x04u											// FLASH write disable command
-#define	KFLASH_SPI_CMD_READ_STATUS			0x05u											// FLASH read status command
-#define	KFLASH_SPI_CMD_WRITE_ENABLE			0x06u											// FLASH write enable command
-#define	KFLASH_SPI_CMD_ERASE_SECTOR			0x20u											// FLASH erase sector command
-#define	KFLASH_SPI_CMD_ERASE_BLOC			0xD8u											// FLASH erase bloc command
-#define	KFLASH_SPI_CMD_ERASE_BULK			0xC7u											// FLASH bulk erase command
+#define	KFLASH_xSPI_CMD_WRITE_STATUS		0x01u											// FLASH write status command
+#define	KFLASH_xSPI_CMD_WRITE				0x02u											// FLASH write command (pages of 256 bytes)
+#define	KFLASH_xSPI_CMD_READ				0x03u											// FLASH read command
+#define	KFLASH_xSPI_CMD_WRITE_DISABLE		0x04u											// FLASH write disable command
+#define	KFLASH_xSPI_CMD_READ_STATUS			0x05u											// FLASH read status command
+#define	KFLASH_xSPI_CMD_WRITE_ENABLE		0x06u											// FLASH write enable command
+#define	KFLASH_xSPI_CMD_ERASE_SECTOR		0x20u											// FLASH erase sector command
+#define	KFLASH_xSPI_CMD_ERASE_BLOC			0xD8u											// FLASH erase bloc command
+#define	KFLASH_xSPI_CMD_ERASE_BULK			0xC7u											// FLASH bulk erase command
 
 // Status bits for the chip W25X80L
 
-#define	BFLASH_SPI_BUSY						0u												// Erase or write in progress
-#define	BFLASH_SPI_WEL						1u												// Write enable latch
-#define	BFLASH_SPI_BP0						2u												// Block protect block 0
-#define	BFLASH_SPI_BP1						3u												// Block protect block 1
-#define	BFLASH_SPI_BP2						4u												// Block protect block 2
-#define	BFLASH_SPI_TB						5u												// Top/Bottom write protect
-#define	BFLASH_SPI_SRWD						7u												// Status register protect
+#define	BFLASH_xSPI_BUSY					0u												// Erase or write in progress
+#define	BFLASH_xSPI_WEL						1u												// Write enable latch
+#define	BFLASH_xSPI_BP0						2u												// Block protect block 0
+#define	BFLASH_xSPI_BP1						3u												// Block protect block 1
+#define	BFLASH_xSPI_BP2						4u												// Block protect block 2
+#define	BFLASH_xSPI_TB						5u												// Top/Bottom write protect
+#define	BFLASH_xSPI_SRWD					7u												// Status register protect

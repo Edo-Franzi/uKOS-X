@@ -171,6 +171,7 @@ add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/cdc1/cdc1.c CONFIG_MAN_CD
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/urt0/urt0.c CONFIG_MAN_URT0_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/sdcard/sdcard.c CONFIG_MAN_SDCARD_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/serialFlash/serialFlash.c CONFIG_MAN_SERIAL_FLASH_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/storage/storage.c CONFIG_MAN_STORAGE_S)
 target_sources(libx_p PRIVATE
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
@@ -182,6 +183,7 @@ target_sources(libx_p PRIVATE
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
 	${PATH_BASE}/Lib_serials/urt0/stub_urt0_usart1.c
 	${PATH_BASE}/Lib_storages/sdcard/stub_sdcard.c
+	${PATH_BASE}/Lib_storages/serialFlash/stub_serialFlash.c
 )
 target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
 
@@ -265,7 +267,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 # Optional manager
 add_MicroPython()
 add_LVGL()
-add_FatFs(STORAGE sdcard)
+add_FatFs(STORAGE sdcard_flash)
 
 # System configuration flags
 
