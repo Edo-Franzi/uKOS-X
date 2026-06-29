@@ -2,8 +2,8 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.5.10)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.5.10-2026-06-17",
+  "name": "uKOS-X SBOM (0.5.12)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.5.12-2026-06-29",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -32,7 +32,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.5.10",
+      "versionInfo": "0.5.12",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -42,7 +42,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.5.10",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.5.12",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -192,9 +192,27 @@
       ]
     },
     {
+      "name": "STM32",
+      "SPDXID": "SPDXRef-Package-STM32",
+      "versionInfo": "1.3.0",
+      "downloadLocation": "https://github.com/STMicroelectronics/STM32CubeN6.git",
+      "filesAnalyzed": false,
+      "licenseDeclared": "BSD-3-Clause",
+      "licenseConcluded": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2024, STMicroelectronics",
+      "comment": "Location: Third_Parties/STM32/",
+      "externalRefs": [
+        {
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/STMicroelectronics/STM32CubeN6@1.3.0",
+          "referenceCategory": "PACKAGE-MANAGER"
+        }
+      ]
+    },
+    {
       "name": "tflite-micro",
       "SPDXID": "SPDXRef-Package-TFLiteMicro",
-      "versionInfo": "commit 7ca66d1",
+      "versionInfo": "commit 348eed0",
       "downloadLocation": "https://github.com/tensorflow/tflite-micro.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -212,7 +230,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.20.0 commit 52035e2",
+      "versionInfo": "0.20.0 commit 40f4c12",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -223,24 +241,6 @@
         {
           "referenceType": "purl",
           "referenceLocator": "pkg:github/hathach/tinyusb@0.20.0",
-          "referenceCategory": "PACKAGE-MANAGER"
-        }
-      ]
-    },
-    {
-      "name": "STM32Cube_FW_N6",
-      "SPDXID": "SPDXRef-Package-STM32CubeN6",
-      "versionInfo": "1.3.0",
-      "downloadLocation": "https://github.com/STMicroelectronics/STM32CubeN6.git",
-      "filesAnalyzed": false,
-      "licenseDeclared": "BSD-3-Clause",
-      "licenseConcluded": "BSD-3-Clause",
-      "copyrightText": "Copyright (c) 2024, STMicroelectronics",
-      "comment": "External vendor SDK; not distributed in this repository. Included for firmware builds only.",
-      "externalRefs": [
-        {
-          "referenceType": "purl",
-          "referenceLocator": "pkg:github/STMicroelectronics/STM32CubeN6@1.3.0",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]

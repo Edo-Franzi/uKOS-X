@@ -98,7 +98,7 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 		default:
 		case KURT0: {
 			while (true) {
-				while ((LPUART1->ISR & LPUART1_ISR_TXFE) == 0) { ; }
+                while ((LPUART1->ISR & LPUART1_ISR_TXFNF) == 0) { ; }
 
 				data = (uint8_t)*wkAscii;
 				wkAscii++;
@@ -114,7 +114,7 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 
 		case KURT1: {
 			while (true) {
-				while ((USART2->ISR & USART2_ISR_TXFE) == 0) { ; }
+                while ((USART2->ISR & USART2_ISR_TXFNF) == 0) { ; }
 
 				data = (uint8_t)*wkAscii;
 				wkAscii++;
@@ -130,7 +130,7 @@ void	cmns_send(serialManager_t serialManager, const char_t *ascii) {
 
 		case KURT2: {
 			while (true) {
-				while ((USART3->ISR & USART3_ISR_TXFE) == 0) { ; }
+                while ((USART3->ISR & USART3_ISR_TXFNF) == 0) { ; }
 
 				data = (uint8_t)*wkAscii;
 				wkAscii++;

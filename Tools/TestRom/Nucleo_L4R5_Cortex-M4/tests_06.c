@@ -99,15 +99,15 @@ void	test_06(void) {
 }
 
 /*
- * \brief SVCall_IRQHandler
+ * \brief SVCall_C0_IRQHandler
  *
  * - Change the context f(message)
  *
  */
 #define	KSAVEREGISTERS	"r0", "r1", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11"
 
-[[gnu::naked, gnu::optimize("Os")]]
-void	SVCall_IRQHandler(void) {
+[[gnu::naked]]
+void    SVCall_C0_IRQHandler(void) {
 
 // Recover the message
 
@@ -152,7 +152,7 @@ static	void	local_process(uint32_t message) {
 
 	LED_BLUE_TOGGLE;
 
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&message);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)message);
 	cmns_send(KURT0, "Message 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 }
 #endif

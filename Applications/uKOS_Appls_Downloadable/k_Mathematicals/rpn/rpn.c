@@ -189,9 +189,9 @@ static	void	aProcess(const void *argument) {
 		  char_t **parameters = (char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "parameters");
 	const char_t **argv		  = (const char_t **)memo_malloc(KMEMO_ALIGN_8, (KNB_PARAMETERS * sizeof(char_t *)), "argv");
 
-	if (commandLine == nullptr) { LOG(KFATAL_USER, "memo_malloc commandLine"); exit(EXIT_OS_FAILURE);  }
-	if (parameters == nullptr)	{ LOG(KFATAL_USER, "memo_malloc parameters");	exit(EXIT_OS_FAILURE); }
-	if (argv == nullptr)		{ LOG(KFATAL_USER, "memo_malloc argv");		exit(EXIT_OS_FAILURE);	   }
+	if (commandLine == nullptr) { LOG(KFATAL_USER, "memo_malloc commandLine"); exit(EXIT_OS_FAILURE); }
+	if (parameters == nullptr)	{ LOG(KFATAL_USER, "memo_malloc parameters");  exit(EXIT_OS_FAILURE); }
+	if (argv == nullptr)		{ LOG(KFATAL_USER, "memo_malloc argv");		   exit(EXIT_OS_FAILURE); }
 
 	UNUSED(argument);
 

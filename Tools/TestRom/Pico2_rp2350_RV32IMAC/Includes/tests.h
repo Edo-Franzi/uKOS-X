@@ -61,5 +61,7 @@
 #include	"macros_core.h"
 #include	"core.h"
 #include	"spin.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

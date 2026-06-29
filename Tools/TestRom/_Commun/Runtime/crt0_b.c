@@ -99,10 +99,7 @@ void	crt0(void) {
 // Initialise the LOW level (!!! No static variables !!!)
 
 	init_init();
-
-	#if (defined(CONFIG_MAN_SERIAL_S))
 	cmns_init();
-	#endif
 
 // Before to initialise the system RAM, we use its random content
 // @ the power-on for generating a random seed usable for the software
@@ -136,6 +133,6 @@ void	crt0(void) {
 	INST_SYNC_BARRIER;
 
 	vCrt0_randomSeed = seed;
-
+	
 	main(0u, nullptr);
 }

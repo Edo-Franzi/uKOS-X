@@ -74,6 +74,9 @@
 
 #define	BAUDRATE_NRF(baudrate)	(((baudrate * 268u) + 0x800u) & 0xFFFFF000u)
 
+// Interruption macros
+// -------------------
+
 enum {
 
 // Reserved names: all the possible levels

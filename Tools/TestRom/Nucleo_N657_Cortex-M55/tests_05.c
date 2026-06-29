@@ -50,7 +50,6 @@
 #include	"tests.h"
 
 #if (defined(TEST_05_S))
-
 #define BLINK_PAUSE 100000
 
 bool		vTransmitted = false;
@@ -111,12 +110,12 @@ void	local_USART1_IRQHandler(void) {
 // Rx interruption
 
 		data = REG(USART1)->RDR;
-		LED_BLUE_TOGGLE;
 	}
 
 	if ((iir & USART_ISR_FIFO_TXFNF) != 0) {
 		data = (uint16_t)aSendText[index];
 		if (data == 0) {
+			LED_BLUE_TOGGLE;
 
 // Terminated
 

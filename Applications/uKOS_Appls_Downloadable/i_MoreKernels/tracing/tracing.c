@@ -296,7 +296,7 @@ static	void	aProcess(const void *argument) {
 	UNUSED(argument);
 
 	LOG(KINFO_USER, "launched");
-	(void)dprintf(KSYST,"The machine will crash in %"PRIu32" seconds!!\n", time--);
+	(void)dprintf(KSYST,"\nThe machine will crash in %"PRIu32" seconds!!\n", time--);
 
 	record_trace("--> Process 0: trace2 example", 0x02020202u);
 

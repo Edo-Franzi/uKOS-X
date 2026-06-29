@@ -3,6 +3,7 @@ a_Basics:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -16,6 +17,7 @@ a_Basics:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -28,6 +30,7 @@ a_Basics:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -41,6 +44,7 @@ a_Basics:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -54,6 +58,7 @@ a_Basics:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -76,6 +81,7 @@ a_Basics:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -90,6 +96,7 @@ b_MailBoxes:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -103,6 +110,7 @@ b_MailBoxes:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -116,6 +124,7 @@ b_MailBoxes:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -128,6 +137,7 @@ b_MailBoxes:
   timerQueue:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_F207
@@ -141,6 +151,7 @@ c_Semaphores:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -155,6 +166,7 @@ d_Mutexes:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -169,6 +181,7 @@ e_SoftwareTimers:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -183,6 +196,7 @@ f_Signals:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -196,6 +210,7 @@ f_Signals:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -210,6 +225,7 @@ g_PreciseSignals:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_F207
@@ -222,6 +238,7 @@ i_MoreKernels:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -235,6 +252,7 @@ i_MoreKernels:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -248,6 +266,7 @@ i_MoreKernels:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -260,6 +279,7 @@ i_MoreKernels:
   watchdog:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_F207
@@ -269,6 +289,7 @@ i_MoreKernels:
 
 j_LowLevels:
   hsPWM:
+    - Discovery_N657
     - Firefly_H743
     - Nucleo_H743
     - Nucleo_N657
@@ -285,6 +306,7 @@ j_LowLevels:
   intTimer:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_F207
@@ -297,15 +319,18 @@ k_Mathematicals:
   bid64_xyz:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
     - Nucleo_H743
+    - Nucleo_N657
 
   cordic:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -319,6 +344,7 @@ k_Mathematicals:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_H743
@@ -330,6 +356,7 @@ k_Mathematicals:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_F207
@@ -350,6 +377,7 @@ l_MLPs:
   class_Py:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -360,6 +388,7 @@ l_MLPs:
   class_TFL:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -370,6 +399,7 @@ l_MLPs:
   cluster_Py:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -380,6 +410,7 @@ l_MLPs:
   cluster_TFL:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -390,6 +421,7 @@ l_MLPs:
   tfl_vs_ukos:
     - Alastor_H743
     - Asmodee_H747
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -402,6 +434,7 @@ m_MicroPythons:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_H743
@@ -413,6 +446,7 @@ m_MicroPythons:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - Nucleo_H743
@@ -445,6 +479,7 @@ p_Specials:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -462,6 +497,7 @@ p_Specials:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -475,6 +511,7 @@ p_Specials:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -492,6 +529,7 @@ p_Specials:
     - Alastor_H743
     - Asmodee_H747
     - DevKit_nRF5340
+    - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
     - MAiXDUiNO_K210
@@ -507,6 +545,7 @@ q_LVGL:
     - Nucleo_N657
 
   big:
+    - Discovery_V873
     - Firefly_H743
 
   gan:

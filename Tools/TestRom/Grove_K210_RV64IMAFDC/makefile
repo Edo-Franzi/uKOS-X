@@ -64,19 +64,19 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun/Includes
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun/Runtime
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes
-PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/SOC
+PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
 OBJ				=  Runtime/vectors.o first.o init.o exce.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0_r.o ../_Commun/Runtime/debug.o
+OBJ				+= ../_Commun/Runtime/crt0_r.o ../_Commun/Runtime/debug.o ../_Commun/Runtime/syscall.o
 
 # Target & Infrastructure
 
-CC				= $(PATH_COMPILER)/bin/$(PREFIX)gcc
-AS				= $(PATH_COMPILER)/bin/$(PREFIX)as
-OBJCOPY			= $(PATH_COMPILER)/bin/$(PREFIX)objcopy
-OBJDUMP			= $(PATH_COMPILER)/bin/$(PREFIX)objdump
+CC				=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
+AS				=  $(PATH_COMPILER)/bin/$(PREFIX)as
+OBJCOPY			=  $(PATH_COMPILER)/bin/$(PREFIX)objcopy
+OBJDUMP			=  $(PATH_COMPILER)/bin/$(PREFIX)objdump
 
 FLAGS_FP		?= -mabi=lp64d
 CPU_SPEC		?= -march=rv64imafdc_zicsr_zifencei -mcmodel=medany
@@ -104,7 +104,7 @@ LDFLAGS			+= -Wall -nostartfiles
 LDFLAGS			+= -T$(LINKS_LD)
 LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage -Wl,--no-warn-rwx-segment
 
-SWTCH_OBJDUMP	= -f -p -g -D -d -h -t -s
+SWTCH_OBJDUMP	=  -f -p -g -D -d -h -t -s
 
 all :
 	$(MAKE) clr_all

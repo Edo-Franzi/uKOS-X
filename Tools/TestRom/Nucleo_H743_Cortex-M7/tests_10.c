@@ -123,15 +123,13 @@ void	test_10(void) {
 
 // Display the result of the transfer
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&DMA1->S1NDTR);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)DMA1->S1NDTR);
 		cmns_send(KURT0, "DMA NDTR 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
-		data = (uint32_t *)&vBuffer[0];
 		for (i = 0; i < (KSPIM_SZ_PAGE / 4); i++) {
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)data);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vBuffer[i]);
 			cmns_send(KURT0, "0x"); cmns_send(KURT0, vString);
 			(((i + 1) % 4) == 0) ? (cmns_send(KURT0, "\n")) : (cmns_send(KURT0, " "));
-			data++;
 		}
 		cmns_send(KURT0, "\n");
 	}

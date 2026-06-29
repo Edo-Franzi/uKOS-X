@@ -50,6 +50,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_10_S))
+#define BLINK_PAUSE 100000
+
 #define	KTTIMESAMPLING	((float64_t)(0.5))										// 500-ms
 #define KPSCT4			((KFREQUENCY_TIM / (KFREQUENCY_1MHz)) - 1)				// Prescaler for 1'000'000-Hz
 #define KARRT4			((uint32_t)((KFREQUENCY_1MHz * KTTIMESAMPLING) - 1))	// Autoreload
@@ -67,13 +69,10 @@ void	local_TIM4_IRQHandler(void);
 void	test_10(void) {
 
 	REG(RCC)->APB1LENR |= RCC_APB1LENR_TIM4EN;
+    (void)REG(RCC)->APB1LENR;
 	STRONG_BARRIER;
 
 // Initialise the TIM4 to generate an interruption every 500-ms
-
-	INTERRUPT_VECTOR(TIM4_C0_IRQn, local_TIM4_IRQHandler);
-	NVIC_SetPriority(TIM4_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
-	NVIC_EnableIRQ(TIM4_C0_IRQn);
 
 	REG(TIM4)->CR1 &= ~TIM4_CR1_CEN;
 	REG(TIM4)->PSC  = KPSCT4;
@@ -82,12 +81,17 @@ void	test_10(void) {
 	REG(TIM4)->DIER = TIM4_DIER_UIE;
 	REG(TIM4)->CR1 |= TIM4_CR1_CEN;
 
+	INTERRUPT_VECTOR(TIM4_C0_IRQn, local_TIM4_IRQHandler);
+	NVIC_ClearPendingIRQ(TIM4_C0_IRQn);
+	NVIC_SetPriority(TIM4_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	NVIC_EnableIRQ(TIM4_C0_IRQn);
+
 // Waiting for the TIM4 interruption
 
 	INTERRUPTION_ON_HARD;
 
 	while (true) {
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		LED_RED_TOGGLE;
 	}
 }
@@ -101,8 +105,10 @@ void	test_10(void) {
 void	local_TIM4_IRQHandler(void) {
 
 // Acknowledge the TIM4 interruption
+// Read-back to ensure the write completes before the handler returns;
+// without this, on Cortex-M55 the NVIC can re-enter the handler immediately.
 
-	REG(TIM4)->SR &= ~TIM4_SR_UIF;
+	REG(TIM4)->SR = ~TIM4_SR_UIF;
 	(void)REG(TIM4)->SR;
 
 	LED_BLUE_TOGGLE;

@@ -60,8 +60,11 @@
 #include	"macros_soc.h"
 #include	"macros_core.h"
 #include	"core.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
-#define	TEST_00_S			// Test blink the RED, BLUE & GREEN Leds
+#ifndef USING_CMAKE
+#undef	TEST_00_S			// Test blink the RED, BLUE & GREEN Leds
 #undef	TEST_01_S			// Test of the RTC interruption
 #undef	TEST_02_S			// Tesat send data via the cnms manager
 #undef	TEST_03_S			// Test read & send data via the cnms manager
@@ -70,10 +73,11 @@
 #undef	TEST_06_S			// Test of an EXTI call
 #undef	TEST_07_S			// Test of a double EXTI call
 #undef	TEST_08_S			// Test of the TIMER1 interruption
-#undef	TEST_09_S			// Test of a preliminary pico kernel (with messages EXTI)
+#define	TEST_09_S			// Test of a preliminary pico kernel (with messages EXTI)
 #undef	TEST_10_S			// Test of a preliminary pico kernel (with messages EXTI) and with the macro_core
 #undef	TEST_11_S			// Test of the TIMER2 interruption
 #undef	TEST_12_S			// Test of the TIMER2 interruption OCx
 #undef	TEST_XX_S			// Test of the code size
+#endif
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

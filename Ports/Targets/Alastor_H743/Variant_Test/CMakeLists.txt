@@ -104,8 +104,9 @@ set(FIRST_P
 add_library(rtcb_p)
 target_sources(rtcb_p PRIVATE
 	${PATH_OSYS}/Boots/boot/boot.c
-	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_PORT}/EquatesModels/Cores/${CORE}/Runtime/syscallDispatcher.c
+	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
+	${PATH_PORT}/EquatesModels/SOCs/${SOC}/Runtime/cache.c
 	${PATH_BASE}/Runtime/cmns.c
 	${PATH_BASE}/Runtime/exce.c
 	${PATH_VARI}/Runtime/init.c
@@ -279,7 +280,7 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/wkspi/wkspi.c
 	${PATH_OSYS}/CLI/X/X.c
 )
-if(DEFINED WITHAPP AND WITHAPP STREQUAL "app")
+if(DEFINED WITHAPP AND WITHAPP STREQUAL "classPy")
     target_sources(tool_u PRIVATE ${PATH_UKOS}/Applications/uKOS_Appls_Downloadable/l_MLPs/class_Py/class_Py.c)
     add_compile_definitions(WITHAPP_S)
 endif()

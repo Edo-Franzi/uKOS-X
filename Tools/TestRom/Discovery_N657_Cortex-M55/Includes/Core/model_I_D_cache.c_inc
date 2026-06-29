@@ -1,0 +1,400 @@
+/*
+; model_I_D_cache.
+; ================
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Cortex M55 L1 cache management.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+// Prototypes
+
+static	inline	uint32_t local_clz(uint32_t data);
+
+/*
+ * \brief model_cache_D_Enable
+ *
+ * - Enable the data cache
+ *
+ */
+static	inline	void	model_cache_D_Enable(void) {
+	uint32_t	ccsidr, sShift, wShift, sw;
+	uint32_t	numSets, associativity, tmpAssociativity;
+
+// Level 1 data cache
+
+	REG(SCB)->CSSELR = (0u<<1u) | (0u<<0u);
+	DATA_SYNC_BARRIER;
+
+// Number of sets - 1
+// Number of shift (2 - log(2)) of the number of words in the cache line
+//                              0x0 = 4 words in the cache line
+//                              0x1 = 8 words in the cache line
+// Number of ways
+
+	ccsidr        = REG(SCB)->CCSIDR;
+	numSets       = ((ccsidr & (0x7FFFu<<13u))>>13u);
+	sShift        = (ccsidr & 7u) + 4u;
+	associativity = ((ccsidr & (0x3FFu<<3u))>>3u);
+	wShift        = (local_clz(associativity) & ((uint32_t)DCACHE_LINE_SIZE - 1u));
+
+	DATA_SYNC_BARRIER;
+
+// Invalidate D-Cache
+
+	do {
+		tmpAssociativity = associativity;
+		do {
+			sw = ((tmpAssociativity<<wShift) | (numSets<<sShift));
+			REG(SCB)->DCISW = sw;
+		} while (tmpAssociativity-- != 0u);
+	} while (numSets-- != 0u);
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+
+// Enable D-Cache
+
+	REG(SCB)->CCR |= (1u<<16u);
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_D_Disable
+ *
+ * - Disable the data cache
+ *
+ */
+static	inline	void	model_cache_D_Disable(void) {
+	uint32_t	ccsidr, sShift, wShift, sw;
+	uint32_t	numSets, associativity, tmpAssociativity;
+
+// Level 1 data cache
+
+	REG(SCB)->CSSELR = (0u<<1u) | (0u<<0u);
+	DATA_SYNC_BARRIER;
+
+// Disable D-Cache
+
+	REG(SCB)->CCR &= (uint32_t)~(1u<<16u);
+
+// Number of sets - 1
+// Number of shift (2 - log(2)) of the number of words in the cache line
+//                              0x0 = 4 words in the cache line
+//                              0x1 = 8 words in the cache line
+// Number of ways
+
+	ccsidr        = REG(SCB)->CCSIDR;
+	numSets       = ((ccsidr & (0x7FFFu<<13u))>>13u);
+	sShift        = (ccsidr & 7u) + 4u;
+	associativity = ((ccsidr & (0x3FFu<<3u))>>3u);
+	wShift        = (local_clz(associativity) & ((uint32_t)DCACHE_LINE_SIZE - 1u));
+
+	DATA_SYNC_BARRIER;
+
+// Clear & invalidate D-Cache
+
+	do {
+		tmpAssociativity = associativity;
+		do {
+			sw = ((tmpAssociativity<<wShift) | (numSets<<sShift));
+			REG(SCB)->DCCISW = sw;
+		} while (tmpAssociativity-- != 0u);
+	} while (numSets-- != 0u);
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_D_Invalidate
+ *
+ * - Invalidate the data cache
+ *
+ */
+static	inline	void	model_cache_D_Invalidate(void) {
+	uint32_t	ccsidr, sShift, wShift, sw;
+	uint32_t	numSets, associativity, tmpAssociativity;
+
+// Level 1 data cache
+
+	REG(SCB)->CSSELR = (0u<<1u) | (0u<<0u);
+	DATA_SYNC_BARRIER;
+
+// Number of sets - 1
+// Number of shift (2 - log(2)) of the number of words in the cache line
+//                              0x0 = 4 words in the cache line
+//                              0x1 = 8 words in the cache line
+// Number of ways
+
+	ccsidr        = REG(SCB)->CCSIDR;
+	numSets       = ((ccsidr & (0x7FFFu<<13))>>13);
+	sShift        = (ccsidr & 7u) + 4u;
+	associativity = ((ccsidr & (0x3FFu<<3u))>>3u);
+	wShift        = (local_clz(associativity) & ((uint32_t)DCACHE_LINE_SIZE - 1u));
+
+	DATA_SYNC_BARRIER;
+
+// Invalidate D-Cache
+
+	do {
+		tmpAssociativity = associativity;
+		do {
+			sw = ((tmpAssociativity<<wShift) | (numSets<<sShift));
+			REG(SCB)->DCISW = sw;
+		} while (tmpAssociativity-- != 0u);
+	} while (numSets-- != 0u);
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_D_Invalidate_Add
+ *
+ * - Invalidate the data cache by address
+ *
+ */
+static	inline	void	model_cache_D_Invalidate_Add(const void *address, int32_t size) {
+	int32_t		opSize;
+	uint32_t	opAddress;
+
+	if (size > 0) {
+		opSize	  = size + (int32_t)(((uint32_t)address) & ((uint32_t)DCACHE_LINE_SIZE - 1u));
+		opAddress = (uint32_t)address;
+
+		DATA_SYNC_BARRIER;
+
+		do {
+			REG(SCB)->DCIMVAC = opAddress;
+			opAddress += (uint32_t)DCACHE_LINE_SIZE;
+			opSize	  -= DCACHE_LINE_SIZE;
+		} while (opSize > 0);
+
+		DATA_SYNC_BARRIER;
+		INST_SYNC_BARRIER;
+	}
+}
+
+/*
+ * \brief model_cache_D_Clean
+ *
+ * - Clean the data cache
+ *
+ */
+static	inline	void	model_cache_D_Clean(void) {
+	uint32_t	ccsidr, sShift, wShift, sw;
+	uint32_t	numSets, associativity, tmpAssociativity;
+
+// Level 1 data cache
+
+	REG(SCB)->CSSELR = (0u<<1u) | (0u<<0u);
+	DATA_SYNC_BARRIER;
+
+// Number of sets - 1
+// Number of shift (2 - log(2)) of the number of words in the cache line
+//                              0x0 = 4 words in the cache line
+//                              0x1 = 8 words in the cache line
+// Number of ways
+
+	ccsidr        = REG(SCB)->CCSIDR;
+	numSets       = ((ccsidr & (0x7FFFu<<13u))>>13u);
+	sShift        = (ccsidr & 7u) + 4u;
+	associativity = ((ccsidr & (0x3FFu<<3u))>>3u);
+	wShift        = (local_clz(associativity) & ((uint32_t)DCACHE_LINE_SIZE - 1u));
+
+	DATA_SYNC_BARRIER;
+
+// Clean D-Cache
+
+	do {
+		tmpAssociativity = associativity;
+		do {
+			sw = ((tmpAssociativity<<wShift) | (numSets<<sShift));
+			REG(SCB)->DCCSW = sw;
+		} while (tmpAssociativity-- != 0u);
+	} while (numSets-- != 0u);
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_D_Clean_Add
+ *
+ * - Clean the data cache by address
+ *
+ */
+static	inline	void	model_cache_D_Clean_Add(const void *address, int32_t size) {
+	int32_t		opSize;
+	uint32_t	opAddress;
+
+	if (size > 0) {
+		opSize	  = size + (int32_t)(((uint32_t)address) & ((uint32_t)DCACHE_LINE_SIZE - 1u));
+		opAddress = (uint32_t)address;
+
+		DATA_SYNC_BARRIER;
+
+		do {
+			REG(SCB)->DCCMVAC = opAddress;
+			opAddress += (uint32_t)DCACHE_LINE_SIZE;
+			opSize	  -= DCACHE_LINE_SIZE;
+		} while (opSize > 0);
+
+		DATA_SYNC_BARRIER;
+		INST_SYNC_BARRIER;
+	}
+}
+
+/*
+ * \brief model_cache_I_Enable
+ *
+ * - Enable the instruction cache
+ *
+ */
+static	inline	void	model_cache_I_Enable(void) {
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+
+// Invalidate I-Cache
+
+	REG(SCB)->ICIALLU = 0u;
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+
+// Enable I-Cache
+
+	REG(SCB)->CCR |= (1u<<17u);
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_I_Disable
+ *
+ * - Disable the instruction cache
+ *
+ */
+static	inline	void	model_cache_I_Disable(void) {
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+
+// Disable I-Cache
+// Invalidate I-Cache
+
+	REG(SCB)->CCR &= (uint32_t)~(1u<<17u);
+	REG(SCB)->ICIALLU = 0u;
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_I_Invalidate
+ *
+ * - Invalidate the instruction cache
+ *
+ */
+static	inline	void	model_cache_I_Invalidate(void) {
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+
+// Invalidate I-Cache
+
+	REG(SCB)->ICIALLU = 0u;
+
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+}
+
+/*
+ * \brief model_cache_I_Invalidate_Add
+ *
+ * - Invalidate the instruction cache by address
+ *
+ */
+static	inline	void	model_cache_I_Invalidate_Add(const void *address, int32_t size) {
+	int32_t		opSize;
+	uint32_t	opAddress;
+
+	if (size > 0) {
+		opSize	  = size + (int32_t)(((uint32_t)address) & ((uint32_t)ICACHE_LINE_SIZE - 1u));
+		opAddress = (uint32_t)address;
+
+		DATA_SYNC_BARRIER;
+
+		do {
+			REG(SCB)->ICIMVAU = opAddress;
+			opAddress += (uint32_t)ICACHE_LINE_SIZE;
+			opSize	  -= ICACHE_LINE_SIZE;
+		} while (opSize > 0);
+
+		DATA_SYNC_BARRIER;
+		INST_SYNC_BARRIER;
+	}
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_clz
+ *
+ */
+static	inline	uint32_t local_clz(uint32_t data) {
+	uint32_t	count = 0u;
+	uint32_t	mask = 0x80000000u;
+
+	 while ((data & mask) == 0u) {
+		count++;
+		mask >>= 1u;
+	}
+	return (count);
+  }

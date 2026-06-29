@@ -102,6 +102,9 @@
 		REG(UART)->UARTFBRD = _fbrd;																							\
 	} while (0)
 
+// Interruption macros
+// -------------------
+
 enum {
 
 // Reserved names: all the possible levels

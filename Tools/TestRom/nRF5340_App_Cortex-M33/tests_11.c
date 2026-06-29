@@ -96,7 +96,7 @@ void	test_11(void) {
 		REG(RTC0)->TASKS_CAPTURE[1] = 1u;
 		time = REG(RTC0)->CC[1];
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&time);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)time);
 		cmns_send(KURT0, "Time captured 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 	}
 }

@@ -118,6 +118,7 @@ FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
 
 RTCB_P			=
 RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
+RTCB_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/cache.c
 RTCB_P			+=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0.c
 RTCB_P			+=												$(PATH_PORT)/EquatesModels/Cores/$(CORE)/Runtime/syscallDispatcher.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/cmns.c

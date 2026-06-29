@@ -69,7 +69,7 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
 OBJ				=  first.o picobin.o init.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o
+OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o ../_Commun/Runtime/syscall.o
 
 # Target & Infrastructure
 
@@ -129,7 +129,7 @@ clr_all :
 
 # Build
 
-build : $(TARGET).bin $(TARGET).hex $(TARGET).dis
+build : $(TARGET).bin $(TARGET).hex
 
 display : $(TARGET).bin $(TARGET).dis $(TARGET).lst
 

@@ -49,6 +49,10 @@
 
 #pragma	once
 
+#if (defined(CORTEX_M7_S))
+#include	"cache.h"
+#endif
+
 // Multicore macro
 // ---------------
 
@@ -132,8 +136,23 @@ enum {
 
 #define	BKERN_PREEMPTION		28u
 
+#if (defined(CORTEX_M7_S))
 #define	EXCEPTION_VECTOR(vectorNb, address)																						\
-								vExce_indExcVectors[GET_RUNNING_CORE][(int32_t)vectorNb + (int32_t)KNB_EXCEPTIONS] = address
+								vExce_indExcVectors[GET_RUNNING_CORE][(int32_t)vectorNb + (int32_t)KNB_EXCEPTIONS] = address;	\
+								STRONG_BARRIER;																					\
+								cache_D_Clean()
 
 #define	INTERRUPT_VECTOR(vectorNb, address)																						\
-								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address
+								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address;										\
+								STRONG_BARRIER;																					\
+								cache_D_Clean()
+
+#else
+#define	EXCEPTION_VECTOR(vectorNb, address)																						\
+								vExce_indExcVectors[GET_RUNNING_CORE][(int32_t)vectorNb + (int32_t)KNB_EXCEPTIONS] = address;	\
+								STRONG_BARRIER
+
+#define	INTERRUPT_VECTOR(vectorNb, address)																						\
+								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address;										\
+								STRONG_BARRIER
+#endif

@@ -59,6 +59,7 @@
 
 // Prototypes
 
+static			void	local_MCO2_Configuration(void);
 static			void	local_EnableSRAM(void);
 static			void	local_StackLimit_Configuration(void);
 static			void	local_PWR_Configuration(void);
@@ -68,13 +69,6 @@ static			void	local_MPU_Configuration(void);
 static			void	local_FPE_Configuration(void);
 static			void	local_CACHE_Enable(void);
 static			void	local_USB_Configuration(void);
-static	inline	void	cache_D_Enable(void);
-static	inline	void	cache_D_Disable(void);
-static	inline	void	cache_D_Clean(void);
-static	inline	void	cache_D_Invalidate(void);
-static	inline	void	cache_I_Enable(void);
-static	inline	void	cache_I_Disable(void);
-static	inline	void	cache_I_Invalidate(void);
 
 /*
  * \brief init_init
@@ -90,12 +84,13 @@ void	init_init(void) {
 
 	local_EnableSRAM();
 	local_StackLimit_Configuration();
-	local_PWR_Configuration();
 	local_GPIO_Configuration();
+	local_PWR_Configuration();
 	local_RCC_Configuration();
 	local_MPU_Configuration();
 	local_FPE_Configuration();
 	local_USB_Configuration();
+	local_MCO2_Configuration();
 	local_CACHE_Enable();
 }
 
@@ -170,13 +165,24 @@ static	void	local_PWR_Configuration(void) {
 	REG(RCC)->AHB4ENR |= RCC_AHB4ENR_PWREN;
 	STRONG_BARRIER;
 
-	REG(PWR)->SVMCR1 |= PWR_SVMCR1_VDDIO4VMEN;
-	(void)(REG(PWR)->SVMCR1);
+	REG(PWR)->VOSCR |= PWR_VOSCR_VOS;
+	while ((REG(PWR)->VOSCR & PWR_VOSCR_VOSRDY) == 0u) { ; }
+
+	REG(PWR)->SVMCR3 |= PWR_SVMCR3_ASV;
+	(void)(REG(PWR)->SVMCR3);
+	REG(PWR)->SVMCR3 |= PWR_SVMCR3_VDDIO2SV;
+	(void)(REG(PWR)->SVMCR3);
+	REG(PWR)->SVMCR3 |= PWR_SVMCR3_VDDIO3SV;
+	(void)(REG(PWR)->SVMCR3);
 	REG(PWR)->SVMCR1 |= PWR_SVMCR1_VDDIO4SV;
+	(void)(REG(PWR)->SVMCR1);
+	REG(PWR)->SVMCR2 |= PWR_SVMCR2_VDDIO5SV;
+	(void)(REG(PWR)->SVMCR2);
+
+	REG(PWR)->SVMCR1 |= PWR_SVMCR1_VDDIO4VMEN;
 	(void)(REG(PWR)->SVMCR1);
 	REG(PWR)->SVMCR2 |= PWR_SVMCR2_VDDIO5VMEN;
 	(void)(REG(PWR)->SVMCR2);
-	REG(PWR)->SVMCR2 |= PWR_SVMCR2_VDDIO5SV;
 }
 
 /*
@@ -285,7 +291,12 @@ static	void	local_GPIO_Configuration(void) {
  */
 static	void	local_RCC_Configuration(void) {
 
-	REG(RCC)->CR |= RCC_CR_HSION;								// Set HSION bit (48-MHz)
+	REG(RCC)->CR |= RCC_CR_HSION								// Set HSION bit (64-MHz)
+				  | RCC_CR_HSEON;								// Set HSEON bit (48-MHz)
+	(void)(REG(RCC)->CR);										//
+
+	while ((REG(RCC)->SR & RCC_SR_HSIRDY) == 0u) { ; }			// Waiting for the HSI stable
+	while ((REG(RCC)->SR & RCC_SR_HSERDY) == 0u) { ; }			// Waiting for the HSE stable
 	STRONG_BARRIER;
 
 // PLL 1, 800-MHz, clocks to the CPU, buses, and storage (XSPI, SDMMC)
@@ -297,7 +308,6 @@ static	void	local_RCC_Configuration(void) {
 // f(vco) = 1600-MHz, N/M = 25
 // N = 125, M = 5
 
-	#if 1
 	REG(RCC)->PLL1CFGR1 = (0u   * RCC_PLL1CFGR1_PLL1SEL_0)		// f(input) HSI
 						| (0u   * RCC_PLL1CFGR1_PLL1BYP)		// No bypass
 						| (5u   * RCC_PLL1CFGR1_PLL1DIVM_0)		// M = 5
@@ -320,8 +330,6 @@ static	void	local_RCC_Configuration(void) {
 	(void)(REG(RCC)->CR);										//
 	while ((REG(RCC)->SR & RCC_SR_PLL1RDY) == 0u) { ; }			// Waiting for the PLL 1 stable
 
-	#endif
-
 // PLL 2, 800-MHz, clocks to NPU and audio peripherals
 // ---------------------------------------------------
 
@@ -331,7 +339,6 @@ static	void	local_RCC_Configuration(void) {
 // f(vco) = 1600-MHz, N/M = 25
 // N = 125, M = 5
 
-	#if 1
 	REG(RCC)->PLL2CFGR1 = (0u   * RCC_PLL2CFGR1_PLL2SEL_0)		// f(input) HSI
 						| (0u   * RCC_PLL2CFGR1_PLL2BYP)		// No bypass
 						| (5u   * RCC_PLL2CFGR1_PLL2DIVM_0)		// M = 5
@@ -354,8 +361,6 @@ static	void	local_RCC_Configuration(void) {
 	(void)(REG(RCC)->CR);										//
 	while ((REG(RCC)->SR & RCC_SR_PLL2RDY) == 0u) { ; }			// Waiting for the PLL 2 stable
 
-	#endif
-
 // PLL 3, 400-MHz, clocks to CACHEAXI RAM and Ethernet
 // ---------------------------------------------------
 
@@ -365,7 +370,6 @@ static	void	local_RCC_Configuration(void) {
 // f(vco) = 1600-MHz, N/M = 25
 // N = 125, M = 5
 
-	#if 1
 	REG(RCC)->PLL3CFGR1 = (0u   * RCC_PLL3CFGR1_PLL3SEL_0)		// f(input) HSI
 						| (0u   * RCC_PLL3CFGR1_PLL3BYP)		// No bypass
 						| (5u   * RCC_PLL3CFGR1_PLL3DIVM_0)		// M = 5
@@ -388,8 +392,6 @@ static	void	local_RCC_Configuration(void) {
 	(void)(REG(RCC)->CR);										//
 	while ((REG(RCC)->SR & RCC_SR_PLL3RDY) == 0u) { ; }			// Waiting for the PLL 3 stable
 
-	#endif
-
 // PLL 4, 400-MHz, clocks to display, camera, FDCAN, and other peripherals
 // -----------------------------------------------------------------------
 
@@ -399,7 +401,6 @@ static	void	local_RCC_Configuration(void) {
 // f(vco) = 1600-MHz, N/M = 25
 // N = 125, M = 5
 
-	#if 1
 	REG(RCC)->PLL4CFGR1 = (0u   * RCC_PLL4CFGR1_PLL4SEL_0)		// f(input) HSI
 						| (0u   * RCC_PLL4CFGR1_PLL4BYP)		// No bypass
 						| (5u   * RCC_PLL4CFGR1_PLL4DIVM_0)		// M = 5
@@ -421,8 +422,6 @@ static	void	local_RCC_Configuration(void) {
 	REG(RCC)->CR |= RCC_CR_PLL4ON;								// PLL4 on
 	(void)(REG(RCC)->CR);										//
 	while ((REG(RCC)->SR & RCC_SR_PLL4RDY) == 0u) { ; }			// Waiting for the PLL 4 stable
-
-	#endif
 
 // Muxes
 // -----
@@ -477,11 +476,6 @@ static	void	local_RCC_Configuration(void) {
 //					(sysd_ck) not used
 // - PERCK -> HSI
 
-	REG(RCC)->CFGR1 = (3u * RCC_CFGR1_CPUSW_0)					// IC1 (PLL1 / 1) as a CPU clock
-					| (3u * RCC_CFGR1_SYSSW_0);					// IC2 (PLL4 / 1) as a SYS clock
-
-	REG(RCC)->CCIPR7 = (0u * RCC_CCIPR7_PERSEL_0);				// per_ck (periph kernel = HSI)
-
 // Bus peripheral clocks
 // - Timers					-> 100-MHz
 // - HPRE					-> 100-MHz
@@ -497,6 +491,14 @@ static	void	local_RCC_Configuration(void) {
 					| (KPPRE5  * RCC_CFGR2_PPRE5_0);			// sys_bus_ck2 / 1
 	STRONG_BARRIER;
 	(void)(REG(RCC)->CFGR2);
+
+	REG(RCC)->CFGR1 = (3u * RCC_CFGR1_CPUSW_0)					// IC1 (PLL1 / 1) as a CPU clock
+					| (3u * RCC_CFGR1_SYSSW_0);					// IC2 (PLL4 / 2) as a SYS clock
+	STRONG_BARRIER;
+	(void)(REG(RCC)->CFGR1);
+
+	cmns_wait(10000);
+	REG(RCC)->CCIPR7 = (0u * RCC_CCIPR7_PERSEL_0);				// per_ck (periph kernel = HSI)
 }
 
 /*
@@ -511,6 +513,41 @@ static	void	local_MPU_Configuration(void) {
 }
 
 /*
+ * \brief local_MCO2_Configuration
+ *
+ * - Select of the clocks via MCO1-2
+ *
+ */
+static	void	local_MCO2_Configuration(void) {
+	volatile	uint32_t	value;
+
+	REG(RCC)->MISCENR |= RCC_MISCENR_MCO2EN;
+	STRONG_BARRIER;
+
+// PA08, MCO1 (not usable)
+// PC09, MCO2 (maybe blocked by OTP124)
+
+	value = REG(RCC)->CCIPR5 & ((0xFFF8u<<19u) | (0x1u<<11u) | (0x1u<<3u));
+
+// MCO2
+//
+// n = 0, hsi_div_ck	(OK, ~64-MHz !!!)
+// n = 1, lse_ck		(KO)
+// n = 2, msi_ck		(KO)
+// n = 3, lsi_ck		(OK, ~32-KHz !!!)
+// n = 4, hse_ck		(OK, ~48-MHz !!!)
+// n = 5, ic15_ck		(OK, ~300-MHz !!!) = pll1 / 2  -> pll1 = 600-MHz
+// n = 6, ic20_ck		(OK, ~30-MHz !!!)  = pll3 / 10 -> pll3 = 300-MHz
+// n = 7, sysb_ck		(OK, ~300-MHz !!!) = pll4
+
+#define	n	7u
+
+	value |= (n			 * RCC_CCIPR5_MCO2SEL_0)	//
+		   | ((10u - 1u) * RCC_CCIPR5_MCO2PRE_0);	// Clock / 10
+	REG(RCC)->CCIPR5 = value;						//
+}
+
+/*
  * \brief local_CACHE_Enable
  *
  * - Enable the L1 instruction & the data caches
@@ -518,6 +555,7 @@ static	void	local_MPU_Configuration(void) {
  */
 static	void	local_CACHE_Enable(void) {
 
+	#if 1
 	REG(MEMSYSCTL)->MSCR |= MEMSYSCTL_MSCR_DCACTIVE | MEMSYSCTL_MSCR_ICACTIVE;
 
 	cache_I_Invalidate();
@@ -525,6 +563,6 @@ static	void	local_CACHE_Enable(void) {
 
 	cache_D_Invalidate();
 	cache_D_Enable();
+	#endif
+	
 }
-
-#include	"model_I_D_cache.c_inc"

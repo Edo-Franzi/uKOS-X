@@ -86,8 +86,6 @@
 #define	KMSGRUNP0		0xA1												// Message (run P0)
 #define	KMSGRUNP1		0xA2												// Message (run P1)
 
-#define	KPROCESS_INIT_MCAUSE	(MCAUSE_INTERRUPT | RVBB_MCAUSE_MPP(3) | RVBB_MCAUSE_MPIE | 11)
-
 static		char_t		vString[20];
 [[gnu::aligned(16)]]
 volatile	uintptr_t	vStackFs[800];										//
@@ -426,7 +424,7 @@ void	EXTI0_IRQHandler(void) {
 [[gnu::noinline]]
 static	void	local_scheduler(void) {
 
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_message);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_message);
 	cmns_send(KURT0, "Message 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
 	switch (vKern_message) {
@@ -439,9 +437,9 @@ static	void	local_scheduler(void) {
 		case KMSGFIRST: {
 
 			#if (defined(__VERBOSE__))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel First    Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel First    Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -457,9 +455,9 @@ static	void	local_scheduler(void) {
 		case KMSGRUNP0: {
 
 			#if (defined(__VERBOSE__))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel go to P0 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel go to P0 Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -475,9 +473,9 @@ static	void	local_scheduler(void) {
 		case KMSGRUNP1: {
 
 			#if (defined(__VERBOSE__))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel go to P1 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP1);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP1);
 			cmns_send(KURT0, "Kernel go to P1 Stack P1 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 

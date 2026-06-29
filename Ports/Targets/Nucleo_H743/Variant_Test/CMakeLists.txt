@@ -110,8 +110,9 @@ set(FIRST_P
 add_library(rtcb_p)
 target_sources(rtcb_p PRIVATE
 	${PATH_OSYS}/Boots/boot/boot.c
-	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_PORT}/EquatesModels/Cores/${CORE}/Runtime/syscallDispatcher.c
+	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
+	${PATH_PORT}/EquatesModels/SOCs/${SOC}/Runtime/cache.c
 	${PATH_BASE}/Runtime/cmns.c
 	${PATH_BASE}/Runtime/exce.c
 	${PATH_VARI}/Runtime/init.c

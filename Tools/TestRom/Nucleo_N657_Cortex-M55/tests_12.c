@@ -106,5 +106,4 @@ void	test_12(void) {
 		LED_GREEN_TOGGLE;
 	}
 }
-
 #endif

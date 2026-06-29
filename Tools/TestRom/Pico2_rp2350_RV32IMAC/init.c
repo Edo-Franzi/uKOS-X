@@ -52,6 +52,7 @@
 */
 
 #include	"tests.h"
+#include	"linker.h"
 
 // RISC-V specific runtime
 // =======================

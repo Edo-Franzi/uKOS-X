@@ -61,18 +61,22 @@
 #include	"macros_core.h"
 #include	"core.h"
 #include	"spin.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
+#ifndef USING_CMAKE
 #undef	TEST_00_S			// Test blink the RED, GREEN, YELLOW and system Leds
 #undef	TEST_01_S			// Test sending data via the cnms manager
 #undef	TEST_02_S			// Test reading & sending data via the cnms manager
 #undef	TEST_03_S			// Test of the UART0 Rx interruption
 #undef	TEST_04_S			// Test of the UART0 Tx interruption
 #undef	TEST_05_S			// Test of the TIM0 Alarme 0 & 1 interruption
-#undef	TEST_06_S			// Test of a preliminary pico kernel (with messages swi)
+#define	TEST_06_S			// Test of a preliminary pico kernel (with messages swi)
 #undef	TEST_07_S			// Test of the UART0 Tx interruption
 #undef	TEST_08_S			// Test of the boot of the core 1
 #undef	TEST_09_S			// Test of the TIM0 Alarme 0 (core 0) & 1 (core 1) interruption
 #undef	TEST_10_S			// Test of the spin lock
-#define	TEST_11_S			// Test of the door bell
+#undef	TEST_11_S			// Test of the door bell
+#endif
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

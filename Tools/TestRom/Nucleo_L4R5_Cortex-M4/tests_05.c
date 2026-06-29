@@ -78,7 +78,7 @@ void	test_05(void) {
 	INTERRUPTION_ON_HARD;
 
 	while (true) {
-		LPUART1->CR1 |= LPUART1_CR1_TXFEIE;
+        LPUART1->CR1 |= LPUART1_CR1_TXFNFIE;
 
 // Let terminate the buffer transfer
 
@@ -111,7 +111,7 @@ void	local_LPUART1_IRQHandler(void) {
 		LED_BLUE_TOGGLE;
 	}
 
-	if (((iir & LPUART1_ISR_TXFNF) && (LPUART1->CR1 & LPUART1_CR1_TXFEIE)) != 0) {
+    if (((iir & LPUART1_ISR_TXFNF) && (LPUART1->CR1 & LPUART1_CR1_TXFNFIE)) != 0) {
 		data = (uint16_t)aSendText[index];
 		if (data == 0) {
 
@@ -119,7 +119,7 @@ void	local_LPUART1_IRQHandler(void) {
 
 			index = 0;
 			vTransmitted = true;
-			LPUART1->CR1 &= ~LPUART1_CR1_TXFEIE;
+            LPUART1->CR1 &= ~LPUART1_CR1_TXFNFIE;
 		}
 		else {
 			LPUART1->TDR = data;

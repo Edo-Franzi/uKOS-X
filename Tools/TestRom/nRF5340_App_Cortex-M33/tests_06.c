@@ -152,7 +152,7 @@ static	void	local_process(uint32_t message) {
 
 	LED_1_TOGGLE;
 
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&message);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)message);
 	cmns_send(KURT0, "Message 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 }
 #endif

@@ -52,7 +52,6 @@
 #define	TEST_STRUCTURE
 
 #if (defined(TEST_XX_S))
-
 typedef	struct objectParam	objectParam_t;
 
 struct	objectParam {

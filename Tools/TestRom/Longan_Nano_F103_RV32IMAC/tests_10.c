@@ -225,7 +225,7 @@ static	void	local_scheduler(void) {
 	uint32_t	mth32;
 
 	mth8 = ECLIC->MTH; mth32 = (uint32_t)mth8;
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&mth32);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)mth32);
 	cmns_send(KURT0, "ECLIC mth 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
 	switch (vKern_message) {
@@ -238,9 +238,9 @@ static	void	local_scheduler(void) {
 		case KMSGFIRST: {
 
 			#if (defined(__VERBOSE__))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel First    Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel First    Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -256,9 +256,9 @@ static	void	local_scheduler(void) {
 		case KMSGRUNP0: {
 
 			#if (defined(__VERBOSE__))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel go to P0 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel go to P0 Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -274,9 +274,9 @@ static	void	local_scheduler(void) {
 		case KMSGRUNP1: {
 
 			#if (defined(__VERBOSE__))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel go to P1 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP1);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP1);
 			cmns_send(KURT0, "Kernel go to P1 Stack P1 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 

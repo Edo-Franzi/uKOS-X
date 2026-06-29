@@ -123,7 +123,7 @@ CONF_SYSTEM		+= -DCACHE_D_S
 
 FLAGS_FP		= -mfloat-abi=hard
 
-BURN			?= secure
+BURN			?= secure_nucleo
 
 # The really first pcs of code (privileged)
 
@@ -133,12 +133,13 @@ FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
 # The runtime & commun components (privileged)
 
 RTCB_P			=
+RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
+RTCB_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/cache.c
 RTCB_P			+=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0.c
 RTCB_P			+=												$(PATH_PORT)/EquatesModels/Cores/$(CORE)/Runtime/syscallDispatcher.c
 RTCB_P			+=												$(PATH_VARI)/Runtime/init.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/exce.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/cmns.c
-RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
 
 # The uKernel components (privileged)
 

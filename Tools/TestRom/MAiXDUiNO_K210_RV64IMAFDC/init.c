@@ -52,6 +52,7 @@
 */
 
 #include	"tests.h"
+#include	"linker.h"
 
 // uKOS-X specific (see the module.h)
 // ==================================

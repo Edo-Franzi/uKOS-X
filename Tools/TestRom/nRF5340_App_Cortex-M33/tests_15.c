@@ -78,18 +78,18 @@ void	test_15(void) {
 		deviceID[0] = REG(FICR)->INFO_DEVICEID[0];
 		deviceID[1] = REG(FICR)->INFO_DEVICEID[1];
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&configID);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)configID);
 		cmns_send(KURT0, "Config ID 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&coreID);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)coreID);
 		cmns_send(KURT0, "Core ID   0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&infoPart);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)infoPart);
 		cmns_send(KURT0, "Info part 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&deviceID[0]);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)deviceID[0]);
 		cmns_send(KURT0, "Device ID 0x"); cmns_send(KURT0, vString);
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&deviceID[1]);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)deviceID[1]);
 										  cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 	}
 }

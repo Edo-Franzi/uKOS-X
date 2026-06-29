@@ -49,6 +49,8 @@
 
 #pragma	once
 
+#include	"cache.h"
+
 // Multicore macro
 // ---------------
 
@@ -73,6 +75,9 @@
 #define	DIV(ck, baudrate)		((uint32_t)(ck / (baudrate * 16u)))
 #define	REM(ck, baudrate)		((uint32_t)((((ck / (baudrate * 16.0)) - DIV(ck, baudrate)) * 16.0) + 0.5))
 #define	BAUDRATE(ck, baudrate)	(DIV(ck, baudrate)<<4u | REM(ck, baudrate))
+
+// Interruption macros
+// -------------------
 
 enum {
 
@@ -127,7 +132,11 @@ enum {
 #define	BKERN_PREEMPTION		28u
 
 #define	EXCEPTION_VECTOR(vectorNb, address)																						\
-								vExce_indExcVectors[GET_RUNNING_CORE][(int32_t)vectorNb + (int32_t)KNB_EXCEPTIONS] = address
+								vExce_indExcVectors[GET_RUNNING_CORE][(int32_t)vectorNb + (int32_t)KNB_EXCEPTIONS] = address;	\
+								STRONG_BARRIER;																					\
+								cache_D_Clean()
 
 #define	INTERRUPT_VECTOR(vectorNb, address)																						\
-								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address
+								vExce_indIntVectors[GET_RUNNING_CORE][vectorNb] = address;										\
+								STRONG_BARRIER;																					\
+								cache_D_Clean()

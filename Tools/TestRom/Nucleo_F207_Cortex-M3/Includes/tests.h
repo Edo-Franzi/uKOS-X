@@ -60,14 +60,18 @@
 #include	"macros_soc.h"
 #include	"macros_core.h"
 #include	"core.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
-#define	TEST_00_S			// Test blink the RED & BLUE Leds
+#ifndef USING_CMAKE
+#undef	TEST_00_S			// Test blink the RED & BLUE Leds
 #undef	TEST_01_S			// Test of the timer 2 interruption
 #undef	TEST_02_S			// Test send data via the cnms manager
 #undef	TEST_03_S			// Test rfead & send data via the cnms manager
 #undef	TEST_04_S			// Test of the UART3 Rx interruption
 #undef	TEST_05_S			// Test of the UART3 Tx interruption
 #undef	TEST_06_S			// Test of a SVC call
-#undef	TEST_07_S			// Test of a preliminary pico kernel (with messages swi)
+#define	TEST_07_S			// Test of a preliminary pico kernel (with messages swi)
+#endif
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

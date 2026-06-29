@@ -77,7 +77,7 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
 OBJ				=  first_rv.o picobin.o init.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0.o
+OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o ../_Commun/Runtime/syscall.o
 
 # Target & Infrastructure
 

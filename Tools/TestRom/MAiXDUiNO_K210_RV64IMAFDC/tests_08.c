@@ -644,9 +644,9 @@ static	void	local_scheduler(uint64_t message) {
 		case KMSGFIRST: {
 
 			#if (defined(VERBOSE_S))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel First    Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel First    Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -662,9 +662,9 @@ static	void	local_scheduler(uint64_t message) {
 		case KMSGRUNP0: {
 
 			#if (defined(VERBOSE_S))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel go to P0 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP0);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP0);
 			cmns_send(KURT0, "Kernel go to P0 Stack P0 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 
@@ -680,9 +680,9 @@ static	void	local_scheduler(uint64_t message) {
 		case KMSGRUNP1: {
 
 			#if (defined(VERBOSE_S))
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc);
 			cmns_send(KURT0, "Kernel go to P1 Stack SV 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
-			debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vStackCurP1);
+			(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vStackCurP1);
 			cmns_send(KURT0, "Kernel go to P1 Stack P1 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 			#endif
 

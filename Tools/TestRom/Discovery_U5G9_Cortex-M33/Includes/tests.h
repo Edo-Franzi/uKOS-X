@@ -60,7 +60,12 @@
 #include	"macros_soc.h"
 #include	"macros_core.h"
 #include	"core.h"
+#include	"cache.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
+#ifndef USING_CMAKE
 #define	TEST_00_S			// Test blink the RED & YELLOW Leds
+#endif
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

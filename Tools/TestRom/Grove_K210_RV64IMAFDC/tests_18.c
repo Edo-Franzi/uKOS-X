@@ -109,9 +109,9 @@ void	test_18(void) {
 		msw = (uint32_t)(tickCount>>32);
 		lsw = (uint32_t)tickCount;
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msw);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msw);
 		cmns_send(KURT0, "time  0x"); cmns_send(KURT0, vString);
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&lsw);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)lsw);
 		cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 	}
 }

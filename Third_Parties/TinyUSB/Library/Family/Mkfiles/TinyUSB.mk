@@ -81,6 +81,7 @@ ifeq ($(PROVIDER), st)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/CMSIS_5/CMSIS/Core/Include
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
+PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Models
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/Includes/mcu/$(PROVIDER)
@@ -103,6 +104,7 @@ endif
 ifeq ($(PROVIDER), raspberrypi)
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
+PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/Includes/mcu/raspberrypi
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040

@@ -74,6 +74,9 @@
 								(uint32_t)((256u * (uint64_t)ck) / baudrate)
 #define	BAUDRATE(ck, baudrate)	(uint32_t)(ck / baudrate)
 
+// Interruption macros
+// -------------------
+
 enum {
 
 // Reserved names: all the possible levels

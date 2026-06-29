@@ -50,8 +50,7 @@
 #include	"tests.h"
 
 #if (defined(TEST_04_S))
-
-#define BLINK_PAUSE 1000000
+#define BLINK_PAUSE	1000000
 
 // Prototypes
 
@@ -65,15 +64,17 @@ void	local_USART1_IRQHandler(void);
  */
 void	test_04(void) {
 
+	cmns_init();
+	REG(USART1)->CR1_FIFO &= (uint32_t)~USART_CR1_FIFO_UE;
+	REG(USART1)->CR1_FIFO |= USART_CR1_FIFO_RXFNEIE;
+	REG(USART1)->CR1_FIFO |= USART_CR1_FIFO_UE;
+
 	INTERRUPT_VECTOR(USART1_C0_IRQn, local_USART1_IRQHandler);
+	NVIC_ClearPendingIRQ(USART1_C0_IRQn);
 	NVIC_SetPriority(USART1_C0_IRQn, KINT_LEVEL_COMMUNICATIONS);
 	NVIC_EnableIRQ(USART1_C0_IRQn);
-	STRONG_BARRIER;
 
-	cmns_init();
-	REG(USART1)->CR1_FIFO |= USART_CR1_FIFO_RXFNEIE;
-
-// Waiting for the USART3 interruption
+// Waiting for the USART1 interruption
 
 	INTERRUPTION_ON_HARD;
 
@@ -91,12 +92,14 @@ void	test_04(void) {
  */
 void	local_USART1_IRQHandler(void) {
 
+	LED_BLUE_TOGGLE;
+
 // Acknowledge the USART1 interruption
 
-	REG(USART1)->RDR;
+	do {
+		(void)(uint8_t)REG(USART1)->RDR;
+	} while ((REG(USART1)->ISR_FIFO & USART_ISR_FIFO_RXFNE) != 0u);
 
 	cmns_send(KURT0, "OK interruptions\n");
-	LED_BLUE_TOGGLE;
 }
-
 #endif

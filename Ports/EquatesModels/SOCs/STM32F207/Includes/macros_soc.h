@@ -74,6 +74,9 @@
 #define	REM(ck, baudrate)		((uint32_t)((((ck / (baudrate * 16.0)) - DIV(ck, baudrate)) * 16.0) + 0.5))
 #define	BAUDRATE(ck, baudrate)	(DIV(ck, baudrate)<<4u | REM(ck, baudrate))
 
+// Interruption macros
+// -------------------
+
 enum {
 
 // Reserved names: all the possible levels

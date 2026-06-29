@@ -60,8 +60,11 @@
 #include	"macros_soc.h"
 #include	"macros_core.h"
 #include	"core.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
-#define	TEST_00_S			// Test blink the Red 1 & Green 1 the Red 2 & Green 2 Leds
+#ifndef USING_CMAKE
+#undef	TEST_00_S			// Test blink the Red 1 & Green 1 the Red 2 & Green 2 Leds
 #undef	TEST_01_S			// Test of the TIM0_0 interruption
 #undef	TEST_02_S			// Test send data via the cnms manager
 #undef	TEST_03_S			// Test read & send data via the cnms manager
@@ -72,7 +75,7 @@
 #undef	TEST_08_S			// Test of a preliminary pico kernel (with messages ECALL)
 #undef	TEST_09_S			// Test of a preliminary pico kernel (with messages ECALL) and with the macro_core
 #undef	TEST_10_S			// Test of a TIM_0 call
-#undef	TEST_11_S			// Test of a preliminary pico kernel (with TIM_0) and with the macro_core
+#define	TEST_11_S			// Test of a preliminary pico kernel (with TIM_0) and with the macro_core
 #undef	TEST_12_S			// Test of the TIM0_0 TIM0_2 interruptions
 #undef	TEST_13_S			// Test of the TIM0_0 TIM0_1 interruptions
 #undef	TEST_14_S			// Test of the TIM1_0 TIM1_2 interruptions
@@ -82,5 +85,6 @@
 #undef	TEST_18_S			// Test of the TIM0_0 used to generate a 64-bit 1-us counter
 #undef	TEST_19_S			// Test of the TIM0_0 in single shot (timeout tasks)
 #undef	TEST_20_S			// Test of the INTERRUPTION_OFF / INTERRUPTION_RESTORE
+#endif
 
 #define	NO_KERNEL_S			// No kernels (naked function entries)

@@ -50,8 +50,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_01_S))
-
 #define BLINK_PAUSE 500000
+
 /*
  * \brief test_01
  *

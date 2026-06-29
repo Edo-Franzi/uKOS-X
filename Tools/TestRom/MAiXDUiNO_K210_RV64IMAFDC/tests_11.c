@@ -248,7 +248,7 @@ void	local_scheduler(uint32_t core, uint64_t parameter, uint64_t *threshold, vol
 	}
 
 	#if (defined(VERBOSE_S))
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&vKern_stackProc[core]);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)vKern_stackProc[core]);
 	cmns_send(KURT0, "stack  0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 	#endif
 

@@ -1,0 +1,74 @@
+From d6dc8752ff0ed2c2d67534a384167ac8c487f96e Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Mon, 9 Mar 2026 16:20:19 +0200
+Subject: [PATCH 3/5] build: Add extra LLVM tools to build list + fine tune
+ picolibc options
+
+---
+ arm-software/embedded/CMakeLists.txt              | 4 +++-
+ arm-software/embedded/arm-runtimes/CMakeLists.txt | 6 ++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/arm-software/embedded/CMakeLists.txt b/arm-software/embedded/CMakeLists.txt
+index 16eae55f2f8f..c71b8d52b846 100644
+--- a/arm-software/embedded/CMakeLists.txt
++++ b/arm-software/embedded/CMakeLists.txt
+@@ -304,6 +304,8 @@ set(LLVM_DISTRIBUTION_COMPONENTS
+     llvm-strings
+     llvm-strip
+     llvm-symbolizer
++    scan-build
++    clang-tidy
+     LTO
+     CACHE STRING ""
+ )
+@@ -316,7 +318,7 @@ set(LLVM_TOOLCHAIN_DISTRIBUTION_COMPONENTS
+     CACHE STRING "Components defined by this CMakeLists that should be
+ installed by the install-llvm-toolchain target"
+ )
+-set(LLVM_ENABLE_PROJECTS clang;lld CACHE STRING "")
++set(LLVM_ENABLE_PROJECTS clang;lld;clang-tools-extra CACHE STRING "")
+ set(LLVM_TARGETS_TO_BUILD ARM CACHE STRING "")
+ set(LLVM_DEFAULT_TARGET_TRIPLE arm-none-eabi CACHE STRING "")
+ set(LLVM_APPEND_VC_REV OFF CACHE BOOL "")
+diff --git a/arm-software/embedded/arm-runtimes/CMakeLists.txt b/arm-software/embedded/arm-runtimes/CMakeLists.txt
+index 83bef6361e25..db984b6850ab 100644
+--- a/arm-software/embedded/arm-runtimes/CMakeLists.txt
++++ b/arm-software/embedded/arm-runtimes/CMakeLists.txt
+@@ -469,6 +469,7 @@ if(C_LIBRARY STREQUAL picolibc)
+ 
+     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/meson-cross-build.txt.in ${CMAKE_CURRENT_BINARY_DIR}/meson-cross-build.txt @ONLY)
+ 
++    set(PICOLIBC_OPTIONS -Dio-c99-formats=true -Dio-long-long=true -Dposix-console=true -Dpicocrt=false -Dpicocrt-lib=false)
+     ExternalProject_Add(
+         picolibc
+         STAMP_DIR ${PROJECT_PREFIX}/picolibc/${VARIANT_BUILD_ID}/stamp
+@@ -484,6 +485,7 @@ if(C_LIBRARY STREQUAL picolibc)
+             -Dincludedir=include
+             -Dlibdir=lib
+             -Dspecsdir=none
++            ${PICOLIBC_OPTIONS}
+             -Dmultilib=false
+             -Ddebug=false
+             -Dtests-enable-stack-protector=false
+@@ -529,7 +531,7 @@ if(C_LIBRARY STREQUAL picolibc)
+         # Timeout multipliers. The actual timeout value used in testing is:
+         # Timeout in seconds (defined in the picolibc's testing specs) x Timeout multiplier
+         # In general, tests execute slower with FVPs compared to qemu. However certain
+-        # variants can also be slower due to features enabled, for example: 
++        # variants can also be slower due to features enabled, for example:
+         # * Armv6m big-endian
+         # * Armv7m big-endian
+         # * Armv8.1-M Main PACBTI optimized for code size
+@@ -871,7 +873,7 @@ if(C_LIBRARY STREQUAL llvmlibc)
+             compiler_rt-install
+             cxxlibs-install
+         )
+-        
++
+         add_dependencies(check-llvmlibc llvmlibc-check)
+     endif()
+ endif()
+-- 
+2.54.0 (Apple Git-156)
+

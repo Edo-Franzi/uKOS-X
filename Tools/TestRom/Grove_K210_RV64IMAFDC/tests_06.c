@@ -50,7 +50,6 @@
 #include	"tests.h"
 
 #if (defined(TEST_06_S))
-
 static	char_t		vString[20];
 		uintptr_t	vKern_stackProc;
 
@@ -414,18 +413,22 @@ static	void	local_process(uint32_t core, uint64_t threshold, uint64_t message) {
 	LED_RED_2_TOGGLE;
 
 	msb = (uint32_t)(core);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msb);
+
 	cmns_send(KURT0, "Core        0x"); cmns_send(KURT0, vString);
 
 	msb = (uint32_t)(threshold);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msb);
+
 	cmns_send(KURT0, "  Threshold 0x"); cmns_send(KURT0, vString);
 
 	msb = (uint32_t)(message>>32);
 	lsb = (uint32_t)(message);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msb);
+
 	cmns_send(KURT0, "  Message   0x"); cmns_send(KURT0, vString);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&lsb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)lsb);
+
 	cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 }
 #endif

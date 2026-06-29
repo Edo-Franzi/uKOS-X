@@ -1,0 +1,44 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 22,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "nucleo",
+            "displayName": "NUCLEO-N657X0-Q",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/nucleo",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/arm-none-eabi-gcc.cmake",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BOARD": "NUCLEO"
+            }
+        },
+        {
+            "name": "discovery",
+            "displayName": "Discovery_N657 (STM32N6570-DK)",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/discovery",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/arm-none-eabi-gcc.cmake",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BOARD": "DISCOVERY_N657"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "nucleo",
+            "configurePreset": "nucleo"
+        },
+        {
+            "name": "discovery",
+            "configurePreset": "discovery"
+        }
+    ]
+}

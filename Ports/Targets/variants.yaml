@@ -2,6 +2,10 @@ Alastor_H743:
   - name: Test
     core: arm
 
+Discovery_N657:
+  - name: Test
+    core: arm
+
 Discovery_U5G9:
   - name: Test
     core: arm

@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-06-17
+(c) 2025-2026, Edo. Franzi, 2026-06-29
 
 
 
@@ -92,34 +92,35 @@ the third-party components shipped in this repository.
 - Copyright:
   -  Copyright (c) 2013-2019 Damien P. George
 
-### 2.9) Tflite-micro
+### 2.9) STM32
+
+- Location: `Third_Parties/STM32/`
+- Upstream: https://github.com/STMicroelectronics/STM32CubeN6.git
+- Version: 1.3.0
+- License: License: BSD-3-Clause
+- Copyright:
+  -  Copyright (c) 2024, STMicroelectronics
+
+### 2.10) Tflite-micro
+
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/tensorflow/tflite-micro.git
-- Version: commit 7ca66d1
+- Version: commit 348eed0
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2020 The TensorFlow Authors. All rights reserved.
 
-### 2.10) TinyUSB-micro
+### 2.11) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.20.0 / commit 52035e2
+- Version: 0.20.0 / commit 40f4c12
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)
 
 ## 3) External vendor SDKs (not included in this repository)
 
-### 3.1) STM32Cube_FW_N6
-
-- Upstream:  https://github.com/STMicroelectronics/STM32CubeN6.git
-- Version: 1.3.0
-- License: BSD-3-Clause
-- Copyright:
-  -  Copyright (c) 2024, STMicroelectronics
--  Notes: Not distributed in this repository.
-
-### 3.2) Picotools
+### 3.1) Picotools
 
 - Upstream:  https://github.com/raspberrypi/picotool.git
 - Version: 2.2.0-a4
@@ -128,7 +129,7 @@ the third-party components shipped in this repository.
   - Copyright (c) 2020 Raspberry Pi (Trading) Ltd
 - Notes: Not distributed in this repository.
 
-### 3.3) Pico_SDK
+### 3.2) Pico_SDK
 
 - Upstream:  https://github.com/raspberrypi/pico-sdk.git
 - Version: 2.2.0

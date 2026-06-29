@@ -69,7 +69,6 @@
  */
 
 #include	"tests.h"
-#include	"model_I_D_cache.c_inc"
 
 			void	(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 			void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);

@@ -106,6 +106,7 @@ printf '\n%bBuilding for WaveShare_2_Inches! ...%b\n' "${BOLD}" "${NC}"
 build_core WaveShare_2_Inches CORTEX_M55
 
 printf '\n%bBuilding for RK050HR18_5_Inches! ...%b\n' "${BOLD}" "${NC}"
+build_core RK050HR18_5_Inches CORTEX_M55
 build_core RK050HR18_5_Inches CORTEX_M85
 
 printf '\n%bBuilding for TFT_2_4_Inches! ...%b\n' "${BOLD}" "${NC}"

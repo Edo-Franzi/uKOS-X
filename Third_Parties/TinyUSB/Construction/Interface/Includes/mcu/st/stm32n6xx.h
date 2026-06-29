@@ -57,7 +57,7 @@
 #include	"macros_core.h"
 #include	"core_reg.h"
 #include	"soc_reg.h"
-#include	"model_I_D_cache.c_inc"
+#include	"cache.h"
 
 // For dwc2_stm32 working in DMA
 

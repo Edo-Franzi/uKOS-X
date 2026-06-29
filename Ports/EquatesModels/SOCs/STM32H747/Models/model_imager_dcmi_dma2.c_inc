@@ -54,8 +54,6 @@
 ;------------------------------------------------------------------------
 */
 
-#include	"model_I_D_cache.c_inc"
-
 static				void		(*vHSyncCodeRoutine)(void) = nullptr;
 static				void		(*vFrameCodeRoutine)(void) = nullptr;
 static				void		(*vVSyncCodeRoutine)(void) = nullptr;

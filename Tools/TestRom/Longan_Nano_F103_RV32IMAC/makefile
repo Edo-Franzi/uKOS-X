@@ -69,7 +69,7 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
 OBJ				=  Runtime/vectors.o first.o init.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o
+OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o ../_Commun/Runtime/syscall.o
 
 # Target & Infrastructure
 
@@ -80,8 +80,8 @@ OBJDUMP			=  $(PATH_COMPILER)/bin/$(PREFIX)objdump
 
 ASFLAGS			+= -g
 
-TARGET_MACH		= -march=rv32imac_zicsr_zifencei -mabi=ilp32 -gdwarf-4
-TARGET_ARCH		= -march=rv32imac_zicsr_zifencei -mabi=ilp32 -gdwarf-4
+TARGET_MACH		=  -march=rv32imac_zicsr_zifencei -mabi=ilp32 -gdwarf-4
+TARGET_ARCH		=  -march=rv32imac_zicsr_zifencei -mabi=ilp32 -gdwarf-4
 
 CFLAGS			+= -Wall -c -g -Os -Wlogical-op
 CFLAGS			+= -MMD

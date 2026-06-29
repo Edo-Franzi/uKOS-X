@@ -69,60 +69,34 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
 OBJ				=  first.o init.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0_b.o ../_Commun/Runtime/debug.o
+OBJ				+= ./Includes/SOC/cache.o
+OBJ				+= ../_Commun/Runtime/crt0_b.o ../_Commun/Runtime/debug.o ../_Commun/Runtime/syscall.o
 
 # Target & Infrastructure
 
-ifeq ($(COMPILER_FAMILY),llvm)
-PATH_COMPILER	=  $(PATH_LLVM_ARM)
-CC				=  $(PATH_COMPILER)/bin/clang
-
-else
 CC				=  $(PATH_COMPILER)/bin/$(PREFIX)gcc
-endif
 AS				=  $(PATH_COMPILER)/bin/$(PREFIX)as
 OBJCOPY			=  $(PATH_COMPILER)/bin/$(PREFIX)objcopy
 OBJDUMP			=  $(PATH_COMPILER)/bin/$(PREFIX)objdump
 
-# Test selection (e.g. make TEST_NUMBER=13)
-# When set, passes -DUSING_CMAKE -DTEST_$(TEST_NUMBER)_S so that
-# tests.h does not override the test selection.
-
-TEST_NUMBER		?=
-
-ifeq ($(TEST_NUMBER),13)
-# MVE/Helium requires -march with +mve.fp, no -mfpu
 FLAGS_FP		?= -mfloat-abi=hard
 CPU_SPEC		?= -march=armv8.1-m.main+mve.fp+fp.dp -mthumb
-else
-FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -mcpu=cortex-m55 -mthumb
-endif
 
 CFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 CFLAGS			+= -c -g -Os
 CFLAGS			+= $(PATH_INCLUDES)
 CFLAGS			+= -MMD
-CFLAGS			+= -DCACHE_D_S -DSECURE_S
-ifneq ($(TEST_NUMBER),)
-CFLAGS			+= -DUSING_CMAKE -DTEST_$(TEST_NUMBER)_S
-endif
+CFLAGS			+= -DCACHE_D_S -DSECURE_S -DKKERN_WITH_STATISTICS_S=false
 
 CFLAGS			+= -Wall
-ifeq ($(COMPILER_FAMILY),gcc)
 CFLAGS			+= -Wlogical-op
-endif
 
 LINKS_LD		=  Runtime/link_p.ld
 
 LDFLAGS			+= $(CPU_SPEC) $(FLAGS_FP)
 LDFLAGS			+= -Wall -nostartfiles
 LDFLAGS			+= -T$(LINKS_LD)
-ifeq ($(COMPILER_FAMILY),gcc)
 LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage -Wl,--no-warn-rwx-segment
-else
-LDFLAGS			+= -Wl,-Map=$(TARGET).map,--cref,--print-memory-usage
-endif
 
 SWTCH_OBJDUMP	=  -f -p -g -D -d -h -t -s
 

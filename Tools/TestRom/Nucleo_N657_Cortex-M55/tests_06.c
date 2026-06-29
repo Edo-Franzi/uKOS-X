@@ -50,6 +50,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_06_S))
+#define BLINK_PAUSE 500000
+
 extern		uintptr_t	*vVectors;
 static		char_t		vString[20];
 			uint32_t	vMessage;
@@ -89,12 +91,15 @@ static	void	local_process(uint32_t message);
 void	test_06(void) {
 	volatile	uint32_t	message = 0;
 
-	vVectors[15 + SVCall_IRQn] = (uintptr_t)SVCall_C0_IRQHandler;
+	vVectors[16 + SVCall_IRQn] = (uintptr_t)SVCall_C0_IRQHandler;
+	STRONG_BARRIER;
+	cache_D_Clean();
+	STRONG_BARRIER;
 
 	cmns_init();
 
 	while (true) {
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		LED_RED_TOGGLE;
 
 		MESSAGE(message)
@@ -152,7 +157,7 @@ static	void	local_handleSVCall(uint32_t message) {
 /*
  * \brief local_process
  *
- * - Blink the YELLOW Led
+ * - Blink the BLUE Led
  *
  */
 [[gnu::noinline]]
@@ -160,7 +165,7 @@ static	void	local_process(uint32_t message) {
 
 	LED_BLUE_TOGGLE;
 
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&message);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)message);
 	cmns_send(KURT0, "Message 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 }
 #endif

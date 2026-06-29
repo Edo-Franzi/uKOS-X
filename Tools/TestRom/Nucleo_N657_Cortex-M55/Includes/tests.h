@@ -60,6 +60,9 @@
 #include	"macros_soc.h"
 #include	"macros_core.h"
 #include	"core.h"
+#include	"cache.h"
+#include	<inttypes.h>
+#include	<stdio.h>
 
 #ifndef USING_CMAKE
 #undef	TEST_00_S			// Test of the clocks via MCO1-2
@@ -68,8 +71,8 @@
 #undef	TEST_03_S			// Test reading & sending data via the cnms manager
 #undef	TEST_04_S			// Test of the USART1 Rx interruption
 #undef	TEST_05_S			// Test of the USART1 Tx interruption
-#define	TEST_06_S			// Test of a SVC call
-#undef	TEST_07_S			// Test of a preliminary pico kernel (with messages swi)
+#undef	TEST_06_S			// Test of a SVC call
+#define	TEST_07_S			// Test of a preliminary pico kernel (with messages swi)
 #undef	TEST_08_S			// Test of the TIM2 interruption
 #undef	TEST_09_S			// Test of the TIM3 interruption
 #undef	TEST_10_S			// Test of the TIM4 interruption

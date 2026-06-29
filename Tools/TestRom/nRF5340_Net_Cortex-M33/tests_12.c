@@ -85,7 +85,7 @@ void	test_12(void) {
 			}
 		}
 
-		debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&testNb);
+		(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)testNb);
 		cmns_send(KURT0, "Test number 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 		testNb++;
 	}

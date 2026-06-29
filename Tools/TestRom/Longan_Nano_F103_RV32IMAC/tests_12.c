@@ -50,7 +50,6 @@
 #include	"tests.h"
 
 #if (defined(TEST_12_S))
-
 #define	KOCTIME			5000								// 5000-us
 #define	KFPRET4			1000000								// 1'000'000-Hz
 #define KPSCT4			((KFREQUENCY_TIM / KFPRET4) - 1)	// Prescaler for 1'000'000-Hz

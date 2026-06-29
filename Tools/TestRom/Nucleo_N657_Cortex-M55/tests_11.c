@@ -50,6 +50,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_11_S))
+#define BLINK_PAUSE 100000
+
 #define	KTTIMESAMPLING	((float64_t)(0.5))										// 500-ms
 #define KPSCT5			((KFREQUENCY_TIM / (KFREQUENCY_1MHz)) - 1)				// Prescaler for 1'000'000-Hz
 #define KARRT5			((uint32_t)((KFREQUENCY_1MHz * KTTIMESAMPLING) - 1))	// Autoreload
@@ -87,7 +89,7 @@ void	test_11(void) {
 	INTERRUPTION_ON_HARD;
 
 	while (true) {
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 		LED_RED_TOGGLE;
 	}
 }

@@ -1,0 +1,236 @@
+/*
+; model_coreDump_core.
+; ====================
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for the core dump (Core specific).
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+static		uintptr_t	*vStackBefore[KNB_CORES], *vStackAfter[KNB_CORES], vStackCoreDump[KNB_CORES][ENDREG];
+static		uint32_t	vExceptionNb[KNB_CORES];
+
+// Prototypes
+
+static	void	local_processException(uintptr_t *stackBefore, uintptr_t *stackAfter);
+static	void	local_printException(const char_t **vectorName);
+static	void	local_printFunction(uintptr_t pc, const char_t *vectorName, const char_t *excepInter);
+static	void	local_printCore(void);
+
+/*
+ * \brief model_coreDump_displayExceptions
+ *
+ * Display useful postmortem information
+ * Example:
+ *
+ * System dead! Core DUMP!!
+ * ========================
+ *
+ * Exception: HardFault_IRQHandler
+ * Routine:   aProcess
+ * Process:   Process_User_0
+ *
+ * CFSR     = 0x00008200 PRECISERR BFARVALID
+ * HFSR     = 0x40000000
+ * MMFAR    = 0x001FFFFF
+ * BFAR     = 0x001FFFFF
+ *
+ */
+[[gnu::naked, noreturn]]
+void model_coreDump_displayExceptions([[maybe_unused]] uintptr_t lr, [[maybe_unused]] uintptr_t *msp) {
+
+	CORE_DUMP_SAVE_STACK_FRAME;
+
+	JUMP_FNCT(local_processException);
+}
+
+/*
+ * \brief local_processException
+ *
+ * - Collect the stack frame
+ * - Display the core information
+ * - Display the user trace
+ * - Display the user logs
+ * - Display the stack frame
+ *
+ */
+[[gnu::noinline, gnu::used, noreturn]]
+static	void	local_processException(uintptr_t *stackBefore, uintptr_t *stackAfter) {
+			uint32_t	core, i;
+	const	uintptr_t	*ptr;
+	const	char_t		*vectorName;
+
+	core = GET_RUNNING_CORE;
+
+	vExceptionNb[core] = core_getIPSR();
+	vStackBefore[core] = stackBefore;
+	vStackAfter[core]  = stackAfter;
+
+// Collect the stack frame
+
+	ptr = vStackAfter[core];
+	vStackCoreDump[core][SPP] = (uintptr_t)vStackAfter[core];
+	for (i = PSP; i < ENDREG; i++) {
+		vStackCoreDump[core][i] = *ptr;
+		ptr++;
+	}
+
+	local_printException(&vectorName);
+	local_printFunction(vStackCoreDump[core][PC], vectorName, "Exception:    ");
+	local_printCore();
+	while (true) { ; }
+}
+
+/*
+ * \brief local_printException
+ *
+ * - Display the exception name
+ *
+ */
+[[gnu::noinline]]
+static	void	local_printException(const char_t **vectorName) {
+			uint32_t	core, i;
+	const	int32_t		cfsr  = (int32_t)REG(SCB)->CFSR;
+
+	core = GET_RUNNING_CORE;
+	cmns_send(KDEF0, "\n\n\n\n");
+	cmns_send(KDEF0, "System dead! Core DUMP!!\n");
+	cmns_send(KDEF0, "========================\n\n");
+
+// Vérify if an hardware stack overflow is the faul cause
+
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(4u + 16u))) != 0u) {
+		cmns_send(KDEF0, "Stack overflow, the following registers are not available! r0..r3, r12, lr, pc, xPSR, s0..s15, FPSCR\n\n");
+		vStackCoreDump[core][SPP] = (uintptr_t)vStackAfter[core];
+		for (i = r00; i < ENDREG; i++) {
+			vStackCoreDump[core][i] = 0u;
+		}
+	}
+
+	switch (vExceptionNb[core]) {
+		case 0u:  { *vectorName = "Thread mode";		break; }
+		case 1u:  { *vectorName = "Reserved 1";			break; }
+		case 2u:  { *vectorName = "NonMaskableInt";		break; }
+		case 3u:  { *vectorName = "HardFault";			break; }
+		case 4u:  { *vectorName = "MemoryManagement";	break; }
+		case 5u:  { *vectorName = "BusFault";			break; }
+		case 6u:  { *vectorName = "UsageFault";			break; }
+		case 7u:  { *vectorName = "SecureFault";		break; }
+		case 8u:  { *vectorName = "Reserved 8";			break; }
+		case 9u:  { *vectorName = "Reserved 9";			break; }
+		case 10u: { *vectorName = "Reserved 10";		break; }
+		case 11u: { *vectorName = "SVCall";				break; }
+		case 12u: { *vectorName = "DebugMonitor";		break; }
+		case 13u: { *vectorName = "Reserved 13";		break; }
+		case 14u: { *vectorName = "PendSV";				break; }
+		case 15u: { *vectorName = "SysTick";			break; }
+		default:  { *vectorName = "Unknown";			break; }
+	}
+}
+
+/*
+ * \brief local_printFunction
+ *
+ * - Display the function name
+ * - Display the process name
+ *
+ */
+[[gnu::noinline]]
+static	void	local_printFunction(uintptr_t pc, const char_t *vectorName, const char_t *excepInter) {
+
+	if (pc == 0u) {
+		cmns_send(KDEF0, excepInter);	    cmns_send(KDEF0, vectorName);   cmns_send(KDEF0, "\n");
+	}
+
+	#if (defined(NO_KERNEL_S))
+	cmns_send(KDEF0, "No uKOS-X uKernel\n");
+
+	#else
+	cmns_send(KDEF0, "Process:      "); cmns_send(KDEF0, vKern_runProc[core]->oSpecification.oIdentifier); cmns_send(KDEF0, "\n");
+	#endif
+}
+
+/*
+ * \brief local_printCore
+ *
+ * - Display the core information
+ *
+ */
+[[gnu::noinline]]
+static	void	local_printCore(void) {
+	char_t		string[80 + 1];
+	int32_t		cfsr  = (int32_t)REG(SCB)->CFSR;
+	int32_t		hfsr  = (int32_t)REG(SCB)->HFSR;
+	int32_t		mmfar = (int32_t)REG(SCB)->MMFAR;
+	int32_t		bfar  = (int32_t)REG(SCB)->BFAR;
+
+	cmns_send(KDEF0, "\nCFSR     = 0x"); debug_cnvtValInt32ToHexAscii(string, (int32_t *)&cfsr);
+	cmns_send(KDEF0, string);
+
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(0u +  8u))) != 0u) { cmns_send(KDEF0, " IBUSERR");     }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(1u +  8u))) != 0u) { cmns_send(KDEF0, " PRECISERR");   }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(2u +  8u))) != 0u) { cmns_send(KDEF0, " IMPRECISERR"); }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(3u +  8u))) != 0u) { cmns_send(KDEF0, " UNSTKERR");    }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(4u +  8u))) != 0u) { cmns_send(KDEF0, " STKERR");      }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(5u +  8u))) != 0u) { cmns_send(KDEF0, " LSPERR");      }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(7u +  8u))) != 0u) { cmns_send(KDEF0, " BFARVALID");   }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(0u + 16u))) != 0u) { cmns_send(KDEF0, " UNDEFINSTR");  }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(1u + 16u))) != 0u) { cmns_send(KDEF0, " INVSTATE");    }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(2u + 16u))) != 0u) { cmns_send(KDEF0, " INVPC");       }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(3u + 16u))) != 0u) { cmns_send(KDEF0, " NOCP");        }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(4u + 16u))) != 0u) { cmns_send(KDEF0, " STKOF");       }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(8u + 16u))) != 0u) { cmns_send(KDEF0, " UNALIGNED");   }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(9u + 16u))) != 0u) { cmns_send(KDEF0, " DIVBYZERO");   }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(0u +  0u))) != 0u) { cmns_send(KDEF0, " IACCVIOL");    }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(1u +  0u))) != 0u) { cmns_send(KDEF0, " DACCVIOL");    }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(3u +  0u))) != 0u) { cmns_send(KDEF0, " MUNSTKERR");   }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(4u +  0u))) != 0u) { cmns_send(KDEF0, " MSTKERR");     }
+	if (((uint32_t)cfsr & (uint32_t)(1u<<(7u +  0u))) != 0u) { cmns_send(KDEF0, " MMARVALID");   }
+
+	cmns_send(KDEF0, "\nHFSR     = 0x"); debug_cnvtValInt32ToHexAscii(string, (int32_t *)&hfsr);
+	cmns_send(KDEF0, string); cmns_send(KURT0, "\n");
+	cmns_send(KDEF0, "\nMMFAR    = 0x"); debug_cnvtValInt32ToHexAscii(string, (int32_t *)&mmfar);
+	cmns_send(KDEF0, string); cmns_send(KURT0, "\n");
+	cmns_send(KDEF0, "\nBFAR     = 0x"); debug_cnvtValInt32ToHexAscii(string, (int32_t *)&bfar);
+	cmns_send(KDEF0, string); cmns_send(KURT0, "\n\n");
+}

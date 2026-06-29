@@ -113,11 +113,12 @@ FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
 
 # The runtime & commun components (privileged)
 
-RTCB_P			=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0_r_mc.c
+RTCB_P			=
+RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
+RTCB_P			+=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0_r_mc.c
 RTCB_P			+=												$(PATH_VARI)/Runtime/init.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/exce.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/cmns.c
-RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
 
 # The uKernel components (privileged)
 

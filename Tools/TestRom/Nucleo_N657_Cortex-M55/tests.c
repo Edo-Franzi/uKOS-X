@@ -70,22 +70,29 @@
  */
 
 #include	"tests.h"
+#include	"coreDump.c_inc"
 
 			void	(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 			void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 volatile	bool	vPriv_insideException[KNB_CORES] = MCSET(false);
 
+#if 0
 [[noreturn]]
 void	model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp) {
+
+	LED_RED_ON;
 
 	UNUSED(lr);
 	UNUSED(msp);
 
 	while (true) { ; }
 }
+#endif
 
 [[noreturn]]
 void	model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp) {
+
+	LED_RED_ON;
 
 	UNUSED(lr);
 	UNUSED(msp);

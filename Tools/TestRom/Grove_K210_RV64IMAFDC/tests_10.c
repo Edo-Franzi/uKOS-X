@@ -148,18 +148,22 @@ void	local_process(uint32_t core, uint64_t parameter, uint64_t *threshold, volat
 	LED_RED_2_TOGGLE;
 
 	msb = (uint32_t)(core);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msb);
+
 	cmns_send(KURT0, "Core        0x"); cmns_send(KURT0, vString);
 
 	msb = (uint32_t)(*threshold);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msb);
+
 	cmns_send(KURT0, "  Threshold 0x"); cmns_send(KURT0, vString);
 
 	msb = (uint32_t)(parameter>>32);
 	lsb = (uint32_t)(parameter);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&msb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)msb);
+
 	cmns_send(KURT0, "  number    0x"); cmns_send(KURT0, vString);
-	debug_cnvtValInt32ToHexAscii(vString, (int32_t *)&lsb);
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, (uint32_t)lsb);
+
 	cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
 
 	newStack = (volatile uint64_t *)vKern_stackProc[core];

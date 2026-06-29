@@ -52,6 +52,7 @@
 */
 
 #include	"uKOS.h"
+#include	"cache.h"
 #include	"linker.h"
 
 // uKOS-X specific (see the module.h)
@@ -99,13 +100,6 @@ static			void	local_writeByte(uint8_t byte);
 static			void	local_waitingForFlagOn(uint32_t flag);
 static			void	local_waitingForFlagOff(uint32_t flag);
 static			void	local_wait_us(uint32_t us);
-static	inline	void	cache_D_Enable(void);
-static	inline	void	cache_D_Disable(void);
-static	inline	void	cache_D_Clean(void);
-static	inline	void	cache_D_Invalidate(void);
-static	inline	void	cache_I_Enable(void);
-static	inline	void	cache_I_Disable(void);
-static	inline	void	cache_I_Invalidate(void);
 
 /*
  * \brief init_init
@@ -345,7 +339,7 @@ static	void	local_GPIO_Configuration(void) {
 // PA15, IN,  50-MHz, Pull-down	--------	AF15
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
-	CNFGPIO(A,KIN,KIN,KIN,KIN,KAL,KAL,KIN,KIN,KOU,KIN,KIN,KIN,KIN,KIN,KIN,KIN,
+	CNFGPIO(A,KIN,KIN,KIN,KIN,KIN,KAL,KIN,KIN,KOU,KIN,KIN,KIN,KIN,KIN,KIN,KIN,
 			  K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,K50,
 			  KPD,KPD,KPD,KPD,KPU,KPU,KPD,KPD,KNO,KPD,KPD,KPD,KPD,KPD,KPD,KPD,
 			  A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,
@@ -911,5 +905,3 @@ static	void	local_wait_us(uint32_t us) {
 
 	for (time = 0; time < us; time++) { NOP; }
 }
-
-#include	"model_I_D_cache.c_inc"

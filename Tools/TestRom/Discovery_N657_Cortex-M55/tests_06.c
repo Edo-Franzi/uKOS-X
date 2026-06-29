@@ -1,0 +1,171 @@
+/*
+; tests_06.
+; =========
+
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Test of a SVC call.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#include	"tests.h"
+
+#if (defined(TEST_06_S))
+#define BLINK_PAUSE 500000
+
+extern		uintptr_t	*vVectors;
+static		char_t		vString[20];
+			uint32_t	vMessage;
+
+#define	MESSAGE(msg)	__asm volatile ("										\n \
+						ldr			r0,%0										\n \
+						push		{r0}										\n \
+						push		{r0}"										   \
+						:														   \
+						: "m" (msg)												   \
+						: "r0"													   \
+						);														   \
+						__asm volatile ("										\n \
+						svc			0											\n \
+						dmb														\n \
+						dsb														\n \
+						isb														\n \
+						mrs			r0,psp										\n \
+						add			r0,r0,#8									\n \
+						msr			psp,r0"										   \
+						:														   \
+						:														   \
+						: "r0"													   \
+						);
+
+// Prototypes
+
+static	void	local_handleSVCall(uint32_t message);
+static	void	local_process(uint32_t message);
+
+/*
+ * \brief test_06
+ *
+ * - Test of a SVC call
+ *
+ */
+void	test_06(void) {
+	volatile	uint32_t	message = 0;
+
+	vVectors[16 + SVCall_IRQn] = (uintptr_t)SVCall_C0_IRQHandler;
+	STRONG_BARRIER;
+	cache_D_Clean();
+	STRONG_BARRIER;
+
+	cmns_init();
+
+	while (true) {
+		cmns_wait(BLINK_PAUSE);
+		LED_RED_TOGGLE;
+
+		MESSAGE(message)
+		message++;
+	}
+}
+
+/*
+ * \brief SVCall_C0_IRQHandler
+ *
+ * - Change the context f(message)
+ * - Pure naked: only asm statements (required by clang)
+ * - The message is extracted from the stack and passed via r0
+ *   to local_handleSVCall
+ *
+ */
+[[gnu::naked]]
+void	SVCall_C0_IRQHandler(void) {
+
+	__asm volatile ("							\n \
+	cpsid		i								\n \
+	tst			lr,#0x4							\n \
+	ite 		eq								\n \
+	mrseq		r0,msp							\n \
+	mrsne		r0,psp							\n \
+	add			r1,r0,#(32+4)					\n \
+	tst			lr,#0x10						\n \
+	it 			eq								\n \
+	addeq		r1,r0,#(32+68+4)				\n \
+	ldr			r0,[r1]							\n \
+	push 		{lr}							\n \
+	bl			local_handleSVCall				\n \
+	pop			{lr}							\n \
+	cpsie		i								\n \
+	dmb											\n \
+	dsb											\n \
+	isb											\n \
+	bx			lr"								   \
+	);
+}
+
+/*
+ * \brief local_handleSVCall
+ *
+ * - Process the SVC call (non-naked wrapper)
+ *
+ */
+[[gnu::noinline, gnu::used]]
+static	void	local_handleSVCall(uint32_t message) {
+
+	vMessage = message;
+	local_process(vMessage);
+}
+
+/*
+ * \brief local_process
+ *
+ * - Blink the GREEN Led
+ *
+ */
+[[gnu::noinline]]
+static	void	local_process(uint32_t message) {
+
+	LED_GREEN_TOGGLE;
+
+	(void)snprintf(vString, sizeof(vString), "%08"PRIX32, message);
+	cmns_send(KURT0, "Message 0x"); cmns_send(KURT0, vString); cmns_send(KURT0, "\n");
+}
+#endif

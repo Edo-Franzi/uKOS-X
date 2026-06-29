@@ -50,14 +50,15 @@
 #include	"tests.h"
 
 #if (defined(TEST_08_S))
+#define BLINK_PAUSE 100000
 
-#define	KTTIMESAMPLING	((float64_t)(0.5))										// 500-ms
+#define	KTTIMESAMPLING	((float64_t)(0.1))										// 100-ms
 #define KPSCT2			((KFREQUENCY_TIM / (KFREQUENCY_1MHz)) - 1)				// Prescaler for 1'000'000-Hz
 #define KARRT2			((uint32_t)((KFREQUENCY_1MHz * KTTIMESAMPLING) - 1))	// Autoreload
 
 // Prototypes
 
-void	TIM2_C0_IRQHandler(void);
+void	local_TIM2_IRQHandler(void);
 
 /*
  * \brief test_08
@@ -68,31 +69,40 @@ void	TIM2_C0_IRQHandler(void);
 void	test_08(void) {
 
 	REG(RCC)->APB1LENR |= RCC_APB1LENR_TIM2EN;
+    (void)REG(RCC)->APB1LENR;
 	STRONG_BARRIER;
 
-	NVIC_SetPriority(TIM2_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
-	NVIC_EnableIRQ(TIM2_C0_IRQn);
+// Initialise the TIM2 to generate an interruption every 500-ms
 
-	REG(TIM2)->CR1  = 0;
+	REG(TIM2)->CR1 &= ~TIM2_CR1_CEN;
 	REG(TIM2)->PSC  = KPSCT2;
 	REG(TIM2)->ARR  = KARRT2;
 	REG(TIM2)->CNT  = 0;
 	REG(TIM2)->DIER = TIM2_DIER_UIE;
-	REG(TIM2)->CR1  = TIM2_CR1_CEN;
+	REG(TIM2)->CR1 |= TIM2_CR1_CEN;
+
+	INTERRUPT_VECTOR(TIM2_C0_IRQn, local_TIM2_IRQHandler);
+	NVIC_ClearPendingIRQ(TIM2_C0_IRQn);
+	NVIC_SetPriority(TIM2_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	NVIC_EnableIRQ(TIM2_C0_IRQn);
+
+// Waiting for the TIM2 interruption
+
+	INTERRUPTION_ON_HARD;
 
 	while (true) {
-		cmns_wait(500000);
+		cmns_wait(BLINK_PAUSE);
 		LED_RED_TOGGLE;
 	}
 }
 
 /*
- * \brief TIM2_C0_IRQHandler
+ * \brief local_TIM2_IRQHandler
  *
  * - Blink the BLUE Led
  *
  */
-void	TIM2_C0_IRQHandler(void) {
+void	local_TIM2_IRQHandler(void) {
 
 // Acknowledge the TIM2 interruption
 // Read-back to ensure the write completes before the handler returns;

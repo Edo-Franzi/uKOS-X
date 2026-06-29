@@ -50,6 +50,8 @@
 #include	"tests.h"
 
 #if (defined(TEST_00_S))
+#define BLINK_PAUSE	1000000
+
 /*
  * \brief test_00
  *
@@ -88,7 +90,7 @@ void	test_00(void) {
 	while (true) {
 		LED_GREEN_TOGGLE;
 		ANALYSER_TOGGLE;
-		cmns_wait(100000);
+		cmns_wait(BLINK_PAUSE);
 	}
 }
 #endif
