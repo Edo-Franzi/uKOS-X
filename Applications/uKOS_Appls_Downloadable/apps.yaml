@@ -545,6 +545,7 @@ q_LVGL:
     - Nucleo_N657
 
   big:
+    - Discovery_N657
     - Discovery_V873
     - Firefly_H743
 

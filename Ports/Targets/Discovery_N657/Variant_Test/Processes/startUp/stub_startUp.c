@@ -6,7 +6,7 @@
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-07-02
 ; Modifs:
 ;
 ; Project:	uKOS-X
@@ -64,10 +64,12 @@ struct	boot {
 				uint8_t				oBaudrate;			// Baudrate
 		};
 
-static	const	char_t	*argv_cnsUrt0[] = { "console", "urt0" };
+static	const	char_t	*argv_cnsUrt0[] = { "console",	   "urt0"			};
+static	const	char_t	*argv_mpyUrt0[] = { "microPython", "urt0", "100000" };
 
 static	const	boot_t	aFunction[] = {
-							{ "console", KSYST, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 }
+							{ "console",	 KURT0, argv_cnsUrt0, 2u, 0x00u, KSERIAL_BAUDRATE_460800 },
+							{ "microPython", KURT0, argv_mpyUrt0, 3u, 0x01u, KSERIAL_BAUDRATE_460800 }
 						};
 
 #define	KDEF_COMM		KURT0
@@ -81,8 +83,9 @@ STRG_GLB_CONST(aStartUp_StrHelp[]) = "StartUp process\n"
 									 "StartUp switch action. The default settings are:\n"
 									 "460800-bit/s, 8-bits, 2-stop-bits, no parity.\n\n"
 
-									 "   SW1\n"
-									 "    0   KURT0, console (460800-bit/s).\n\n";
+									 "   SW3\n"
+									 "    0   KURT0, console     (460800-bit/s).\n"
+									 "    1   KURT0, microPython (460800-bit/s).\n\n";
 
 STRG_LOC_CONST(aStrLogo[]) = STRG_LOGO;
 
@@ -96,6 +99,7 @@ void	stub_startUp_launch(void) {
 			uint32_t		mode;
 			bool			error = false;
 			urtxCnf_t		configureURTx;
+			cdcxCnf_t		configureCDCx;
 			proc_t			*process;
 	const	uKOS_module_t	*module;
 	const	char_t			*identifier, *signature;
@@ -115,7 +119,9 @@ void	stub_startUp_launch(void) {
 	configureURTx.oParity   = KSERIAL_PARITY_NONE;
 	configureURTx.oBaudRate = aFunction[mode].oBaudrate;
 	configureURTx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
+	configureCDCx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
 	serial_configure(KURT0, &configureURTx);
+	serial_configure(KCDC0, &configureCDCx);
 
 // Bootstrap ...
 // -------------
@@ -135,7 +141,7 @@ void	stub_startUp_launch(void) {
 
 	(void)dprintf(KSYST, "%s", aStrLogo);
 	(void)dprintf(KSYST, "Signature:\n%s\n\n", signature);
-	(void)dprintf(KSYST, "%ssw = %"PRIX32"\n\n", identifier, mode);
+	(void)dprintf(KSYST, "%ssw = %"PRIu32"\n\n", identifier, mode);
 	kern_suspendProcess(500u);
 
 	for (i = 0u; i < (uint8_t)KNB_FUNCTIONS; i++) {

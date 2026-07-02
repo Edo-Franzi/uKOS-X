@@ -84,16 +84,33 @@ MODULE(
 // Runtime specific
 // ================
 
+// For connecting the LTDC to the AXI graphic frame buffer
+
+extern	uint32_t					linker_stLCD_F_BUFFER[];
+extern	uint32_t					linker_lnLCD_F_BUFFER[];
+#define	FB_ADDR						((uint32_t)linker_stLCD_F_BUFFER)
+#define	FB_SIZE						((uint32_t)linker_lnLCD_F_BUFFER)
+#define	FB_END						(FB_ADDR + FB_SIZE - 1u)
+
+// Connect the physical device to the logical manager
+
+#undef	APSRAM_READ_REGISTER
+#define	APSRAM_WRITE_REGISTER
+#define	XSPI_UNIT					REG(XSPI1)
+#define	xspi_apsram_init			model_xspi_apsram_init
+
 // Prototypes
 
 static			void	local_StackLimit_Configuration(void);
 static			void	local_Boot_thirdStageBoot(void);
 static			void	local_PWR_Configuration(void);
+static			void	local_GPIO_Compensation(void);
 static			void	local_GPIO_Configuration(void);
 static			void	local_RCC_Configuration(void);
 static			void	local_MPU_Configuration(void);
 static			void	local_FPE_Configuration(void);
 static			void	local_USB_Configuration(void);
+static			void	local_Protection_Configuration(void);
 static			void	local_MCO2_Configuration(void);
 static			void	local_CACHE_Enable(void);
 static			void	local_write_TCPP0203(uint8_t addresse, uint8_t value);
@@ -102,14 +119,6 @@ static			void	local_waitingForFlagOn(uint32_t flag);
 static			void	local_waitingForFlagOff(uint32_t flag);
 static			void	local_wait_us(uint32_t us);
 extern			void	model_xspi_apsram_init(void);
-
-// Connect the physical device to the logical manager
-// --------------------------------------------------
-
-#undef	APSRAM_READ_REGISTER
-#define	APSRAM_WRITE_REGISTER
-#define	XSPI_UNIT				REG(XSPI1)
-#define	xspi_apsram_init		model_xspi_apsram_init
 
 /*
  * \brief init_init
@@ -126,11 +135,13 @@ void	init_init(void) {
 	local_Boot_thirdStageBoot();
 	local_StackLimit_Configuration();
 	local_PWR_Configuration();
+	local_GPIO_Compensation();
 	local_GPIO_Configuration();
 	local_RCC_Configuration();
 	local_MPU_Configuration();
 	local_FPE_Configuration();
 	local_USB_Configuration();
+	local_Protection_Configuration();
 	local_MCO2_Configuration();
 	local_CACHE_Enable();
 
@@ -211,6 +222,31 @@ static	void	local_FPE_Configuration(void) {
 }
 
 /*
+ * \brief local_GPIO_Compensation
+ *
+ * - GPIO compensation
+ *
+ */
+static	void	local_GPIO_Compensation(void) {
+
+	REG(RCC)->APB4HENR |= RCC_APB4HENR_SYSCFGEN;
+	STRONG_BARRIER;
+
+	REG(SYSCFG)->VDDIO1CCCR |= SYSCFG_VDDIO1CCCR_EN;
+	REG(SYSCFG)->VDDIO2CCCR |= SYSCFG_VDDIO2CCCR_EN;
+	REG(SYSCFG)->VDDIO3CCCR |= SYSCFG_VDDIO3CCCR_EN;
+	REG(SYSCFG)->VDDIO4CCCR |= SYSCFG_VDDIO4CCCR_EN;
+	REG(SYSCFG)->VDDIOCCCR  |= SYSCFG_VDDIOCCCR_EN;
+	STRONG_BARRIER;
+
+	while ((REG(SYSCFG)->VDDIO1CCSR & SYSCFG_VDDIO1CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIO2CCSR & SYSCFG_VDDIO2CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIO3CCSR & SYSCFG_VDDIO3CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIO4CCSR & SYSCFG_VDDIO4CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIOCCSR  & SYSCFG_VDDIOCCSR_READY)  == 0u) { ; }
+}
+
+/*
  * \brief local_PWR_Configuration
  *
  * - PWR configuration
@@ -226,9 +262,9 @@ static	void	local_PWR_Configuration(void) {
 
 	REG(PWR)->SVMCR3 |= PWR_SVMCR3_ASV;
 	(void)(REG(PWR)->SVMCR3);
-	REG(PWR)->SVMCR3 |= (PWR_SVMCR3_VDDIO2SV | PWR_SVMCR3_VDDIO2VRSEL);
+	REG(PWR)->SVMCR3 |= (PWR_SVMCR3_VDDIO2SV);
 	(void)(REG(PWR)->SVMCR3);
-	REG(PWR)->SVMCR3 |= (PWR_SVMCR3_VDDIO3SV | PWR_SVMCR3_VDDIO3VRSEL);
+	REG(PWR)->SVMCR3 |= (PWR_SVMCR3_VDDIO3SV);
 	(void)(REG(PWR)->SVMCR3);
 	REG(PWR)->SVMCR1 |= PWR_SVMCR1_VDDIO4SV;
 	(void)(REG(PWR)->SVMCR1);
@@ -319,6 +355,69 @@ static	void	local_USB_Configuration(void) {
 }
 
 /*
+ * \brief local_Protection_Configuration
+ *
+ * - Disable the bus protections
+ *   This to allow the connection between the LTDC to the AXI bus
+ *
+ */
+#define RISAF_REG_CFGR_BREN				(1u<<0)
+#define RISAF_REG_CFGR_SEC				(1u<<8)
+#define RISAF_REG_CIDCFGR_RDENC_ALL		(0xFFu<<0)
+#define RISAF_REG_CIDCFGR_WRENC_ALL		(0xFFu<<16)
+#define RIMC_ATTR_MCID_1				(1u<<4)
+#define RIMC_ATTR_MSEC					(1u<<8)
+#define RIMC_ATTR_MPRIV					(1u<<9)
+#define	RIMC_ATTR_SEC_CID1_PRIV			(RIMC_ATTR_MSEC | RIMC_ATTR_MPRIV | RIMC_ATTR_MCID_1)
+
+static	void	local_Protection_Configuration(void) {
+
+	REG(RCC)->AHB3ENR	|= RCC_AHB3ENR_RIFSCEN;
+	REG(RCC)->AHB3LPENR	|= RCC_AHB3LPENR_RIFSCLPEN;
+	STRONG_BARRIER;
+
+// Graphic Frame buffer region
+
+	REG(RISAF)->REG1_CFGR	= 0u;
+	REG(RISAF)->REG1_STARTR	= FB_ADDR;
+	REG(RISAF)->REG1_ENDR	= FB_END;
+
+// CID0..CID7 allow Reads/Writes
+
+	REG(RISAF)->REG1_CIDCFGR = RISAF_REG_CIDCFGR_RDENC_ALL | RISAF_REG_CIDCFGR_WRENC_ALL;
+
+	REG(RISAF)->REG1_ACFGR	 = 0u;
+	REG(RISAF)->REG1_ASTARTR = 0u;
+	REG(RISAF)->REG1_AENDR	 = 0u;
+	REG(RISAF)->REG1_ANESTR	 = 0u;
+
+	REG(RISAF)->REG1_BCFGR	 = 0u;
+	REG(RISAF)->REG1_BSTARTR = 0u;
+	REG(RISAF)->REG1_BENDR	 = 0u;
+	REG(RISAF)->REG1_BNESTR	 = 0u;
+
+	REG(RISAF)->IACR		 = 0xFFFFFFFFu;
+
+// BREN + SEC, sans PRIVC
+
+	REG(RISAF)->REG1_CFGR = RISAF_REG_CFGR_BREN | RISAF_REG_CFGR_SEC;
+	STRONG_BARRIER;
+
+// RISUP 102/103/104: LTDC_CMN, LTDC_L1, LTDC_L2
+
+	REG(RIFSC)->RISC_SECCFGR3  |= 0x000001C0u;
+	REG(RIFSC)->RISC_PRIVCFGR3 |= 0x000001C0u;
+
+// Master LTDC1 / LTDC_L1 / LTDC_L2
+// Important point: The LTDC master needs to have the same
+// memory attributes than the periphs
+
+	REG(RIFSC)->RIMC_ATTR10 = RIMC_ATTR_SEC_CID1_PRIV;
+	REG(RIFSC)->RIMC_ATTR11 = RIMC_ATTR_SEC_CID1_PRIV;
+	STRONG_BARRIER;
+}
+
+/*
  * \brief local_GPIO_Configuration
  *
  * - GPIO configuration
@@ -344,27 +443,27 @@ static	void	local_GPIO_Configuration(void) {
 // Init all the GPIO A, B, C, D, E, F, G, H, I, J
 
 // PA00, AL,  99-MHz, Push-pull	RGB.G3		AF14
-// PA01, AL,  99-MHz, Push-pull	RGB.G2		AF15
-// PA02, AL,  99-MHz, Push-pull	RGB.B7		AF15
+// PA01, AL,  99-MHz, Push-pull	RGB.G2		AF14	AF15, but Cube initialise AF14
+// PA02, AL,  99-MHz, Push-pull	RGB.B7		AF14	AF15, but Cube initialise AF14
 // PA03, IN,  50-MHz, Pull-up	--------	AF15
 // PA04, OU,  50-MHz, Pull-down	GPIO		AF15	E TCPP03
 // PA05, IN,  50-MHz, Pull-up	--------	AF15
 // PA06, IN,  50-MHz, Pull-up	--------	AF15
-// PA07, AL,  99-MHz, Push-pull	RGB.B1		AF15
-// PA08, AL,  99-MHz, Push-pull	RGB.B6		AF15
+// PA07, AL,  99-MHz, Push-pull	RGB.B1		AF15	AF15, but Cube initialise AF14
+// PA08, AL,  99-MHz, Push-pull	RGB.B6		AF14	AF15, but Cube initialise AF14
 // PA09, IN,  50-MHz, Pull-up	--------	AF15
 // PA10, IN,  50-MHz, Pull-up	--------	AF15
 // PA11, IN,  50-MHz, Pull-up	--------	AF15
 // PA12, IN,  50-MHz, Pull-up	--------	AF15
 // PA13, AL,  50-MHz, Pull-up 	TMS			AF00
 // PA14, AL,  50-MHz, Pull-down TCK			AF00
-// PA15, AL,  99-MHz, Push-pull	RGB.R5		AF15
+// PA15, AL,  99-MHz, Push-pull	RGB.R5		AF14	AF15, but Cube initialise AF14
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
 	CNFGPIO(A,KAL,KAL,KAL,KIN,KIN,KIN,KIN,KAL,KAL,KIN,KIN,KOU,KIN,KAL,KAL,KAL,
 			  K99,K50,K50,K50,K50,K50,K50,K99,K99,K50,K50,K50,K50,K99,K99,K99,
 			  KNO,KPU,KPU,KPU,KPU,KPU,KPU,KNO,KNO,KPU,KPU,KNO,KPU,KNO,KNO,KNO,
-			  A15,A00,A00,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A15,A14,
+			  A14,A00,A00,A15,A15,A15,A15,A14,A14,A15,A15,A15,A15,A14,A14,A14,
 			  KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
 			  0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u);
 
@@ -506,17 +605,17 @@ static	void	local_GPIO_Configuration(void) {
 // PG10, OU,  50-MHz, Open-D	GPIO		AF15	Led 2
 // PG11, AL,  99-MHz, Push-pull	RGB.R6		AF14
 // PG12, AL,  99-MHz, Push-pull	RGB.G0		AF14
-// PG13, AL,  99-MHz, Push-pull	LCD_DE		AF14
+// PG13, OU,  99-MHz, Push-pull	LCD_DE		AF15	Force 1 as described n the cube
 // PG14, IN,  50-MHz, Pull-down	--------	AF15
 // PG15, AL,  99-MHz, Push-pull	RGB.B0		AF14
 
 //			   15  14  13  12  11  10   9   8   7   6   5   4   3   2   1   0
-	CNFGPIO(G,KAL,KIN,KAL,KAL,KAL,KOU,KIN,KAL,KIN,KAL,KIN,KIN,KIN,KIN,KAL,KAL,
+	CNFGPIO(G,KAL,KIN,KOU,KAL,KAL,KOU,KIN,KAL,KIN,KAL,KIN,KIN,KIN,KIN,KAL,KAL,
 			  K99,K50,K99,K99,K99,K50,K50,K99,K50,K99,K50,K50,K50,K50,K99,K99,
 			  KNO,KPD,KNO,KNO,KNO,KNO,KPD,KNO,KPD,KNO,KPD,KPD,KPD,KPD,KNO,KNO,
-			  A14,A15,A14,A14,A14,A15,A15,A14,A15,A14,A15,A15,A15,A15,A14,A14,
+			  A14,A15,A15,A14,A14,A15,A15,A14,A15,A14,A15,A15,A15,A15,A14,A14,
 			  KPP,KPP,KPP,KPP,KPP,KOD,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,KPP,
-			  0u, 0u, 0u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
+			  0u, 0u, 1u, 0u, 0u, 1u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u);
 
 // PH00, IN,  50-MHz, Pull-down	--------	AF15
 // PH01, IN,  50-MHz, Pull-down	--------	AF15
@@ -815,12 +914,12 @@ static	void	local_RCC_Configuration(void) {
 
 // System clock (IC2 mux)
 
-	REG(RCC)->IC2CFGR = (3u * RCC_IC2CFGR_IC2SEL_0)				// PLL4
-					  | ((1u - 1u) * RCC_IC2CFGR_IC2INT_0);		// IC2 = PLL4 / 1, ~400_MHz
+	REG(RCC)->IC2CFGR = (0u * RCC_IC2CFGR_IC2SEL_0)				// PLL1
+					  | ((2u - 1u) * RCC_IC2CFGR_IC2INT_0);		// IC2 = PLL1 / 2, ~400_MHz
 	STRONG_BARRIER;												//
 	REG(RCC)->DIVENR |= RCC_DIVENR_IC2EN;						//
 	(void)(REG(RCC)->DIVENR);									//
-
+	
 // System clock (IC15 mux) (for MCO2)
 
 	REG(RCC)->IC15CFGR = (0u * RCC_IC15CFGR_IC15SEL_0)			// PLL1
@@ -900,14 +999,14 @@ static	void	local_MPU_Configuration(void) {
 	SET_MPU8_REGION(0u,	ST_RAM_INT_1,		EN_RAM_INT_1,		KMPU_EXECUTABLE,		KMPU_R_ALL,  0u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(1u,	ST_RAM_INT_2_OS,	EN_RAM_INT_2_OS,	KMPU_EXECUTABLE,		KMPU_RW_PRI, 1u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(2u,	ST_RAM_INT_2,		EN_RAM_INT_2,		KMPU_EXECUTABLE,		KMPU_RW_ALL, 1u, KMPU_NOT_SHAREABLE);
-	SET_MPU8_REGION(3u,	ST_RAM_INT_3,		EN_RAM_INT_3,		KMPU_EXECUTABLE,		KMPU_RW_ALL, 1u, KMPU_INNER_SHAREABLE);
+	SET_MPU8_REGION(3u,	ST_RAM_INT_3,		EN_RAM_INT_3,		KMPU_NOT_EXECUTABLE,	KMPU_RW_ALL, 2u, KMPU_INNER_SHAREABLE);
 	SET_MPU8_REGION(4u,	ST_PERIPH_SOC,		EN_PERIPH_SOC,		KMPU_NOT_EXECUTABLE,	KMPU_RW_PRI, 3u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(5u,	ST_PERIPH_CORE,		EN_PERIPH_CORE,		KMPU_NOT_EXECUTABLE,	KMPU_RW_PRI, 3u, KMPU_NOT_SHAREABLE);
 
 	#else
 	SET_MPU8_REGION(0u,	ST_RAM_INT_1,		EN_RAM_INT_1,		KMPU_EXECUTABLE,		KMPU_R_ALL,  0u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(1u,	ST_RAM_INT_2,		EN_RAM_INT_2,		KMPU_EXECUTABLE,		KMPU_RW_ALL, 1u, KMPU_NOT_SHAREABLE);
-	SET_MPU8_REGION(2u,	ST_RAM_INT_3,		EN_RAM_INT_3,		KMPU_EXECUTABLE,		KMPU_RW_ALL, 1u, KMPU_INNER_SHAREABLE);
+	SET_MPU8_REGION(2u,	ST_RAM_INT_3,		EN_RAM_INT_3,		KMPU_NOT_EXECUTABLE,	KMPU_RW_ALL, 2u, KMPU_INNER_SHAREABLE);
 	#endif
 
 }
