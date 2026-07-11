@@ -75,18 +75,18 @@ INCLUDE		STM32N657xD.ld
 /* Mapping:													*/
 /*															*/
 /* RAM2:	stPrgmCode	(Boot)	0x34100400 (400 signature)	*/
-/*			64K												*/
+/*			64K	(just for the first boot)					*/
 /* RAM1:	stPrgmCode	(Appl)	0x34000400 (400 signature)	*/
-/*			(1024K - 1K)									*/
-/* RAM2-6:	stPrgmData			0x34100000					*/
+/*			(1800K - 1K)									*/
+/* RAM2-6:	stPrgmData			0x341C2000					*/
 /*			256K											*/
-/*			stUMemo				0x34140000					*/
-/*			768K											*/
-/*			stHeap				0x341C0000					*/
+/*			stHeap				0x34202000					*/
 /*			256K											*/
-/*			Frame buffer		0x34240000					*/
-/*			(1536K)				0x343C0000					*/
+/*			Frame buffer		0x34242000					*/
+/*			(1500K)				0x343BFFFF					*/
 /*			enough: 800x480x4	1500K						*/
+/* APSRAM:	stUMemo				0x90000000					*/
+/*			32M												*/
 
 /* IMPORTANT:												*/
 /* all the stacks have to be maintained aligned				*/
@@ -98,43 +98,43 @@ linker_sizeStackFirst_C0	= (8K);																	/* Length of the First stack  	
 /* IMPORTANT:												*/
 /* External memory, User (download application) and shared	*/
 
-linker_stEXRAM				= 0;																	/* 0x00000000: EXRAM, start of the external memory			*/
-linker_lnEXRAM				= (0);																	/* Length of the external memory	  						*/
+linker_stEXRAM				= 0x90000000;															/* 0x90000000: EXRAM, start of the external memory			*/
+linker_lnEXRAM				= (32 * 1024K);															/* Length of the external memory	  						*/
 
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
 
 linker_stPrgmCode			= (stm_stAXISRAM1 + 1K);												/* 0x34000400: PrgmCode, start of the Flash					*/
-linker_lnPrgmCode			= (1024K - 1K);															/* Length of the the Flash									*/
+linker_lnPrgmCode			= (1800K - 1K);															/* Length of the the Flash									*/
 
-linker_stPrgmData			= stm_stAXISRAM2;														/* 0x34100000: PrgmData, start of the RAM					*/
+linker_stPrgmData			= (linker_stPrgmCode + linker_lnPrgmCode);								/* 0x341C2000: PrgmData, start of the RAM					*/
 linker_lnPrgmData			= (256K);																/* Length of the RAM										*/
 
-linker_stUMemo				= (linker_stPrgmData + linker_lnPrgmData);								/* 0x34140000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (768K);																/* Length of the user memory	  							*/
+linker_stUMemo				= 0x90000000;															/* 0x90000000: UMemo, start of the user memory 				*/
+linker_lnUMemo				= (32 * 1024K);															/* Length of the user memory	  							*/
 
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
 
-linker_stHeap				= (linker_stUMemo + linker_lnUMemo);									/* 0x34200000: start of the heap							*/
+linker_stHeap				= (linker_stPrgmData + linker_lnPrgmData);								/* 0x34202000: start of the heap							*/
 linker_lnHeap				= (256K);																/* Length of the heap										*/
 
-linker_stLCD_F_BUFFER		= (linker_stHeap + linker_lnHeap);										/* 0x34240000: Privileged/User LCD Frame Buffer 			*/
-linker_lnLCD_F_BUFFER		= (1536K);																/* Length of the RAM										*/
+linker_stLCD_F_BUFFER		= (linker_stHeap + linker_lnHeap);										/* 0x34242000: Privileged/User LCD Frame Buffer 			*/
+linker_lnLCD_F_BUFFER		= (1500K);																/* Length of the RAM										*/
 
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
 /* for the arm_v8 MPU the regions have to be 32-B aligned	*/
 
 linker_ST_RAM_INT_1			= (stm_stAXISRAM1);														/* 0x34000000: Privileged/User RAM							*/
-linker_EN_RAM_INT_1			= (stm_stAXISRAM1 + stm_lnAXISRAM1 - 1);								/* 0x340FFFFF: 1-M											*/
+linker_EN_RAM_INT_1			= (stm_stAXISRAM1 + stm_lnAXISRAM1 - 1);								/* 0x341C1FFF: 1800-K										*/
 
-linker_ST_RAM_INT_2			= (stm_stAXISRAM2);														/* 0x34100000: Privileged/User RAM							*/
-linker_EN_RAM_INT_2			= (stm_stAXISRAM2 + 256K + 768K + 256K - 1);							/* 0x3423FFFF: 1280-K										*/
+linker_ST_RAM_INT_2			= (linker_stPrgmData);													/* 0x341C2000: Privileged/User RAM							*/
+linker_EN_RAM_INT_2			= (stm_stAXISRAM2 + 256K + 256K - 1);									/* 0x34241FFF: 512-K										*/
 
-linker_ST_RAM_INT_3			= linker_stLCD_F_BUFFER;												/* 0x34240000: Privileged/User RAM							*/
-linker_EN_RAM_INT_3			= (linker_stLCD_F_BUFFER + linker_lnLCD_F_BUFFER - 1);					/* 0x343BFFFF: 1536-K										*/
+linker_ST_RAM_INT_3			= linker_stLCD_F_BUFFER;												/* 0x34242000: Privileged/User RAM							*/
+linker_EN_RAM_INT_3			= (linker_stLCD_F_BUFFER + 1500K - 1);									/* 0x343BFFFF: 1500-K										*/
 
 MEMORY {
 	prgm_code (rwx)	: ORIGIN = linker_stPrgmCode, LENGTH = linker_lnPrgmCode

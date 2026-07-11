@@ -6,11 +6,12 @@
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2026-03-03
+; Author:	Edo. Franzi		The 2026-07-08
 ; Modifs:
 ;
 ; Project:	uKOS-X
 ; Goal:		Model for controlling the "APSRam" device via an XSPI.
+;			APS256XXN-OBx9 OPI/HPI Xccela
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -49,7 +50,6 @@
 
 // Prototypes
 
-static	void	local_APSRamReset(void);
 static	void	local_APSRamInitialise(void);
 static	void	local_APSRamMappedMode(void);
 
@@ -71,78 +71,12 @@ void	model_xspi_apsram_init(void) {
 
 	cb_enable();
 
-	local_APSRamReset();
 	local_APSRamInitialise();
 	local_APSRamMappedMode();
 }
 
 // Local routines
 // ==============
-
-/*
- * \brief local_APSRamReset
- *
- * - APSRam reset
- *
- */
-static	void	local_APSRamReset(void) {
-
-// Enable the XSPI1 and waiting for not busy
-
-	XSPI_UNIT->CR |= XSPI_CR_EN;
-	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
-
-// Indirect write mode
-// NCS2 active
-// XSPI1 enable
-
-	XSPI_UNIT->CR = (0u * XSPI_CR_FMODE_0) | XSPI_CR_CSSEL | XSPI_CR_EN;
-
-// Nb byte of data to write
-// Nb dummy cycles
-// Frame Format
-// Clear the flags
-
-	XSPI_UNIT->DLR = (1u - 1u);
-	XSPI_UNIT->TCR = (0u * XSPI_TCR_DCYC_0);
-
-	XSPI_UNIT->CCR  = XSPI_CCR_DQSE
-					| XSPI_CCR_DDTR  |							  (4u * XSPI_CCR_DMODE_0)
-					| XSPI_CCR_ADDTR | (3u * XSPI_CCR_ADSIZE_0) | (4u * XSPI_CCR_ADMODE_0)
-					| XSPI_CCR_IDTR  | (1u * XSPI_CCR_ISIZE_0)	| (4u * XSPI_CCR_IMODE_0);
-
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
-
-// Standard type
-// CSH of 5 clocks
-
-	XSPI_UNIT->DCR1 = (2u * XSPI_DCR1_MTYP_0)
-					| (KAPS_DEV_SIZE_VALUE * XSPI_DCR1_DEVSIZE_0)
-					| (5u * XSPI_DCR1_CSHT_0);
-
-// Prescaler = 200-MHz / 6 = 33-MHz
-
-	XSPI_UNIT->DCR2 = (6u - 1u);
-
-// Reset command
-// Address = 0
-
-	XSPI_UNIT->IR = KAPS_OP_GLOBAL_RESET<<8u;
-	XSPI_UNIT->AR = 0u;
-
-// Waiting for not fifo threshold
-// Send 0u to generate 4 clock cycles
-
-	while ((XSPI_UNIT->SR & XSPI_SR_FTF) == 0u) { ; }
-	XSPI_UNIT->DR = 0u;
-
-// Waiting for Transfer complete
-
-	while ((XSPI_UNIT->SR & XSPI_SR_TCF)  == 0u) { ; }
-	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
-
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
-}
 
 /*
  * \brief local_APSRamInitialise
@@ -152,42 +86,53 @@ static	void	local_APSRamReset(void) {
  */
 static	void	local_APSRamInitialise(void) {
 
-// APSmemory type
-// xx-MBytes = 2^(y + 1)
+// Disable the XSPI1 and waiting for not busy
 
-	XSPI_UNIT->DCR1 = (6u * XSPI_DCR1_MTYP_0)
-					| (KAPS_DEV_SIZE_VALUE * XSPI_DCR1_DEVSIZE_0)
-					| (5u * XSPI_DCR1_CSHT_0);
+	XSPI_UNIT->CR = 0u;
+	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
 
-// Prescaler = 200-MHz / 6 = 33-MHz
-
-	XSPI_UNIT->DCR2 = (6u - 1u);
-
-// Chip select boundary: Set to memory page size
-// Bound of 204Byte = 2^(11)
-// Refresh 96
-
-	XSPI_UNIT->DCR3 = (11u * XSPI_DCR3_CSBOUND_0);
-	XSPI_UNIT->DCR4 = (96u * XSPI_DCR4_REFRESH_0);
-
-// Nb dummy cycles
-// Frame Format
 // Clear the flags
 
-	XSPI_UNIT->TCR  = (4u * XSPI_TCR_DCYC_0);
-	XSPI_UNIT->WTCR = (4u * XSPI_WTCR_DCYC_0);
+	XSPI_UNIT->FCR = XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
 
-	XSPI_UNIT->CCR  = XSPI_CCR_DQSE
-					| XSPI_CCR_DDTR   |								(4u * XSPI_CCR_DMODE_0)
-					| XSPI_CCR_ADDTR  | (3u * XSPI_CCR_ADSIZE_0)  | (4u * XSPI_CCR_ADMODE_0)
-					| XSPI_CCR_IDTR   | (1u * XSPI_CCR_ISIZE_0)   | (4u * XSPI_CCR_IMODE_0);
+// AP memory of 256-MBytes, CS high time 4 clocks
 
-	XSPI_UNIT->WCCR = XSPI_WCCR_DQSE
-					| XSPI_WCCR_DDTR  |								(4u * XSPI_WCCR_DMODE_0)
-					| XSPI_WCCR_ADDTR | (3u * XSPI_WCCR_ADSIZE_0) | (4u * XSPI_WCCR_ADMODE_0)
-					| XSPI_WCCR_IDTR  | (1u * XSPI_WCCR_ISIZE_0)  | (4u * XSPI_WCCR_IMODE_0);
+	XSPI_UNIT->DCR1 = (6u * XSPI_DCR1_MTYP_0)
+					| ((25u -1u) * XSPI_DCR1_DEVSIZE_0)
+					| (4u * XSPI_DCR1_CSHT_0);
 
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+// Wrapper not supported, APSRam clock 200-MHz / 4 = 50-MHz
+
+	XSPI_UNIT->DCR2 = (0u * XSPI_DCR2_WRAPSIZE_0)
+					| ((4u - 1u) * XSPI_DCR2_PRESCALER_0);
+
+// Bounds of 2048-Bytes
+
+	XSPI_UNIT->DCR3 = (11u * XSPI_DCR3_CSBOUND_0)
+					| (0u * XSPI_DCR3_MAXTRAN_0);
+
+// Refresh: 4us @ 50-MHz
+// 4 x 50 = 200
+
+	XSPI_UNIT->DCR4 = (200u * XSPI_DCR4_REFRESH_0);
+
+// Waiting for calibration
+	
+	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
+
+	XSPI_UNIT->TCR  = (0u * XSPI_TCR_DCYC_0);
+	XSPI_UNIT->WTCR = (0u * XSPI_WTCR_DCYC_0);
+
+	XSPI_UNIT->CR = ((4u - 1u) * XSPI_CR_FTHRES_0)
+				  | XSPI_CR_EN;
+
+// Set the read latency for 7 to 14 (200-MHz)
+// Set the write latency to 7 (200-MHz)
+// Switch to x16 mode
+
+	local_APSRamWriteRegistar(0x00, 0x30);
+	local_APSRamWriteRegistar(0x04, 0x20);
+	local_APSRamWriteRegistar(0x08, 0x40);
 }
 
 /*
@@ -200,52 +145,46 @@ static	void	local_APSRamInitialise(void) {
 static	void	local_APSRamReadRegistar(uint8_t address, uint8_t *data) {
 	uint32_t	value;
 
+// Disable the XSPI1 and waiting for not busy
+
+	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
+	XSPI_UNIT->CR = 0u;
 	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
 
-// Indirect read mode
-// NCS2 active
-// XSPI1 enable
+// Clear the flags
 
-	XSPI_UNIT->CR = (1u * XSPI_CR_FMODE_0) | XSPI_CR_CSSEL | XSPI_CR_EN;
+	XSPI_UNIT->FCR = XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
 
 // Nb byte of data to read
 // Nb dummy cycles
 // Frame Format
-// Clear the flags
 
-	XSPI_UNIT->DLR  = (4u - 1u);
+	XSPI_UNIT->DLR  = 4u - 1u;
 	XSPI_UNIT->TCR  = (0u * XSPI_TCR_DCYC_0);
 	XSPI_UNIT->WTCR = (0u * XSPI_WTCR_DCYC_0);
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+
+	XSPI_UNIT->CCR	= XSPI_CCR_DQSE
+					| XSPI_CCR_DDTR								| (4u * XSPI_CCR_DMODE_0)
+					| XSPI_CCR_ADDTR | (3u * XSPI_CCR_ADSIZE_0) | (4u * XSPI_CCR_ADMODE_0)
+					| XSPI_CCR_IDTR  | (1u * XSPI_CCR_ISIZE_0)  | (4u * XSPI_CCR_IMODE_0);
+
+	XSPI_UNIT->CR = ((4u - 1u) * XSPI_CR_FTHRES_0)
+	              | (1u * XSPI_CR_FMODE_0)
+	              | XSPI_CR_EN;
 
 // Read register command
 // Address = register
 
 	XSPI_UNIT->IR = KAPS_OP_MR_READ<<8u;
-	XSPI_UNIT->AR = address;
+	XSPI_UNIT->AR = (uint32_t)address;
 
 // Waiting for Transfer complete
 
 	while ((XSPI_UNIT->SR & XSPI_SR_TCF) == 0u) { ; }
 	while ((XSPI_UNIT->SR & XSPI_SR_FTF) == 0u) { ; }
 
-// Read the register value
-
 	value = (uint32_t)XSPI_UNIT->DR;
-
-	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
-
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
-
-	switch (address) {
-		default:
-		case 0: { *data = (uint8_t)((value>>16u) & 0xFFu); break; }
-		case 1: { *data = (uint8_t)((value>>24u) & 0xFFu); break; }
-		case 2: { *data = (uint8_t)((value>>16u) & 0xFFu); break; }
-		case 3: { *data = (uint8_t)((value>>24u) & 0xFFu); break; }
-		case 4: { *data = (uint8_t)((value>>16u) & 0xFFu); break; }
-		case 8: { *data = (uint8_t)((value>>16u) & 0xFFu); break; }
-	}
+	*data = (uint8_t)(value & 0x000000FFu);
 }
 #endif
 
@@ -260,42 +199,45 @@ static	void	local_APSRamWriteRegistar(uint8_t address, uint8_t data) {
 
 	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
 
-// Indirect write mode
-// NCS2 active
-// XSPI1 enable
-
-	XSPI_UNIT->CR = (0u * XSPI_CR_FMODE_0) | XSPI_CR_CSSEL | XSPI_CR_EN;
+	XSPI_UNIT->CR = XSPI_CR_EN;
 
 // Nb byte of data to read
 // Nb dummy cycles
 // Frame Format
-// Clear the flags
 
 	XSPI_UNIT->DLR  = (1u - 1u);
 	XSPI_UNIT->TCR  = (0u * XSPI_TCR_DCYC_0);
 	XSPI_UNIT->WTCR = (0u * XSPI_WTCR_DCYC_0);
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+
+// Clear the flags
+
+	XSPI_UNIT->FCR = XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+
+	XSPI_UNIT->CCR	= XSPI_CCR_DQSE
+					| XSPI_CCR_DDTR								| (4u * XSPI_CCR_DMODE_0)
+					| XSPI_CCR_ADDTR | (3u * XSPI_CCR_ADSIZE_0) | (4u * XSPI_CCR_ADMODE_0)
+					| XSPI_CCR_IDTR  | (1u * XSPI_CCR_ISIZE_0)  | (4u * XSPI_CCR_IMODE_0);
 
 // Write register command
 // Address = register
 
-	XSPI_UNIT->IR = KAPS_OP_MR_WRITE<<8;
-	XSPI_UNIT->AR = address;
+	XSPI_UNIT->IR = KAPS_OP_MR_WRITE<<8u;
+	XSPI_UNIT->AR = (uint32_t)address;
 
 // Waiting for not fifo threshold
 
-	while ((XSPI_UNIT->SR & XSPI_SR_FTF) == 0u) { ; }
+	while ((XSPI_UNIT->SR & XSPI_SR_FTF)  == 0u) { ; }
 
 // Write the register
 
-	XSPI_UNIT->DR = data;
+	*((volatile uint8_t *)&XSPI_UNIT->DR) = data;
 
 // Waiting for Transfer complete
 
 	while ((XSPI_UNIT->SR & XSPI_SR_TCF)  == 0u) { ; }
 	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
 
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+	XSPI_UNIT->FCR = XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
 }
 #endif
 
@@ -308,69 +250,76 @@ static	void	local_APSRamWriteRegistar(uint8_t address, uint8_t data) {
  */
 static	void	local_APSRamMappedMode(void) {
 
+// Disable the XSPI1 and waiting for not busy
+
 	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
 	XSPI_UNIT->CR = 0u;
 	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
 
-// Set the read latency for 4 to 8 (109-MHz)
-// Set the write latency to 4 (109-MHz)
-// Switch to x16 mode
-
-	local_APSRamWriteRegistar(0x0, 0x24);
-	local_APSRamWriteRegistar(0x4, 0x80);
-	local_APSRamWriteRegistar(0x8, 0x40);
-
-	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
-
 // Clear the flags
 
-	XSPI_UNIT->FCR |= XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+	XSPI_UNIT->FCR = XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
 
-// APSRam memory mode
-// xx-MBytes = 2^(y + 1)
-// CSH of 4 clocks
+// AP memory of 256-MBytes, CS high time 4 clocks
 
 	XSPI_UNIT->DCR1 = (6u * XSPI_DCR1_MTYP_0)
-					| (KAPS_DEV_SIZE_VALUE * XSPI_DCR1_DEVSIZE_0)
+					| ((25u -1u) * XSPI_DCR1_DEVSIZE_0)
 					| (4u * XSPI_DCR1_CSHT_0);
 
-// Bound of 204Byte = 2^(11)
+// Wrapper not supported, APSRam clock 200-MHz / 4 = 50-MHz
 
-	XSPI_UNIT->DCR3 = (11u * XSPI_DCR3_CSBOUND_0);
+	XSPI_UNIT->DCR2 = (0u * XSPI_DCR2_WRAPSIZE_0)
+					| ((4u - 1u) * XSPI_DCR2_PRESCALER_0);
 
-// Prescaler = 200-MHz / 4 = 50-MHz
-// Refresh 396, Trefresh = (REFRESH+1)/f_xspi
-//              4-us     = (REFRESH+1) / 50-MHz, REFRESH = 201
+// Bounds of 2048-Bytes
 
-	XSPI_UNIT->DCR2 = (4u - 1u);
-	XSPI_UNIT->DCR4 = (201u * XSPI_DCR4_REFRESH_0);
+	XSPI_UNIT->DCR3 = (11u * XSPI_DCR3_CSBOUND_0)
+					| (0u * XSPI_DCR3_MAXTRAN_0);
 
-// Nb dummy cycles has to be -1 in respect to the latency value
+// Refresh: 4us @ 50-MHz
+// 4 x 50 = 200
 
+	XSPI_UNIT->DCR4 = (200u * XSPI_DCR4_REFRESH_0);
+
+// Waiting for calibration
+	
+	while ((XSPI_UNIT->SR & XSPI_SR_BUSY) != 0u) { ; }
+
+// Nb byte of data to read
+// 7 dummy cycles
+// Frame Format
+
+	XSPI_UNIT->DLR  = (2u - 1u);
 	XSPI_UNIT->TCR  = (7u * XSPI_TCR_DCYC_0);
-	XSPI_UNIT->WTCR = (3u * XSPI_WTCR_DCYC_0);
-
-// Nb byte of data to write
-
-	XSPI_UNIT->DLR = (2u - 1u);
+	XSPI_UNIT->WTCR = (6u * XSPI_WTCR_DCYC_0);
 
 // Linear Burst Read instruction
 // Linear Burst wite instruction
 
-	XSPI_UNIT->IR	= KAPS_OP_LIN_BURST_READ<<8  | KAPS_OP_LIN_BURST_READ;
-	XSPI_UNIT->WIR = KAPS_OP_LIN_BURST_WRITE<<8 | KAPS_OP_LIN_BURST_WRITE;
+	XSPI_UNIT->IR  = (KAPS_OP_LIN_BURST_READ<<8u)  | KAPS_OP_LIN_BURST_READ;
+	XSPI_UNIT->WIR = (KAPS_OP_LIN_BURST_WRITE<<8u) | KAPS_OP_LIN_BURST_WRITE;
 
 // Memory-mapped mode
 
-	XSPI_UNIT->CCR  = XSPI_CCR_DQSE
-					| XSPI_CCR_DDTR   |								(5u * XSPI_CCR_DMODE_0)
+	XSPI_UNIT->CCR	= XSPI_CCR_DQSE
+					| XSPI_CCR_DDTR								  | (5u * XSPI_CCR_DMODE_0)
 					| XSPI_CCR_ADDTR  | (3u * XSPI_CCR_ADSIZE_0)  | (4u * XSPI_CCR_ADMODE_0)
 					| XSPI_CCR_IDTR   | (1u * XSPI_CCR_ISIZE_0)   | (4u * XSPI_CCR_IMODE_0);
 
-	XSPI_UNIT->WCCR = XSPI_WCCR_DQSE
-					| XSPI_WCCR_DDTR  |								(5u * XSPI_WCCR_DMODE_0)
-					| XSPI_WCCR_ADDTR | (3u * XSPI_WCCR_ADSIZE_0) | (4u * XSPI_WCCR_ADMODE_0)
-					| XSPI_WCCR_IDTR  | (1u * XSPI_WCCR_ISIZE_0)  | (4u * XSPI_WCCR_IMODE_0);
+	XSPI_UNIT->WCCR	= XSPI_WCCR_DQSE
+					| XSPI_WCCR_DDTR							  | (5u * XSPI_WCCR_DMODE_0)
+					| XSPI_WCCR_ADDTR | (3u * XSPI_WCCR_ADSIZE_0) | (4u * XSPI_CCR_ADMODE_0)
+					| XSPI_WCCR_IDTR  | (1u * XSPI_WCCR_ISIZE_0)  | (4u * XSPI_CCR_IMODE_0);
 
-	XSPI_UNIT->CR = (3u * XSPI_CR_FMODE_0) | XSPI_CR_CSSEL | XSPI_CR_EN;
+	XSPI_UNIT->HLCR = 0x00000000u;
+
+// Clear the flags
+
+	XSPI_UNIT->FCR = XSPI_FCR_CTOF | XSPI_FCR_CSMF | XSPI_FCR_CTCF | XSPI_FCR_CTEF;
+
+	XSPI_UNIT->CR = ((4u - 1u) * XSPI_CR_FTHRES_0)
+				  | (3u * XSPI_CR_FMODE_0)
+				  | XSPI_CR_EN;
+
+	STRONG_BARRIER;
 }

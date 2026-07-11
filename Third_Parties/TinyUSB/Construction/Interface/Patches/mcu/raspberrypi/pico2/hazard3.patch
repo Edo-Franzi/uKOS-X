@@ -1,5 +1,5 @@
 --- a/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include/hardware/hazard3/instructions.h
 +++ b/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include/hardware/hazard3/instructions.h
 @@ -131,1 +131,1 @@
--#define __hazard3_bextm(nbits, rs1, rs2) (((rs1) >> ((shamt) & 0x1f)) & (0xffu >> (7 - (((nbits) - 1) & 0x7))))
+-#define __hazard3_bextmi(nbits, rs1, rs2) (((rs1) >> ((shamt) & 0x1f)) & (0xffu >> (7 - (((nbits) - 1) & 0x7))))
 +#define __hazard3_bextmi(nbits, rs1, shamt) (((rs1) >> ((shamt) & 0x1f)) & (0xffu >> (7 - (((nbits) - 1) & 0x7))))
