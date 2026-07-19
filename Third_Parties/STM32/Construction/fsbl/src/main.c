@@ -53,14 +53,50 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_XSPI2_Init(void);
 /* USER CODE BEGIN PFP */
-void Error_Handler(void);
 #ifndef NO_OTP_FUSE
 static int32_t OTP_Config(void);
-#endif /* NO_OTP_FUSE */
+#endif
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+#include "main.h"
+
+#define	NRST_MAGIC_ADDRESS	(0x34001004UL)
+#define	NRST_MAGIC_VALUE	(0x11223344UL)
+
+static	void	Apply_NRST_Workaround(void) {
+	volatile	uint32_t	*const	magic = (volatile uint32_t *)NRST_MAGIC_ADDRESS;
+
+	__HAL_RCC_SYSCFG_CLK_ENABLE();
+	__DSB();
+
+/* First pass */
+
+	if (*magic != NRST_MAGIC_VALUE) {
+		*magic = NRST_MAGIC_VALUE;
+		__DSB();
+
+		SET_BIT(SYSCFG->CM55RSTCR, SYSCFG_CM55RSTCR_CORE_RESET_TYPE);
+		(void)SYSCFG->CM55RSTCR;
+		__DSB();
+		__ISB();
+
+/* Software reset */
+
+		NVIC_SystemReset();
+
+		while (1) { __NOP(); }
+	}
+
+/* Second pass */
+
+	SET_BIT(SYSCFG->CM55RSTCR, SYSCFG_CM55RSTCR_CORE_RESET_TYPE);
+	(void)SYSCFG->CM55RSTCR;
+	 __DSB();
+	 __ISB();
+}
 
 /* USER CODE END 0 */
 
@@ -68,64 +104,66 @@ static int32_t OTP_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
-{
+int main(void) {
 
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
+	Apply_NRST_Workaround();
+	/* USER CODE END 1 */
 
-  /* USER CODE END 1 */
+	/* Enable the CPU Cache */
 
-  /* Enable the CPU Cache */
+	/* Enable I-Cache---------------------------------------------------------*/
+//	SCB_EnableICache();
 
-  /* Enable I-Cache---------------------------------------------------------*/
-//  SCB_EnableICache();
+	/* Enable D-Cache---------------------------------------------------------*/
+//	SCB_EnableDCache();
 
-  /* Enable D-Cache---------------------------------------------------------*/
-//  SCB_EnableDCache();
+	/* MCU Configuration--------------------------------------------------------*/
+	HAL_Init();
 
-  /* MCU Configuration--------------------------------------------------------*/
-  HAL_Init();
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE END Init */
 
-  /* USER CODE END Init */
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE BEGIN SysInit */
-#ifndef NO_OTP_FUSE
-  /* Set OTP fuses for XSPI IO pins speed optimization */
-  if(OTP_Config() != 0){
-    Error_Handler();
-  }
-#endif /* NO_OTP_FUSE */
-  /* USER CODE END SysInit */
+	#ifndef NO_OTP_FUSE
+	/* Set OTP fuses for XSPI IO pins speed optimization */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_XSPI2_Init();
-  /* USER CODE BEGIN 2 */
-  /* Initialise the serial memory */
-  MX_EXTMEM_Init();
+	if(OTP_Config() != 0){
+		Error_Handler();
+	}
+	#endif /* NO_OTP_FUSE */
+	/* USER CODE END SysInit */
 
-  BOOT_Application();
-  /* We should never get here as execution is now from user application */
-  /* USER CODE END 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();  
+	MX_XSPI2_Init();
+ 
+	/* USER CODE BEGIN 2 */
+	/* Initialise the serial memory */
+	MX_EXTMEM_Init();
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-     __NOP();
+	BOOT_Application();
+	/* USER CODE END 2 */
+
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	/* We should never get here as execution is now from user application */
+
+	while (1) { __NOP(); }
+
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+	/* USER CODE END 3 */
 }
+
 /* USER CODE BEGIN CLK 1 */
- /*         The system Clock is configured as follows :
+ /*
+  *         The system Clock is configured as follows :
   *            CPU Clock source               = IC1_CK
   *            System bus Clock source        = IC2_IC6_IC11_CK
   *            CPUCLK (sysa_ck) (Hz)          = 600000000
@@ -278,11 +316,7 @@ static void MX_XSPI2_Init(void)
   hxspi2.Init.FifoThresholdByte = 4;
   hxspi2.Init.MemoryMode = HAL_XSPI_SINGLE_MEM;
   hxspi2.Init.MemoryType = HAL_XSPI_MEMTYPE_MACRONIX;
-#ifdef BOARD_DISCOVERY_N657
-  hxspi2.Init.MemorySize = HAL_XSPI_SIZE_1GB;   /* MX66UW1G45G — 1 Gbit */
-#else
-  hxspi2.Init.MemorySize = HAL_XSPI_SIZE_512MB; /* MX25UM51245G — 512 Mbit */
-#endif
+  hxspi2.Init.MemorySize = HAL_XSPI_SIZE_1GB;
   hxspi2.Init.ChipSelectHighTimeCycle = 2;
   hxspi2.Init.FreeRunningClock = HAL_XSPI_FREERUNCLK_DISABLE;
   hxspi2.Init.ClockMode = HAL_XSPI_CLOCK_MODE_0;
@@ -306,14 +340,7 @@ static void MX_XSPI2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN XSPI2_Init 2 */
-#ifdef BOARD_DISCOVERY_N657
-  /* STM32CubeN6 FW.N6.1.3.0 deprecated Init.DelayHoldQuarterCycle: HAL_XSPI_Init no
-     longer programs the TCR.DHQC read-timing bit (the field set above is ignored).
-     ST's proven v1.1.0 reference FSBL sets DHQC, and the Discovery's MX66UW1G45G needs
-     that read-sampling hold to be read reliably. The silicon bit still exists, so set
-     it manually here to restore the reference behaviour. */
-  SET_BIT(hxspi2.Instance->TCR, XSPI_TCR_DHQC);
-#endif
+
   /* USER CODE END XSPI2_Init 2 */
 
 }
@@ -353,13 +380,15 @@ static int32_t OTP_Config(void)
 {
   #define BSEC_HW_CONFIG_ID        124U
   #define BSEC_HWS_HSLV_VDDIO3     (1U<<15)
+  #define BSEC_HWS_HSLV_VDDIO2     (1U<<16)
 
   uint32_t fuse_id, bit_mask, data;
   BSEC_HandleTypeDef sBsecHandler;
   int32_t retr = 0;
 
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
+  /* Enable BSEC & SYSCFG clocks to ensure BSEC data accesses */
   __HAL_RCC_BSEC_CLK_ENABLE();
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
 
   sBsecHandler.Instance = BSEC;
 
@@ -368,7 +397,7 @@ static int32_t OTP_Config(void)
   if (HAL_BSEC_OTP_Read(&sBsecHandler, fuse_id, &data) == HAL_OK)
   {
     /* Check if bit has already been set */
-    bit_mask = BSEC_HWS_HSLV_VDDIO3 ;
+    bit_mask = BSEC_HWS_HSLV_VDDIO3 | BSEC_HWS_HSLV_VDDIO2;
     if ((data & bit_mask) != bit_mask)
     {
       data |= bit_mask;
@@ -404,11 +433,12 @@ static int32_t OTP_Config(void)
   }
   return retr;
 }
-#endif /* NO_OTP_FUSE */
+#endif
 /* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -432,17 +462,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(file);
-  UNUSED(line);
-
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-
-  /* Infinite loop */
-  while (1)
-  {
-  }
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

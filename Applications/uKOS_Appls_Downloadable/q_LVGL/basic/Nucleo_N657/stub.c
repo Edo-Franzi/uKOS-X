@@ -50,7 +50,7 @@
 
 #include	"uKOS.h"
 #include	"lcd_display.h"
-#include	"../../ulvgl.h"
+#include	"../ulvgl.h"
 
 #define	BLCD_CS			9u				// LCD CS
 #define	BLCD_DC			10u				// LCD Data/Command

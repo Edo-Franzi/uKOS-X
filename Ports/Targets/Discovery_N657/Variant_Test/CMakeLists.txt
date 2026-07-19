@@ -102,9 +102,6 @@ add_TinyUSB(
 	PROFILE cdc_video
 )
 
-# Graphical display
-set(DISPLAY WaveShare_2_Inches)
-
 # Sources
 # -------
 
@@ -268,7 +265,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 
 # Optional managers
 add_MicroPython()
-add_LVGL()
+add_LVGL(DISPLAY RK050HR18_5_Inches)
 
 # System configuration flags
 

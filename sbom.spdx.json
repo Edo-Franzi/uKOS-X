@@ -2,8 +2,8 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.5.14)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.5.14-2026-07-10",
+  "name": "uKOS-X SBOM (0.5.15)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.5.15-2026-07-19",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -32,7 +32,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.5.14",
+      "versionInfo": "0.5.15",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -42,7 +42,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.5.14",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.5.15",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -68,7 +68,7 @@
     {
       "name": "decnumber",
       "SPDXID": "SPDXRef-Package-decnumber",
-      "versionInfo": "3.68 commit a941bd3",
+      "versionInfo": "3.68 commit 4771421",
       "downloadLocation": "https://github.com/raitechnology/libdecnumber.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-decnumber",
@@ -104,7 +104,7 @@
     {
       "name": "esp-idf",
       "SPDXID": "SPDXRef-Package-esp-idf",
-      "versionInfo": "6.0.1",
+      "versionInfo": "6.0.2",
       "downloadLocation": "https://github.com/espressif/esp-idf.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -122,7 +122,7 @@
     {
       "name": "FatFs",
       "SPDXID": "SPDXRef-Package-FatFs",
-      "versionInfo": "0.16 commit 30ca13c",
+      "versionInfo": "0.16 commit ab992fc",
       "downloadLocation": "https://github.com/abbrev/fatfs.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-FatFs-ChaN",
@@ -194,7 +194,7 @@
     {
       "name": "STM32",
       "SPDXID": "SPDXRef-Package-STM32",
-      "versionInfo": "1.3.0",
+      "versionInfo": "1.4.0",
       "downloadLocation": "https://github.com/STMicroelectronics/STM32CubeN6.git",
       "filesAnalyzed": false,
       "licenseDeclared": "BSD-3-Clause",
@@ -212,7 +212,7 @@
     {
       "name": "tflite-micro",
       "SPDXID": "SPDXRef-Package-TFLiteMicro",
-      "versionInfo": "commit fddd370",
+      "versionInfo": "commit 0965635",
       "downloadLocation": "https://github.com/tensorflow/tflite-micro.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -230,7 +230,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.21.0 commit 4354b24",
+      "versionInfo": "0.21.0 commit 50f3077",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -248,7 +248,7 @@
     {
       "name": "picotool",
       "SPDXID": "SPDXRef-Package-picotool",
-      "versionInfo": "1.3.0",
+      "versionInfo": "2.3.0",
       "downloadLocation": "https://github.com/raspberrypi/picotool.git",
       "filesAnalyzed": false,
       "licenseDeclared": "BSD-3-Clause",
@@ -266,7 +266,7 @@
     {
       "name": "pico-sdk",
       "SPDXID": "SPDXRef-Package-pico-sdk",
-      "versionInfo": "1.3.0",
+      "versionInfo": "2.3.0",
       "downloadLocation": "https://github.com/raspberrypi/pico-sdk.git",
       "filesAnalyzed": false,
       "licenseDeclared": "BSD-3-Clause",

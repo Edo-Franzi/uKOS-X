@@ -94,26 +94,58 @@ void	ui_draw(void) {
  * - Add some color noise
  *
  */
-void ui_drawFace(const uint8_t *face) {
+void	ui_drawFace(const uint8_t *face) {
 	uint32_t	core, next;
 	uint32_t	x, y;
+	uint32_t	fx, fy;
 	uint32_t	src_x, src_y;
+	uint32_t	src_x1, src_y1;
+	uint32_t	dx, dy;
+	uint32_t	p00, p10, p01, p11;
+	uint32_t	p0, p1;
 	uint8_t		g;
 
 	core = GET_RUNNING_CORE;
 
 	next = vFaceIndex[core] ^ 1u;
+
+// Scale the source image using bilinear interpolation
+//
+// Coordinates use an 8-bit fractional part
+
 	for (y = 0u; y < KFACE_DST_H; y++) {
-		src_y = (y * KFACE_SRC_H) / KFACE_DST_H;
+		fy = (y * (KFACE_SRC_H - 1u) * 256u) / (KFACE_DST_H - 1u);
+
+		src_y = fy>>8u;
+		src_y1 = (src_y + 1u < KFACE_SRC_H) ? (src_y + 1u) : src_y;
+		dy = fy & 0xFFu;
+
 		for (x = 0u; x < KFACE_DST_W; x++) {
-			src_x = (x * KFACE_SRC_W) / KFACE_DST_W;
-			g = face[src_y * KFACE_SRC_W + src_x];
+			fx = (x * (KFACE_SRC_W - 1u) * 256u) / (KFACE_DST_W - 1u);
+
+			src_x = fx>>8u;
+			src_x1 = (src_x + 1u < KFACE_SRC_W) ? (src_x + 1u) : src_x;
+			dx = fx & 0xFFu;
+
+// Read the four surrounding source pixels
+
+			p00 = face[src_y  * KFACE_SRC_W + src_x];
+			p10 = face[src_y  * KFACE_SRC_W + src_x1];
+			p01 = face[src_y1 * KFACE_SRC_W + src_x];
+			p11 = face[src_y1 * KFACE_SRC_W + src_x1];
+
+// Horizontal interpolation
+
+			p0 = p00 * (256u - dx) + p10 * dx;
+			p1 = p01 * (256u - dx) + p11 * dx;
+
+// Vertical interpolation with rounding
+
+			g = (uint8_t)((p0 * (256u - dy) + p1 * dy + 32768u)>>16u);
 
 // XRGB8888: 0x00RRGGBB
 
-			vFaceBuf[core][next][y * KFACE_DST_W + x] = ((uint32_t)g << 16u) |
-														((uint32_t)g << 8u)  |
-														((uint32_t)g);
+			vFaceBuf[core][next][y * KFACE_DST_W + x] = ((uint32_t)g<<16u) | ((uint32_t)g<<8u) | ((uint32_t)g);
 		}
 	}
 
@@ -124,7 +156,6 @@ void ui_drawFace(const uint8_t *face) {
 	lv_obj_invalidate(vImage[core]);
 	kern_unlockMutex(vLVGL_API[core]);
 }
-
 /*
  * \brief ui_drawRandom
  *

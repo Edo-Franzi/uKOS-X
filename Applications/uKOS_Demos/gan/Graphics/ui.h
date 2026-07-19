@@ -69,10 +69,10 @@
 
 #define	KFACE_SRC_W			64						// Face width
 #define	KFACE_SRC_H			64						// Face height
-#define	KFACE_DST_W			120						// Size W of the zoomed widglet
-#define	KFACE_DST_H			120						// Size H of the zoomed widglet
-#define	KFACE_POS_X			540						// Text X, small image
-#define	KFACE_POS_Y			180						// Text Y, small image
+#define	KFACE_DST_W			180						// Size W of the zoomed widglet
+#define	KFACE_DST_H			180						// Size H of the zoomed widglet
+#define	KFACE_POS_X			510						// Text X, small image
+#define	KFACE_POS_Y			150						// Text Y, small image
 
 // Arc diameter & positions
 
@@ -83,7 +83,7 @@
 
 // Text positions
 
-#define	KTEXT_POS_X_1		160						// Text X, probability
-#define	KTEXT_POS_Y_1		260						// Text Y, probability
-#define	KTEXT_POS_X_2		300						// Text X, execution TensorFlow
+#define	KTEXT_POS_X_1		130						// Text X, random
+#define	KTEXT_POS_Y_1		260						// Text Y, random
+#define	KTEXT_POS_X_2		270						// Text X, execution TensorFlow
 #define	KTEXT_POS_Y_2		300						// Text Y, execution TensorFlow

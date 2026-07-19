@@ -49,8 +49,8 @@
 */
 
 #include	"uKOS.h"
+#include	"ulvgl.h"
 #include	"ui.h"
-#include	"../ulvgl.h"
 
 extern	mutx_t		*vLVGL_API[KNB_CORES];
 		lv_obj_t	*vL1[KNB_CORES];

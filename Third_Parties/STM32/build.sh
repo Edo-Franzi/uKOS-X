@@ -81,7 +81,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # Packages
 # --------
 
-readonly package=1.30
+readonly package=1.4.0
 readonly hash=c698033e
 
 # export PATH="${PATH_GCC_ARM}/bin":"${PATH}"
@@ -95,12 +95,12 @@ readonly CUBE_ROOT="${PATH_PRG}/STM32CubeN6"
 printf '\n%bCloning STM32CubeN6 ...%b\n\n' "${BOLD}" "${NC}"
 
 cd "${PATH_PRG}"
-if [ ! -d "${CUBE_ROOT}" ]; then
-    git clone --recursive --quiet --depth 100 https://github.com/STMicroelectronics/STM32CubeN6.git "${CUBE_ROOT}"
+if [[ ! -d "${CUBE_ROOT}" ]]; then
+    git clone --branch "v${package}" --recursive --quiet --depth 100 https://github.com/STMicroelectronics/STM32CubeN6.git "${CUBE_ROOT}"
 else
 	git -C "${CUBE_ROOT}" fetch --quiet
 fi
-git -C "${CUBE_ROOT}" checkout "${hash}"
+git -C "${CUBE_ROOT}" checkout "v${package}"
 
 rm -rf "Construction/build"
 

@@ -49,7 +49,7 @@
 */
 
 #include	"uKOS.h"
-#include	"../ulvgl.h"
+#include	"ulvgl.h"
 #include	"ui.h"
 #include	"team.h"
 

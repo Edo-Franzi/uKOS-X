@@ -13,6 +13,10 @@
 ; Goal:		Model for controlling the "APSRam" device via an XSPI.
 ;			APS256XXN-OBx9 OPI/HPI Xccela
 ;
+;			IMPORTANT:
+;			A silicon bug force the usage of the XSPI1 clock from hclk5.
+;			So, it is mandatory than the XSPI1SEL is set to 0.
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____
@@ -101,20 +105,20 @@ static	void	local_APSRamInitialise(void) {
 					| ((25u -1u) * XSPI_DCR1_DEVSIZE_0)
 					| (4u * XSPI_DCR1_CSHT_0);
 
-// Wrapper not supported, APSRam clock 200-MHz / 4 = 50-MHz
+// Wrapper not supported, APSRam clock 100-MHz / 1 = 100-MHz
 
 	XSPI_UNIT->DCR2 = (0u * XSPI_DCR2_WRAPSIZE_0)
-					| ((4u - 1u) * XSPI_DCR2_PRESCALER_0);
+					| ((1u - 1u) * XSPI_DCR2_PRESCALER_0);
 
 // Bounds of 2048-Bytes
 
 	XSPI_UNIT->DCR3 = (11u * XSPI_DCR3_CSBOUND_0)
 					| (0u * XSPI_DCR3_MAXTRAN_0);
 
-// Refresh: 4us @ 50-MHz
-// 4 x 50 = 200
+// Refresh: 4us @ 100-MHz
+// 4 x 100 = 400
 
-	XSPI_UNIT->DCR4 = (200u * XSPI_DCR4_REFRESH_0);
+	XSPI_UNIT->DCR4 = (400u * XSPI_DCR4_REFRESH_0);
 
 // Waiting for calibration
 	
@@ -266,20 +270,20 @@ static	void	local_APSRamMappedMode(void) {
 					| ((25u -1u) * XSPI_DCR1_DEVSIZE_0)
 					| (4u * XSPI_DCR1_CSHT_0);
 
-// Wrapper not supported, APSRam clock 200-MHz / 4 = 50-MHz
+// Wrapper not supported, APSRam clock 100-MHz / 1 = 100-MHz
 
 	XSPI_UNIT->DCR2 = (0u * XSPI_DCR2_WRAPSIZE_0)
-					| ((4u - 1u) * XSPI_DCR2_PRESCALER_0);
+					| ((1u - 1u) * XSPI_DCR2_PRESCALER_0);
 
 // Bounds of 2048-Bytes
 
 	XSPI_UNIT->DCR3 = (11u * XSPI_DCR3_CSBOUND_0)
 					| (0u * XSPI_DCR3_MAXTRAN_0);
 
-// Refresh: 4us @ 50-MHz
-// 4 x 50 = 200
+// Refresh: 4us @ 100-MHz
+// 4 x 100 = 400
 
-	XSPI_UNIT->DCR4 = (200u * XSPI_DCR4_REFRESH_0);
+	XSPI_UNIT->DCR4 = (400u * XSPI_DCR4_REFRESH_0);
 
 // Waiting for calibration
 	
@@ -308,8 +312,8 @@ static	void	local_APSRamMappedMode(void) {
 
 	XSPI_UNIT->WCCR	= XSPI_WCCR_DQSE
 					| XSPI_WCCR_DDTR							  | (5u * XSPI_WCCR_DMODE_0)
-					| XSPI_WCCR_ADDTR | (3u * XSPI_WCCR_ADSIZE_0) | (4u * XSPI_CCR_ADMODE_0)
-					| XSPI_WCCR_IDTR  | (1u * XSPI_WCCR_ISIZE_0)  | (4u * XSPI_CCR_IMODE_0);
+					| XSPI_WCCR_ADDTR | (3u * XSPI_WCCR_ADSIZE_0) | (4u * XSPI_WCCR_ADMODE_0)
+					| XSPI_WCCR_IDTR  | (1u * XSPI_WCCR_ISIZE_0)  | (4u * XSPI_WCCR_IMODE_0);
 
 	XSPI_UNIT->HLCR = 0x00000000u;
 

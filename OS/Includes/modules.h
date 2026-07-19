@@ -80,7 +80,7 @@ struct uKOS_header {
 };
 
 typedef	enum {
-			KNO_MODULE = 0u,																					// KNO_MODULE = no more modules
+			KNO_MODULE = 0u,																				// KNO_MODULE = no more modules
 			KBUILD_IN,																						// KBUILD_IN = module built in
 			KSERIAL_EEPROM 																					// KSERIAL_EEPROM = module built in the serial EEPROM
 } moduleLocation_t;
@@ -253,23 +253,24 @@ enum {
 			KNUM_ROMABLE_2		   = (((uint32_t)'2'<<8) + (uint32_t)'7'),									// romable module 2
 			KNUM_ROMABLE_3		   = (((uint32_t)'2'<<8) + (uint32_t)'8'),									// romable module 3
 			KNUM_RUN			   = (((uint32_t)'2'<<8) + (uint32_t)'9'),									// run module
-			KNUM_RESTART		   = (((uint32_t)'3'<<8) + (uint32_t)'0'),									// remote module
-			KNUM_S_LOADER		   = (((uint32_t)'3'<<8) + (uint32_t)'1'),									// sloader module
-			KNUM_SEMAPHORE		   = (((uint32_t)'3'<<8) + (uint32_t)'2'),									// semaphore module
-			KNUM_SZ_KERN		   = (((uint32_t)'3'<<8) + (uint32_t)'3'),									// szkern module
-			KNUM_TEST_ASMP		   = (((uint32_t)'3'<<8) + (uint32_t)'4'),									// test of the multi-core asmp layer
-			KNUM_TEST_MALLOC	   = (((uint32_t)'3'<<8) + (uint32_t)'5'),									// test of the memo_malloc module
-			KNUM_TEST_HEAP		   = (((uint32_t)'3'<<8) + (uint32_t)'6'),									// test of the heap
-			KNUM_TEST_RAM		   = (((uint32_t)'3'<<8) + (uint32_t)'7'),									// test of the RAM (hardware) module
-			KNUM_TEST_SDCARD	   = (((uint32_t)'3'<<8) + (uint32_t)'8'),									// test of the sdcard module
-			KNUM_TEST_MCORE		   = (((uint32_t)'3'<<8) + (uint32_t)'9'),									// test of the multi-core mcore layer
-			KNUM_UKOS			   = (((uint32_t)'4'<<8) + (uint32_t)'0'),									// uKOS-X module
-			KNUM_VIEWER			   = (((uint32_t)'4'<<8) + (uint32_t)'1'),									// viewer module
-			KNUM_WK_MICROPYTHON	   = (((uint32_t)'4'<<8) + (uint32_t)'2'),									// micropython module
-			KNUM_WK_SERIAL		   = (((uint32_t)'4'<<8) + (uint32_t)'3'),									// serial module
-			KNUM_WK_I2C			   = (((uint32_t)'4'<<8) + (uint32_t)'4'),									// i2c module
-			KNUM_WK_SPI			   = (((uint32_t)'4'<<8) + (uint32_t)'5'),									// spi module
-			KNUM_X				   = (((uint32_t)'4'<<8) + (uint32_t)'6')									// X module
+			KNUM_RUN_DEMO		   = (((uint32_t)'3'<<8) + (uint32_t)'0'),									// run a demo module
+			KNUM_RESTART		   = (((uint32_t)'3'<<8) + (uint32_t)'1'),									// remote module
+			KNUM_S_LOADER		   = (((uint32_t)'3'<<8) + (uint32_t)'2'),									// sloader module
+			KNUM_SEMAPHORE		   = (((uint32_t)'3'<<8) + (uint32_t)'3'),									// semaphore module
+			KNUM_SZ_KERN		   = (((uint32_t)'3'<<8) + (uint32_t)'4'),									// szkern module
+			KNUM_TEST_ASMP		   = (((uint32_t)'3'<<8) + (uint32_t)'5'),									// test of the multi-core asmp layer
+			KNUM_TEST_MALLOC	   = (((uint32_t)'3'<<8) + (uint32_t)'6'),									// test of the memo_malloc module
+			KNUM_TEST_HEAP		   = (((uint32_t)'3'<<8) + (uint32_t)'7'),									// test of the heap
+			KNUM_TEST_RAM		   = (((uint32_t)'3'<<8) + (uint32_t)'8'),									// test of the RAM (hardware) module
+			KNUM_TEST_SDCARD	   = (((uint32_t)'3'<<8) + (uint32_t)'9'),									// test of the sdcard module
+			KNUM_TEST_MCORE		   = (((uint32_t)'4'<<8) + (uint32_t)'0'),									// test of the multi-core mcore layer
+			KNUM_UKOS			   = (((uint32_t)'4'<<8) + (uint32_t)'1'),									// uKOS-X module
+			KNUM_VIEWER			   = (((uint32_t)'4'<<8) + (uint32_t)'2'),									// viewer module
+			KNUM_WK_MICROPYTHON	   = (((uint32_t)'4'<<8) + (uint32_t)'3'),									// micropython module
+			KNUM_WK_SERIAL		   = (((uint32_t)'4'<<8) + (uint32_t)'4'),									// serial module
+			KNUM_WK_I2C			   = (((uint32_t)'4'<<8) + (uint32_t)'5'),									// i2c module
+			KNUM_WK_SPI			   = (((uint32_t)'4'<<8) + (uint32_t)'6'),									// spi module
+			KNUM_X				   = (((uint32_t)'4'<<8) + (uint32_t)'7')									// X module
 };
 
 // Startups

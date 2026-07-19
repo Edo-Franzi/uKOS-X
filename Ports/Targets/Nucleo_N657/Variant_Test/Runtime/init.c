@@ -88,6 +88,7 @@ MODULE(
 static			void	local_StackLimit_Configuration(void);
 static			void	local_Boot_thirdStageBoot(void);
 static			void	local_PWR_Configuration(void);
+static			void	local_GPIO_Compensation(void);
 static			void	local_GPIO_Configuration(void);
 static			void	local_RCC_Configuration(void);
 static			void	local_MPU_Configuration(void);
@@ -116,6 +117,7 @@ void	init_init(void) {
 	local_Boot_thirdStageBoot();
 	local_StackLimit_Configuration();
 	local_PWR_Configuration();
+	local_GPIO_Compensation();
 	local_GPIO_Configuration();
 	local_RCC_Configuration();
 	local_MPU_Configuration();
@@ -191,6 +193,31 @@ static	void	local_FPE_Configuration(void) {
 
 	REG(SCB)->CPACR |= (SCB_CPACR_CP10	| SCB_CPACR_CP11);
 	REG(FPE)->FPCCR |= (FPE_FPCCR_ASPEN | FPE_FPCCR_LSPEN);
+}
+
+/*
+ * \brief local_GPIO_Compensation
+ *
+ * - GPIO compensation
+ *
+ */
+static	void	local_GPIO_Compensation(void) {
+
+	REG(RCC)->APB4HENR |= RCC_APB4HENR_SYSCFGEN;
+	STRONG_BARRIER;
+
+	REG(SYSCFG)->VDDIO1CCCR |= SYSCFG_VDDIO1CCCR_EN;
+	REG(SYSCFG)->VDDIO2CCCR |= SYSCFG_VDDIO2CCCR_EN;
+	REG(SYSCFG)->VDDIO3CCCR |= SYSCFG_VDDIO3CCCR_EN;
+	REG(SYSCFG)->VDDIO4CCCR |= SYSCFG_VDDIO4CCCR_EN;
+	REG(SYSCFG)->VDDIOCCCR  |= SYSCFG_VDDIOCCCR_EN;
+	STRONG_BARRIER;
+
+	while ((REG(SYSCFG)->VDDIO1CCSR & SYSCFG_VDDIO1CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIO2CCSR & SYSCFG_VDDIO2CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIO3CCSR & SYSCFG_VDDIO3CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIO4CCSR & SYSCFG_VDDIO4CCSR_READY) == 0u) { ; }
+	while ((REG(SYSCFG)->VDDIOCCSR  & SYSCFG_VDDIOCCSR_READY)  == 0u) { ; }
 }
 
 /*
@@ -668,8 +695,8 @@ static	void	local_RCC_Configuration(void) {
 
 // System clock (IC2 mux)
 
-	REG(RCC)->IC2CFGR = (3u * RCC_IC2CFGR_IC2SEL_0)				// PLL4
-					  | ((1u - 1u) * RCC_IC2CFGR_IC2INT_0);		// IC2 = PLL4 / 1, ~400_MHz
+	REG(RCC)->IC2CFGR = (0u * RCC_IC2CFGR_IC2SEL_0)				// PLL1
+					  | ((2u - 1u) * RCC_IC2CFGR_IC2INT_0);		// IC2 = PLL1 / 2, ~400_MHz
 	STRONG_BARRIER;												//
 	REG(RCC)->DIVENR |= RCC_DIVENR_IC2EN;						//
 	(void)(REG(RCC)->DIVENR);									//
@@ -696,6 +723,15 @@ static	void	local_RCC_Configuration(void) {
 					  | ((4u - 1u) * RCC_IC9CFGR_IC9INT_0);		// IC9 = PLL3 / 4, ~100-MHz
 	STRONG_BARRIER;												//
 	REG(RCC)->DIVENR |= RCC_DIVENR_IC9EN;						//
+	(void)(REG(RCC)->DIVENR);									//
+
+// System clock (IC3 mux) for xspi2 (set in the FSBL)
+// System clock (IC4 mux) for xspi1
+
+	REG(RCC)->IC4CFGR = (3u * RCC_IC4CFGR_IC4SEL_0)				// PLL4
+					  | ((2u - 1u) * RCC_IC4CFGR_IC4INT_0);		// IC4 = PLL4 / 2, ~200_MHz
+	STRONG_BARRIER;												//
+	REG(RCC)->DIVENR |= RCC_DIVENR_IC4EN;						//
 	(void)(REG(RCC)->DIVENR);									//
 
 // Bus speeds
@@ -745,12 +781,14 @@ static	void	local_MPU_Configuration(void) {
 	SET_MPU8_REGION(0u,	ST_RAM_INT_1,		EN_RAM_INT_1,		KMPU_EXECUTABLE,		KMPU_R_ALL,  0u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(1u,	ST_RAM_INT_2_OS,	EN_RAM_INT_2_OS,	KMPU_EXECUTABLE,		KMPU_RW_PRI, 1u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(2u,	ST_RAM_INT_2,		EN_RAM_INT_2,		KMPU_EXECUTABLE,		KMPU_RW_ALL, 1u, KMPU_NOT_SHAREABLE);
-	SET_MPU8_REGION(3u,	ST_PERIPH_SOC,		EN_PERIPH_SOC,		KMPU_NOT_EXECUTABLE,	KMPU_RW_PRI, 3u, KMPU_NOT_SHAREABLE);
-	SET_MPU8_REGION(4u,	ST_PERIPH_CORE,		EN_PERIPH_CORE,		KMPU_NOT_EXECUTABLE,	KMPU_RW_PRI, 3u, KMPU_NOT_SHAREABLE);
+	SET_MPU8_REGION(3u,	ST_OCTOFLASH,		EN_OCTOFLASH,		KMPU_NOT_EXECUTABLE,	KMPU_RW_ALL, 2u, KMPU_INNER_SHAREABLE);
+	SET_MPU8_REGION(4u,	ST_PERIPH_SOC,		EN_PERIPH_SOC,		KMPU_NOT_EXECUTABLE,	KMPU_RW_PRI, 3u, KMPU_NOT_SHAREABLE);
+	SET_MPU8_REGION(5u,	ST_PERIPH_CORE,		EN_PERIPH_CORE,		KMPU_NOT_EXECUTABLE,	KMPU_RW_PRI, 3u, KMPU_NOT_SHAREABLE);
 
 	#else
 	SET_MPU8_REGION(0u,	ST_RAM_INT_1,		EN_RAM_INT_1,		KMPU_EXECUTABLE,		KMPU_R_ALL,  0u, KMPU_NOT_SHAREABLE);
 	SET_MPU8_REGION(1u,	ST_RAM_INT_2,		EN_RAM_INT_2,		KMPU_EXECUTABLE,		KMPU_RW_ALL, 1u, KMPU_NOT_SHAREABLE);
+	SET_MPU8_REGION(2u,	ST_OCTOFLASH,		EN_OCTOFLASH,		KMPU_NOT_EXECUTABLE,	KMPU_RW_ALL, 2u, KMPU_INNER_SHAREABLE);
 	#endif
 
 }

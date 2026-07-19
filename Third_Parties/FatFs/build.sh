@@ -77,7 +77,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # --------
 
 readonly package=0.16
-readonly hash=30ca13c
+readonly hash=ab992fc
 
 export PATH="${PATH_GCC_ARM}/bin":"${PATH}"
 printf '%b%s%b\n' "${YELLOW}" "$(arm-none-eabi-gcc --version)" "${NC}"

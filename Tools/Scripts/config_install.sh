@@ -137,8 +137,8 @@ export LIBJAYLINK_VER=0.4.0
 export DOXYGEN_VER=1.17.0
 export GRAPHVIZ_VER=15.1.0
 export CPPCHECK_VER=2.20.0
-export PICO_SDK_VER=2.2.0
-export PICOTOOL_VER=2.2.0-a4
+export PICO_SDK_VER=2.3.0
+export PICOTOOL_VER=2.3.0
 
 # Goodies
 # Not used for the uKOS-X project

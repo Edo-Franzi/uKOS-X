@@ -192,7 +192,7 @@ void	tfl_classify(float32_t *entry, uint8_t *face) {
 	kern_readTickCount(&time[1]);
 	delta = (uint32_t)(time[1] - time[0]);
 
-	(void)snprintf(text, sizeof(text), "Ex. time: %" PRIu32 " [us]", delta);
+	(void)snprintf(text, sizeof(text), "Ex. time: %" PRIu32 " [ms]", (delta / 1000));
 	ui_drawTensorFlowExecutionTime(text);
 }
 }

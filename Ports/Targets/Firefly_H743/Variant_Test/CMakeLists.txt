@@ -98,9 +98,6 @@ add_TinyUSB(
 	PROFILE cdc_cdc
 )
 
-# Graphical display
-set(DISPLAY WKS43WV067_5_Inches)
-
 # Sources
 # -------
 
@@ -267,7 +264,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 
 # Optional manager
 add_MicroPython()
-add_LVGL()
+add_LVGL(DISPLAY WKS43WV067_5_Inches)
 add_FatFs(STORAGE sdcard_flash)
 
 # System configuration flags

@@ -597,8 +597,15 @@ endmacro()
 
 # Graphic library integration (LVGL)
 macro(add_LVGL)
+	cmake_parse_arguments(LVGL "" "DISPLAY" "" ${ARGN})
+
+	# Validate mandatory arguments
+	if(NOT DEFINED LVGL_DISPLAY)
+		message(FATAL_ERROR "add_LVGL: DISPLAY is mandatory")
+	endif()
+
 	add_compile_definitions(SYSTEM_LVGL_S)
-	find_library(LVGL LVGL ${PATH_UKOS}/Third_Parties/LVGL/Library/${DISPLAY}/${CORE})
+	find_library(LVGL LVGL ${PATH_UKOS}/Third_Parties/LVGL/Library/${LVGL_DISPLAY}/${CORE})
 	file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DSYSTEM_LVGL_S ")
 	list(APPEND UKOS_COMPONENTS ${LVGL})
 endmacro()

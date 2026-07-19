@@ -49,7 +49,7 @@
 */
 
 #include	"uKOS.h"
-#include	"../ulvgl.h"
+#include	"ulvgl.h"
 #include	"ui.h"
 
 #define	KLVGL_MUTEX_API		"Protect_LVGL_API"

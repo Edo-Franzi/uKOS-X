@@ -75,7 +75,7 @@ INCLUDE		STM32N657xD.ld
 /* Mapping:													*/
 /*															*/
 /* RAM2:	stPrgmCode	(Boot)	0x34100400 (400 signature)	*/
-/*			64K												*/
+/*			64K	(just for the first boot)					*/
 /* RAM1:	stPrgmCode	(Appl)	0x34000400 (400 signature)	*/
 /*			(1024K - 1K)									*/
 /* RAM2:	stPrgmData			0x34100000					*/
@@ -101,16 +101,6 @@ linker_sizeStackFirst_C0	= (8K);																	/* Length of the First stack  	
 linker_stEXRAM				= 0;																	/* 0x00000000: EXRAM, start of the external memory			*/
 linker_lnEXRAM				= (0);																	/* Length of the external memory	  						*/
 
-linker_stUMemo				= (linker_stPrgmData + linker_lnPrgmData);								/* 0x34140000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (512K);																/* Length of the user memory	  							*/
-
-/* IMPORTANT:												*/
-/* The heap has to be maintained aligned					*/
-/* on a boundary of 8-bytes									*/
-
-linker_stHeap				= (linker_stUMemo + linker_lnUMemo);									/* 0x341C0000: start of the heap							*/
-linker_lnHeap				= (256K + stm_lnAXISRAM3_6);											/* Length of the heap										*/
-
 /* IMPORTANT:												*/
 /* uKOS OS Flash + memory									*/
 
@@ -120,15 +110,31 @@ linker_lnPrgmCode			= (1024K - 1K);															/* Length of the the Flash				
 linker_stPrgmData			= stm_stAXISRAM2;														/* 0x34100000: PrgmData, start of the RAM					*/
 linker_lnPrgmData			= (256K);																/* Length of the RAM										*/
 
+linker_stUMemo				= (linker_stPrgmData + linker_lnPrgmData);								/* 0x34140000: UMemo, start of the user memory 				*/
+linker_lnUMemo				= (512K);																/* Length of the user memory	  							*/
+
+linker_stExtFlash			= 0x70000000;															/* 0x70000000: ExtFlash, start of the external flash memory	*/
+linker_lnExtFlash			= (128 * 1024K);														/* Length of the external flash memory						*/
+
+/* IMPORTANT:												*/
+/* The heap has to be maintained aligned					*/
+/* on a boundary of 8-bytes									*/
+
+linker_stHeap				= (linker_stUMemo + linker_lnUMemo);									/* 0x341C0000: start of the heap							*/
+linker_lnHeap				= (256K + stm_lnAXISRAM3_6);											/* Length of the heap										*/
+
 /* IMPORTANT:												*/
 /* equates necessary for the arm_v8 MPU regions				*/
 /* for the arm_v8 MPU the regions have to be 32-B aligned	*/
 
-linker_ST_RAM_INT_1			= (stm_stAXISRAM1);														/* 0x34000000: Privileged/User RAM							*/
+linker_ST_RAM_INT_1			= stm_stAXISRAM1;														/* 0x34000000: Privileged/User RAM							*/
 linker_EN_RAM_INT_1			= (stm_stAXISRAM1 + stm_lnAXISRAM1 - 1);								/* 0x340FFFFF: 1-M											*/
 
 linker_ST_RAM_INT_2			= (stm_stAXISRAM2);														/* 0x34100000: Privileged/User RAM							*/
 linker_EN_RAM_INT_2			= (stm_stAXISRAM2 + stm_lnAXISRAM2 + stm_lnAXISRAM3_6 - 1);				/* 0x342BFFFF: 2816-K										*/
+
+linker_ST_OCTOFLASH			= linker_stExtFlash;													/* 0x70000000: Privileged/User RAM							*/
+linker_EN_OCTOFLASH			= (linker_stExtFlash + linker_lnExtFlash - 1);							/* 0x77FFFFFF: 128-M										*/
 
 MEMORY {
 	prgm_code (rwx)	: ORIGIN = linker_stPrgmCode, LENGTH = linker_lnPrgmCode

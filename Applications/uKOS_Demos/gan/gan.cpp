@@ -71,7 +71,7 @@
  *				  Every 1000-ms
  *					- Complex CNN 4 layer NN
  *
-*			- P1: Every 1-ms
+ *			- P1: Every 1-ms
  *					- Tick for LVGL
  *
  *			- P2: Widget management
@@ -181,8 +181,11 @@ void	aProcess_0(const void *argument) {
 		kern_suspendProcess(1000u);
 		led_toggle(KLED_1);
 
+// Use only 10 dimensions to avoid to generate
+// like "monster" faces
+
 		for (i = 0u; i < 64u; i++) {
-			entry[i] = local_randomGaussian();
+			entry[i] = (i < 10) ? (local_randomGaussian()) : (0.0f);
 		}
 
 		tfl::tfl_classify(&entry[0], &vFace[0]);

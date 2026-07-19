@@ -418,6 +418,10 @@ l_MLPs:
     - Nucleo_N657
     - Pico2_rp2350
 
+  gan:
+    - Discovery_N657
+    - Firefly_H743
+
   tfl_vs_ukos:
     - Alastor_H743
     - Asmodee_H747
@@ -547,9 +551,6 @@ q_LVGL:
   big:
     - Discovery_N657
     - Discovery_V873
-    - Firefly_H743
-
-  gan:
     - Firefly_H743
 
   team:

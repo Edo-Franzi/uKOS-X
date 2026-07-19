@@ -1,6 +1,6 @@
 /*
-; run.
-; ====
+; runDemo.
+; ========
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -10,7 +10,9 @@
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Launch a function module.
+; Goal:		Launch an N6 demo.
+;			The code located in the Octo Flash is copien inside the
+;			APSRam and executed.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -54,24 +56,29 @@
 
 // ----------------------------------I------------I-----------------------------------------I--------------I
 
-STRG_LOC_CONST(aStrApplication[]) =	"run          Run a downloaded code.                    (c) EFr-2026";
+STRG_LOC_CONST(aStrApplication[]) =	"runDemo      Run a demo code.                          (c) EFr-2026";
 STRG_LOC_CONST(aStrHelp[])		  = "Launch a function module\n"
 									"========================\n\n"
 
-									"This tool runs a downloaded code.\n\n"
+									"This tool runs a demo code.\n"
+									"This tool is reserved for Discovery_N657 boards\n\n"
 
-									"Input format:  run\n"
+									"Input format:  runDemo\n"
 									"Output format: [result]\n\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
 static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		pre_init(uint32_t argc, const char_t *argv[]);
+
+extern	uint8_t		linker_stUMemo[];
+extern	uint8_t		linker_stExtFlash[];
 
 MODULE(
-	Run,										// Module name (the first letter has to be upper case)
+	RunDemo,									// Module name (the first letter has to be upper case)
 	KID_FAM_CLI,								// Family (defined in the module.h)
-	KNUM_RUN,									// Module identifier (defined in the module.h)
-	nullptr,									// Address of the initialisation code (early pre-init)
+	KNUM_RUN_DEMO,								// Module identifier (defined in the module.h)
+	pre_init,									// Address of the initialisation code (early pre-init)
 	prgm,										// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
 	nullptr,									// Address of the clean code (clean the module)
 	" 1.0",										// Revision string (major . minor)
@@ -88,17 +95,64 @@ MODULE(
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
-	int32_t		status, (*code)(uint32_t argc, const char_t *argv[]);
+static	int32_t prgm(uint32_t argc, const char_t *argv[]) {
+			int32_t			status, (*code)(uint32_t argc, const char_t *argv[]);
+			uKOS_header_t	APSRamHeader;
+			uKOS_header_t	flashHeader;
+			uint8_t			*demoAPSRAM = linker_stUMemo;
+	const	uint8_t			*demoFlash	= (linker_stExtFlash + 0x300000u + 0x400);
+	const	size_t			demoSize	= 0x800000;
 
-	(void)dprintf(KSYST, "Execute the downloaded application.\n");
+	(void)dprintf(KSYST, "Execute the flash demo application.\n");
 
-	system_getDownloadCodeAddress((void **)&code);
-	if (code == nullptr) { (void)dprintf(KSYST, "No application in the memory!\n\n");     status = EXIT_OS_FAILURE;     }
-	else				 { (void)dprintf(KSYST, "Run the downloaded application...\n\n"); status = EXIT_OS_SUCCESS_CLI; }
+// Verify if a demo is available
 
-	system_setDownloadCodeAddress(nullptr);
+	memcpy(&flashHeader, demoFlash, sizeof(flashHeader));
 
-	status = (status == EXIT_OS_SUCCESS_CLI) ? ((*code)(argc, argv)) : (status);
+	if ((flashHeader.oMemLocation == KMEMU) &&
+		(flashHeader.oStart != nullptr)	 &&
+		(flashHeader.oLnApplication != 0)	 &&
+		(flashHeader.oModule != nullptr)) {
+
+// Verify the size
+
+		if ((size_t)flashHeader.oLnApplication > demoSize) {
+			(void)dprintf(KSYST, "Demo application is too large: %" PRIuPTR " bytes.\n\n", (uintptr_t)flashHeader.oLnApplication);
+			return (EXIT_OS_FAILURE);
+		}
+
+// It seems that an available demo is available
+// Copy the demo into the APSRam and execute it
+
+		memcpy(demoAPSRAM,	  demoFlash,  demoSize);
+        memcpy(&APSRamHeader, demoAPSRAM, sizeof(APSRamHeader));
+
+		code = APSRamHeader.oStart;
+		(void)dprintf(KSYST, "Run the demo application...@address = 0x%016"PRIXPTR"\n\n", (uintptr_t)code);
+		status = ((*code)(argc, argv));
+		return (status);
+	}
+
+	(void)dprintf(KSYST, "No demo in the flash!\n\n");
+	status = EXIT_OS_FAILURE;
 	return (status);
+}
+
+/*
+ * \brief pre_init
+ *
+ * - Try to clean the ressources
+ *		- Free all the ressources
+ *
+ */
+static	int32_t pre_init(uint32_t argc, const char_t *argv[]) {
+			uint8_t			*demoAPSRAM = linker_stUMemo;
+	const	size_t			demoSize	= 0x800000;
+
+	UNUSED(argc);
+	UNUSED(argv);
+
+	memset(demoAPSRAM, 0, demoSize);
+
+	return (EXIT_OS_SUCCESS);
 }

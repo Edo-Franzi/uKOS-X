@@ -1,19 +1,20 @@
 /*
-; uKOS.
-; =====
+; ulvgl.
+; ======
 
 ; SPDX-License-Identifier: MIT
-; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi			The 2025-01-01
-; Modifs:   Laurent von Allmen	The 2025-01-01
+; Author:	Laurent von Allmen	The 2026-02-01
+; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Universal h file for uKOS-X systems.
+; Goal:		Wrapper for LVGL header file
+;			Suppress clang warnings.
 ;
-;   (c) 2025-2026, Edo. Franzi
-;   --------------------------
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -47,48 +48,31 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#if (defined(__clang__))
+// Ignore the clang diagnostic
+//
+#pragma	clang diagnostic push
+#pragma	clang diagnostic ignored "-Wsign-conversion"
+#pragma	clang diagnostic ignored "-Wimplicit-int-conversion"
+#endif
 
-// IWYU pragma: begin_exports
+#if (defined(__GNUC__))
+// Ignore the GCC diagnostic
+//
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<inttypes.h>
+#include	"lvgl.h"
 
-#include	"types.h"
-#include	"os_errors.h"
-#include	"board.h"
-#include	"clockTree.h"
-#include	"ip.h"
-#include	"core_reg.h"
-#include	"soc_reg.h"
-#include	"syscallDispatcher.h"
-#include	"macros.h"
-#include	"macros_soc.h"
-#include	"macros_core.h"
-#include	"macros_runtime.h"
-#include	"core.h"
-#include	"modules.h"
-#include	"crt0.h"
-#include	"spin.h"
-#include	"lib_kernels.h"
-#include	"lib_generics.h"
-#include	"lib_serials.h"
-#include	"lib_peripherals.h"
-#include	"lib_neurals.h"
-#include	"lib_cryptographics.h"
-#include	"lib_storages.h"
-#include	"debug.h"
+#if (defined(__clang__))
+// Restore the clang diagnostic
+//
+#pragma	clang diagnostic pop
+#endif
 
-// IWYU pragma: end_exports
-
-// uKOS-X main constants
-// -----------------------
-
-#define	uKOS_VERSION_OS			10
-#define	uKOS_VERSION_NUMBER		"0.5.15"
-#define	uKOS_VERSION_MAJOR		0
-#define	uKOS_VERSION_MINOR		5
-#define	uKOS_VERSION_PATCH		15
-#define	uKOS_VERSION			uKOS_VERSION_NUMBER " " STRG(uKOS_NAME) "\n" STRG(uKOS_OWNER)
+#if (defined(__GNUC__))
+// Restore the GCC diagnostic
+//
+#pragma GCC diagnostic pop
+#endif

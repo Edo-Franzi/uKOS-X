@@ -108,14 +108,7 @@ void HAL_XSPI_MspInit(XSPI_HandleTypeDef* hxspi)
       Error_Handler();
     }
 
-    /* NUCLEO tolerates the 200 MHz high-speed path; the Discovery's MX66UW1G45G
-       (1 Gbit) is read reliably only at the 50 MHz used by ST's reference FSBL. */
-    uint32_t use_highspeed = (fuse_data & VDDIO3_HSLV_MASK) ? 1U : 0U;
-#ifdef BOARD_DISCOVERY_N657
-    use_highspeed = 0U;   /* force 50 MHz on Discovery, ignore HSLV fuse */
-#endif
-
-    if (use_highspeed)
+    if (fuse_data & VDDIO3_HSLV_MASK)
     {
       /* High speed IO optimization is enabled */
 

@@ -88,9 +88,6 @@ add_compile_options(
 	-Os # optimisation
 )
 
-# Graphical display
-set(DISPLAY TFT_2_4_Inches)
-
 # Sources
 # -------
 
@@ -249,7 +246,7 @@ target_link_libraries(tool_u PUBLIC system_compiler_flags)
 set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u)
 
 # Optional manager
-add_LVGL()
+add_LVGL(DISPLAY TFT_2_4_Inches)
 
 # Optional manager
 add_MicroPython()

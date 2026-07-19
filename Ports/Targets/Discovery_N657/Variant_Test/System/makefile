@@ -310,6 +310,7 @@ CLI_U			+= $(PATH_OSYS)/CLI/process/process.c
 CLI_U			+= $(PATH_OSYS)/CLI/restart/restart.c
 CLI_U			+= $(PATH_OSYS)/CLI/rnd/rnd.c
 CLI_U			+= $(PATH_OSYS)/CLI/run/run.c
+CLI_U			+= $(PATH_OSYS)/CLI/runDemo/runDemo.c
 CLI_U			+= $(PATH_OSYS)/CLI/semaphore/semaphore.c
 CLI_U			+= $(PATH_OSYS)/CLI/sloader/sloader.c
 CLI_U			+= $(PATH_OSYS)/CLI/szkern/szkern.c

@@ -50,7 +50,7 @@
 
 #include	"uKOS.h"
 #include	"lcd_display.h"
-#include	"../../ulvgl.h"
+#include	"../ulvgl.h"
 
 // Connect the physical device to the logical manager
 // --------------------------------------------------

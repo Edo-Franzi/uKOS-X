@@ -83,7 +83,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # Packages
 # --------
 
-readonly package="6.0.1"
+readonly package="6.0.2"
 readonly idf_tag="v${package}"
 readonly URL="https://dl.espressif.com/esp-at/firmwares/esp32/ESP32-WROOM-32/ESP32-WROOM-32-AT-V4.1.1.0.zip"
 readonly ARCHIVE="ESP32-WROOM-32-AT-V4.1.1.0"

@@ -124,6 +124,9 @@ linker_lnPrgmData_u			= (160K);																/* Length of the RAM										*/
 linker_stUMemo				= 0x90000000;															/* 0x90000000: UMemo, start of the user memory 				*/
 linker_lnUMemo				= (32 * 1024K);															/* Length of the user memory	  							*/
 
+linker_stExtFlash			= 0x70000000;															/* 0x70000000: ExtFlash, start of the external flash memory	*/
+linker_lnExtFlash			= (128 * 1024K);														/* Length of the external flash memory						*/
+
 /* IMPORTANT:												*/
 /* The heap has to be maintained aligned					*/
 /* on a boundary of 8-bytes									*/
@@ -138,7 +141,7 @@ linker_lnLCD_F_BUFFER		= (1500K);																/* Length of the RAM										*
 /* equates necessary for the arm_v8 MPU regions				*/
 /* for the arm_v8 MPU the regions have to be 32-B aligned	*/
 
-linker_ST_RAM_INT_1			= (stm_stAXISRAM1);														/* 0x34000000: Privileged/User RAM							*/
+linker_ST_RAM_INT_1			= stm_stAXISRAM1;														/* 0x34000000: Privileged/User RAM							*/
 linker_EN_RAM_INT_1			= (stm_stAXISRAM1 + stm_lnAXISRAM1 - 1);								/* 0x341C1FFF: 1800-K										*/
 
 linker_ST_RAM_INT_2_OS		= linker_stPrgmData_p;													/* 0x341C2000: Privileged/User RAM							*/
@@ -152,6 +155,9 @@ linker_EN_RAM_INT_3			= (linker_stLCD_F_BUFFER + 1500K - 1);									/* 0x343BFF
 
 linker_ST_APSRAM			= linker_stUMemo;														/* 0x90000000: Privileged/User RAM							*/
 linker_EN_APSRAM			= (linker_stUMemo + linker_lnUMemo - 1);								/* 0x91FFFFFF: 32-M											*/
+
+linker_ST_OCTOFLASH			= linker_stExtFlash;													/* 0x70000000: Privileged/User RAM							*/
+linker_EN_OCTOFLASH			= (linker_stExtFlash + linker_lnExtFlash - 1);							/* 0x77FFFFFF: 128-M										*/
 
 linker_ST_PERIPH_SOC		= stm_stPERIPH_NS;														/* 0x40000000: Privileged PERIPHERALS						*/
 linker_EN_PERIPH_SOC		= (stm_stPERIPH_NS + 524288K - 1);										/* 0x5FFFFFFF: 2 x 256-M (_S & _NS)							*/
