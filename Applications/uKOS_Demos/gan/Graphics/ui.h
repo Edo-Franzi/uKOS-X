@@ -52,7 +52,7 @@
 
 // Display size
 
-#define	KLCD_BUF_LINES		80u						// Limited buffer (80 * KLCD_WIDTH * 2) to force partial rendering
+#define	KLCD_BUF_LINES		10u						// Limited buffer (10 * KLCD_WIDTH * 4) to force partial rendering
 #define	KLCD_WIDTH			800						// LCD width
 #define	KLCD_HEIGHT			480						// LCD height
 

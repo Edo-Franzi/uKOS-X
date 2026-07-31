@@ -351,8 +351,9 @@ static	void	local_USB_Configuration(void) {
 /*
  * \brief local_Protection_Configuration
  *
- * - Disable the bus protections
- *   This to allow the connection between the LTDC to the AXI bus
+ * - Configure the bus security attributes for LTDC and NPU
+ *	 - The framebuffer RISAF region accepts Secure accesses from all CIDs
+ *	 - LTDC and NPU masters generate Secure, Privileged, CID1 transactions
  *
  */
 #define RISAF_REG_CFGR_BREN				(1u<<0)
@@ -397,15 +398,24 @@ static	void	local_Protection_Configuration(void) {
 	REG(RISAF)->REG1_CFGR = RISAF_REG_CFGR_BREN | RISAF_REG_CFGR_SEC;
 	STRONG_BARRIER;
 
+// LTDC_CMN, LTDC_L1, LTDC_L2 slave: accessible only from Secure/Privileged code
+// NPU slave: accessible only from Secure/Privileged code
+//
 // RISUP 102/103/104: LTDC_CMN, LTDC_L1, LTDC_L2
+// RISUP 106: NPU
 
-	REG(RIFSC)->RISC_SECCFGR3  |= 0x000001C0u;
-	REG(RIFSC)->RISC_PRIVCFGR3 |= 0x000001C0u;
+	REG(RIFSC)->RISC_SECCFGR3  |= RIFSC_RISC_SECCFGR3_SEC102   | RIFSC_RISC_SECCFGR3_SEC103   | RIFSC_RISC_SECCFGR3_SEC104;
+	REG(RIFSC)->RISC_PRIVCFGR3 |= RIFSC_RISC_PRIVCFGR3_PRIV102 | RIFSC_RISC_PRIVCFGR3_PRIV103 | RIFSC_RISC_PRIVCFGR3_PRIV104;
+	REG(RIFSC)->RISC_SECCFGR3  |= RIFSC_RISC_SECCFGR3_SEC106;
+	REG(RIFSC)->RISC_PRIVCFGR3 |= RIFSC_RISC_PRIVCFGR3_PRIV106;
 
-// Master LTDC1 / LTDC_L1 / LTDC_L2
+// NPU master transactions: accessible Secure, Privileged, CID1
+// LTDC1 / LTDC_L1 / LTDC_L2 master: transactions: accessible Secure, Privileged, CID1
+//
 // Important point: The LTDC master needs to have the same
 // memory attributes than the periphs
 
+	REG(RIFSC)->RIMC_ATTR1  = RIMC_ATTR_SEC_CID1_PRIV;
 	REG(RIFSC)->RIMC_ATTR10 = RIMC_ATTR_SEC_CID1_PRIV;
 	REG(RIFSC)->RIMC_ATTR11 = RIMC_ATTR_SEC_CID1_PRIV;
 	STRONG_BARRIER;
@@ -947,6 +957,22 @@ static	void	local_RCC_Configuration(void) {
 	REG(RCC)->DIVENR |= RCC_DIVENR_IC4EN;						//
 	(void)(REG(RCC)->DIVENR);									//
 
+// System clock (IC6 mux) (for NPU)
+
+	REG(RCC)->IC6CFGR = (1u * RCC_IC6CFGR_IC6SEL_0)				// PLL2
+					  | ((1u - 1u) * RCC_IC6CFGR_IC6INT_0);		// IC6 = PLL2 / 1, ~800-MHz
+	STRONG_BARRIER;												//
+	REG(RCC)->DIVENR |= RCC_DIVENR_IC6EN;						//
+	(void)(REG(RCC)->DIVENR);									//
+
+// System clock (IC11 mux) (for AXISRAM3..6)
+
+	REG(RCC)->IC11CFGR = (2u * RCC_IC11CFGR_IC11SEL_0)			// PLL3
+					   | ((1u - 1u) * RCC_IC11CFGR_IC11INT_0);	// IC11 = PLL3 / 1, ~400-MHz
+	STRONG_BARRIER;												//
+	REG(RCC)->DIVENR |= RCC_DIVENR_IC11EN;						//
+	(void)(REG(RCC)->DIVENR);									//
+
 // Bus speeds
 // ----------
 
@@ -958,7 +984,7 @@ static	void	local_RCC_Configuration(void) {
 // - PERCK -> HSI
 
 	REG(RCC)->CFGR1 = (3u * RCC_CFGR1_CPUSW_0)					// IC1 (PLL1 / 1) as a CPU clock
-					| (3u * RCC_CFGR1_SYSSW_0);					// IC2 (PLL4 / 1) as a SYS clock
+					| (3u * RCC_CFGR1_SYSSW_0);					// IC2 (PLL1 / 1) as a SYS clock
 
 	REG(RCC)->CCIPR7 = (0u * RCC_CCIPR7_PERSEL_0);				// per_ck (periph kernel = HSI)
 
@@ -977,6 +1003,25 @@ static	void	local_RCC_Configuration(void) {
 					| (KPPRE5  * RCC_CFGR2_PPRE5_0);			// sys_bus_ck2 / 1
 	STRONG_BARRIER;
 	(void)(REG(RCC)->CFGR2);
+
+// NPU reset
+// ---------
+
+// Enable and reset CACHEAXI and NPU
+
+	REG(RCC)->AHB5ENSR  = RCC_AHB5ENSR_NPUCACHEENS | RCC_AHB5ENSR_NPUENS;
+    (void)REG(RCC)->AHB5ENR;
+	DATA_SYNC_BARRIER;
+
+	REG(RCC)->AHB5RSTSR = RCC_AHB5RSTSR_NPUCACHERSTS | RCC_AHB5RSTSR_NPURSTS;
+	DATA_SYNC_BARRIER;
+
+	REG(RCC)->AHB5RSTCR = RCC_AHB5RSTCR_NPUCACHERSTC | RCC_AHB5RSTCR_NPURSTC;
+	DATA_SYNC_BARRIER;
+	INST_SYNC_BARRIER;
+
+	REG(CACHEAXI)->CR1 |= CACHEAXI_CR1_EN;
+	DATA_SYNC_BARRIER;
 }
 
 /*

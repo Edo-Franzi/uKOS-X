@@ -66,8 +66,50 @@ target_compile_definitions(system_compiler_flags INTERFACE
 	UKOS_S
 	${SOC}_S
 	${CORE}_S
-	_POSIX_C_SOURCE=200809L
 )
+
+# C library specific compile definitions
+if(C_LIBRARY STREQUAL "picolibc")
+	target_compile_definitions(system_compiler_flags INTERFACE
+		CONFIG_MAN_PICOLIBC_S
+		_GNU_SOURCE
+		_REENT_GLOBAL_ERRNO
+	)
+	message(STATUS "C library compile definitions: CONFIG_MAN_PICOLIBC_S, _GNU_SOURCE, _REENT_GLOBAL_ERRNO")
+else()
+	# newlib (default)
+	target_compile_definitions(system_compiler_flags INTERFACE
+		CONFIG_MAN_NEWLIB_S
+		__DYNAMIC_REENT__
+		_POSIX_C_SOURCE=200809L
+	)
+	message(STATUS "C library compile definitions: CONFIG_MAN_NEWLIB_S, __DYNAMIC_REENT__, _POSIX_C_SOURCE=200809L")
+endif()
+
+# C library specific specs for GCC (compiler and linker)
+# Note: Clang/LLVM uses picolibc by default, no specs needed
+if(COMPILER_FAMILY STREQUAL "gcc")
+	if(C_LIBRARY STREQUAL "picolibc")
+		# GCC with picolibc: Use specs for both compilation and linking
+		# The picolibc.specs file provides:
+		# - Include paths to picolibc headers
+		# - Library paths to picolibc libraries
+		# - Automatic --gc-sections for linker (reduces binary size)
+		# - Default picolibc.ld linker script (overridden by our -T flag)
+		# Note: Our custom linker scripts override picolibc's default via -T flag
+		target_compile_options(system_compiler_flags INTERFACE
+			-specs=picolibc.specs
+		)
+		target_link_options(system_compiler_flags INTERFACE
+			-specs=picolibc.specs
+		)
+		message(STATUS "C library specs (GCC): -specs=picolibc.specs for compilation and linking")
+	else()
+		# GCC with newlib (default)
+		# Note: -specs=nano.specs is typically added in target-specific CMakeLists.txt
+		message(STATUS "C library specs (GCC): newlib (no additional specs at application level)")
+	endif()
+endif()
 
 # Common flags from *_application_CORTEX_M3.mk, *_application_CORTEX_M4.mk, *_application_CORTEX_M7.mk,
 # *_application_CORTEX_M33.mk, *_application_RV32IMAC.mk and *_application_RV64IMAFDC.mk
@@ -155,6 +197,27 @@ target_link_options(system_compiler_flags INTERFACE
 add_executable(${TARGET_ELF} ${RUNTIME} ${OBJ})
 target_link_libraries(${TARGET_ELF} PUBLIC system_compiler_flags)
 
+# Generated TFLite models (mlp_model.xxd --> mlp_model.c_inc)
+# Scan the application folder and the folders of all application sources
+# for committed model hex dumps
+include(${PATH_UKOS}/Ports/Mkfiles/cmake/tflite-model.cmake)
+
+set(MODEL_SCAN_DIRS ${PATH_MYPR})
+foreach(SRC IN LISTS OBJ)
+	cmake_path(GET SRC PARENT_PATH SRC_DIR)
+	list(APPEND MODEL_SCAN_DIRS ${SRC_DIR})
+endforeach()
+list(REMOVE_DUPLICATES MODEL_SCAN_DIRS)
+
+set(MODEL_XXD_FILES "")
+foreach(SCAN_DIR IN LISTS MODEL_SCAN_DIRS)
+	file(GLOB DIR_XXD "${SCAN_DIR}/_Training/*.xxd" "${SCAN_DIR}/_Models/*.xxd")
+	list(APPEND MODEL_XXD_FILES ${DIR_XXD})
+endforeach()
+list(REMOVE_DUPLICATES MODEL_XXD_FILES)
+
+ukos_add_tflite_models(${TARGET_ELF} ${MODEL_XXD_FILES})
+
 # Add map file in the list of files removed by make clean
 set_property(TARGET ${TARGET_ELF} APPEND
 	PROPERTY ADDITIONAL_CLEAN_FILES ${LOCAL_TARGET}.map
@@ -176,16 +239,35 @@ endif()
 
 # Link options
 set(TARGET_COMMON_LINK_OPTIONS
-	-Wl,--wrap=_malloc_r
-	-Wl,--wrap=_free_r
-	-Wl,--wrap=_realloc_r
-	-Wl,--wrap=_calloc_r
+	$<$<C_COMPILER_ID:Clang>:-Wl,--gc-sections>
 	-Wall
 	-L${PATH_UKOS}/Ports/EquatesModels/Cores/${CORE}/Runtime
 	-T${LINKS_LD}
 	$<$<C_COMPILER_ID:GNU>:-nostartfiles>
 	$<$<AND:$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,20>,$<C_COMPILER_ID:Clang>>:-nostartfiles>
 )
+
+# C library specific memory allocator wrapping
+if(C_LIBRARY STREQUAL "picolibc")
+	# Picolibc uses standard function names (no _r suffix)
+	list(APPEND TARGET_COMMON_LINK_OPTIONS
+		-Wl,--wrap=malloc
+		-Wl,--wrap=free
+		-Wl,--wrap=realloc
+		-Wl,--wrap=calloc
+	)
+	message(STATUS "C library malloc wrapping: --wrap=malloc, --wrap=free, --wrap=realloc, --wrap=calloc")
+else()
+	# Newlib uses reentrant function names (_r suffix)
+	list(APPEND TARGET_COMMON_LINK_OPTIONS
+		-Wl,--wrap=_malloc_r
+		-Wl,--wrap=_free_r
+		-Wl,--wrap=_realloc_r
+		-Wl,--wrap=_calloc_r
+	)
+	message(STATUS "C library malloc wrapping: --wrap=_malloc_r, --wrap=_free_r, --wrap=_realloc_r, --wrap=_calloc_r")
+endif()
+
 target_link_options(${TARGET_ELF} PRIVATE
 	${TARGET_COMMON_LINK_OPTIONS}
 	$<$<COMPILE_LANGUAGE:CXX>:-lc>

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# mlp_model.
-# ==========
+# NN_model.
+# =========
 
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -112,7 +112,7 @@
 #			Output files:
 #				- best_generator.keras
 #				- generator_epoch_xxxx.keras
-#				- mlp_model.tflite
+#				- NN_model.tflite
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -173,7 +173,7 @@ LEARNING_RATE_G		= 0.0001
 LEARNING_RATE_D		= 0.0002
 
 BEST_KERAS_FILE		= "best_generator.keras"
-FINAL_TFLITE_FILE	= "mlp_model.tflite"
+FINAL_TFLITE_FILE	= "NN_model.tflite"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

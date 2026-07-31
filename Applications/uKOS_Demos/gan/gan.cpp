@@ -278,7 +278,7 @@ float32_t	local_randomGaussian(void) {
 	uint32_t	i;
 	float32_t	z = 0.0f;
 
-	for (i = 0u; i < 12u; i++) {
+	for (i = 0u; i < 10u; i++) {
 		z += local_randomUniform();
 	}
 

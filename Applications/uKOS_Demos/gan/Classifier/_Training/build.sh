@@ -67,8 +67,8 @@ if [ ! -d "DB_faces" ]; then
     python DB_Creator.py
 fi
 
-MODEL_FILE="mlp_model.tflite"
+MODEL_FILE=NN_model
 
-python mlp_model.py --model_file ${MODEL_FILE} --mode full 2>mlp_model_warnings.log
+python NN_model.py --model_file "${MODEL_FILE}.tflite" --mode full 2>"${MODEL_FILE}_warnings.log"
 
-xxd -i "${MODEL_FILE}" > mlp_model.c_inc
+xxd "${MODEL_FILE}.tflite" > "${MODEL_FILE}.xxd"

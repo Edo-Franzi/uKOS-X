@@ -60,8 +60,8 @@ if [[ -d "${TFLITE_PYENV:-}" ]]; then
     source "${TFLITE_PYENV}/bin/activate"
 fi
 
-MODEL_FILE="mlp_model.tflite"
+MODEL_FILE=NN_model
 
-python3 mlp_model.py --model_file ${MODEL_FILE} 2>mlp_model_warnings.log
+python3 NN_model.py --model_file ${MODEL_FILE}.tflite 2>"${MODEL_FILE}_warnings.log"
 
-xxd -i "${MODEL_FILE}" > mlp_model.c_inc
+xxd "${MODEL_FILE}.tflite" > "${MODEL_FILE}.xxd"

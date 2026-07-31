@@ -734,6 +734,14 @@ static	void	local_RCC_Configuration(void) {
 	REG(RCC)->DIVENR |= RCC_DIVENR_IC4EN;						//
 	(void)(REG(RCC)->DIVENR);									//
 
+// System clock (IC11 mux) (for AXISRAM3..6)
+
+	REG(RCC)->IC11CFGR = (2u * RCC_IC11CFGR_IC11SEL_0)			// PLL3
+					   | ((1u - 1u) * RCC_IC11CFGR_IC11INT_0);	// IC11 = PLL3 / 1, ~400-MHz
+	STRONG_BARRIER;												//
+	REG(RCC)->DIVENR |= RCC_DIVENR_IC11EN;						//
+	(void)(REG(RCC)->DIVENR);									//
+
 // Bus speeds
 // ----------
 
@@ -745,7 +753,7 @@ static	void	local_RCC_Configuration(void) {
 // - PERCK -> HSI
 
 	REG(RCC)->CFGR1 = (3u * RCC_CFGR1_CPUSW_0)					// IC1 (PLL1 / 1) as a CPU clock
-					| (3u * RCC_CFGR1_SYSSW_0);					// IC2 (PLL4 / 1) as a SYS clock
+					| (3u * RCC_CFGR1_SYSSW_0);					// IC2 (PLL1 / 1) as a SYS clock
 
 	REG(RCC)->CCIPR7 = (0u * RCC_CCIPR7_PERSEL_0);				// per_ck (periph kernel = HSI)
 

@@ -1,10 +1,10 @@
 # Gan demo for uKOS-X (v.1.0)
 
-(c) 2025-2026, Edo. Franzi
+(c) 2025-2026, Edo. Franzi, 2026-07-29
 
 ## Tools and libraries installation
 
-### Generate the mlp_model.c_inc for the demo
+### Generate the NN_model.c_inc for the demo
 
 The Third_Parties Tflite-micro has to be installed
 
@@ -31,12 +31,7 @@ Inside the `generated_faces` folder, there is a list of result images for each e
 # Example, the epoch 0600 is the better visual result
 # We want to use it
 cd ${PATH_UKOS_X_PACKAGE}/Applications/uKOS_Demos/gan/Classifier/_Training
-xxd -i generator_epoch_0600.tflite > mlp_model.c_inc
-
-# Rename the label
-# Open the file mlp_model.c_inc
-# Verify and eventually change the label to have
-unsigned char mlp_model_tflite[] = {
+xxd generator_epoch_0600.tflite > NN_model.xxd
+xxd -i generator_epoch_0600.tflite > NN_model.c_inc
 ```
 
-Use a better model

@@ -112,7 +112,7 @@ typedef enum IRQn {
 	CSI_DBG_IRQn			= 47,	// CSI global interrupt
 	DCMIPP_IRQn				= 48,	// DCMIPP global interrupt
 	PAHB_ERR_IRQn			= 52,	// Write posting errors on Cortex-M55 PAHB interface
-	NPU_END_OF_EPOCH_IRQn	= 53,	// NPU mst_ints[0] line
+	NPU0_IRQn				= 53,	// NPU mst_ints[0] line
 	NPU1_IRQn				= 54,	// NPU mst_ints[1] line
 	NPU2_IRQn				= 55,	// NPU mst_ints[2] line
 	NPU3_IRQn				= 56,	// NPU mst_ints[3] line
@@ -321,7 +321,7 @@ typedef enum IRQn {
 #define	CSI_DBG_C0_IRQn				CSI_DBG_IRQn
 #define	DCMIPP_C0_IRQn				DCMIPP_IRQn
 #define	PAHB_ERR_C0_IRQn			PAHB_ERR_IRQn
-#define	NPU_END_OF_EPOCH_C0_IRQn	NPU_END_OF_EPOCH_IRQn
+#define	NPU0_C0_IRQn				NPU0_IRQn
 #define	NPU1_C0_IRQn				NPU1_IRQn
 #define	NPU2_C0_IRQn				NPU2_IRQn
 #define	NPU3_C0_IRQn				NPU3_IRQn
@@ -529,7 +529,7 @@ void	ADC12_C0_IRQHandler(void);
 void	CSI_DBG_C0_IRQHandler(void);
 void	DCMIPP_C0_IRQHandler(void);
 void	PAHB_ERR_C0_IRQHandler(void);
-void	NPU_END_OF_EPOCH_C0_IRQHandler(void);
+void	NPU0_C0_IRQHandler(void);
 void	NPU1_C0_IRQHandler(void);
 void	NPU2_C0_IRQHandler(void);
 void	NPU3_C0_IRQHandler(void);

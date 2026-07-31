@@ -94,7 +94,8 @@ INCLUDE		STM32N657xD.ld
 /*			(1500K)				0x343BFFFF					*/
 /*			enough: 800x480x4	1500K						*/
 /* APSRAM:	stUMemo				0x90000000					*/
-/*			32M												*/
+/*			16M, for the applications						*/
+/*			16M, for the NUP								*/
 
 /* IMPORTANT:												*/
 /* all the stacks have to be maintained aligned				*/
@@ -122,7 +123,7 @@ linker_stPrgmData_u			= (linker_stPrgmData_p + linker_lnPrgmData_p);							/* 0x
 linker_lnPrgmData_u			= (160K);																/* Length of the RAM										*/
 
 linker_stUMemo				= 0x90000000;															/* 0x90000000: UMemo, start of the user memory 				*/
-linker_lnUMemo				= (32 * 1024K);															/* Length of the user memory	  							*/
+linker_lnUMemo				= (16 * 1024K);															/* Length of the user memory	  							*/
 
 linker_stExtFlash			= 0x70000000;															/* 0x70000000: ExtFlash, start of the external flash memory	*/
 linker_lnExtFlash			= (128 * 1024K);														/* Length of the external flash memory						*/

@@ -1,6 +1,6 @@
 # Classification with the TensorFlow lite Library
 
-(c) 2025-2026, Edo. Franzi, 2026-04-23
+(c) 2025-2026, Edo. Franzi, 2026-07-29
 
 ## Introduction
 
@@ -30,17 +30,17 @@ python3 DB_Creator.py
 
 ### Create the Neural Network
 
-The file `mlp-model.py` contains the high-level description of the neural network architecture and its configuration.
+The file `NN_model.py` contains the high-level description of the neural network architecture and its configuration.
 
 This Python script initialises the required libraries, reads the dataset files, and uses TensorFlow Lite to generate a trained model (a `.tflite` file). It defines the network structure, handles the training process, and prepares the model for deployment.
 
-At the end of the process, the script generates the file `mlp_model.c_inc`, which must be included in the application. This file contains the network parameters (such as weights and biases) in a format suitable for direct integration into the target system.
+At the end of the process, the script generates the file `NN_model.c_inc`, which must be included in the application. This file contains the network parameters (such as weights and biases) in a format suitable for direct integration into the target system.
 
 ```bash
 # Create the Neural Network
 cd _Training
-python3 mlp_model.py --model_file mlp_model.tflite --mode full
-xxd -i mlp_model.tflite > mlp_model.c_inc
+python3 NN_model.py --model_file NN_model.tflite --mode full
+xxd -i NN_model.tflite > NN_model.c_inc
 ```
 
 This file must then be included in the application so that the network architecture and its trained parameters can be embedded directly into the program. In this way, the application can use the classifier without requiring any external model file at runtime.

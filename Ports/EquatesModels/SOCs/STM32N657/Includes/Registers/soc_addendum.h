@@ -287,3 +287,110 @@ typedef struct {
 #define	RTC_WPR_UNLOCK_KEY2		0x00000053u
 #define	RTC_WPR_LOCK_KEY		0x000000FFu
 
+// Additional RISAF instances
+// --------------------------
+
+#if (defined(__cplusplus))
+#define	RISAF1_NS	reinterpret_cast<RISAF_TypeDef *>(0x44026000u)
+#define	RISAF1_S	reinterpret_cast<RISAF_TypeDef *>(0x54026000u)
+
+#define	RISAF2_NS	reinterpret_cast<RISAF_TypeDef *>(0x44027000u)
+#define	RISAF2_S	reinterpret_cast<RISAF_TypeDef *>(0x54027000u)
+
+#define	RISAF3_NS	reinterpret_cast<RISAF_TypeDef *>(0x44028000u)
+#define	RISAF3_S	reinterpret_cast<RISAF_TypeDef *>(0x54028000u)
+
+#define	RISAF4_NS	reinterpret_cast<RISAF_TypeDef *>(0x44029000u)
+#define	RISAF4_S	reinterpret_cast<RISAF_TypeDef *>(0x54029000u)
+
+#define	RISAF5_NS	reinterpret_cast<RISAF_TypeDef *>(0x4402A000u)
+#define	RISAF5_S	reinterpret_cast<RISAF_TypeDef *>(0x5402A000u)
+
+#define	RISAF6_NS	reinterpret_cast<RISAF_TypeDef *>(0x4402B000u)
+#define	RISAF6_S	reinterpret_cast<RISAF_TypeDef *>(0x5402B000u)
+
+#define	RISAF7_NS	reinterpret_cast<RISAF_TypeDef *>(0x4402C000u)
+#define	RISAF7_S	reinterpret_cast<RISAF_TypeDef *>(0x5402C000u)
+
+#define	RISAF8_NS	reinterpret_cast<RISAF_TypeDef *>(0x4402D000u)
+#define	RISAF8_S	reinterpret_cast<RISAF_TypeDef *>(0x5402D000u)
+
+#define	RISAF9_NS	reinterpret_cast<RISAF_TypeDef *>(0x4402E000u)
+#define	RISAF9_S	reinterpret_cast<RISAF_TypeDef *>(0x5402E000u)
+
+#define	RISAF11_NS	reinterpret_cast<RISAF_TypeDef *>(0x44030000u)
+#define	RISAF11_S	reinterpret_cast<RISAF_TypeDef *>(0x54030000u)
+
+#define	RISAF12_NS	reinterpret_cast<RISAF_TypeDef *>(0x44031000u)
+#define	RISAF12_S	reinterpret_cast<RISAF_TypeDef *>(0x54031000u)
+
+#define	RISAF13_NS	reinterpret_cast<RISAF_TypeDef *>(0x44032000u)
+#define	RISAF13_S	reinterpret_cast<RISAF_TypeDef *>(0x54032000u)
+
+#define	RISAF14_NS	reinterpret_cast<RISAF_TypeDef *>(0x44033000u)
+#define	RISAF14_S	reinterpret_cast<RISAF_TypeDef *>(0x54033000u)
+
+#define	RISAF15_NS	reinterpret_cast<RISAF_TypeDef *>(0x44034000u)
+#define	RISAF15_S	reinterpret_cast<RISAF_TypeDef *>(0x54034000u)
+
+#define	RISAF21_NS	reinterpret_cast<RISAF_TypeDef *>(0x44035000u)
+#define	RISAF21_S	reinterpret_cast<RISAF_TypeDef *>(0x54035000u)
+
+#define	RISAF22_NS	reinterpret_cast<RISAF_TypeDef *>(0x44036000u)
+#define	RISAF22_S	reinterpret_cast<RISAF_TypeDef *>(0x54036000u)
+
+#define	RISAF23_NS	reinterpret_cast<RISAF_TypeDef *>(0x44037000u)
+#define	RISAF23_S	reinterpret_cast<RISAF_TypeDef *>(0x54037000u)
+
+#else
+#define	RISAF1_NS	((RISAF_TypeDef *)0x44026000u)
+#define	RISAF1_S	((RISAF_TypeDef *)0x54026000u)
+
+#define	RISAF2_NS	((RISAF_TypeDef *)0x44027000u)
+#define	RISAF2_S	((RISAF_TypeDef *)0x54027000u)
+
+#define	RISAF3_NS	((RISAF_TypeDef *)0x44028000u)
+#define	RISAF3_S	((RISAF_TypeDef *)0x54028000u)
+
+#define	RISAF4_NS	((RISAF_TypeDef *)0x44029000u)
+#define	RISAF4_S	((RISAF_TypeDef *)0x54029000u)
+
+#define	RISAF5_NS	((RISAF_TypeDef *)0x4402A000u)
+#define	RISAF5_S	((RISAF_TypeDef *)0x5402A000u)
+
+#define	RISAF6_NS	((RISAF_TypeDef *)0x4402B000u)
+#define	RISAF6_S	((RISAF_TypeDef *)0x5402B000u)
+
+#define	RISAF7_NS	((RISAF_TypeDef *)0x4402C000u)
+#define	RISAF7_S	((RISAF_TypeDef *)0x5402C000u)
+
+#define	RISAF8_NS	((RISAF_TypeDef *)0x4402D000u)
+#define	RISAF8_S	((RISAF_TypeDef *)0x5402D000u)
+
+#define	RISAF9_NS	((RISAF_TypeDef *)0x4402E000u)
+#define	RISAF9_S	((RISAF_TypeDef *)0x5402E000u)
+
+#define	RISAF11_NS	((RISAF_TypeDef *)0x44030000u)
+#define	RISAF11_S	((RISAF_TypeDef *)0x54030000u)
+
+#define	RISAF12_NS	((RISAF_TypeDef *)0x44031000u)
+#define	RISAF12_S	((RISAF_TypeDef *)0x54031000u)
+
+#define	RISAF13_NS	((RISAF_TypeDef *)0x44032000u)
+#define	RISAF13_S	((RISAF_TypeDef *)0x54032000u)
+
+#define	RISAF14_NS	((RISAF_TypeDef *)0x44033000u)
+#define	RISAF14_S	((RISAF_TypeDef *)0x54033000u)
+
+#define	RISAF15_NS	((RISAF_TypeDef *)0x44034000u)
+#define	RISAF15_S	((RISAF_TypeDef *)0x54034000u)
+
+#define	RISAF21_NS	((RISAF_TypeDef *)0x44035000u)
+#define	RISAF21_S	((RISAF_TypeDef *)0x54035000u)
+
+#define	RISAF22_NS	((RISAF_TypeDef *)0x44036000u)
+#define	RISAF22_S	((RISAF_TypeDef *)0x54036000u)
+
+#define	RISAF23_NS	((RISAF_TypeDef *)0x44037000u)
+#define	RISAF23_S	((RISAF_TypeDef *)0x54037000u)
+#endif

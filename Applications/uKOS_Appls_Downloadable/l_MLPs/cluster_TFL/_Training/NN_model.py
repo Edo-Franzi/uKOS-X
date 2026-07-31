@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# mlp_model.
-# ==========
+# NN_model.
+# =========
 
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -18,8 +18,8 @@
 #			Necessary packages:
 #			python3 -m pip install numpy tensorflow pillow
 #
-#			python3 mlp_model.py
-#			xxd -i  mlp_model.tflite > mlp_model.c_inc
+#			python3 NN_model.py
+#			xxd -i  NN_model.tflite > NN_model.c_inc
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -152,10 +152,10 @@ def main():
 	print("Output TF", output)
 
 	# Convert the model to TFLite format
-	model.save('mlp_model.keras')
+	model.save('NN_model.keras')
 	converter = tf.lite.TFLiteConverter.from_keras_model(model)
 	tflite_model = converter.convert()
-	with open('mlp_model.tflite', 'wb') as f:
+	with open('NN_model.tflite', 'wb') as f:
 		f.write(tflite_model)
 
 	# Use TensorFlow Lite Interpreter to test the TFLite model

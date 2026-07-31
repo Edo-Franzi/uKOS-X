@@ -92,6 +92,6 @@ fi
 
 chmod +w "${BOOT}-trusted.bin" "${APPL}-trusted.bin"
 
-
+"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr" -e all
 "${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr" -d "${BOOT}-trusted.bin" 0x70000000 -v
 "${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr" -d "${APPL}-trusted.bin" 0x70100000 -v

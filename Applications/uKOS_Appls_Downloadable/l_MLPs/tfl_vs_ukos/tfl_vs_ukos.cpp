@@ -132,7 +132,7 @@
 
 // TFLite & uKOS-X models
 
-#include	"./_Models/mlp_model.c_inc"
+#include	"./_Models/NN_model.c_inc"
 #include	"./_Models/network.c_inc"
 
 // uKOS-X specific (see the module.h)
@@ -250,7 +250,7 @@ void	aProcess_0(const void *argument) {
 
 // Load the TFLite model
 
-		const tflite::Model *model = tflite::GetModel(mlp_model_tflite);
+		const tflite::Model *model = tflite::GetModel(NN_model_tflite);
 		if (model->version() != TFLITE_SCHEMA_VERSION) {
 			(void)dprintf(KSYST, "Error : Model version not compatible\n");
 			exit(EXIT_OS_FAILURE);

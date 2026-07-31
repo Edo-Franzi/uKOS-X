@@ -114,7 +114,7 @@ export PATH_SCRIPTS
 # - gmp
 # - mpfr
 
-export BIN_VER=2.46.1
+export BIN_VER=2.47
 export GCC_ARM_VER=16.1.0
 export GCC_RVXX_VER=16.1.0
 export NLB_VER=4.6.0
@@ -145,7 +145,7 @@ export PICOTOOL_VER=2.3.0
 
 export GCC_ARC_VER=16.1.0
 export BOOST_VER=1.91.0
-export IMAGEMAGICK_VER=7.1.2-27
+export IMAGEMAGICK_VER=7.1.2-29
 export PK2CMD_VER=1.27.01
 export SDCC_VER=4.6.0
 export SRECORD_VER=1.65

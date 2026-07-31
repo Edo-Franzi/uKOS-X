@@ -59,8 +59,8 @@ SCRIPT_PATH="${0:A:h}"
 BOOT="FSBL"
 APPL="FLASH"
 
-if [ -f "${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/Library/n6/fsbl_nucleo.noSignature" ]; then
-	cp -f "${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/Library/n6/fsbl_nucleo.noSignature" "${SCRIPT_PATH}/fsbl_nucleo.noSignature"
+if [ -f "${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/STM32N6/Library/fsbl_nucleo.noSignature" ]; then
+	cp -f "${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/STM32N6/Library/fsbl_nucleo.noSignature" "${SCRIPT_PATH}/fsbl_nucleo.noSignature"
 	cp -f "${SCRIPT_PATH}/fsbl_nucleo.noSignature" "${BOOT}.bin"
 
 elif [ -f "${SCRIPT_PATH}/fsbl_nucleo.noSignature" ]; then
@@ -92,5 +92,6 @@ fi
 
 chmod +w "${BOOT}-trusted.bin" "${APPL}-trusted.bin"
 
+"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -e all -v
 "${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -d "${BOOT}-trusted.bin" 0x70000000 -v
 "${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX25UM51245G_STM32N6570-NUCLEO.stldr" -d "${APPL}-trusted.bin" 0x70100000 -v
