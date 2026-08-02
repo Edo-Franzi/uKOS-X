@@ -190,7 +190,7 @@
 #include	"kern/private/private_kern.h"
 #include	"kern/private/private_processes.h"
 
-#define	KKERN_VERSION	" 1.1"
+#define	KKERN_VERSION	" 1.2"
 
 // uKOS-X specific (see the module.h)
 // ==================================

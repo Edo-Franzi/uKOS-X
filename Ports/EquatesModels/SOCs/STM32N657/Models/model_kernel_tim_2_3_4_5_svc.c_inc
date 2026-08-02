@@ -402,14 +402,10 @@ static	void	local_nextTime(uint64_t absTime) {
 
 	minNextTime = 0xFFFFFFFFFFFFFFFFu;
 	for (i = 0u; i < KKERN_NB_PRECISE_SIGNALS; i++) {
-		if ((vKern_prcs[KCORE_0][i].oState & (1u<<BPRCS_INSTALLED)) != 0u) {
-			if (vKern_prcs[KCORE_0][i].oMode != KPRCS_STOP) {
-				if (vKern_prcs[KCORE_0][i].oNextTime < minNextTime) {
-					minNextTime = vKern_prcs[KCORE_0][i].oNextTime;
-					found = true;
-					vPrcsIndex = i;
-				}
-			}
+		if (((vKern_prcs[KCORE_0][i].oState & (1u<<BPRCS_INSTALLED)) != 0u) && (vKern_prcs[KCORE_0][i].oMode != KPRCS_STOP) && (vKern_prcs[KCORE_0][i].oNextTime < minNextTime)) {
+			minNextTime = vKern_prcs[KCORE_0][i].oNextTime;
+			found = true;
+			vPrcsIndex = i;
 		}
 	}
 

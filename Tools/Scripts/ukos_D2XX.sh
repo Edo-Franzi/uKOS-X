@@ -76,24 +76,26 @@ cd "${PATH_TOOLS_ROOT}"/Packages/,Sources
 echo "Downloading FTDI D2xx"
 case "$(uname)" in
 	"Darwin")
-		if [[ ! -f "D2XX${D2XX_OSX_VER}.zip" ]]; then
-			echo "Downloading FTDI D2xx"
-			rm -fr ../D2XX
-			move_to_archive 'D2XX*'
-			curl -OL https://ftdichip.com/wp-content/uploads/2024/04/D2XX"${D2XX_OSX_VER}".dmg
+		if [[ -f "D2XX${D2XX_OSX_VER}.dmg" ]]; then
+			rm -rf ../D2XX
 			hdiutil attach "D2XX${D2XX_OSX_VER}.dmg"
-			cp -r /Volumes/dmg/release ../D2XX
+			cp -R /Volumes/dmg/release ../D2XX
 			umount /Volumes/dmg
 			rm "D2XX${D2XX_OSX_VER}.dmg"
+		else
+			echo "!!! First, manually download D2XX${D2XX_OSX_VER}.dmg into the xyz/uKOS/Packages/,Sources location"
+			exit 1
 		fi
 		;;
 	*)
-		echo "Downloading FTDI D2xx"
-		rm -fr ../D2XX
-		move_to_archive 'D2XX*'
-		wget "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz"
-		tar xf "libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz"
-		mv linux-arm-v8 ../D2XX
+		if [[ -f "libftd2xx-linux-arm-v8-1.4.35.tgz" ]]; then
+			rm -fr ../D2XX
+			tar xf "libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz"
+			mv linux-arm-v8 ../D2XX
+		else
+			echo "!!! First, manually download libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz into the xyz/uKOS/Packages/,Sources location"
+			exit 1
+		fi
 		;;
 esac
 

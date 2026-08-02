@@ -444,14 +444,12 @@ int32_t	kern_hasPendingTimeoutProcesses(bool *nonInfTOActive) {
 	for (i = 0u; i < KKERN_NB_PROCESSES; i++) {
 		process = &vKern_proc[core][i];
 		const uint16_t state = process->oInternal.oState;
-		if (((state & (1u<<BPROC_INSTALLED)) != 0u) && ((state & KSTATE_EOT_MASK) != 0u)) {
-			if ((process->oInternal.oTimeout > 0u) && (process->oInternal.oTimeout != KWAIT_INFINITY)) {
-				*nonInfTOActive = true;
-				DEBUG_KERN_TRACE("exit: OK");
-				return (KERR_KERN_NOERR);
-			}
-
+		if (((state & (1u<<BPROC_INSTALLED)) != 0u) && ((state & KSTATE_EOT_MASK) != 0u) && (process->oInternal.oTimeout > 0u) && (process->oInternal.oTimeout != KWAIT_INFINITY)) {
+			*nonInfTOActive = true;
+			DEBUG_KERN_TRACE("exit: OK");
+			return (KERR_KERN_NOERR);
 		}
+
 	}
 	*nonInfTOActive = false;
 	DEBUG_KERN_TRACE("exit: OK");
@@ -478,30 +476,26 @@ void	temporal_testEOTime(uint32_t time) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	for (i = 0u; i < KKERN_NB_PROCESSES; i++) {
-		if ((vKern_proc[core][i].oInternal.oState & KSTATE_EOT_MASK) != 0u) {
-			if (vKern_proc[core][i].oInternal.oTimeout != KWAIT_INFINITY) {
+		if (((vKern_proc[core][i].oInternal.oState & KSTATE_EOT_MASK) != 0u) && (vKern_proc[core][i].oInternal.oTimeout != KWAIT_INFINITY)) {
 
-				vKern_proc[core][i].oInternal.oTimeout = (vKern_proc[core][i].oInternal.oTimeout < time) ? (0u) : (vKern_proc[core][i].oInternal.oTimeout - time);
+			vKern_proc[core][i].oInternal.oTimeout = (vKern_proc[core][i].oInternal.oTimeout < time) ? (0u) : (vKern_proc[core][i].oInternal.oTimeout - time);
 
-				if (vKern_proc[core][i].oInternal.oTimeout == 0u) {
-					lists_disconnectConnect(vKern_proc[core][i].oObject.oList, &vKern_listExec[core], &vKern_proc[core][i]);
-					vKern_proc[core][i].oInternal.oState &= (uint16_t)~KSTATE_EOT_MASK;
-					vKern_proc[core][i].oInternal.oStatus = KERR_KERN_TIMEO;
+			if (vKern_proc[core][i].oInternal.oTimeout == 0u) {
+				lists_disconnectConnect(vKern_proc[core][i].oObject.oList, &vKern_listExec[core], &vKern_proc[core][i]);
+				vKern_proc[core][i].oInternal.oState &= (uint16_t)~KSTATE_EOT_MASK;
+				vKern_proc[core][i].oInternal.oStatus = KERR_KERN_TIMEO;
 
 // If the ready process has a higher priority, then preemption occurs
 
-					preemption |= ((vKern_proc[core][i].oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) || (vKern_runProc[core] == &vKern_proc[core][0])) ? (true) : (false);
-				}
+				preemption |= ((vKern_proc[core][i].oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) || (vKern_runProc[core] == &vKern_proc[core][0])) ? (true) : (false);
 			}
 		}
 
 // Decrement the internal timeout of all the process installed and not suspended.
 // The process that can be scheduled
 
-		if (((vKern_proc[core][i].oInternal.oState & (1u<<BPROC_INSTALLED)) != 0u) && ((vKern_proc[core][i].oInternal.oState & KSTATE_EOT_MASK) == 0u)) {
-			if (vKern_proc[core][i].oInternal.oTimeout != KWAIT_INFINITY) {
-				vKern_proc[core][i].oInternal.oTimeout = (vKern_proc[core][i].oInternal.oTimeout < time) ? (0u) : (vKern_proc[core][i].oInternal.oTimeout - time);
-			}
+		if (((vKern_proc[core][i].oInternal.oState & (1u<<BPROC_INSTALLED)) != 0u) && ((vKern_proc[core][i].oInternal.oState & KSTATE_EOT_MASK) == 0u) && (vKern_proc[core][i].oInternal.oTimeout != KWAIT_INFINITY)) {
+			vKern_proc[core][i].oInternal.oTimeout = (vKern_proc[core][i].oInternal.oTimeout < time) ? (0u) : (vKern_proc[core][i].oInternal.oTimeout - time);
 		}
 	}
 	INTERRUPTION_RESTORE;
@@ -528,12 +522,10 @@ uint32_t	temporal_getNextLowPowerTime(void) {
 	minTime = KWAIT_INFINITY;
 
 	for (i = 0u; i < KKERN_NB_PROCESSES; i++) {
-		if ((vKern_proc[core][i].oInternal.oState & KSTATE_EOT_MASK) != 0u) {
-			if (vKern_proc[core][i].oInternal.oTimeout < minTime) {
-				minTime = vKern_proc[core][i].oInternal.oTimeout;
-				if (minTime == 0u) {
-					break;
-				}
+		if (((vKern_proc[core][i].oInternal.oState & KSTATE_EOT_MASK) != 0u) && (vKern_proc[core][i].oInternal.oTimeout < minTime)) {
+			minTime = vKern_proc[core][i].oInternal.oTimeout;
+			if (minTime == 0u) {
+				break;
 			}
 		}
 	}

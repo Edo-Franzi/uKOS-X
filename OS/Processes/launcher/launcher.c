@@ -178,10 +178,8 @@ static	void	local_process(const void *argument) {
 		}
 		index++;
 	}
-	if (system_getModuleId((uint32_t)KID_ALIVE, &index, &module) == KERR_SYSTEM_NOERR) {
-		if (((1u<<core) & module->oExecutionCore) != 0) {
-			module->oExecution(argc, &vArgv_alive[core][0]);
-		}
+	if ((system_getModuleId((uint32_t)KID_ALIVE, &index, &module) == KERR_SYSTEM_NOERR) && (((1u<<core) & module->oExecutionCore) != 0u)) {
+		module->oExecution(argc, &vArgv_alive[core][0]);
 	}
 	LOG(KINFO_SYSTEM, "launcher: all process launched");
 
@@ -190,10 +188,8 @@ static	void	local_process(const void *argument) {
 
 	index = 0u;
 	while (system_getModuleFamily((uint8_t)KID_FAM_DAEMONS, &idModule, &index, &module) == KERR_SYSTEM_NOERR) {
-		if ((idModule != (uint32_t)KID_IDLE)) {
-			if (((1u<<core) & module->oExecutionCore) != 0) {
-				module->oExecution(0u, nullptr);
-			}
+		if (((idModule != (uint32_t)KID_IDLE)) && (((1u<<core) & module->oExecutionCore) != 0u)) {
+			module->oExecution(0u, nullptr);
 		}
 		index++;
 	}

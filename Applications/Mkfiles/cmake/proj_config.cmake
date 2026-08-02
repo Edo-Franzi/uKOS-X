@@ -11,6 +11,25 @@
 # Project:	uKOS-X
 # Goal:		Configuring options to build kernel and os
 #
+#			Function to derive SoC properties from SoC name
+#
+#			This function automatically determines the PROVIDER and FAMILY
+#			from a SoC name,eliminating redundant information in project.
+#			CMakeLists.txt files
+#
+#			Arguments:
+#				SOC_NAME - Name of the SoC (e.g., STM32L4R5, STM32H743, nRF5340)
+#
+#			Sets in parent scope:
+#				PROVIDER - Hardware provider (e.g., "st", "nordic")
+#				FAMILY	 - Processor family (e.g., "l4", "h7", "nrf")
+#
+#			Usage example:
+#				set(SOC STM32L4R5)
+#				derive_soc_properties(${SOC})
+#
+#			Now PROVIDER="st" and FAMILY="l4" are available
+#
 #   (c) 2025-2026, Laurent von Allmen
 #   ---------------------------------
 #                                              __ ______  _____
@@ -45,22 +64,6 @@
 #
 #------------------------------------------------------------------------
 
-# Function to derive SoC properties from SoC name
-#
-# This function automatically determines the PROVIDER and FAMILY from a SoC name,
-# eliminating redundant information in project CMakeLists.txt files.
-#
-# Arguments:
-#	SOC_NAME - Name of the SoC (e.g., STM32L4R5, STM32H743, nRF5340)
-#
-# Sets in parent scope:
-#	PROVIDER - Hardware provider (e.g., "st", "nordic")
-#	FAMILY	 - Processor family (e.g., "l4", "h7", "nrf")
-#
-# Usage example:
-#	set(SOC STM32L4R5)
-#	derive_soc_properties(${SOC})
-#	# Now PROVIDER="st" and FAMILY="l4" are available
 function(derive_soc_properties SOC_NAME)
 	# STMicroelectronics processors
 	# Pattern: STM32[FGHLUWP][0-9]...

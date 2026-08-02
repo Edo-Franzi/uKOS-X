@@ -290,7 +290,7 @@ int32_t	serial_configure(serialManager_t serialManager, const void *configure) {
 		case KBLE0: { return (ble0_configure((const urtxCnf_t *)configure)); }
 		#endif
 
-		default:    { return (KERR_SERIAL_NODEV);							  }
+		default:    { return (KERR_SERIAL_NODEV);							 }
 	}
 }
 

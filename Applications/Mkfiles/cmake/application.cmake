@@ -76,6 +76,22 @@ if(C_LIBRARY STREQUAL "picolibc")
 		_REENT_GLOBAL_ERRNO
 	)
 	message(STATUS "C library compile definitions: CONFIG_MAN_PICOLIBC_S, _GNU_SOURCE, _REENT_GLOBAL_ERRNO")
+elseif(C_LIBRARY STREQUAL "llvmlibc")
+    target_compile_definitions(system_compiler_flags INTERFACE
+        CONFIG_MAN_LLVMLIBC_S
+    )
+    # LLVM libc has no FILE*-based dprintf; force-include the declaration shim
+    # so app code that only includes <stdio.h> still sees a prototype.
+    target_compile_options(system_compiler_flags INTERFACE
+        "$<$<COMPILE_LANGUAGE:C,CXX>:-include;${PATH_UKOS}/OS/Lib_generics/llvmlibc/llvmlibc_shim.h>"
+    )
+    # Overlay installs need --config=llvmlibc.cfg to select LLVM libc; a
+    # dedicated LLVM-libc toolchain build does not. Set LLVMLIBC_CONFIG to enable.
+    if(LLVMLIBC_CONFIG)
+        target_compile_options(system_compiler_flags INTERFACE --config=${LLVMLIBC_CONFIG})
+        target_link_options(system_compiler_flags INTERFACE --config=${LLVMLIBC_CONFIG})
+    endif()
+    message(STATUS "C library compile definitions: CONFIG_MAN_LLVMLIBC_S (dprintf shim force-included)")
 else()
 	# newlib (default)
 	target_compile_definitions(system_compiler_flags INTERFACE
@@ -257,6 +273,15 @@ if(C_LIBRARY STREQUAL "picolibc")
 		-Wl,--wrap=calloc
 	)
 	message(STATUS "C library malloc wrapping: --wrap=malloc, --wrap=free, --wrap=realloc, --wrap=calloc")
+elseif(C_LIBRARY STREQUAL "llvmlibc")
+    # LLVM libc uses standard function names (no _r suffix), like picolibc
+    list(APPEND TARGET_COMMON_LINK_OPTIONS
+        -Wl,--wrap=malloc
+        -Wl,--wrap=free
+        -Wl,--wrap=realloc
+        -Wl,--wrap=calloc
+    )
+    message(STATUS "C library malloc wrapping: --wrap=malloc, --wrap=free, --wrap=realloc, --wrap=calloc")
 else()
 	# Newlib uses reentrant function names (_r suffix)
 	list(APPEND TARGET_COMMON_LINK_OPTIONS

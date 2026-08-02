@@ -109,10 +109,7 @@ static	int32_t prgm(uint32_t argc, const char_t *argv[]) {
 
 	memcpy(&flashHeader, demoFlash, sizeof(flashHeader));
 
-	if ((flashHeader.oMemLocation == KMEMU) &&
-		(flashHeader.oStart != nullptr)	 &&
-		(flashHeader.oLnApplication != 0)	 &&
-		(flashHeader.oModule != nullptr)) {
+	if ((flashHeader.oMemLocation == KMEMU) && (flashHeader.oStart != nullptr) && (flashHeader.oLnApplication != 0) && (flashHeader.oModule != nullptr)) {
 
 // Verify the size
 
@@ -146,8 +143,8 @@ static	int32_t prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 static	int32_t pre_init(uint32_t argc, const char_t *argv[]) {
-			uint8_t			*demoAPSRAM = linker_stUMemo;
-	const	size_t			demoSize	= 0x800000;
+			uint8_t		*demoAPSRAM = linker_stUMemo;
+	const	size_t		demoSize	= 0x800000;
 
 	UNUSED(argc);
 	UNUSED(argv);

@@ -260,7 +260,7 @@ int32_t	kern_createProcess(const spec_t *specification, const void *argument, pr
 	*handle = nullptr;
 
 	if (IS_EXCEPTION)																															   { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_FRISR); }
-	if (specification->oStackStart == nullptr)																										   { DEBUG_KERN_TRACE("exit: KO 2"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSTK); }
+	if (specification->oStackStart == nullptr)																									   { DEBUG_KERN_TRACE("exit: KO 2"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOSTK); }
 	if (vKern_listFree[core].oNbElements == 0u)																									   { DEBUG_KERN_TRACE("exit: KO 3"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_LIFUL); }
 	if ((specification->oMode == KPROC_PRIVILEGED) &&
 	   ((vKern_runProc[core]->oSpecification.oMode == KPROC_USER) && ((vKern_runProc[core]->oInternal.oState & (1u<<BPROC_PRIV_ELEVATED)) == 0u))) { DEBUG_KERN_TRACE("exit: KO 4"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_PRIVI); }
@@ -271,16 +271,14 @@ int32_t	kern_createProcess(const spec_t *specification, const void *argument, pr
 
 	if (specification->oIdentifier != nullptr) {
 		for (i = 0u; i < KKERN_NB_PROCESSES; i++) {
-			if ((vKern_proc[core][i].oInternal.oState & (1u<<BPROC_INSTALLED)) != 0u) {
-				if (identifiers_cmpStrings(vKern_proc[core][i].oSpecification.oIdentifier, specification->oIdentifier) == true) {
-					*handle = &vKern_proc[core][i];
-					DEBUG_KERN_TRACE("exit: KO 5");
-					INTERRUPTION_RESTORE;
-					PRIVILEGE_RESTORE;
-					return (KERR_KERN_IDPRO);
-				}
-
+			if (((vKern_proc[core][i].oInternal.oState & (1u<<BPROC_INSTALLED)) != 0u) && (identifiers_cmpStrings(vKern_proc[core][i].oSpecification.oIdentifier, specification->oIdentifier) == true)) {
+				*handle = &vKern_proc[core][i];
+				DEBUG_KERN_TRACE("exit: KO 5");
+				INTERRUPTION_RESTORE;
+				PRIVILEGE_RESTORE;
+				return (KERR_KERN_IDPRO);
 			}
+
 		}
 	}
 
@@ -762,10 +760,8 @@ static	void	local_fatherKilled(const proc_t *handle) {
 	core = GET_RUNNING_CORE;
 
 	for (i = 0u; i < KKERN_NB_PROCESSES; i++) {
-		if ((vKern_proc[core][i].oInternal.oState & (1u<<BPROC_INSTALLED)) != 0u) {
-			if (vKern_proc[core][i].oInternal.oProcFather == handle) {
-				vKern_proc[core][i].oInternal.oProcFather = nullptr;
-			}
+		if (((vKern_proc[core][i].oInternal.oState & (1u<<BPROC_INSTALLED)) != 0u) && (vKern_proc[core][i].oInternal.oProcFather == handle)) {
+			vKern_proc[core][i].oInternal.oProcFather = nullptr;
 		}
 	}
 }

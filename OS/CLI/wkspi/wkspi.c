@@ -330,7 +330,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				break;
 			}
 		}
-	spi_release(spiManager, KMODE_READ_WRITE);
+		spi_release(spiManager, KMODE_READ_WRITE);
 	}
 	else {
 		error = KERR_BSY;

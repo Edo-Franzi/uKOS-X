@@ -664,7 +664,7 @@ int32_t	kern_killBitSignal(sign_t *handle, uint8_t bitSignal) {
 	PRIVILEGE_ELEVATE;
 	INTERRUPTION_OFF;
 	vKern_runProc[core]->oStatistic.oNbKernCalls++;
-	if (handle == nullptr)								    { DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOGRO); }
+	if (handle == nullptr)								{ DEBUG_KERN_TRACE("exit: KO 1"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOGRO); }
 	if ((handle->oState & (1u<<BSIGN_INSTALLED)) == 0u) { DEBUG_KERN_TRACE("exit: KO 2"); INTERRUPTION_RESTORE; PRIVILEGE_RESTORE; return (KERR_KERN_NOGRO); }
 
 	maskBit = (uint32_t)(1u<<bitSignal);
