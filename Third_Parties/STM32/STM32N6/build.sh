@@ -72,7 +72,7 @@ readonly NC=$'\033[0m' # No Color
 
 readonly splash='
 ╔════════════════════════════════════════════════════════════╗
-║                FSBL Package Build System                   ║
+║            FSBL and NPU Package Build System               ║
 ║      Fetching upstream + Building all architectures        ║
 ╚════════════════════════════════════════════════════════════╝
 '
@@ -88,7 +88,7 @@ readonly hash=c698033e
 readonly TOOLCHAIN_PATH="${PATH_GCC_ARM}/bin"
 readonly SOC_ROOT="${PATH_PRG}"
 readonly FSBL_ROOT="${SOC_ROOT}/Construction/fsbl"
-readonly LIBRARY_ROOT="${SOC_ROOT}/Library/fsbl"
+readonly LIBRARY_ROOT="${SOC_ROOT}/Library"
 readonly CUBE_ROOT="${SOC_ROOT}/STM32CubeN6"
 
 # Clone the right package
@@ -103,6 +103,8 @@ else
 fi
 git -C "${CUBE_ROOT}" checkout "v${package}"
 
+# The FSBL
+
 rm -rf "${FSBL_ROOT}/build"
 
 cmake -S "${FSBL_ROOT}" --preset nucleo -DCUBE_ROOT="${CUBE_ROOT}" -DTOOLCHAIN_PATH="${TOOLCHAIN_PATH}"
@@ -111,9 +113,16 @@ cmake --build "${FSBL_ROOT}/build/nucleo" --parallel
 cmake -S "${FSBL_ROOT}" --preset discovery -DCUBE_ROOT="${CUBE_ROOT}" -DTOOLCHAIN_PATH="${TOOLCHAIN_PATH}"
 cmake --build "${FSBL_ROOT}/build/discovery" --parallel
 
-rm -rf "${LIBRARY_ROOT}"
-mkdir -p "${LIBRARY_ROOT}"
-cp -f "${FSBL_ROOT}/build/nucleo/fsbl.bin"    "${LIBRARY_ROOT}/fsbl_nucleo.noSignature"
-cp -f "${FSBL_ROOT}/build/discovery/fsbl.bin" "${LIBRARY_ROOT}/fsbl_discovery.noSignature"
+rm -rf "${LIBRARY_ROOT}/fsbl"
+mkdir -p "${LIBRARY_ROOT}/fsbl"
+cp -f "${FSBL_ROOT}/build/nucleo/fsbl.bin"    "${LIBRARY_ROOT}/fsbl/fsbl_nucleo.noSignature"
+cp -f "${FSBL_ROOT}/build/discovery/fsbl.bin" "${LIBRARY_ROOT}/fsbl/fsbl_discovery.noSignature"
 
 rm -rf "${FSBL_ROOT}/build"
+
+# The NPU
+
+(
+cd "${LIBRARY_ROOT}/AI/gan" || exit 1
+    ./build.sh
+)

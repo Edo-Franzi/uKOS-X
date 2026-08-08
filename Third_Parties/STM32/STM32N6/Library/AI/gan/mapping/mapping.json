@@ -1,0 +1,31 @@
+{
+    "Globals": {
+        //"NA_binary": "C:\\ATON_Compiler\\binwin\\atonn.exe"
+    },
+    "Profiles": {
+		// Minimal options required for the generated file to work
+        "minimal" : {
+            "memory_pool": "./mapping.mpool",
+            "options": "--native-float --cache-maintenance --Ocache-opt"
+        },
+		// Advised minimal options
+		"default" : {
+			"memory_pool": "./mapping.mpool",
+            "options": "--native-float --cache-maintenance --Ocache-opt --enable-virtual-mem-pools --Os --Oauto-sched"
+		},
+		"allmems--O3" : {
+			"memory_pool": "./mapping.mpool",
+            "options": "--native-float --cache-maintenance --Ocache-opt --enable-virtual-mem-pools --Os --optimization 3 --Oauto-sched"
+		},
+		// Automatic search of best options
+		"allmems--auto" : {
+			"memory_pool": "./mapping.mpool",
+            "options": "--native-float --cache-maintenance --Ocache-opt --enable-virtual-mem-pools --Os --Oauto"
+		},
+		// Use only internal memories with default profile
+		"internal-memories-only--default" : {
+            "memory_pool": "./mapping.mpool",
+            "options": "--native-float --cache-maintenance --Ocache-opt --enable-virtual-mem-pools --Os --Oauto-sched"
+        }
+    }
+}

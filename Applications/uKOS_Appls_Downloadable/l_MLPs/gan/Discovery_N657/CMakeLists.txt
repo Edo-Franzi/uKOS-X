@@ -55,7 +55,7 @@ include(set-project-paths)
 include(${PATH_UKOS}/Ports/Mkfiles/cmake/select-arm-toolchain.cmake)
 
 project(
-	debris
+	gan
 	VERSION 1.0
 	LANGUAGES CXX C
 )
@@ -90,17 +90,19 @@ set(PATH_INCLUDES
 	${PATH_LVGL}/Library/${DISPLAY}/${CORE}
 	${PATH_LVGL}/LVGL-current
 	${PATH_LVGL}/LVGL-current/src
-	${APP_DIR}/Classifier
-	${APP_DIR}/Graphics
+	${PATH_UKOS}/Applications/uKOS_Demos/gan/Classifier
+	${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics
+	${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/Widgets
 )
 find_library(MYLIB TFLite ${PATH_UKOS}/Third_Parties/Tflite-micro/Library/${CORE})
 
 set(OBJ
-    ${PROJECT_SOURCE_DIR}/../Classifier/mlpn_classifier.c
-    ${PROJECT_SOURCE_DIR}/../Graphics/lvgl.c
-    ${PROJECT_SOURCE_DIR}/../Graphics/ui.c
-    ${PROJECT_SOURCE_DIR}/stub.c
-    ${PROJECT_SOURCE_DIR}/../Classifier/tfl_classifier.cpp
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Classifier/tfl_classifier.cpp
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Discovery_N657/stub.c
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/Widgets/Discovery_N657/background/background.c
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/lvgl.c
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/ui.c
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/gan.cpp
 )
 
 include(common)

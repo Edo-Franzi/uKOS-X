@@ -55,7 +55,12 @@ set -euo pipefail
 
 SCRIPT_PATH="${0:A:h}"
 
-DEMO="gan"
+readonly WEIGHTS="NN_weight"
+
+if [[ ! -f "${WEIGHTS}.bin" ]]; then
+	print -u2 "Error: weights file not found: ${WEIGHTS}.raw"
+	exit 1
+fi
 
 STM32_PROGRAMMER_CLI="${STM32_PROGRAMMER_CLI:-/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin/STM32_Programmer_CLI}"
 if [[ ! -x "${STM32_PROGRAMMER_CLI}" ]]; then
@@ -66,15 +71,5 @@ if [[ ! -x "${STM32_PROGRAMMER_CLI}" ]]; then
 fi
 
 STM32_PROGRAMMER_BIN=${STM32_PROGRAMMER_CLI:h}
-STM32_PROGRAMMER_SIG="${STM32_PROGRAMMER_BIN}/STM32_SigningTool_CLI"
 
-if [[ ! -x "${STM32_PROGRAMMER_SIG}" ]]; then
-	print -u2 "Error: STM32_SigningTool_CLI not found at ${STM32_PROGRAMMER_SIG}"
-	exit 1
-fi
-
-"${STM32_PROGRAMMER_SIG}" -s -bin "${DEMO}.bin" -nk -of 0x80000000 -t fsbl -o "${DEMO}-trusted.bin" -hv 2.3 -dump "${DEMO}-trusted.bin" -align
-
-chmod +w "${DEMO}-trusted.bin"
-
-"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr" -d "${DEMO}-trusted.bin" 0x70300000 -v
+"${STM32_PROGRAMMER_CLI}" -c port=SWD mode=HOTPLUG ap=1 -el "${STM32_PROGRAMMER_BIN}/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr" -d "${WEIGHTS}.bin" 0x71000000 -v

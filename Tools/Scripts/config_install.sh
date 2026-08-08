@@ -115,8 +115,8 @@ export PATH_SCRIPTS
 # - mpfr
 
 export BIN_VER=2.47
-export GCC_ARM_VER=16.1.0
-export GCC_RVXX_VER=16.1.0
+export GCC_ARM_VER=16.2.0
+export GCC_RVXX_VER=16.2.0
 export NLB_VER=4.6.0
 export NLB_RVXX_VER=4.5.0
 export GDB_VER=17.2
@@ -135,7 +135,7 @@ export LIBCONFUSE_VER=3.3
 export DFUUTIL_VER=1.1
 export LIBJAYLINK_VER=0.4.0
 export DOXYGEN_VER=1.17.0
-export GRAPHVIZ_VER=15.1.0
+export GRAPHVIZ_VER=15.1.1
 export CPPCHECK_VER=2.20.0
 export PICO_SDK_VER=2.3.0
 export PICOTOOL_VER=2.3.0
@@ -143,7 +143,7 @@ export PICOTOOL_VER=2.3.0
 # Goodies
 # Not used for the uKOS-X project
 
-export GCC_ARC_VER=16.1.0
+export GCC_ARC_VER=16.2.0
 export BOOST_VER=1.91.0
 export IMAGEMAGICK_VER=7.1.2-29
 export PK2CMD_VER=1.27.01

@@ -13,9 +13,10 @@
 
 ## Variants
 
-| Variant      | Description       | Specific |
-| ------------ | ----------------- | -------- |
-| Variant_Test | For Initial tests |          |
+| Variant      | Description       | Specific                  |
+| ------------ | ----------------- | ------------------------- |
+| Variant_Test | For Initial tests | With MicroPython embedded |
+|              |                   | With TensorFlow,          |
 
 ## Note
 

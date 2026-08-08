@@ -71,21 +71,27 @@ VARIANT			=  Variant_Test
 SOC				=  STM32N657
 CORE			=  CORTEX_M55
 OPTIMISATION	=  -Os
+NN_DEFINES		=  -DUSE_NN_HARDWARE
 
+CFLAGS			+= $(NN_DEFINES)
 CFLAGS			+= -I$(PATH_LVGL)/LVGL-current
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
 CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
+CFLAGS			+= -DUSE_NN_HARDWARE
 
+CXXFLAGS		+= $(NN_DEFINES)
 CXXFLAGS		+= -I$(PATH_LVGL)/LVGL-current
 CXXFLAGS		+= -I$(PATH_LVGL)/Library/$(DISPLAY)
 CXXFLAGS		+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
 CXXFLAGS		+= -DTF_LITE_STATIC_MEMORY=1
 
 MYLIB			=    $(PATH_UKOS)/Third_Parties/Tflite-micro/Library/$(CORE)/libTFLite.a
+MYLIB			+=	 $(PATH_UKOS)/Third_Parties/STM32/STM32N6/Library/AI/$(PROJECT)/libNN_Hardware.a
 PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic
 PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/flatbuffers/include
 PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/gemmlowp
+PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/STM32/STM32N6/Library/AI/$(PROJECT)
 
 PATH_INCLUDES	+= -I$(PATH_DEMO)/Classifier
 PATH_INCLUDES	+= -I$(PATH_DEMO)/Graphics

@@ -149,7 +149,7 @@ fi
 
 if [[ ! -d "newlib-${NLB_VER}" ]]; then
 	echo "Downloading newlib-${NLB_VER}"
-	git clone "https://sourceware.org/git/newlib-cygwin.git" "newlib-${NLB_VER}"
+	git clone https://github.com/mirror/newlib-cygwin.git "${PACKS_NLB}"
 	git -C "newlib-${NLB_VER}" fetch --tags
 	git -C "newlib-${NLB_VER}" checkout "tags/newlib-${NLB_VER}"
 fi

@@ -290,8 +290,8 @@ void	aProcess_0(const void *argument) {
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);
 
-		if (delta < minTFL) { minTFL = delta; }
-		if (delta > maxTFL) { maxTFL = delta; }
+		minTFL = std::min(delta, minTFL);
+		maxTFL = std::max(delta, maxTFL);
 		(void)dprintf(KSYST, "Exec time for TensorFlowLite, min = %" PRIu32 " [us], max = %" PRIu32 " [us]\n", minTFL, maxTFL);
 
 // For MLPN uKOS-X

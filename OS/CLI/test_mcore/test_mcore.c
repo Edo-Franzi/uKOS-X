@@ -210,7 +210,7 @@ static	void	local_process_TX(const void *argument) {
 			exit(EXIT_OS_FAILURE);
 		}
 
-		memcpy(&send[0], &message[0], size);
+		memcpy(&send[0], &message[0], (size - 3u));
 
 		send[size - 3u] = (uint8_t)' ';
 		send[size - 2u] = counter;

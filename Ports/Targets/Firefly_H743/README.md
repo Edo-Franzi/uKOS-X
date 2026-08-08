@@ -19,6 +19,8 @@ https://de.aliexpress.com/item/1005011735923535.html?spm=a2g0o.order_list.order_
 
 ## Variants
 
-| Variant              | Description       | Specific                  |
-| -------------------- | ----------------- | ------------------------- |
-| Variant_Test         | For Initial tests | With MicroPython embedded |
+| Variant      | Description       | Specific                  |
+| ------------ | ----------------- | ------------------------- |
+| Variant_Test | For Initial tests | With MicroPython embedded |
+|              |                   | With FS CDC TinyUSB       |
+|              |                   | With LTDC, TensorFlow,    |

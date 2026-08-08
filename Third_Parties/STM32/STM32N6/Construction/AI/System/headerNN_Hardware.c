@@ -1,17 +1,17 @@
 /*
-; ui.
-; ===
+; headerNN_Hardware.
+; ==================
 
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Edo. Franzi		The 2026-07-26
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Demo of a C application.
-;			Simple UI for the debris demo.
+; Goal:		header for NN_Hardwarelibrary.
+;			uKOS-X interface for NPU.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
@@ -48,44 +48,32 @@
 ;------------------------------------------------------------------------
 */
 
-#pragma	once
+#include	"macros.h"
+#include	"types.h"
+#include	"modules.h"
+#include	"ip.h"
 
-// Display size
+// uKOS-X specific (see the module.h)
+// ==================================
 
-#define	KLCD_BUF_LINES		10u						// Limited buffer (10 * KLCD_WIDTH * 4) to force partial rendering
-#define	KLCD_WIDTH			800						// LCD width
-#define	KLCD_HEIGHT			480						// LCD height
+// ----------------------------------I------------I-----------------------------------------I--------------I
 
-// Used colors
+STRG_LOC_CONST(aStrApplication[]) =	"NN_Hardware  Third party NN_Hardware library.          (c) EFr-2026";
+STRG_LOC_CONST(aStrHelp[])		  = "NN_Hardware library\n"
+									"===================\n\n"
 
-#define	KMASK_24_BITS		0x00FFFFFFu				// Mask
-#define	KRED				0x00FF0000u				// Red
-#define	KGREEN				0x0000FF00u				// Green
-#define	KBLUE				0x000000FFu				// Blue
-#define	KWHITE				0x00FFFFFFu				// White
-#define	KBLACK				0x00000000u				// Black
+									"This library ...\n\n"
 
-// Small face
+									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-#define	KFACE_SRC_W			64						// Face width
-#define	KFACE_SRC_H			64						// Face height
-#define	KFACE_DST_W			180						// Size W of the zoomed widglet
-#define	KFACE_DST_H			180						// Size H of the zoomed widglet
-#define	KFACE_POS_X			510						// Text X, small image
-#define	KFACE_POS_Y			150						// Text Y, small image
-
-// Arc diameter & positions
-
-#define	KARC_DIAMETER		87						// Arc diameter
-#define	KARC_MARGIN			20						// Arc margin
-#define	KARC_POS_X			693						// X Arc
-#define	KARC_POS_Y			340						// Y Arc
-
-// Text positions
-
-#define	KTEXT_POS_X_1		130						// Text X, random
-#define	KTEXT_POS_Y_1		260						// Text Y, random
-#define	KTEXT_POS_X_2		270						// Text X, execution TensorFlow
-#define	KTEXT_POS_Y_2		300						// Text Y, execution TensorFlow
-#define	KTEXT_POS_X_3		270						// Text X, execution NPU
-#define	KTEXT_POS_Y_3		320						// Text Y, execution NPU
+MODULE(
+	HeaderNN_Hardware,				// Module name (the first letter has to be upper case)
+	KID_FAM_THIRD_PARTIES,			// Family (defined in the module.h)
+	KNUM_NN_HARDWARE,				// Module identifier (defined in the module.h)
+	nullptr,						// Address of the initialisation code (early pre-init)
+	nullptr,						// Address of the code (prgm for tools, aStart for applications, nullptr for libraries)
+	nullptr,						// Address of the clean code (clean the module)
+	" 1.0",							// Revision string (major . minor)
+	(1u<<BSHOW),					// Flags (BSHOW = visible with "man", BEXE_CONSOLE = executable, BCONFIDENTIAL = hidden)
+	0								// Execution cores
+);

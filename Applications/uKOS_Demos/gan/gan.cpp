@@ -80,10 +80,11 @@
 
 #include	"uKOS.h"
 #include	"ulvgl.h"
+#include	"ui.h"
+#include	"nn.h"
 #include	<stdlib.h>
 #include	<math.h>
 #include	<cinttypes>
-#include	"ui.h"
 
 // uKOS-X specific (see the module.h)
 // ==================================
@@ -133,6 +134,15 @@ MODULE(
 );
 #endif
 
+#if (defined(USE_NN_HARDWARE))
+#define	NNH_INIT		nnh_init()
+#define	NNH_CLASSIFY	nnh_classify(&vInput[0], &vOutput[0])
+
+#else
+#define	NNH_INIT
+#define	NNH_CLASSIFY
+#endif
+
 // Prototypes
 
 namespace tfl {
@@ -141,18 +151,21 @@ extern	void	tfl_classify(float32_t *entry, uint8_t *face);
 }
 
 extern "C" {
+extern	void	nnh_init(void);
+extern	void	nnh_classify(float32_t *entry, uint8_t *face);
 extern	void	lvgl_init(void);
 extern	void	ui_drawFace(const uint8_t *face);
 extern	void	ui_drawRandom(const char_t *s);
 }
 
 namespace {
-		float32_t	local_randomUniform(void);
-		float32_t	local_randomGaussian(void);
+	float32_t	local_randomUniform(void);
+	float32_t	local_randomGaussian(void);
 }
 
 namespace {
-static	uint8_t		vFace[KFACE_SRC_W * KFACE_SRC_H];
+	float32_t	vInput[KNN_INPUT_SIZE];
+	uint8_t		vOutput[KNN_OUTPUT_SIZE];
 }
 
 /*
@@ -160,7 +173,7 @@ static	uint8_t		vFace[KFACE_SRC_W * KFACE_SRC_H];
  *
  * - P0:  Configure the TensorFlow
  *		  Every 1000-ms
- *			- Complex CNN 4 layer NN
+ *			- Complex GAN (generator)
  *			- Display the result
  *
  */
@@ -168,14 +181,14 @@ namespace {
 
 [[noreturn]]
 void	aProcess_0(const void *argument) {
-	uint32_t		i;
-	float32_t		entry[64];
-	char_t			text[40];
+	uint32_t	i;
+	char_t		text[40];
 
 	UNUSED(argument);
 
 	PRIVILEGE_ELEVATE;
 	tfl::tfl_init();
+	NNH_INIT;
 
 	while (true) {
 		kern_suspendProcess(1000u);
@@ -184,16 +197,17 @@ void	aProcess_0(const void *argument) {
 // Use only 10 dimensions to avoid to generate
 // like "monster" faces
 
-		for (i = 0u; i < 64u; i++) {
-			entry[i] = (i < 10) ? (local_randomGaussian()) : (0.0f);
+		for (i = 0u; i < KNN_INPUT_SIZE; i++) {
+			vInput[i] = (i < 10u) ? (local_randomGaussian()) : (0.0f);
 		}
 
-		tfl::tfl_classify(&entry[0], &vFace[0]);
+		tfl::tfl_classify(&vInput[0], &vOutput[0]);
+		NNH_CLASSIFY;
 
-		(void)snprintf(text, sizeof(text), "%.3f", entry[0]);
+		(void)snprintf(text, sizeof(text), "%.3f", vInput[0]);
 
 		ui_drawRandom(text);
-		ui_drawFace(&vFace[0]);
+		ui_drawFace(&vOutput[0]);
 	}
 }
 }
@@ -281,7 +295,6 @@ float32_t	local_randomGaussian(void) {
 	for (i = 0u; i < 10u; i++) {
 		z += local_randomUniform();
 	}
-
 	return (z - 6.0f);
 }
 }

@@ -14,8 +14,10 @@
 
 ## Variants
 
-| Variant      | Description           | Specific              |
-| ------------ | --------------------- | --------------------- |
-| Variant_Test | For Initial tests     |                       |
-|              | Building for M33      | make -j USER_MODE=1   |
-|              | Building for RV32IMAC | make -j CORE=RV32IMAC |
+| Variant      | Description           | Specific                  |
+| ------------ | --------------------- | ------------------------- |
+| Variant_Test | For Initial tests     | With MicroPython embedded |
+|              | Building for M33      | make -j USER_MODE=1       |
+|              | Building for RV32IMAC | make -j CORE=RV32IMAC     |
+|              |                       | With FS CDC TinyUSB       |
+|              |                       | With TensorFlow           |

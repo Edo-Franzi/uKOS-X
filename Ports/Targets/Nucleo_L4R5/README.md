@@ -16,3 +16,4 @@
 | ------------ | ----------------- | ------------------------- |
 | Variant_Test | For Initial tests | With MicroPython embedded |
 |              |                   | With FS CDC TinyUSB       |
+|              |                   | With TensorFlow           |

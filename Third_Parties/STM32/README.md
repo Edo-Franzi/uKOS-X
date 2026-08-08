@@ -29,7 +29,6 @@ export	STM32_PRG_PATH
 export	STM32_NEURAL_ART
 
 PATH="${STM32_NEURAL_ART}:${PATH}"
-
 ```
 
 ## STM32N657
@@ -41,11 +40,15 @@ STM32
     ├── build.sh
     ├── Construction
     │   ├── AI
-    │   │   └── gan_npu
-    │   │       ├── build.sh
-    │   │       ├── mapping
-    │   │       │   ├── neural_art_ukos.json
-    │   │       │   └── stm32n6_ukos_psram.mpool
+    │   │   ├── network
+    │   │   │   └── libNN_Hardware
+    │   │   │       ├── include
+    │   │   │       │   └── libNN_Hardware.h
+    │   │   │       └── src
+    │   │   │           ├── libNN_Hardware.c
+    │   │   │           └── stub_halGetTick.c
+    │   │   └── System
+    │   │       └── headerNN_Hardware.c
     │   └── fsbl
     │       ├── cmake
     │       │   └── arm-none-eabi-gcc.cmake
@@ -75,14 +78,20 @@ STM32
     │           └── startup_stm32n657xx.s
     ├── Library
     │   ├── AI
-    │   │   └── gan_npu
+    │   │   └── gan
+    │   │       ├── build.sh
+    │   │       ├── burn.sh
+    │   │       ├── libNN_Hardware.h
+    │   │       ├── makefile
+    │   │       ├── mapping
+    │   │       │   ├── ukos_neural_art.json
+    │   │       │   └── ukos_ram.mpool
+    │   │       ├── NN_model.xxd
     │   └── fsbl
-    │       ├── fsbl_discovery.noSignature
-    │       └── fsbl_nucleo.noSignature
     ├── STEdgeAI
-    │   ├── ...
-    └── STM32CubeN6
-        ├── ...
+    ├── STM32CubeN6
+    ├── build.sh
+
 ```
 
 ### Building the FSBL for the STM32N657
@@ -102,10 +111,10 @@ cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/STM32N6
 https://www.st.com/en/development-tools/stedgeai-core.html
 ```
 
-### Conversion of a .tflite file to npu ressources (example gan_npu)
+### Building the libNN_Hardware.a for the gan application 
 
 ```bash
-cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/STM32N6/Construction/AI/gan_npu
+cd ${PATH_UKOS_X_PACKAGE}/Third_Parties/STM32/STM32N6/Library/AI/gan
 ./build.sh
 ```
 

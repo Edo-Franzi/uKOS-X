@@ -58,6 +58,7 @@ extern	lv_image_dsc_t	background;
 		lv_obj_t		*vArc[KNB_CORES];
 		lv_obj_t		*vL_random[KNB_CORES];
 		lv_obj_t		*vL_Ex_TensorFlow[KNB_CORES];
+		lv_obj_t		*vL_Ex_NPU[KNB_CORES];
 		lv_image_dsc_t	vFaceImage[KNB_CORES];
 		uint32_t		vFaceBuf[KNB_CORES][2][KFACE_DST_H * KFACE_DST_W];
 		uint32_t        vFaceIndex[KNB_CORES];
@@ -70,6 +71,7 @@ static	void	local_PrepareDrawingImage(void);
 static	void	local_setAngle_cb(void *object, int32_t angle);
 static	void	local_PrepareDrawingText_Random(void);
 static	void	local_PrepareDrawingText_TensorFlow(void);
+static	void	local_PrepareDrawingText_NPU(void);
 
 /*
  * \brief ui_draw
@@ -84,6 +86,7 @@ void	ui_draw(void) {
 	local_PrepareDrawingImage();
 	local_PrepareDrawingText_Random();
 	local_PrepareDrawingText_TensorFlow();
+	local_PrepareDrawingText_NPU();
 }
 
 /*
@@ -185,6 +188,22 @@ void	ui_drawTensorFlowExecutionTime(const char_t *s) {
 
 	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
 	lv_label_set_text(vL_Ex_TensorFlow[core], s);
+	kern_unlockMutex(vLVGL_API[core]);
+}
+
+/*
+ * \brief ui_drawNPUExecutionTime
+ *
+ * - Draw the NPU execution time
+ *
+ */
+void	ui_drawNPUExecutionTime(const char_t *s) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+
+	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
+	lv_label_set_text(vL_Ex_NPU[core], s);
 	kern_unlockMutex(vLVGL_API[core]);
 }
 
@@ -315,5 +334,25 @@ static	void	local_PrepareDrawingText_TensorFlow(void) {
 	lv_obj_set_style_text_color(vL_Ex_TensorFlow[core], lv_color_hex(KWHITE), 0);
 	lv_obj_set_style_text_font(vL_Ex_TensorFlow[core], &lv_font_montserrat_16, 0);
 	lv_obj_align(vL_Ex_TensorFlow[core], LV_ALIGN_TOP_LEFT, KTEXT_POS_X_2, KTEXT_POS_Y_2);
+	kern_unlockMutex(vLVGL_API[core]);
+}
+
+/*
+ * \brief local_PrepareDrawingText_NPU
+ *
+ * - Prepare for drawing the text execution time NPU
+ *
+ */
+static	void	local_PrepareDrawingText_NPU(void) {
+	uint32_t	core;
+
+	core = GET_RUNNING_CORE;
+
+	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
+	vL_Ex_NPU[core] = lv_label_create(lv_screen_active());
+	lv_label_set_text(vL_Ex_NPU[core], " ");
+	lv_obj_set_style_text_color(vL_Ex_NPU[core], lv_color_hex(KWHITE), 0);
+	lv_obj_set_style_text_font(vL_Ex_NPU[core], &lv_font_montserrat_16, 0);
+	lv_obj_align(vL_Ex_NPU[core], LV_ALIGN_TOP_LEFT, KTEXT_POS_X_3, KTEXT_POS_Y_3);
 	kern_unlockMutex(vLVGL_API[core]);
 }
