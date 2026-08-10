@@ -61,9 +61,9 @@ LIB_PAK_INC			=  $(PATH_DECNUMBER)/decnumber-current/include
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
 PATH_INCLUDES		+= -I$(LIB_SYS_PAT)
 PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
-PATH_INCLUDES		+= -I$(LIB_PAK_INC)
-PATH_INCLUDES		+= -I$(LIB_PAK_INC)/decnumber
-PATH_INCLUDES		+= -I$(LIB_PAK_INC)/decnumber/bid
+PATH_INCLUDES		+= -isystem $(LIB_PAK_INC)
+PATH_INCLUDES		+= -isystem $(LIB_PAK_INC)/decnumber
+PATH_INCLUDES		+= -isystem $(LIB_PAK_INC)/decnumber/bid
 
 SRC					=  $(LIB_SYS_DIR)/headerdecnumber.c
 SRC					+= $(LIB_SRC_DIR)/decNumber.c

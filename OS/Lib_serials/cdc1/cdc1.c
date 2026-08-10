@@ -48,9 +48,6 @@
 */
 
 #include	"uKOS.h"
-
-// cppcheck-suppress missingInclude
-//
 #include	"tusb_config.h"
 
 #if (defined(CONFIG_MAN_CDC1_S))

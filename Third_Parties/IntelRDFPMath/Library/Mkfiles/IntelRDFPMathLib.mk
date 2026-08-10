@@ -56,8 +56,8 @@ LIB_SYS_DIR			=  $(PATH_INTELRDFPMATH)/Construction/System
 LIB_SRC_DIR			=  $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/LIBRARY/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
-PATH_INCLUDES		+= -I$(PATH_INTELRDFPMATH)/IntelRDFPMath-current/source
 PATH_INCLUDES		+= -I$(LIB_SYS_DIR)
+PATH_INCLUDES		+= -isystem $(PATH_INTELRDFPMATH)/IntelRDFPMath-current/source
 
 SRC					=  $(LIB_SYS_DIR)/headerIntelRDFPMath.c
 SRC					+= $(shell find $(LIB_SRC_DIR) -name '*.c')

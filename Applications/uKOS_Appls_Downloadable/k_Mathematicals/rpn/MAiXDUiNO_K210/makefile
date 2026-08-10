@@ -61,7 +61,7 @@ SOC				=  K210
 CORE			=  RV64IMAFDC
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include
-CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include/libdecnumber
+CFLAGS			+= -isystem $(PATH_DECNUMBER)/decnumber-current/include
+CFLAGS			+= -isystem $(PATH_DECNUMBER)/decnumber-current/include/libdecnumber
 
 include ../../../../Mkfiles/common.mk

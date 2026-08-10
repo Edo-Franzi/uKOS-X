@@ -128,6 +128,9 @@ int32_t	stub_asmp_init(void) {
 	stub_asmp_getRunningCore(&core);
 	identifier_RX = (core == KASMP_CORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
 	identifier_TX = (core == KASMP_CORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);
+
+// cppcheck-suppress unreadVariable
+//
 	irqNumber	  = (core == KASMP_CORE_0) ? (HSEM2_C0_IRQn)			  : (HSEM1_C0_IRQn);
 
 // Suppress the cppcheck warning for the following code portion

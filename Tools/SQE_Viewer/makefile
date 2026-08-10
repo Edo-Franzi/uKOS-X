@@ -56,7 +56,7 @@ PATH_SQEX		= ~/Library/Calerga/LMEExt
 PATH_LME		= '/Applications/Sysquake Pro 6.5/Sysquake Pro.app/Contents/Resources/include'
 
 CFLAGS			=  -DLMEIntSizeIs64
-CFLAGS			+= -I$(PATH_D2XX)/include
+CFLAGS			+= -isystem $(PATH_D2XX)/include
 CFLAGS			+= -I$(PATH_UKOS_X_PACKAGE)/OS/Includes
 CFLAGS			+= -I$(PATH_LME)
 CFLAGS			+= -g

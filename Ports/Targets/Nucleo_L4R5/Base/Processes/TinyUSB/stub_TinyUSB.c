@@ -57,9 +57,6 @@
 // Ignore the GCC diagnostic
 //
 #pragma GCC diagnostic	ignored	"-Wpedantic"
-
-// cppcheck-suppress missingInclude
-//
 #include	"tusb.h"
 
 // Restore the GCC diagnostic

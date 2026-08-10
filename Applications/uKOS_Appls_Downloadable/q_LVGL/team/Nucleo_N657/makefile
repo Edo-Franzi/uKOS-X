@@ -61,8 +61,8 @@ SOC				=  STM32N657
 CORE			=  CORTEX_M55
 OPTIMISATION	=  -Os
 
+CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
-CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 
 include ../../../../Mkfiles/common.mk

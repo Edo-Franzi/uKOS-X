@@ -57,7 +57,7 @@ LIB_SRC_DIR			= $(PATH_LVGL)/LVGL-current/src
 
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Includes
 PATH_INCLUDES		+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
-PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
+PATH_INCLUDES		+= -isystem $(LIB_SRC_DIR)
 
 SRC					=  $(LIB_SYS_DIR)/headerLVGL.c
 SRC					+= $(shell find $(LIB_SRC_DIR) -name '*.c')

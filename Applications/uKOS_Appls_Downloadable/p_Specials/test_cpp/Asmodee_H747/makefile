@@ -9,7 +9,7 @@
 # Modifs:
 #
 # Project:	uKOS-X
-# Goal:		makefile for the "test_cc" application.
+# Goal:		makefile for the "test_cpp" application.
 #
 #   (c) 2025-2026, Edo. Franzi
 #   --------------------------
@@ -45,7 +45,7 @@
 #
 #------------------------------------------------------------------------
 
-PROJECT			=  test_cc
+PROJECT			=  test_cpp
 
 # Paths overloaded
 

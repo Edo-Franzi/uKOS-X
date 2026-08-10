@@ -72,20 +72,19 @@ SOC				=  STM32H743
 CORE			=  CORTEX_M7
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -I$(PATH_LVGL)/LVGL-current
+CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)
 CFLAGS			+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
-CFLAGS			+= -isystem $(PATH_LVGL)/LVGL-current
 
-CXXFLAGS		+= -I$(PATH_LVGL)/LVGL-current
+CXXFLAGS		+= -isystem $(PATH_LVGL)/LVGL-current
 CXXFLAGS		+= -I$(PATH_LVGL)/Library/$(DISPLAY)
 CXXFLAGS		+= -I$(PATH_LVGL)/Library/$(DISPLAY)/$(CORE)
 CXXFLAGS		+= -DTF_LITE_STATIC_MEMORY=1
 
-MYLIB			=    $(PATH_UKOS)/Third_Parties/Tflite-micro/Library/$(CORE)/libTFLite.a
-PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic
-PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/flatbuffers/include
-PATH_INCLUDES	+= -I$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/gemmlowp
+MYLIB			=			$(PATH_UKOS)/Third_Parties/Tflite-micro/Library/$(CORE)/libTFLite.a
+PATH_INCLUDES	+= -isystem $(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic
+PATH_INCLUDES	+= -isystem $(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/flatbuffers/include
+PATH_INCLUDES	+= -isystem $(PATH_UKOS)/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic/third_party/gemmlowp
 
 PATH_INCLUDES	+= -I$(PATH_DEMO)/Classifier
 PATH_INCLUDES	+= -I$(PATH_DEMO)/Graphics

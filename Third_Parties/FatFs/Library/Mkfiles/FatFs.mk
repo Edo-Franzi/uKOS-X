@@ -60,8 +60,8 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_storages/storage
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_storages/sdcard
 PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_storages/serialFlash
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Devices
-PATH_INCLUDES		+= -I$(LIB_SRC_DIR)
-PATH_INCLUDES		+= -I$(LIB_SYS_DIR)
+PATH_INCLUDES		+= -isystem $(LIB_SRC_DIR)
+PATH_INCLUDES		+= -isystem $(LIB_SYS_DIR)
 
 SRC					=  $(LIB_SYS_DIR)/headerFatFs.c
 SRC					+= $(LIB_SYS_DIR)/diskio.c

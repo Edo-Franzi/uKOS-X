@@ -192,9 +192,13 @@ void	tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16
 	core = GET_RUNNING_CORE;
 
 	kern_lockMutex(vTinyUSB_API[core], KWAIT_INFINITY);
-	memcpy(vendor_id  , vid, strlen(vid));
-	memcpy(product_id , pid, strlen(pid));
-	memcpy(product_rev, rev, strlen(rev));
+	memset(vendor_id,   ' ', 8u);
+	memset(product_id,  ' ', 16u);
+	memset(product_rev, ' ', 4u);
+
+	memcpy(vendor_id  , vid, (sizeof(vid) - 1u));
+	memcpy(product_id , pid, (sizeof(pid) - 1u));
+	memcpy(product_rev, rev, (sizeof(rev) - 1u));
 	kern_unlockMutex(vTinyUSB_API[core]);
 }
 
@@ -408,5 +412,5 @@ int32_t	tud_msc_scsi_cb(uint8_t lun, uint8_t const scsi_cmd[16], void *buffer, u
 		}
 	}
 	kern_unlockMutex(vTinyUSB_API[core]);
-	return ((int32_t)resplen);
+	return (resplen);
 }

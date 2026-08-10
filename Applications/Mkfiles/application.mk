@@ -270,11 +270,7 @@ ELFSIZE = $(SIZE) -A --radix=16 $(TARGET).elf
 size : $(TARGET).elf
 	@echo
 	@echo "Size of the generated program"
-	@cp $(TARGET).elf $(TARGET).elf.backup
-	@$(PATH_COMPILER)/bin/$(PREFIX)strip --strip-debug $(TARGET).elf
 	@$(ELFSIZE) | grep -F -v -e .debug -e .ARM.attributes -e .comment
-	@rm $(TARGET).elf
-	@mv $(TARGET).elf.backup $(TARGET).elf
 	@echo
 	$(HIDE)cat *.su | awk '{ $$3=""; printf("%s\t [Bytes] ---> %s\n",$$2, $$1); }' | sort -gro $(TARGET).stack
 

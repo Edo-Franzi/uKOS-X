@@ -94,11 +94,14 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	(void)dprintf(KSYST, "Execute the downloaded application.\n");
 
 	system_getDownloadCodeAddress((void **)&code);
-	if (code == nullptr) { (void)dprintf(KSYST, "No application in the memory!\n\n");     status = EXIT_OS_FAILURE;     }
-	else				 { (void)dprintf(KSYST, "Run the downloaded application...\n\n"); status = EXIT_OS_SUCCESS_CLI; }
-
-	system_setDownloadCodeAddress(nullptr);
-
-	status = (status == EXIT_OS_SUCCESS_CLI) ? ((*code)(argc, argv)) : (status);
+	if (code == nullptr) {
+		(void)dprintf(KSYST, "No application in the memory!\n\n");
+		status = EXIT_OS_FAILURE;
+	}
+	else {
+		(void)dprintf(KSYST, "Run the downloaded application...\n\n");
+		system_setDownloadCodeAddress(nullptr);
+		status = (*code)(argc, argv);
+	}
 	return (status);
 }

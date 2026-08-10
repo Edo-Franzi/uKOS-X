@@ -69,36 +69,36 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/OS/Lib_kernels/kern/private
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/OSAL
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Family/$(FAMILY)/$(SOC)/$(PROFILE)
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Library/Family/$(FAMILY)/$(SOC)/$(PROFILE)
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/common
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/device
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/class/hid
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/class/cdc
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/class/msc
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src/common
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src/device
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src/class/hid
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src/class/cdc
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src/class/msc
 
 ifeq ($(PROVIDER), st)
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/CMSIS_5/CMSIS/Core/Include
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Generic/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Models
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/Includes/mcu/$(PROVIDER)
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/st/cmsis_device_$(FAMILY)/Include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/CMSIS_5/CMSIS/Core/Include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/st/cmsis_device_$(FAMILY)/Include
 endif
 
 ifeq ($(PROVIDER), nordic)
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/CMSIS_5/CMSIS/Core/Include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/bsp/nrf
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/bsp/nrf/nrfx_config
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/mdk
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/hal
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/templates
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/src
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/bsp/nrf
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/bsp/nrf/nrfx_config
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/mdk
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/hal
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/templates
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/hw/mcu/nordic/nrfx/drivers/src
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/CMSIS_5/CMSIS/Core/Include
 endif
 
 ifeq ($(PROVIDER), raspberrypi)
@@ -107,44 +107,44 @@ PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Includes
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/SOCs/$(SOC)/Runtime
 PATH_INCLUDES		+= -I$(PATH_UKOS)/Ports/EquatesModels/Cores/$(CORE)/Includes
 PATH_INCLUDES		+= -I$(PATH_TINYUSB)/Construction/Interface/Includes/mcu/raspberrypi
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/src/portable/raspberrypi/rp2040
 
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_base_headers/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_base/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_resets/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync_spin_lock/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_timer/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_claim/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_structs/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_compiler/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_sections/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_panic/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_common/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/pico_platform/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/hardware_structs/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/hardware_regs/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/bazel/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_base_headers/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_base/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_irq/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_resets/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_sync_spin_lock/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_timer/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_claim/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_structs/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_compiler/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_sections/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_panic/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_platform_common/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/pico_platform/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/hardware_structs/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2350/hardware_regs/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/bazel/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
 
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
 
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_hazard3/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/hardware_riscv_platform_timer/include
 
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime_init/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_sync/include
-PATH_INCLUDES		+= -I$(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_time/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime_init/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/rp2_common/pico_runtime/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/hardware_claim/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_sync/include
+PATH_INCLUDES		+= -isystem $(PATH_TINYUSB)/TinyUSB-current/lib/pico-sdk/src/common/pico_time/include
 endif
 
 SRC					=  $(PATH_TINYUSB)/Construction/System/headerTusb.c

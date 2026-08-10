@@ -671,6 +671,8 @@ const	uintptr_t	g_pfnVectors_C0[] = {
 	(uintptr_t)POWMAN_IRQ_TIMER_C0_IRQHandler					// Address: 0x0000_00F4
 };
 
+// cppcheck-suppress-begin premium-unreadVariable
+//
 EXCEPTION_SPECIFIC_HANDLER(NonMaskableInt_C0)
 EXCEPTION_SPECIFIC_HANDLER(HardFault_C0)
 EXCEPTION_SPECIFIC_HANDLER(MemoryManagement_C0)

@@ -121,6 +121,7 @@ cppcheck \
 	--max-configs=1 \
 	--suppressions-list="${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Rules/uKOS_misra_rules.suppress" -rp="${PATH_UKOS_X_PACKAGE}/Third_Parties/Cppcheck/Construction/Rules" \
 	--suppress=asctimeCalled \
+	--suppress=missingInclude \
 	--suppress=missingIncludeSystem \
 	--suppress=variableScope \
 	--suppress=unknownMacro \

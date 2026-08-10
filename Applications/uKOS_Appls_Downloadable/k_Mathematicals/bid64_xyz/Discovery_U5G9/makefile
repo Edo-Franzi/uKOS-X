@@ -61,7 +61,7 @@ SOC				=  STM32U5G9
 CORE			=  CORTEX_M33
 OPTIMISATION	=  -Os
 
-CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include
-CFLAGS			+= -I$(PATH_DECNUMBER)/decnumber-current/include/libdecnumber
+CFLAGS			+= -isystem $(PATH_DECNUMBER)/decnumber-current/include
+CFLAGS			+= -isystem $(PATH_DECNUMBER)/decnumber-current/include/libdecnumber
 
 include ../../../../Mkfiles/common.mk
