@@ -45,7 +45,7 @@
 #
 #------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.31)
 
 # Add uKOS-X CMake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Ports/cmake")
@@ -90,9 +90,9 @@ else()
 endif()
 
 list(APPEND PATH_INCLUDES
-	${PATH_TEST_ROM}/_Commun
-	${PATH_TEST_ROM}/_Commun/Includes
-	${PATH_TEST_ROM}/_Commun/Runtime
+	${PATH_TEST_ROM}/_Common
+	${PATH_TEST_ROM}/_Common/Includes
+	${PATH_TEST_ROM}/_Common/Runtime
 	${CMAKE_SOURCE_DIR}
 	${CMAKE_SOURCE_DIR}/Includes
 	${CMAKE_SOURCE_DIR}/Includes/SOC
@@ -107,8 +107,8 @@ add_executable(${TARGET_NAME}.elf
     init.c
     cmns.c
     tests.c
-    ${PATH_TEST_ROM}/_Commun/Runtime/crt0_b.c
-    ${PATH_TEST_ROM}/_Commun/Runtime/debug.c
+    ${PATH_TEST_ROM}/_Common/Runtime/crt0_b.c
+    ${PATH_TEST_ROM}/_Common/Runtime/debug.c
 )
 
 # Forward selected test

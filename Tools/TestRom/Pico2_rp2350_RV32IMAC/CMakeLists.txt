@@ -45,7 +45,7 @@
 #
 #------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.31)
 
 # Get project paths
 get_filename_component(PATH_UKOS "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
@@ -98,8 +98,8 @@ list(APPEND FLAGS_FP
 )
 
 include_directories(
-    ${PATH_TEST_ROM}/_Commun/Includes
-    ${PATH_TEST_ROM}/_Commun/Runtime
+    ${PATH_TEST_ROM}/_Common/Includes
+    ${PATH_TEST_ROM}/_Common/Runtime
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/Includes
     ${CMAKE_SOURCE_DIR}/Includes/Core
@@ -114,7 +114,7 @@ add_executable(${TARGET_NAME}.elf
     cmns.c
     ${test_source}
     tests.c
-    ../_Commun/Runtime/crt0.c
+    ../_Common/Runtime/crt0.c
 )
 
 # Forward selected test

@@ -66,7 +66,7 @@ FLAGS_USER		+= -DTZ_DST_SPEC=\"$(TZ_DST_SPEC)\"
 # Project paths
 
 # - PATH_MKFILE	--> System makefile location	--> OS_Kernel-X/Ports/Targets/$(BOARD)/$(VARIANT)/makefile
-# - PATH_COMX	--> Commun folders				--> OS_Kernel-X/Ports/Targets/$(BOARD)/Base_CMx
+# - PATH_COMX	--> Common folders				--> OS_Kernel-X/Ports/Targets/$(BOARD)/Base_CMx
 
 # Paths overloaded
 
@@ -119,7 +119,7 @@ BURN			?= stlink
 FIRST_P			=
 FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
 
-# The runtime & commun components (privileged)
+# The runtime & common components (privileged)
 
 RTCB_P			=
 RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c

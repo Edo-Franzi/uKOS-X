@@ -16,12 +16,12 @@ This code is a collection of minimal stand-alone programs written for the descri
 
 ### Important files
 
-**Folders _Commun/Include & _Commun/Runtime: Commun files to all the targets.**
+**Folders _Common/Include & _Common/Runtime: Common files to all the targets.**
 
 | File                         | Purpose                           | Comment   |
 | ---------------------------- | --------------------------------- | --------- |
-| **_Commun/Include (folder)** | Commun files to all the targets   |           |
-| **_Commun/Runtime (folder)** | Commun files to all the targets   |           |
+| **_Common/Include (folder)** | Common files to all the targets   |           |
+| **_Common/Runtime (folder)** | Common files to all the targets   |           |
 | type.h                       | µKOS-X used types                 | Available |
 | cmns.h                       | Minimal UART support (by polling) | Available |
 | debug.c/h                    | Some useful string manipulation   | Available |

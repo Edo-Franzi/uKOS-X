@@ -67,9 +67,9 @@ TARGET			=  testROM
 BOARD			=  Pico2_rp2350_RV32IMAC
 TEST_NUMBER		?= 00
 
-PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun
-PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun/Includes
-PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Commun/Runtime
+PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Common
+PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Common/Includes
+PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/_Common/Runtime
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/SOC
@@ -77,7 +77,7 @@ PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Includes/Core
 PATH_INCLUDES	+= -I$(PATH_TEST_ROM)/$(BOARD)/Runtime
 
 OBJ				=  first_rv.o picobin.o init.o cmns.o tests.o
-OBJ				+= ../_Commun/Runtime/crt0.o ../_Commun/Runtime/debug.o ../_Commun/Runtime/syscall.o
+OBJ				+= ../_Common/Runtime/crt0.o ../_Common/Runtime/debug.o ../_Common/Runtime/syscall.o
 
 # Target & Infrastructure
 
@@ -133,10 +133,10 @@ clean_all :
 # Clean
 
 clr :
-	$(Q)rm -f *.o *.d ../_Commun/Runtime/*.o ../_Commun/Runtime/*.d
+	$(Q)rm -f *.o *.d ../_Common/Runtime/*.o ../_Common/Runtime/*.d
 
 clr_all :
-	$(Q)rm -f *.hex *.bin *.elf *.o *.d *.map *.dis *.lst ../_Commun/Runtime/*.o ../_Commun/Runtime/*.d
+	$(Q)rm -f *.hex *.bin *.elf *.o *.d *.map *.dis *.lst ../_Common/Runtime/*.o ../_Common/Runtime/*.d
 
 # Build
 

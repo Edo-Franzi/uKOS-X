@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.31)
 
 # Get project paths
 cmake_path(GET CMAKE_SOURCE_DIR PARENT_PATH PATH_TEST_ROM)
@@ -36,7 +36,7 @@ if(NOT TEST_NUMBER IN_LIST VALID_TEST_NUMBERS)
 endif()
 
 include_directories(
-    ${PATH_TEST_ROM}/_Commun/Includes
+    ${PATH_TEST_ROM}/_Common/Includes
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/Includes
     ${CMAKE_SOURCE_DIR}/Includes/Core
@@ -93,8 +93,8 @@ add_executable(${TARGET_NAME}.elf
     exce.c
     cmns.c
     tests.c
-    ${PATH_TEST_ROM}/_Commun/Runtime/crt0_r.c
-    ${PATH_TEST_ROM}/_Commun/Runtime/debug.c
+    ${PATH_TEST_ROM}/_Common/Runtime/crt0_r.c
+    ${PATH_TEST_ROM}/_Common/Runtime/debug.c
 )
 
 # Create hex and bin files (utils)

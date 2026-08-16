@@ -163,7 +163,7 @@ This allocates all remaining RAM after stacks as heap space.
 ### 4. Missing cmns_send() Function ❌→✅
 
 **Problem:**
-- `CMakeLists.txt` includes `../_Commun/Runtime/debug.c`
+- `CMakeLists.txt` includes `../_Common/Runtime/debug.c`
 - `debug.c` calls `cmns_send()` for console output
 - RISC-V `cmns.c` only had `cmns_wait()`, missing `cmns_send()`
 
