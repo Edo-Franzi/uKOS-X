@@ -79,7 +79,7 @@ INCLUDE		GD32VF103CBT.ld
 /* RAM:		stPrgmData			0x20000000					*/
 /*			16K												*/
 /*			stHeap				0x20004000					*/
-/*			13K												*/
+/*			14K												*/
 /*			stUMemo				0x20007400					*/
 /*			16K												*/
 
