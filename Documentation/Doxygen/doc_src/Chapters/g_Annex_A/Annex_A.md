@@ -107,7 +107,7 @@ In the **gdb** terminal session **(T2)** we need to load the program:
 
 </div>
 
-The loaded program (**coherence.elf**) executes 2 processes. Imagine that we want to run the program and to stop it at the line **228 only if the variable **lastMessage.oCharMessage == ‘A’**.
+The loaded program (**coherence.elf**) executes 2 processes. Imagine that we want to run the program and to stop it at the line **247 only if the variable **lastMessage.oCharMessage == ‘A’**.
 
 ![](Annex_A_04.png)
 
@@ -116,7 +116,7 @@ On the **gdb** session **(T2)** set a conditional breakpoint and execute the pro
 In the **gdb** terminal session **(T2)** we need to load the program:
 
 ```bash
-hbreak 228 if (lastMessage.oCharMessage == 'A')
+hbreak 247 if (lastMessage.oCharMessage == 'A')
 c
 ```
 

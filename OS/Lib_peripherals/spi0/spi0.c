@@ -222,6 +222,7 @@ int32_t	spi0_configure(const spiCnf_t *configure) {
  * \param[in]	*data			Ptr on the data to write-read
  * \return		KERR_SPI_NOERR	OK
  * \return		KERR_SPI_GEERR	General error
+ * \return		KERR_SPI_TIMEO	Timeout error
  *
  */
 int32_t	spi0_writeRead(uint8_t *data) {
@@ -233,7 +234,7 @@ int32_t	spi0_writeRead(uint8_t *data) {
 	if (status != KERR_SPI_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
 	wData[0] = *data;
-	status = stub_spi0_multipleWriteRead(&wData[0], 1u, &rData[0], 1u, KWAIT_INFINITY);
+	status = stub_spi0_multipleWriteRead(&wData[0], 1u, &rData[0], 1u, KSPI_TIMEOUT_WRITEREAD);
 
 	*data = rData[0];
 	PRIVILEGE_RESTORE;

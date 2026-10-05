@@ -148,7 +148,12 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		MPYSize   = (uint32_t)strtoul(argv[2], &dummy, 10u);
 		MPYMemory = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (MPYSize * sizeof(uint8_t)), "mpy");
 		error = (MPYMemory == nullptr) ? (KERR_NME) : (error);
+	}
 
+// Launch the MicroPython process only with its workspace:
+// without it, gc_init() would build the MicroPython heap at address 0
+
+	if (error == KERR_NOT) {
 		kern_getProcessRun(&CLIProcess);
 		kern_getSerialForProcess(CLIProcess, &CLISerialManager);
 
@@ -169,7 +174,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
 
-		if (kern_createProcess(&specification, &pack, &MPYProcess) != KERR_KERN_NOERR) { error = KERR_LOK; }
+// kern_createProcess() does not release a stack it refuses: give it back here,
+// otherwise every rejected launch leaks one MicroPython stack
+
+		if (kern_createProcess(&specification, &pack, &MPYProcess) != KERR_KERN_NOERR) { memo_free(vStack_0); error = KERR_LOK; }
 	}
 
 	switch (error) {

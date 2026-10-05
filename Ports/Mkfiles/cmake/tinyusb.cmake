@@ -49,7 +49,7 @@
 #
 # This function automatically determines the PROVIDER and FAMILY from a SoC name.
 # These properties map to the TinyUSB library directory structure:
-#   Library/Family/${FAMILY}/${SOC}/${PROFILE}
+#	Library/Family/${FAMILY}/${SOC}/${PROFILE}
 #
 # Arguments:
 #	SOC_NAME - Name of the SoC (e.g., STM32L4R5, STM32H743, nRF5340)

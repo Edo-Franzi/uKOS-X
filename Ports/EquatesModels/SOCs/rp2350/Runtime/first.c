@@ -63,6 +63,13 @@ extern	void	(*vExce_indExcVectors[KNB_CORES][KNB_EXCEPTIONS])(void);
 extern	void	(*vExce_indIntVectors[KNB_CORES][KNB_INTERRUPTIONS])(void);
 extern	bool	vExce_isException[KNB_CORES];
 
+#ifdef PRIVILEGED_USER_S
+// kern_setPrivilegeMode() checks this flag and skips the RIGHTS_ELEVATION ecall when
+// set, so a kernel service called from an interrupt or exception handler does not
+// trigger a nested ecall that would clobber the non-reentrant mscratch trap-stack swap.
+extern	volatile	bool	vPriv_insideException[KNB_CORES];
+#endif
+
 // File-scoped suppression: every external symbol below is referenced either
 // from the boot vector table, from inline asm in this TU, or via a weak
 // override pattern in another TU (main_C1). clang-tidy cannot see those
@@ -117,6 +124,16 @@ void	Reset_C0_Handler(void) {
 
 	__asm volatile ("la sp,linker_topStackFirst_C0");
 
+// Arm the per-hart M-mode trap stack (System stack) consumed by the mscratch
+// swap in first_handle_trap. Must be set before the first trap is taken.
+
+#ifdef PRIVILEGED_USER_S
+	__asm volatile (
+		"la		t0,linker_topStackSystem_C0			\n"
+		"csrw	mscratch,t0							\n"
+	);
+#endif
+
 // Continue with the crt0
 
 	CALL_FNCT(crt0);
@@ -157,6 +174,15 @@ void	Reset_C1_Handler(void) {
 // Initialise the first stack for core 1
 
 	__asm volatile ("la sp,linker_topStackFirst_C1");
+
+// Arm the per-hart M-mode trap stack (System stack) for core 1 (mscratch is per-hart).
+
+#ifdef PRIVILEGED_USER_S
+	__asm volatile (
+		"la		t0,linker_topStackSystem_C1			\n"
+		"csrw	mscratch,t0							\n"
+	);
+#endif
 
 // Jump to the core 1 entry point (NOT crt0)
 
@@ -235,6 +261,13 @@ void	first_handle_trap(void) {
 // Save context (basic registers)
 
 	__asm volatile (
+		// Privileged/user split: swap to the per-hart M-mode trap stack so the
+		// handler never runs on a (U-mode) process stack. mscratch holds the M
+		// trap-stack top in process context; after the swap sp = M stack and
+		// mscratch = the interrupted (process) sp. Re-armed before every mret.
+#ifdef PRIVILEGED_USER_S
+		"	csrrw	sp,mscratch,sp					\n"			// sp <-> mscratch
+#endif
 		"	addi	sp,sp,-16*4						\n"			// Allocate stack space
 		"	sw		ra,0*4(sp)						\n"			// Save return address
 		"	sw		t0,1*4(sp)						\n"			// Save t0
@@ -262,6 +295,10 @@ void	first_handle_trap(void) {
 		"	andi	t0,t0,0x1F						\n"			// Extract exception code (bits 0-4)
 		"	li		t1,11							\n"			// Ecall from M-mode?
 		"	beq		t0,t1,3f						\n"			// Yes, branch to ecall path
+#ifdef PRIVILEGED_USER_S
+		"	li		t1,8							\n"			// Ecall from U-mode (user process)?
+		"	beq		t0,t1,3f						\n"			// Yes, same context-switch path
+#endif
 		"	call	first_dispatch_exception		\n"			// Call exception dispatcher
 		"	j		2f								\n"
 
@@ -276,9 +313,18 @@ void	first_handle_trap(void) {
 		"	lw		t0,1*4(sp)						\n"			//
 		"	lw		t1,2*4(sp)						\n"			//
 
-// Undo the partial 16-word save – back to the original trap-entry sp
+// Undo the partial 16-word save – sp now points at the M trap-stack top
+// (_pu) / the original trap-entry process sp (_p)
 
 		"	addi	sp,sp,16*4						\n"			//
+
+// _pu: swap back to the interrupted process sp so the 35-word frame is built
+// on the PROCESS stack (vSaveStack tracks per-process frames). This also
+// re-arms mscratch with the M trap-stack top for the dispatch swap below
+
+#ifdef PRIVILEGED_USER_S
+		"	csrrw	sp,mscratch,sp					\n"			// sp = process sp; mscratch = M top
+#endif
 
 // Build the full 35-word frame (matches KERN_SAVE_FRAME / KERN_PREPARE_FRAME)
 
@@ -340,6 +386,12 @@ void	first_handle_trap(void) {
 		"	la		t2,vSaveStack					\n"			//
 		"	add		t2,t2,t3						\n"			//
 		"	sw		sp,0(t2)						\n"			//
+
+// _pu: run the scheduler dispatch on the M trap stack (mscratch holds its top),
+// not the process stack – mirrors the ARM SVC handler running on the MSP.
+#ifdef PRIVILEGED_USER_S
+		"	csrr	sp,mscratch						\n"			// sp = M trap-stack top (mscratch unchanged)
+#endif
 
 // Dispatch – kernel_message_C{0,1} may switch vSaveStack[hart] to a new frame
 
@@ -424,7 +476,12 @@ void	first_handle_trap(void) {
 		"	lw		t1,2*4(sp)						\n"			// Restore t1
 		"	lw		t0,1*4(sp)						\n"			// Restore t0
 		"	lw		ra,0*4(sp)						\n"			// Restore ra
-		"	addi	sp,sp,16*4						\n"			// Deallocate stack space
+		"	addi	sp,sp,16*4						\n"			// Deallocate stack space (sp -> M top in _pu)
+
+        // _pu: swap back to the interrupted context sp; re-arm mscratch = M top.
+#ifdef PRIVILEGED_USER_S
+		"	csrrw	sp,mscratch,sp					\n"
+#endif
 		"	mret									\n"			// Return from trap
 		:::
 	);
@@ -444,7 +501,13 @@ void first_dispatch_exception(void) {
 	__asm volatile ("mv %0,t0" : "=r"(exception));
 
 	if (exception < KNB_EXCEPTIONS && vExce_indExcVectors[core][exception] != nullptr) {
+		#ifdef PRIVILEGED_USER_S
+		vPriv_insideException[core] = true;
+		#endif
 		vExce_indExcVectors[core][exception]();
+		#ifdef PRIVILEGED_USER_S
+		vPriv_insideException[core] = false;
+		#endif
 	}
 }
 
@@ -472,12 +535,24 @@ void first_dispatch_interrupt(void) {
 		if ((meinext & MEINEXT_NOIRQ) == 0u) {
 			uint32_t	irqNum = (meinext & MEINEXT_IRQ_MASK) >> MEINEXT_IRQ_SHIFT;
 			if (irqNum < KNB_INTERRUPTIONS && vExce_indIntVectors[core][irqNum] != nullptr) {
+				#ifdef PRIVILEGED_USER_S
+				vPriv_insideException[core] = true;
+				#endif
 				vExce_indIntVectors[core][irqNum]();
+				#ifdef PRIVILEGED_USER_S
+				vPriv_insideException[core] = false;
+				#endif
 			}
 		}
 	}
 	else if (interrupt < KNB_INTERRUPTIONS && vExce_indIntVectors[core][interrupt] != nullptr) {
+		#ifdef PRIVILEGED_USER_S
+		vPriv_insideException[core] = true;
+		#endif
 		vExce_indIntVectors[core][interrupt]();
+		#ifdef PRIVILEGED_USER_S
+		vPriv_insideException[core] = false;
+		#endif
 	}
 }
 

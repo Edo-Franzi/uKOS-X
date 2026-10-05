@@ -179,7 +179,7 @@ static	void	local_DrawArc(void) {
 	lv_arc_set_rotation(vArc[core], 270);
 	lv_arc_set_bg_angles(vArc[core], 0, 360);
 	lv_obj_remove_style(vArc[core], nullptr, LV_PART_KNOB);
-	lv_obj_remove_flag(vArc[core], LV_OBJ_FLAG_CLICKABLE);
+	lv_obj_set_clickable(vArc[core], false);
 	lv_obj_set_pos(vArc[core], KARC_POS_X, KARC_POS_Y);
 
 	lv_anim_init(&animation);

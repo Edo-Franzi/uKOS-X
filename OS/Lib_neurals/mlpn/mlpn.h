@@ -122,11 +122,11 @@ extern	"C" {
  * static                  float32_t          vActivation_L1[KL1_NB_OUT];
  * static                  float32_t          vOutput_L1[KL1_NB_OUT + 1];
  * static     const        float32_t          vWeight_L1[KL1_NB_OUT][KL1_NB_IN] = {
- *                                                { -0.7654f, 1.3442f, 4,6543f,  3,1234f },
- *                                                { 0.2654f, -5.3442f, 1,6543f,  8,1234f },
- *                                                { 0.3654f,  6.3442f, -2,6543f, 7,1234f },
- *                                                { 0.4654f, -7.3442f, 6,6543f,  3,1234f },
- *                                                { 05654f,  -6.3442f, 4,6543f,  1,1234f }
+ *                                                { -0.7654f, 1.3442f, 4.6543f,  3.1234f },
+ *                                                { 0.2654f, -5.3442f, 1.6543f,  8.1234f },
+ *                                                { 0.3654f,  6.3442f, -2.6543f, 7.1234f },
+ *                                                { 0.4654f, -7.3442f, 6.6543f,  3.1234f },
+ *                                                { 0.5654f, -6.3442f, 4.6543f,  1.1234f }
  *                                            };
  *
  * static     const        mlpnLayer_t       aLayer_L1 = {
@@ -151,7 +151,7 @@ extern	"C" {
  *                                                { 0.3654f,  9.3482f },
  *                                                { 0.4654f,  8.3442f },
  *                                                { 0.5684f,  3.3472f },
- *                                                { 0.0654f,  2.3442f },
+ *                                                { 0.0654f,  2.3442f }
  *                                            };
  *
  * static     const        mlpnLayer_t       aLayer_L2 = {
@@ -184,6 +184,7 @@ extern	"C" {
  * \param[in]	*network		Ptr on the network description
  * \return		KERR_MLPN_NOERR	OK
  * \return		KERR_MLPN_GEERR	General error
+ * \return		KERR_MLPN_CNERR	Configuration error
  * \return		KERR_MLPN_NOMEM	Not enough memory
  *
  */

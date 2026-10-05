@@ -545,6 +545,7 @@ p_Specials:
 
 q_LVGL:
   basic:
+    - Discovery_N657
     - MAiXDUiNO_K210
     - Nucleo_N657
 

@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-08-21
+(c) 2025-2026, Edo. Franzi, 2026-10-2
 
 
 
@@ -28,7 +28,7 @@ the third-party components shipped in this repository.
 ### 2.1) Cppcheck
 - Location: `Third_Parties/Cppcheck/`
 - Upstream: https://github.com/danmar/cppcheck.git
-- Version: 2.20.0
+- Version: 2.22.0
 - License: GPL-3.0-or-later
 - Copyright:
   -  See upstream project copyright notices in source headers.
@@ -45,7 +45,7 @@ the third-party components shipped in this repository.
 ### 2.3) Doxygen-awesome
 - Location: `Third_Parties/Doxygen-awesome/`
 - Upstream: https://github.com/jothepro/doxygen-awesome-css.git
-- Version: 2.42
+- Version: 2.5.0
 - License: MIT
 - Copyright:
   -  Copyright (c) 2021 - 2023 jothepro
@@ -54,7 +54,7 @@ the third-party components shipped in this repository.
 
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/espressif/esp-idf.git
-- Version: 6.0.2
+- Version: 6.1
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2016-2024, Espressif Systems (Shanghai) Co., Ltd.
@@ -79,7 +79,7 @@ the third-party components shipped in this repository.
 ### 2.7) LVGL
 - Location: `Third_Parties/LVGL/`
 - Upstream: https://github.com/lvgl/lvgl.git
-- Version: 9.5.0
+- Version: 9.6.0
 - License: MIT
 - Copyright:
   -  Copyright (c) LVGL Kft and contributors
@@ -87,7 +87,7 @@ the third-party components shipped in this repository.
 ### 2.8) MicroPython
 - Location: `Third_Parties/MicroPython/`
 - Upstream: https://github.com/micropython/micropython.git
-- Version: 1.28.0
+- Version: 1.29.0
 - License: MIT
 - Copyright:
   -  Copyright (c) 2013-2019 Damien P. George
@@ -113,7 +113,7 @@ the third-party components shipped in this repository.
 ### 2.11) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.21.0 / commit cb3caee
+- Version: 0.21.0 / commit 430fcd2
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)
@@ -123,7 +123,7 @@ the third-party components shipped in this repository.
 ### 3.1) Picotools
 
 - Upstream:  https://github.com/raspberrypi/picotool.git
-- Version: 2.3.0
+- Version: 2.3.1
 - License: BSD-3-Clause
 - Copyright:
   - Copyright (c) 2020 Raspberry Pi (Trading) Ltd
@@ -132,7 +132,7 @@ the third-party components shipped in this repository.
 ### 3.2) Pico_SDK
 
 - Upstream:  https://github.com/raspberrypi/pico-sdk.git
-- Version: 2.3.0
+- Version: 2.3.1
 - License: BSD-3-Clause
 - Copyright:
   - Copyright (c) 2020 Raspberry Pi (Trading) Ltd

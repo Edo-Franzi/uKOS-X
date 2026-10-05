@@ -225,7 +225,7 @@ static	void	local_PrepareDrawingBackground(void) {
 	vImage[core] = lv_image_create(lv_screen_active());
 	lv_image_set_src(vImage[core], &background);
 	lv_obj_align(vImage[core], LV_ALIGN_TOP_MID, 0, 0);
-    lv_obj_remove_flag(vImage[core], LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_hidden(vImage[core], false);
 	kern_unlockMutex(vLVGL_API[core]);
 }
 
@@ -247,7 +247,7 @@ static	void	local_PrepareDrawingArc(void) {
 	lv_arc_set_rotation(vArc[core], 270u);
 	lv_arc_set_bg_angles(vArc[core], 0u, 360u);
 	lv_obj_remove_style(vArc[core], nullptr, LV_PART_KNOB);
-	lv_obj_remove_flag(vArc[core], LV_OBJ_FLAG_CLICKABLE);
+	lv_obj_set_clickable(vArc[core], false);
 	lv_obj_set_pos(vArc[core], KARC_POS_X, KARC_POS_Y);
 
 	lv_anim_init(&animation);

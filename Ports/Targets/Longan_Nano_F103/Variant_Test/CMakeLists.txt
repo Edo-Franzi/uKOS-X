@@ -47,6 +47,10 @@
 
 cmake_minimum_required(VERSION 3.31)
 
+if (${USER_MODE})
+    message(WARNING "Microcontroller has no User/Supervisor modes. Using privileged mode.")
+endif()
+
 # uKOS-X CMake module setup
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
 
@@ -79,7 +83,7 @@ include(proj_config)
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
-	"uKOS_OWNER=(c) LvA"
+	"uKOS_OWNER=(c) Edo. Franzi"
 )
 
 # Flash programming script selection
@@ -132,10 +136,12 @@ target_sources(kern_p PRIVATE
 	${PATH_OSYS}/Lib_kernels/kern/temporal.c
 	${PATH_BASE}/Lib_kernels/kern/stub_kern_kernel.c
 )
+# Table sizes are unsigned, like their defaults in kern.h: the code
+# that prints and compares them expects unsigned int
 add_compile_definitions(
-	KKERN_NB_POOLS=0
-	KKERN_NB_PRECISE_SIGNALS=0
-	KKERN_NB_SOFTWARE_TIMERS=0
+	KKERN_NB_POOLS=0u
+	KKERN_NB_PRECISE_SIGNALS=0u
+	KKERN_NB_SOFTWARE_TIMERS=0u
 )
 target_link_libraries(kern_p PUBLIC system_compiler_flags)
 
@@ -168,7 +174,8 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (user) -> liblibx_u.a
 add_library(libx_u)
-add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+# C library integration (newlib, picolibc or llvmlibc, selected by C_LIBRARY)
+add_clib_manager_source(libx_u)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
 
@@ -219,12 +226,14 @@ add_compile_definitions(
 # RND generator
 add_compile_definitions(GLOB_RND_SOFT_S)
 
+# Table sizes are unsigned, like their defaults in kern.h: the code
+# that prints and compares them expects unsigned int
 add_compile_definitions(
-	KKERN_NB_MAILBOXES=8
-	KKERN_NB_MUTEXES=8
-	KKERN_NB_PROCESSES=8
-	KKERN_NB_SEMAPHORES=8
-	KKERN_NB_SIGNALS=2
+	KKERN_NB_MAILBOXES=8u
+	KKERN_NB_MUTEXES=8u
+	KKERN_NB_PROCESSES=8u
+	KKERN_NB_SEMAPHORES=8u
+	KKERN_NB_SIGNALS=2u
 )
 
 # Apply system configuration

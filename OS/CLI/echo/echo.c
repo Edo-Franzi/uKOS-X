@@ -144,42 +144,54 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			}
 		}
 
-		switch (serial_reserve(serialManager1, KMODE_WRITE, 1000u)) {
-			case KERR_SERIAL_NODEV: {
-				error = KERR_CHA;
-				comm = comm1;
-				terminate = true;
-				RELEASE_SERIAL(serialManager0, KMODE_READ);
-				break;
-			}
-			case KERR_SERIAL_CHBSY: {
-				error = KERR_BSY;
-				comm = comm1;
-				terminate = true;
-				RELEASE_SERIAL(serialManager0, KMODE_READ);
-				break;
-			}
-			default: {
+// Only once serialManager0 is held: otherwise serialManager1 would stay reserved
+// with nobody to release it, and every other writer to it would block forever
+
+		if (terminate == false) {
+			switch (serial_reserve(serialManager1, KMODE_WRITE, 1000u)) {
+				case KERR_SERIAL_NODEV: {
+					error = KERR_CHA;
+					comm = comm1;
+					terminate = true;
+					RELEASE_SERIAL(serialManager0, KMODE_READ);
+					break;
+				}
+				case KERR_SERIAL_CHBSY: {
+					error = KERR_BSY;
+					comm = comm1;
+					terminate = true;
+					RELEASE_SERIAL(serialManager0, KMODE_READ);
+					break;
+				}
+				default: {
 
 // Make MISRA happy :-)
 
-				break;
+					break;
+				}
 			}
 		}
 
-		serial_flush(serialManager0);
+// Flush only a manager this process holds
+
+		if (terminate == false) {
+			serial_flush(serialManager0);
+		}
 		timeout = KTIMEOUT_10S;
 
 		while (terminate == false) {
 
 // Read serialManager0 under a 10s or 5s timeout (10s for the first char) and write on the serialManager1
 
+// Timeout: nothing was read, so nothing is written. local_getByte() has zeroed
+// data, and writing it - after serialManager1 was already released - ended
+// every echo with a NUL byte on the output
+
 			if (local_getByte(serialManager0, &data, timeout) == false) {
 				error = KERR_NOT;
 				serial_flush(serialManager0);
 				RELEASE_SERIAL(serialManager0, KMODE_READ);
 				RELEASE_SERIAL(serialManager1, KMODE_WRITE);
-				local_putByte(serialManager1, &data);
 				terminate = true;
 			}
 			else {

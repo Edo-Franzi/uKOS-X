@@ -101,6 +101,7 @@ extern	bool		bench_05(void);
  *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+	int32_t		status = EXIT_OS_SUCCESS_CLI;
 	priority_t	priority;
 	proc_t		*process;
 
@@ -117,13 +118,21 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	kern_getPriority(process, &priority);
 	kern_setPriority(process, KKERN_PRIORITY_HIGH_01);
 
-	if (bench_00() == false) { (void)dprintf(KSYST, "Not enough memory.\n"); return (EXIT_OS_FAILURE); }
-	if (bench_01() == false) { (void)dprintf(KSYST, "Not enough memory.\n"); return (EXIT_OS_FAILURE); }
-	if (bench_02() == false) { (void)dprintf(KSYST, "Not enough memory.\n"); return (EXIT_OS_FAILURE); }
-	if (bench_03() == false) { (void)dprintf(KSYST, "Not enough memory.\n"); return (EXIT_OS_FAILURE); }
-	if (bench_04() == false) { (void)dprintf(KSYST, "Not enough memory.\n"); return (EXIT_OS_FAILURE); }
-	if (bench_05() == false) { (void)dprintf(KSYST, "Not enough memory.\n"); return (EXIT_OS_FAILURE); }
+	if		(bench_00() == false) { status = EXIT_OS_FAILURE; }
+	else if (bench_01() == false) { status = EXIT_OS_FAILURE; }
+	else if (bench_02() == false) { status = EXIT_OS_FAILURE; }
+	else if (bench_03() == false) { status = EXIT_OS_FAILURE; }
+	else if (bench_04() == false) { status = EXIT_OS_FAILURE; }
+	else if (bench_05() == false) { status = EXIT_OS_FAILURE; }
+	else						  {							  }
+
+	if (status != EXIT_OS_SUCCESS_CLI) { (void)dprintf(KSYST, "Not enough memory.\n"); }
+
+// Give the console back with its original priority and privilege, whatever happened:
+// a failed bench used to return with both still raised, and even a successful run
+// left the console privileged, skipping every user-mode MPU check afterwards
 
 	kern_setPriority(process, priority);
-	return (EXIT_OS_SUCCESS_CLI);
+	PRIVILEGE_RESTORE;
+	return (status);
 }

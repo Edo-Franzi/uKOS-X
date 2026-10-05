@@ -199,7 +199,8 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (user) -> liblibx_u.a
 add_library(libx_u)
-add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+# C library integration (newlib, picolibc or llvmlibc, selected by C_LIBRARY)
+add_clib_manager_source(libx_u)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
@@ -251,7 +252,6 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/dumplog/dumplog.c
 	${PATH_OSYS}/CLI/dumptrace/dumptrace.c
 	${PATH_OSYS}/CLI/echo/echo.c
-	${PATH_BASE}/CLI/esp32/esp32.c
 	${PATH_OSYS}/CLI/fill/fill.c
 	${PATH_OSYS}/CLI/gdb/gdb.c
 	${PATH_OSYS}/CLI/hexloader/hexloader.c
@@ -279,8 +279,9 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/wkserial/wkserial.c
 	${PATH_OSYS}/CLI/wkspi/wkspi.c
 	${PATH_OSYS}/CLI/X/X.c
+	${PATH_BASE}/CLI/esp32/esp32.c
 )
-if(DEFINED WITHAPP AND WITHAPP STREQUAL "classPy")
+if(DEFINED WITHAPP AND WITHAPP STREQUAL "class_Py")
     target_sources(tool_u PRIVATE ${PATH_UKOS}/Applications/uKOS_Appls_Downloadable/l_MLPs/class_Py/class_Py.c)
     add_compile_definitions(WITHAPP_S)
 endif()

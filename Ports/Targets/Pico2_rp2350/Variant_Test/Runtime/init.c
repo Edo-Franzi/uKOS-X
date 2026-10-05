@@ -59,6 +59,9 @@
 
 #include	"init.h"
 #include	"memo/private/private_memo.h"
+#ifdef PRIVILEGED_USER_S
+#include	"Registers/pmp.h"	// SET_PMP_REGION – static PMP partition
+#endif
 
 // RISC-V specific runtime
 // =======================
@@ -74,6 +77,9 @@ static	void		local_emptyRxFifo(void);
 static	void		local_writeRTxFifo(uint32_t data);
 static	uint32_t	local_readRxFifo(void);
 static	void		init_C0_init(void);
+#ifdef PRIVILEGED_USER_S
+static	void		local_PMP_Configuration(void);
+#endif
 
 extern	void		first_handle_trap(void);
 extern	void		Reset_C1_Handler(void);
@@ -93,6 +99,10 @@ void	init_init(void) {
 
 	local_PLL_Configuration();
 	init_C0_init();
+
+#ifdef PRIVILEGED_USER_S
+	local_PMP_Configuration();		// core 0 PMP (per-hart)
+#endif
 
 	if (GET_RUNNING_CORE == KCORE_0) {
 		local_USB_Configuration();
@@ -120,6 +130,30 @@ void	init_relocate(void) {
 		init_launchCore_1(Reset_C1_Handler);
 	}
 }
+
+#ifdef PRIVILEGED_USER_S
+/*
+ * \brief local_PMP_Configuration
+ *
+ * - Program the per-hart static PMP partition, mirroring the ARM MPU table.
+ * - U-grant list: kernel RAM (0x20000000..0x2001FFFF) gets no region and is therefore
+ *	 inaccessible to U-mode; the user RAM domain (3 NAPOT regions) and flash are granted.
+ * - Peripherals stay U-accessible via Hazard3's hardwired PMP regions.
+ * - Rules are unlocked, so M-mode bypasses them: with processes still in M-mode
+ *	 this has no runtime effect; it takes hold when processes drop to U-mode.
+ *
+ * \note This function does not return a value (None).
+ *
+ */
+static	void	local_PMP_Configuration(void) {
+
+	SET_PMP_DISABLE_ALL();
+	SET_PMP_REGION(0, ST_USER_RAM_0,  17, KPMP_RWX_ALL);	// 0x20020000 128K: stacks, data_u, heap
+	SET_PMP_REGION(1, ST_USER_RAM_1,  18, KPMP_RWX_ALL);	// 0x20040000 256K: heap, user memory, shared
+	SET_PMP_REGION(2, ST_USER_RAM_2,  13, KPMP_RWX_ALL);	// 0x20080000	8K: shared (tail)
+	SET_PMP_REGION(3, ST_FLASH_INT_0, 22, KPMP_RX_ALL);		// 0x10000000	4M: code + rodata
+}
+#endif
 
 /*
  * \brief local_PLL_Configuration
@@ -420,6 +454,10 @@ static	void	init_C1_init(void) {
 		__asm volatile ("nop");
 	}
 	__asm volatile ("fence r,r" ::: "memory");
+
+#ifdef PRIVILEGED_USER_S
+	local_PMP_Configuration();		// core 1 PMP (per-hart)
+#endif
 
 	INTERRUPTION_ON_HARD;
 }
@@ -784,15 +822,15 @@ static	void	local_launchCore_1(entryAddr_t entry) {
 	const	uint32_t	vtor   = (uint32_t)g_pfnVectors_C1;
 	const	uint32_t	sp	   = (uint32_t)(uintptr_t)linker_topStackFirst_C1;
 	const	uint32_t	pc	   = ((uint32_t)(uintptr_t)entry) | 1u;
-    const	uint32_t	seq[6] = { 0u, 0u, 1u, vtor, sp, pc };
+	const	uint32_t	seq[6] = { 0u, 0u, 1u, vtor, sp, pc };
 
 	i = 0u;
-    do {
+	do {
 		cmd = seq[i];
 
 // Before each 0 : empty RX + SEV
 
-        if (cmd == 0u) { local_emptyRxFifo(); sev(); }
+		if (cmd == 0u) { local_emptyRxFifo(); sev(); }
 
 // Send and waiting for the echo
 

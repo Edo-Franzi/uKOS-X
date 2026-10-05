@@ -84,6 +84,10 @@ MODULE(
 
 #define	KIDUSER	((KID_FAM_APPLICATIONS<<24u) | (KNUM_APPLICATION<<8u) | '_')
 
+// Prototypes
+
+static	bool	local_isApplication(int32_t (*code)(uint32_t argc, const char_t *argv[]));
+
 /*
  * \brief Main entry point
  *
@@ -98,10 +102,71 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		(void)dprintf(KSYST, "No application in the memory!\n\n");
 		status = EXIT_OS_FAILURE;
 	}
+
+// A loader publishes an address even for a download that is not an application
+// (an S-record terminator alone publishes the start of the user memory): verify
+// that an application for this system is really there before jumping to it,
+// and forget an address that is not one - the next run reports an empty memory
+
+	else if (local_isApplication(code) == false) {
+		(void)dprintf(KSYST, "The downloaded code is not an application for this system!\n\n");
+		system_setDownloadCodeAddress(nullptr);
+		status = EXIT_OS_FAILURE;
+	}
 	else {
 		(void)dprintf(KSYST, "Run the downloaded application...\n\n");
 		system_setDownloadCodeAddress(nullptr);
 		status = (*code)(argc, argv);
 	}
 	return (status);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_isApplication
+ *
+ * - Verify that the user memory holds the application a loader announced
+ *   - the header at the start of the user memory is marked KMEMU
+ *   - the entry point it declares is the address that was published
+ *   - its length fits in the user memory
+ *   - the system signature lies inside the application itself: SRAM keeps
+ *     its content across resets, so a stale copy may sit anywhere else
+ *
+ */
+static	bool	local_isApplication(int32_t (*code)(uint32_t argc, const char_t *argv[])) {
+			uKOS_header_t	header;
+			size_t			ln, i = 0u;
+	const	uint8_t			*ptr = (const uint8_t *)linker_stUMemo;
+	const	char_t			*signature;
+
+	memcpy(&header, (const void *)linker_stUMemo, sizeof(header));
+
+	if ((header.oMemLocation != KMEMU) || (header.oStart != code)) {
+		return (false);
+	}
+
+	if ((header.oLnApplication == 0u) || (header.oLnApplication > (uintptr_t)linker_lnUMemo)) {
+		return (false);
+	}
+
+	system_getSystemSignature(&signature);
+
+	for (ln = (size_t)header.oLnApplication; ln > 0u; --ln) {
+		if (*ptr == (uint8_t)signature[i]) {
+			i++;
+			if (*ptr == 0u) {
+				return (true);
+			}
+		}
+		else {
+
+// A mismatch may still be the first character of the signature
+
+			i = (*ptr == (uint8_t)signature[0]) ? (1u) : (0u);
+		}
+		ptr++;
+	}
+	return (false);
 }

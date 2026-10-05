@@ -76,12 +76,14 @@ extern	"C" {
  * Call example in C:
  *
  * \code{.c}
- *          char_t      *argv[KLNINPBUF];
+ * #define    KNBARGS    16
+ *
+ *          char_t      *argv[KNBARGS];
  *          uint32_t    argc;
  *          int32_t     status;
  * const    char_t      commandLine[KLNINPBUF] = ”Line: 3224.5 test 123”;
  *
- *    status = text_readArgs(commandLine, KLNINPBUF, argv, &argc);
+ *    status = text_readArgs(commandLine, KLNINPBUF, argv, KNBARGS, &argc);
  *
  *    (void)dprintf(KSYST, “%d\n”, argc);     // --> 4
  *    (void)dprintf(KSYST, “%d\n”, argv[0]);  // --> line
@@ -94,14 +96,23 @@ extern	"C" {
  *   - Ex. buffer1 R________
  *         buffer2 RXYZCRLF\0
  *
+ * - Leading blanks are skipped: argv[0] is the first word, and a line of
+ *   blanks yields no argument (argc = 0)
+ *
+ * - A line with more arguments than argv can hold stores only the first
+ *   nbArgs of them and returns KERR_TEXT_TMARG: the line is not the one the
+ *   user typed, so a caller should refuse it rather than act on it
+ *
  * \param[in]	*ascii			Ptr on the ASCII buffer
  * \param[in]	size			Size of the buffer
  * \param[out]	*argv			Ptr on the ASCII argument buffer
+ * \param[in]	nbArgs			Capacity of argv (number of pointers)
  * \param[out]	*argc			Ptr on the number of ASCII arguments
  * \return		KERR_TEXT_NOERR	OK
+ * \return		KERR_TEXT_TMARG	Too many arguments
  *
  */
-extern	int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32_t *argc);
+extern	int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32_t nbArgs, uint32_t *argc);
 
 /*!
  * \brief Copy 2 ASCII buffers (\0 is copied)
@@ -115,19 +126,25 @@ extern	int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[],
  *          int32_t    status;
  * const    char_t     asciiS[] = ”This is the buffer 2”;
  *
- *    status = text_copyBufferZ(asciiD, asciiS);
+ *    status = text_copyAsciiBufferZ(asciiD, KSIZE, asciiS);
  * \endcode
  *
  * - The char "_" is used for space!
  *   - Ex. buffer1 R________
  *         buffer2 RXYZCRLF\0
  *
+ * - sizeD is the size of asciiD, terminator included. A source that does not
+ *   fit is truncated to sizeD - 1 characters, still terminated, and
+ *   KERR_TEXT_TOLNG is returned; with sizeD == 0 nothing is written
+ *
  * \param[out]	*asciiD			Ptr on the ASCII destination buffer
+ * \param[in]	sizeD			Size of the destination buffer (terminator included)
  * \param[in]	*asciiS			Ptr on the ASCII source buffer
  * \return		KERR_TEXT_NOERR	OK
+ * \return		KERR_TEXT_TOLNG	Text too long
  *
  */
-extern	int32_t	text_copyAsciiBufferZ(char_t *asciiD, const char_t *asciiS);
+extern	int32_t	text_copyAsciiBufferZ(char_t *asciiD, uint32_t sizeD, const char_t *asciiS);
 
 /*!
  * \brief Copy 2 ASCII buffers (\0 is not copied)
@@ -141,15 +158,20 @@ extern	int32_t	text_copyAsciiBufferZ(char_t *asciiD, const char_t *asciiS);
  *          int32_t    status;
  * const    char_t     asciiS[] = ”This is the buffer 2”;
  *
- *    status = text_copyBufferN(asciiD, asciiS);
+ *    status = text_copyAsciiBufferN(asciiD, KSIZE, asciiS);
  * \endcode
  *
- * \param[in]	*asciiD			Ptr on the ASCII destination buffer
+ * - At most sizeD characters are written. A longer source is truncated and
+ *   KERR_TEXT_TOLNG is returned
+ *
+ * \param[out]	*asciiD			Ptr on the ASCII destination buffer
+ * \param[in]	sizeD			Number of characters asciiD can take
  * \param[in]	*asciiS			Ptr on the ASCII source buffer
  * \return		KERR_TEXT_NOERR	OK
+ * \return		KERR_TEXT_TOLNG	Text too long
  *
  */
-extern	int32_t	text_copyAsciiBufferN(char_t *asciiD, const char_t *asciiS);
+extern	int32_t	text_copyAsciiBufferN(char_t *asciiD, uint32_t sizeD, const char_t *asciiS);
 
 /*!
  * \brief Check if 2 ASCII buffers are identical

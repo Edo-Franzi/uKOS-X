@@ -10,25 +10,29 @@
     {
       "name": "base",
       "hidden": true,
-      "description": "Base preset with default options",
       "generator": "Ninja",
       "binaryDir": "build",
       "cacheVariables": {
         "USER_MODE": "ON",
         "CANARY": "ON",
-        "USE_LLVM": "OFF",
+        "C_LIBRARY": "newlib",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
       "name": "gcc",
       "inherits": "base",
-      "description": "GCC toolchain, user mode ON, stack protection ON"
+      "displayName": "GCC   · newlib",
+      "description": "GCC toolchain, newlib (default C library), user mode ON, stack protection ON",
+      "cacheVariables": {
+        "USE_LLVM": "OFF"
+      }
     },
     {
       "name": "llvm",
       "inherits": "base",
-      "description": "Clang/LLVM toolchain, user mode ON, stack protection ON",
+      "displayName": "Clang · newlib",
+      "description": "Clang/LLVM toolchain, newlib (default C library), user mode ON, stack protection ON",
       "cacheVariables": {
         "USE_LLVM": "ON"
       }
@@ -38,6 +42,7 @@
       "inherits": "base",
       "description": "GCC toolchain, user mode ON, stack protection OFF",
       "cacheVariables": {
+        "USE_LLVM": "OFF",
         "CANARY": "OFF"
       }
     },
@@ -46,6 +51,7 @@
       "inherits": "base",
       "description": "GCC toolchain, user mode OFF, stack protection ON",
       "cacheVariables": {
+        "USE_LLVM": "OFF",
         "USER_MODE": "OFF"
       }
     },
@@ -54,15 +60,15 @@
       "inherits": "base",
       "description": "GCC toolchain, user mode OFF, stack protection OFF",
       "cacheVariables": {
+        "USE_LLVM": "OFF",
         "USER_MODE": "OFF",
         "CANARY": "OFF"
       }
     },
-
     {
       "name": "llvm-nocanary",
       "inherits": "base",
-      "description": "Clang/LLVM toolchain, user mode ON, canary OFF",
+      "description": "Clang/LLVM toolchain, user mode ON, stack protection OFF",
       "cacheVariables": {
         "USE_LLVM": "ON",
         "CANARY": "OFF"

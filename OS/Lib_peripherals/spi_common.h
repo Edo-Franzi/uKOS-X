@@ -89,5 +89,12 @@ enum {
 			BSPI_PHA											// Phase
 };
 
+// Bound of a single-byte transfer (spiN_writeRead), in ms. A byte takes
+// microseconds at any speed; a transfer that has not completed within this time
+// never will, and waiting forever hung the caller - the whole console when that
+// was wkspi. Keep it at least one kernel tick: shorter rounds down to no wait.
+
+#define	KSPI_TIMEOUT_WRITEREAD		1000u
+
 /**@}*/
 /**@}*/

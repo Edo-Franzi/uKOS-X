@@ -76,7 +76,7 @@ printf '%b%s%b' "${GREEN}" "${splash}" "${NC}"
 # Packages
 # --------
 
-readonly package=9.5.0
+readonly package=9.6.0
 
 # Clone the right package
 

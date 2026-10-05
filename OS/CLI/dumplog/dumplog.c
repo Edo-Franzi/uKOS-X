@@ -262,7 +262,7 @@ static	void	local_compose(const char_t *identifier, const char_t **idSpacer) {
 	size_t	len;
 
 // --------------------------------------|-------------------------------|---
-//                                      "Process_to_count_the_number_xyztu";
+//										"Process_to_count_the_number_xyztu";
 	static	const	char_t	aSpacer[] = "                                 ";
 
 	len = strlen(identifier);

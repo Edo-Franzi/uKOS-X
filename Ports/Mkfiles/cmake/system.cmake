@@ -91,6 +91,7 @@ target_compile_definitions(system_compiler_flags INTERFACE
 	SOC=${SOC}
 	CORE=${CORE}
 	UKOS_S
+	${BOARD}_S
 	${SOC}_S
 	${CORE}_S
 	ROMABLE_S
@@ -101,6 +102,50 @@ target_compile_definitions(system_compiler_flags INTERFACE
 target_compile_definitions(system_compiler_flags INTERFACE
 	_GNU_SOURCE
 )
+if(C_LIBRARY STREQUAL "picolibc")
+	target_compile_definitions(system_compiler_flags INTERFACE
+		CONFIG_MAN_PICOLIBC_S
+		_REENT_GLOBAL_ERRNO
+	)
+	message(STATUS "C library compile definitions (picolibc): CONFIG_MAN_PICOLIBC_S, _REENT_GLOBAL_ERRNO")
+elseif(C_LIBRARY STREQUAL "llvmlibc")
+	# CLOCKS_PER_SEC is not set here: stock baremetal LLVM libc defaults it to 100
+	# on ARM (Arm semihosting counts centiseconds), and the uKOS-X toolchain patch
+	# ukos_patches/0001-newlib-llvm-libc-use-microsecond-also-for-32-bit-Arm.patch
+	# moves 32-bit Arm to the microsecond branch instead. Patching rather than
+	# passing -D__CLK_TCK also rebuilds libc.a with the same unit, so the library
+	# and the application agree. A static_assert in llvmlibc.c fails the build on
+	# an unpatched toolchain.
+	target_compile_definitions(system_compiler_flags INTERFACE
+		CONFIG_MAN_LLVMLIBC_S
+	)
+	# LLVM libc has no FILE*-based dprintf; force-include the declaration shim
+	# so the many callers that only include <stdio.h> still see a prototype.
+	target_compile_options(system_compiler_flags INTERFACE
+		"$<$<COMPILE_LANGUAGE:C,CXX>:-include;${PATH_OSYS}/Lib_generics/llvmlibc/llvmlibc_shim.h>"
+	)
+	# Baremetal LLVM libc ships no POSIX <sys/*> header (it declares struct
+	# timeval and gettimeofday() in <time.h>); supply the <sys/time.h> the
+	# portable sources include, so they stay C-library agnostic.
+	target_include_directories(system_compiler_flags INTERFACE
+		${PATH_OSYS}/Lib_generics/llvmlibc/compat
+	)
+	# Overlay installs need --config=llvmlibc.cfg to select LLVM libc; a
+	# dedicated LLVM-libc toolchain build does not (and has no such file).
+	# Set LLVMLIBC_CONFIG=llvmlibc.cfg to enable it for overlay installs.
+	if(LLVMLIBC_CONFIG)
+		target_compile_options(system_compiler_flags INTERFACE --config=${LLVMLIBC_CONFIG})
+		target_link_options(system_compiler_flags INTERFACE --config=${LLVMLIBC_CONFIG})
+	endif()
+	message(STATUS "C library compile definitions (llvmlibc): CONFIG_MAN_LLVMLIBC_S (dprintf shim force-included, <sys/time.h> compatibility header)")
+else()
+	# newlib (default)
+	target_compile_definitions(system_compiler_flags INTERFACE
+		CONFIG_MAN_NEWLIB_S
+		__DYNAMIC_REENT__
+	)
+	message(STATUS "C library compile definitions (newlib): CONFIG_MAN_NEWLIB_S, __DYNAMIC_REENT__")
+endif()
 
 # Common flags from *_system_CORTEX_M3.mk, *_system_CORTEX_M4.mk,
 # *_system_CORTEX_M7.mk, *_system_RV32IMAC.mk and *_system_RV64IMAFDC.mk
@@ -187,17 +232,29 @@ if(VERSIONING STREQUAL "git")
 		OUTPUT_VARIABLE SW_VERSION_VAR
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 	)
-	# Trick to have version.h updated when git status changed
+	# Trick to have version.h updated when git status changed.
+	# Two details this depends on:
+	#	- CMAKE_CONFIGURE_DEPENDS is a DIRECTORY property; set on any other scope
+	#	  it is silently ignored.
+	#	- --absolute-git-dir, not --git-dir: the latter answers ".git", a relative
+	#	  path that CMake then resolves against the variant directory, where no
+	#	  such file exists, and a dependency on a missing file is dropped. It is
+	#	  also already correct for a worktree or a submodule, which the plain form
+	#	  needed a regex to paper over.
+	# HEAD covers the commit that "git describe" reports, index the "-dirty" part.
 	execute_process(
-		COMMAND ${GIT_EXECUTABLE} -C "${PATH_UKOS}" rev-parse --git-dir
+		COMMAND ${GIT_EXECUTABLE} -C "${PATH_UKOS}" rev-parse --absolute-git-dir
 		OUTPUT_VARIABLE PROJECT_SOURCE_GIT
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 	)
-	string(REGEX REPLACE "\\.git.*" ".git" PROJECT_SOURCE_GIT "${PROJECT_SOURCE_GIT}")
-	set_property(GLOBAL APPEND
+	foreach(GIT_WATCHED HEAD index)
+		if(EXISTS "${PROJECT_SOURCE_GIT}/${GIT_WATCHED}")
+			set_property(DIRECTORY APPEND
 		PROPERTY CMAKE_CONFIGURE_DEPENDS
-		"${PROJECT_SOURCE_GIT}/index"
+				"${PROJECT_SOURCE_GIT}/${GIT_WATCHED}"
 	)
+		endif()
+	endforeach()
 elseif(VERSIONING STREQUAL "svn")
 	execute_process(
 		COMMAND svnversion
@@ -250,15 +307,73 @@ endif()
 # Common link options
 set(TARGET_COMMON_LINK_OPTIONS
 	$<$<BOOL:${CANARY}>:-Wl,--wrap=__stack_chk_fail>
-	-Wl,--wrap=_malloc_r
-	-Wl,--wrap=_free_r
-	-Wl,--wrap=_realloc_r
-	-Wl,--wrap=_calloc_r
 	-L${PATH_UKOS}/Ports/EquatesModels/SOCs/${SOC}/Runtime
 	-L${PATH_UKOS}/Ports/EquatesModels/Cores/${CORE}/Runtime
 	-T${LINKS_LD}
 	-nostartfiles
 )
+
+# C library specific memory allocator wrapping
+if(C_LIBRARY STREQUAL "picolibc")
+	# Picolibc uses standard function names (no _r suffix)
+	list(APPEND TARGET_COMMON_LINK_OPTIONS
+		-Wl,--wrap=malloc
+		-Wl,--wrap=free
+		-Wl,--wrap=realloc
+		-Wl,--wrap=calloc
+	)
+	# Counteract picolibc.specs' --gc-sections for the system build.
+	# picolibc.specs unconditionally adds --gc-sections, which discards .text sections
+	# from --whole-archive objects when no symbol in that section is referenced within
+	# the system binary. This affects kernel API functions and peripheral drivers
+	# (e.g. watchdog_arm) that are only called by downloadable applications.
+	list(APPEND TARGET_COMMON_LINK_OPTIONS
+		$<$<C_COMPILER_ID:GNU>:-Wl,--no-gc-sections>
+	)
+	# RISC-V GCC only: -specs=picolibc.specs, at LINK time.
+	#
+	# gcc/config/riscv/elf.h hardcodes
+	#	  *lib: --start-group -lc %{!specs=nosys.specs:-lgloss} --end-group
+	# so the driver always asks for -lgloss, newlib's board-support library.
+	# picolibc does not ship it (nor a nosys.specs to suppress it), and the link
+	# dies with "cannot find -lgloss". ARM's spec adds no such library, which is
+	# why only RISC-V needs this.
+	#
+	# picolibc.specs replaces that *lib stanza, so the reference disappears. It is
+	# applied to the link ONLY: the include-path damage that keeps these specs off
+	# the compile line lives in the *cpp: and *cc1plus: stanzas, which the linker
+	# never expands. See "picolibc with GCC - the toolchain must be
+	# picolibc-native" (§2.2) in Documentation/USER_GUIDES/C-library-selection.md.
+	#
+	# Its *link stanza also carries an unconditional --gc-sections; the
+	# --no-gc-sections above is emitted after it on the ld command line and wins,
+	# which is what keeps whole-archive kernel code alive. -Tpicolibc.ld is guarded
+	# by %{!T:...} and we always pass -T, so it never applies.
+	if(CMAKE_SYSTEM_PROCESSOR STREQUAL "RISCV")
+		list(APPEND TARGET_COMMON_LINK_OPTIONS
+			$<$<C_COMPILER_ID:GNU>:-specs=picolibc.specs>
+		)
+	endif()
+	message(STATUS "C library malloc wrapping: --wrap=malloc, --wrap=free, --wrap=realloc, --wrap=calloc")
+elseif(C_LIBRARY STREQUAL "llvmlibc")
+	# LLVM libc uses standard function names (no _r suffix), like picolibc
+	list(APPEND TARGET_COMMON_LINK_OPTIONS
+		-Wl,--wrap=malloc
+		-Wl,--wrap=free
+		-Wl,--wrap=realloc
+		-Wl,--wrap=calloc
+	)
+	message(STATUS "C library malloc wrapping: --wrap=malloc, --wrap=free, --wrap=realloc, --wrap=calloc")
+else()
+	# Newlib uses reentrant function names (_r suffix)
+	list(APPEND TARGET_COMMON_LINK_OPTIONS
+		-Wl,--wrap=_malloc_r
+		-Wl,--wrap=_free_r
+		-Wl,--wrap=_realloc_r
+		-Wl,--wrap=_calloc_r
+	)
+	message(STATUS "C library malloc wrapping: --wrap=_malloc_r, --wrap=_free_r, --wrap=_realloc_r, --wrap=_calloc_r")
+endif()
 target_link_options(${TARGET_NOSIG_ELF} PRIVATE ${TARGET_COMMON_LINK_OPTIONS})
 target_link_options(${TARGET_ELF} PRIVATE
 	${TARGET_COMMON_LINK_OPTIONS}

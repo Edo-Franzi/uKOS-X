@@ -61,6 +61,7 @@ STRG_LOC_CONST(aStrSemaphore_TR[]) = UNIT " Transaction";
 // Prototypes
 
 static	void	local_SPI_IRQHandler(void);
+static	void	local_abandonTransfer(void);
 
 /*
  * \brief model_spi_init
@@ -147,7 +148,6 @@ int32_t	model_spi_configure(const spiCnf_t *configure) {
  *
  */
 int32_t	model_spi_multipleWriteRead(const uint8_t *wData, uint16_t wSize, uint8_t *rData, uint16_t rSize, uint32_t timeout) {
-	int32_t		status;
 
 	INTERRUPTION_OFF;
 	if (vBusy == true) { RETURN_INT_RESTORE(KERR_SPI_CHBSY); }
@@ -171,12 +171,37 @@ int32_t	model_spi_multipleWriteRead(const uint8_t *wData, uint16_t wSize, uint8_
 
 	NVIC_SetPendingIRQ(SPI_VECTOR_NUMBER);
 
-	status = (kern_waitSemaphore(vSemaphore_TR, timeout) != KERR_SPI_NOERR) ? (KERR_SPI_TIMEO) : (KERR_SPI_NOERR);
-	return (status);
+	if (kern_waitSemaphore(vSemaphore_TR, timeout) == KERR_KERN_NOERR) {
+		return (KERR_SPI_NOERR);
+	}
+
+	local_abandonTransfer();
+	return (KERR_SPI_TIMEO);
 }
 
 // Local routines
 // ==============
+
+/*
+ * \brief local_abandonTransfer
+ *
+ * - Abandon a transfer that did not complete in time. Left as it is, vBusy
+ *   stays set and every later transfer is refused as busy, and a late
+ *   interrupt could complete this transfer on behalf of the next one. A
+ *   completion that raced the timeout left a signal behind: take it back,
+ *   without waiting.
+ *
+ */
+static	void	local_abandonTransfer(void) {
+
+	INTERRUPTION_OFF;
+	SPI->IER &= ~SPI_IER_RXPIE;
+	NVIC_ClearPendingIRQ(SPI_VECTOR_NUMBER);
+	vBusy = false;
+	INTERRUPTION_RESTORE;
+
+	(void)kern_waitSemaphore(vSemaphore_TR, 0u);
+}
 
 /*
  * \brief local_SPI_IRQHandler
@@ -189,6 +214,16 @@ static	void	local_SPI_IRQHandler(void) {
 	static	uint16_t	vNbBytes = 0u;
 	static	bool		vWrite = false;
 	static	bool		vFirst = true;
+
+// A new transfer starts from a clean state, even when the previous one was
+// abandoned on a timeout halfway through its bytes
+
+	if (vStart == true) {
+		vStart	 = false;
+		vNbBytes = 0u;
+		vWrite	 = false;
+		vFirst	 = true;
+	}
 
 	SPI->IFCR = SPI_IFCR_EOTC;
 	data = *((volatile uint8_t *)&SPI->RXDR);

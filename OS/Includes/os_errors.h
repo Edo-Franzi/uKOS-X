@@ -262,7 +262,9 @@ enum : int32_t {
 enum : int32_t {
 	KERR_TEXT_NOERR = 0,										// No error
 	KERR_TEXT_SYCNA = (int32_t)(KTEXT_ERR + 1u),				// System call not available
-	KERR_TEXT_GEERR												// General error
+	KERR_TEXT_GEERR,											// General error
+	KERR_TEXT_TMARG,											// Too many arguments
+	KERR_TEXT_TOLNG												// Source too long for the destination
 };
 
 // calendar manager errors

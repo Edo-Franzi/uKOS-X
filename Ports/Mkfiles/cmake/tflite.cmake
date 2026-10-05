@@ -2,7 +2,7 @@
 # =======
 
 # SPDX-License-Identifier: MIT
-# SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
+# SPDX-FileCopyrightText: 2026 Laurent von Allmen
 
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2026-04-08
@@ -11,8 +11,8 @@
 # Project:	uKOS-X
 # Goal:		TensorFlow Lite Micro integration for CMake builds
 #
-#   (c) 2025-2026, Laurent von Allmen
-#   ---------------------------------
+#   (c) 2026, Laurent von Allmen
+#   ----------------------------
 #                                              __ ______  _____
 #   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 #   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -75,10 +75,24 @@ macro(add_Tflite)
 			"${PATH_UKOS}/Third_Parties/Tflite-micro/Library/${CORE}")
 	endif()
 
-	# Public include paths for users of the library
+	# Public include paths for users of the library.
+	# The generic header tree is per architecture, not per core: the RISC-V one
+	# is ISA-independent and serves rv32 as well as rv64, despite its name.
+	# CMAKE_SYSTEM_PROCESSOR is set to ARM or RISCV by the toolchain file, which
+	# the variant includes before this macro runs.
+	if(CMAKE_SYSTEM_PROCESSOR STREQUAL "RISCV")
+		set(_TFLITE_GENERIC RISCV64_generic)
+	else()
+		set(_TFLITE_GENERIC CORTEX_M_generic)
+	endif()
 	set(_TFLITE_ROOT
-		${PATH_UKOS}/Third_Parties/Tflite-micro/Library/Generic/CORTEX_M_generic
+		${PATH_UKOS}/Third_Parties/Tflite-micro/Library/Generic/${_TFLITE_GENERIC}
 	)
+	if(NOT EXISTS "${_TFLITE_ROOT}")
+		message(FATAL_ERROR
+			"add_Tflite: TFLite-micro generic headers not found for "
+			"CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR} in ${_TFLITE_ROOT}")
+	endif()
 	list(APPEND PATH_INCLUDES
 		${_TFLITE_ROOT}
 		${_TFLITE_ROOT}/third_party/flatbuffers/include

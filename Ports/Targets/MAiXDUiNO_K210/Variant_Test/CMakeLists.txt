@@ -47,6 +47,10 @@
 
 cmake_minimum_required(VERSION 3.31)
 
+if (${USER_MODE})
+    message(WARNING "Microcontroller has no User/Supervisor modes. Using privileged mode.")
+endif()
+
 # uKOS-X CMake module setup
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../../Mkfiles/cmake")
 
@@ -76,7 +80,7 @@ include(proj_config)
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
-	"uKOS_OWNER=(c) LvA"
+	"uKOS_OWNER=(c) Edo. Franzi"
 )
 
 # Flash programming script selection
@@ -171,7 +175,8 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (user) -> liblibx_u.a
 add_library(libx_u)
-add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+# C library integration (newlib, picolibc or llvmlibc, selected by C_LIBRARY)
+add_clib_manager_source(libx_u)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
@@ -216,7 +221,6 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/dumpshared/dumpshared.c
 	${PATH_OSYS}/CLI/dumptrace/dumptrace.c
 	${PATH_OSYS}/CLI/echo/echo.c
-	${PATH_BASE}/CLI/esp32/esp32.c
 	${PATH_OSYS}/CLI/fill/fill.c
 	${PATH_OSYS}/CLI/gdb/gdb.c
 	${PATH_OSYS}/CLI/hexloader/hexloader.c
@@ -236,6 +240,7 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/test_malloc/test_malloc.c
 	${PATH_OSYS}/CLI/test_mcore/test_mcore.c
 	${PATH_OSYS}/CLI/uKOS/uKOS.c
+	${PATH_BASE}/CLI/esp32/esp32.c
 	${PATH_BASE}/CLI/test_img/test_img.c
 	${PATH_BASE}/CLI/test_ipi/test_ipi.c
 	${PATH_BASE}/CLI/test_lcd/test_lcd.c

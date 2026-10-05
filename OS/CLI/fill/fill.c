@@ -61,7 +61,9 @@ STRG_LOC_CONST(aStrHelp[])		  = "Fill a memory area with a pattern\n"
 									"This tool fills a memory area with a\n"
 									"pattern.\n"
 									"The memory space is accessed in user mode;\n"
-									"to avoid privilege violations, -S should be used.\n\n"
+									"to avoid privilege violations, -S should be used.\n"
+									"The end address is excluded and may not\n"
+									"be below the start address.\n\n"
 
 									"Input format:  fill [-S] {hex_startAdd hex_endAdd data}\n"
 									"Output format: [result]\n\n"
@@ -116,33 +118,47 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			endAdd	 = (uintptr_t)strtoul(argv[2], &dummy, 16u);
 			value	 = (int32_t)  strtoul(argv[3], &dummy, 16u);
 
-			nbBytes = (uint32_t)(endAdd - startAdd);
-			firstAdd = (uint8_t *)startAdd;
-			for (i = 0u; i < nbBytes; i++) {
-				*firstAdd = (uint8_t)value;
-				firstAdd++;
+// An end below the start is refused: endAdd - startAdd would underflow and
+// write about 4 GB. dump reads such an end as a length, but for a write a
+// swapped pair of addresses would still cover most of the address space
+
+			if (endAdd < startAdd) {
+				error = true;
 			}
-		}
-		else {
-			text_checkAsciiBuffer(argv[1], "-S", &equals);
-			if (equals == true) {
-
-// Privileged access
-
-				PRIVILEGE_ELEVATE;
-
-				startAdd = (uintptr_t)strtoul(argv[2], &dummy, 16u);
-				endAdd	 = (uintptr_t)strtoul(argv[3], &dummy, 16u);
-				value	 = (int32_t)  strtoul(argv[4], &dummy, 16u);
-
+			else {
 				nbBytes = (uint32_t)(endAdd - startAdd);
 				firstAdd = (uint8_t *)startAdd;
 				for (i = 0u; i < nbBytes; i++) {
 					*firstAdd = (uint8_t)value;
 					firstAdd++;
 				}
+			}
+		}
+		else {
+			text_checkAsciiBuffer(argv[1], "-S", &equals);
+			if (equals == true) {
 
-				PRIVILEGE_RESTORE;
+// Privileged access (same refusal of an end below the start)
+
+				startAdd = (uintptr_t)strtoul(argv[2], &dummy, 16u);
+				endAdd	 = (uintptr_t)strtoul(argv[3], &dummy, 16u);
+				value	 = (int32_t)  strtoul(argv[4], &dummy, 16u);
+
+				if (endAdd < startAdd) {
+					error = true;
+				}
+				else {
+					PRIVILEGE_ELEVATE;
+
+					nbBytes = (uint32_t)(endAdd - startAdd);
+					firstAdd = (uint8_t *)startAdd;
+					for (i = 0u; i < nbBytes; i++) {
+						*firstAdd = (uint8_t)value;
+						firstAdd++;
+					}
+
+					PRIVILEGE_RESTORE;
+				}
 			}
 			else {
 				error = true;
@@ -151,6 +167,6 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	}
 
 	if (error == false) { (void)dprintf(KSYST, "\n");				   status = EXIT_OS_SUCCESS_CLI; }
-	else				{ (void)dprintf(KSYST, "Protocol error.\n\n"); status = EXIT_OS_FAILURE;     }
+	else				{ (void)dprintf(KSYST, "Protocol error.\n\n"); status = EXIT_OS_FAILURE;	 }
 	return (status);
 }

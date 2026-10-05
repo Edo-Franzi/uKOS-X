@@ -158,7 +158,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	for (i = 0; i < nbTraceWrites; i++) {
 		identifier = (rTraceFifo->oProcess == nullptr) ? ("From ISR") : (rTraceFifo->oProcess->oSpecification.oIdentifier);
 		local_compose(identifier, &idSpacer);
-		(void)dprintf(KSYST, "%12lld-us   0x%016"PRIXPTR"   %s%s  %s\n", rTraceFifo->oTimeStamp, rTraceFifo->oParameter, identifier, idSpacer, rTraceFifo->oMessage);
+		(void)dprintf(KSYST, "%12"PRIu64"-us   0x%016"PRIXPTR"   %s%s  %s\n", rTraceFifo->oTimeStamp, rTraceFifo->oParameter, identifier, idSpacer, rTraceFifo->oMessage);
 
 		rTraceFifo = (rTraceFifo == &traceFifo[KRECORD_SZ_TRACE_FIFO]) ? (traceFifo) : (rTraceFifo + 1u);
 	}
@@ -190,7 +190,7 @@ static	void	local_compose(const char_t *identifier, const char_t **idSpacer) {
 	size_t	len;
 
 // --------------------------------------|-------------------------------|---
-//                                      "Process_to_count_the_number_xyztu";
+//										"Process_to_count_the_number_xyztu";
 	static	const	char_t	aSpacer[] = "                                 ";
 
 	len = strlen(identifier);

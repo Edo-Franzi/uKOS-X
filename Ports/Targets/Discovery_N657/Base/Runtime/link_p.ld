@@ -141,7 +141,7 @@ linker_ST_RAM_INT_3			= linker_stLCD_F_BUFFER;												/* 0x34242000: Privile
 linker_EN_RAM_INT_3			= (linker_stLCD_F_BUFFER + 1500K - 1);									/* 0x343BFFFF: 1500-K										*/
 
 linker_ST_APSRAM			= linker_stUMemo;														/* 0x90000000: Privileged/User RAM							*/
-linker_EN_APSRAM			= (linker_stUMemo + linker_lnUMemo - 1);								/* 0x91FFFFFF: 32-M											*/
+linker_EN_APSRAM			= (linker_stUMemo + linker_lnUMemo - 1);								/* 0x90FFFFFF: 16-M, the user memory						*/
 
 linker_ST_OCTOFLASH			= linker_stExtFlash;													/* 0x70000000: Privileged/User RAM							*/
 linker_EN_OCTOFLASH			= (linker_stExtFlash + linker_lnExtFlash - 1);							/* 0x77FFFFFF: 128-M										*/

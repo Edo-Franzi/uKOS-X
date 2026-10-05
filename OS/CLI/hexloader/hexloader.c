@@ -118,7 +118,8 @@ enum {
 		KERR_H_LOADER_BFU,
 		KERR_H_LOADER_NOI,
 		KERR_H_LOADER_FRA,
-		KERR_H_LOADER_PAR
+		KERR_H_LOADER_PAR,
+		KERR_H_LOADER_HEX
 };
 
 enum {
@@ -202,7 +203,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 							address = (uint8_t *)(page + offset);
 							error = local_getData(&counter, &checksum, address); if (error != KERR_H_LOADER_NOT) { terminate = true; break; }
 							error = local_getHexValue(&hexValue);				 if (error != KERR_H_LOADER_NOT) { terminate = true; break; }
-							if (hexValue != (uint8_t)(0u - checksum))        	   { error  = KERR_H_LOADER_CHK;   terminate = true; break; }
+							if (hexValue != (uint8_t)(0u - checksum))			   { error  = KERR_H_LOADER_CHK;   terminate = true; break; }
 							break;
 						}
 						case 1u: {
@@ -287,6 +288,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		case KERR_H_LOADER_NOI: { (void)dprintf(KSYST, "\nHex: noise error.\n\n");		 status = EXIT_OS_FAILURE;	   break; }
 		case KERR_H_LOADER_FRA: { (void)dprintf(KSYST, "\nHex: framing error.\n\n");	 status = EXIT_OS_FAILURE;	   break; }
 		case KERR_H_LOADER_PAR: { (void)dprintf(KSYST, "\nHex: parity error.\n\n");		 status = EXIT_OS_FAILURE;	   break; }
+		case KERR_H_LOADER_HEX: { (void)dprintf(KSYST, "\nHex: not a hex digit.\n\n");	 status = EXIT_OS_FAILURE;	   break; }
 		default:				{														 status = EXIT_OS_FAILURE;	   break; }
 	}
 	return (status);
@@ -367,14 +369,17 @@ static	int32_t	local_getHexValue(uint8_t *value) {
 		return (status);
 	}
 
+// A character that is not a hex digit is an error: it used to contribute 0,
+// so only the record checksum stood between a corrupt stream and a bad load
+
 	if       ((byte >= '0') && (byte <= '9'))									   { *value  = (uint8_t)(aTabAB[byte - (uint8_t)'0']<<4u);						 }
 	else if (((byte >= 'A') && (byte <= 'F')) || ((byte >= 'a') && (byte <= 'f'))) { *value  = (uint8_t)(aTabAB[(byte & (uint8_t)(~0x20u)) - (uint8_t)'0']<<4u); }
-	else { ; }
+	else { return (KERR_H_LOADER_HEX); }
 
 	status = local_getByte(&byte);  if (status != KERR_H_LOADER_NOT) { return (status); }
 	if       ((byte >= '0') && (byte <= '9'))									   { *value += (uint8_t)(aTabAB[byte - (uint8_t)'0']);							 }
 	else if (((byte >= 'A') && (byte <= 'F')) || ((byte >= 'a') && (byte <= 'f'))) { *value += (uint8_t)(aTabAB[(byte & (uint8_t)(~0x20u)) - (uint8_t)'0']);	 }
-	else { ; }
+	else { return (KERR_H_LOADER_HEX); }
 
 	return (KERR_H_LOADER_NOT);
 }

@@ -96,7 +96,6 @@ else()
 	# newlib (default)
 	target_compile_definitions(system_compiler_flags INTERFACE
 		CONFIG_MAN_NEWLIB_S
-		__DYNAMIC_REENT__
 		_POSIX_C_SOURCE=200809L
 	)
 	message(STATUS "C library compile definitions: CONFIG_MAN_NEWLIB_S, __DYNAMIC_REENT__, _POSIX_C_SOURCE=200809L")
@@ -142,7 +141,7 @@ target_compile_options(system_compiler_flags BEFORE INTERFACE
 	$<$<COMPILE_LANGUAGE:C>:-std=${CSTANDARD}>
 	$<$<COMPILE_LANGUAGE:CXX>:-std=${CXXSTANDARD}>
 	# Security
-	$<$<BOOL:${CANARY}>:-fstack-protector-strong>
+	$<$<COMPILE_LANGUAGE:C>:$<$<BOOL:${CANARY}>:-fstack-protector-strong>>
 	# Basic behaviour
 	-fshort-enums
 	-fstack-usage

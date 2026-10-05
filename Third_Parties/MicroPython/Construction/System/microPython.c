@@ -145,7 +145,7 @@ int32_t	microPython_configure(microPythonCnf_t *configure) {
  */
 int32_t	microPython_exchangeData(const char_t *pyProgram) {
 	char_t				ascii[KSZ_INPUT + 1];
-	uint32_t			i, size;
+	uint32_t			size;
 	serialManager_t		serialManager;
 	bool				terminate = false;
 	proc_t				*process;
@@ -164,18 +164,15 @@ int32_t	microPython_exchangeData(const char_t *pyProgram) {
 			(void)dprintf(KSYST, ">>> ");
 			text_waitString(serialManager, ascii, (KSZ_INPUT - 4));
 
-			size = strlen(ascii);
-			ascii[size] = '\r'; ascii[size + 1] = '\n'; ascii[size + 2] = '\0';
+// Check the "quit": the whole line, before the line end is appended. Comparing
+// only the first strlen - 1 characters ended the session on "q", "qx", "7" and
+// every other one-character line instead of evaluating it
 
-// Check the "quit"
-
-			terminate = true;
-			for (i = 0u; i < (uint32_t)(size - 1u); i++) {
-				if (ascii[i] != aStrTerminated[i]) {
-					terminate = false;
-					local_commandLine(ascii, MP_PARSE_SINGLE_INPUT);
-					break;
-				}
+			terminate = (strcmp(ascii, aStrTerminated) == 0);
+			if (terminate == false) {
+				size = strlen(ascii);
+				ascii[size] = '\r'; ascii[size + 1] = '\n'; ascii[size + 2] = '\0';
+				local_commandLine(ascii, MP_PARSE_SINGLE_INPUT);
 			}
 		}
 		mp_deinit();

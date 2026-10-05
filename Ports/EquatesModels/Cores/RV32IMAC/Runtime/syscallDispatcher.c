@@ -71,9 +71,44 @@ void	kernel_message_C1(void) { }
  *
  */
 void	syscallDispatcher(void) {
+	uint32_t	core = GET_RUNNING_CORE;
+
+	#ifdef PRIVILEGED_USER_S
+
+// Privilege elevation / restoration (R5). RISC-V ecall carries no immediate (unlike ARM's
+// svc #N), so the RIGHTS_ELEVATION / SET_USER_MODE ecalls in kern_setPrivilegeMode() are
+// distinguished from kernel-message ecalls by the saved return address (mepc, frame word
+// [0]), which equals the sanctioned priv_returnElevation / priv_returnRestore label (the
+// label sits right after the ecall). Edit the saved frame's mstatus (word [2]) MPP field
+// and return to the SAME process — no scheduler, no context switch; first_handle_trap then
+// mret's back to it with the new privilege.
+
+	extern	volatile	uintptr_t	vSaveStack[KNB_CORES];
+	extern	uint8_t					priv_returnElevation[];
+	extern	uint8_t					priv_returnRestore[];
+
+			uint32_t				*frame = (uint32_t *)vSaveStack[core];
+			uintptr_t				mepc   = (uintptr_t)frame[0];
+
+	if (mepc == (uintptr_t)priv_returnElevation) {
+
+// elevate: MPP = 3 (M-mode)
+			
+		frame[2] |= (uint32_t)MSTATUS_MPP;
+		return;
+	}
+
+	if (mepc == (uintptr_t)priv_returnRestore) {
+
+// restore: MPP = 0 (U-mode)
+
+		frame[2] &= ~(uint32_t)MSTATUS_MPP;
+		return;
+	}
+	#endif
 
 	#if (KNB_CORES == 2)
-	if (GET_RUNNING_CORE == KCORE_0) {
+	if (core == KCORE_0) {
 		kernel_message_C0();
 	}
 	else {
@@ -82,7 +117,4 @@ void	syscallDispatcher(void) {
 	#else
 	kernel_message_C0();
 	#endif
-
-// KPRIV_ELEVATION is a no-op on RV32IMAC (no U-mode in this build)
-
 }

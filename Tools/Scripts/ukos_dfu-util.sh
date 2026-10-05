@@ -19,7 +19,7 @@
 #			git clone --recurse-submodules git://git.code.sf.net/p/dfu-util/dfu-util dfu-util-${DFUUTIL_VER}
 #
 #			OS:
-#			OSX 26.xx			yes
+#			OSX 27.xx			yes
 #			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi

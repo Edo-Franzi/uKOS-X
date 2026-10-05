@@ -107,7 +107,6 @@ OPTIMISATION	=  -Os
 VERSIONING		=  GIT
 FLAGS_UKOS		+= -DSECURE_S
 FLAGS_UKOS		+= -D__DYNAMIC_REENT__
-FLAGS_USER		+= -DuKOS_NAME=''
 FLAGS_USER		+= -DuKOS_OWNER='(c) Edo. Franzi'
 
 ifeq ($(CORE),RV32IMAC)
@@ -115,12 +114,14 @@ PREFIX			?=  riscv64-unknown-elf-
 COMPILER_FAMILY	?=  gcc
 BURN			?=  picotool-riscv
 FAMILY			=   pico2riscv
+FLAGS_USER		+= -DuKOS_NAME='RISC-V'
 
 else
 PREFIX			?=  arm-none-eabi-
 COMPILER_FAMILY	?=  gcc
 BURN			?=  picotool-arm
 FAMILY			=   pico2m33
+FLAGS_USER		+= -DuKOS_NAME='ARM'
 endif
 
 # The really first pcs of code (privileged)
@@ -314,5 +315,6 @@ CONF_SYSTEM		+= -DKDAEMONS_WITH_STACK_INT_S=true
 CONF_SYSTEM		+= -DKDAEMONS_ALERT_STACK_INT_S=false
 CONF_SYSTEM		+= -DKDAEMONS_TIME_STACK_INT=10000
 
+# Table sizes are unsigned, like their defaults in kern.h
 # Number of precise signals
-CONF_SYSTEM		+= -DKKERN_NB_PRECISE_SIGNALS=0
+CONF_SYSTEM		+= -DKKERN_NB_PRECISE_SIGNALS=0u

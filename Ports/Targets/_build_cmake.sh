@@ -48,7 +48,8 @@
 #
 #------------------------------------------------------------------------
 
-set -euo pipefail
+emulate -L zsh
+setopt ERR_EXIT NO_UNSET PIPE_FAIL EXTENDED_GLOB
 
 # Determine script directory (works if executed via ./script.sh or zsh script.sh)
 
@@ -60,14 +61,14 @@ GENERATEUR="Unix Makefiles"
 
 # Colours for messages
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[0;33m'
-readonly BLUE='\033[0;34m'
-readonly BOLD='\033[1m'
-readonly FAINT='\033[2m'
-readonly ITALIC='\033[3m'
-readonly NC='\033[0m' # No Color
+readonly RED=$'\033[0;31m'
+readonly GREEN=$'\033[0;32m'
+readonly YELLOW=$'\033[0;33m'
+readonly BLUE=$'\033[0;34m'
+readonly BOLD=$'\033[1m'
+readonly FAINT=$'\033[2m'
+readonly ITALIC=$'\033[3m'
+readonly NC=$'\033[0m' # No Color
 
 # Defaults
 
@@ -112,9 +113,8 @@ while getopts "${OPTSTRING}" option; do
 			;;
 		w)
 			# -v (verbose) takes precedence over -w (write log)
-			if [[ "${VERBOSITY}" != "-v" ]]
-			then
-			  VERBOSITY="-w"
+			if [[ "${VERBOSITY}" != "-v" ]]; then
+				VERBOSITY="-w"
 			fi
 			;;
 		?)
@@ -182,15 +182,16 @@ printf "%bUsing cmake (%s) and %s (%s)%b\n" "${YELLOW}" "${cmake_version}" "$COM
 
 process_option()
 {
+	local log_file="$1"
 	case "${VERBOSITY}" in
 		"-v")
-			cat ${1}
-			rm -f ${1}
+			cat "${log_file}"
+			rm -f "${log_file}"
 			;;
 		"-w")
 			;;
 		*)
-			rm -f ${1}
+			rm -f "${log_file}"
 			;;
 	esac
 }
@@ -231,7 +232,7 @@ while IFS=$'\t' read -r family variant_name; do
 
 	was_error=0
 	rm -fr build
-	cmake -G "${GENERATEUR}" --preset "${CMAKE_PRESET}" >/dev/null && \
+	cmake -G "${GENERATEUR}" --preset "${CMAKE_PRESET}" &>/dev/null && \
 	cmake --build build --parallel >/dev/null 2>"${LOG_FILE}" || was_error=1
 	if (( was_error == 0 )); then
 		build_success+=$'\n'"${CURRENT_VARIANT}"

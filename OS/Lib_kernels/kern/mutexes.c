@@ -279,7 +279,7 @@ int32_t	kern_killMutex(mutx_t *handle) {
 
 // If the ready process has a higher priority, then preemption occurs
 
-		preemption = (process->oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) ? (true) : (false);
+		if (process->oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) { preemption = true; }
 	}
 
 	handle->oIdentifier = nullptr;
@@ -336,7 +336,7 @@ int32_t	kern_restartMutex(mutx_t *handle) {
 
 // If the ready process has a higher priority, then preemption occurs
 
-		preemption = (process->oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) ? (true) : (false);
+		if (process->oInternal.oDynamicPriority < vKern_runProc[core]->oInternal.oDynamicPriority) { preemption = true; }
 	}
 	handle->oCounter    = 0;
 	handle->oMaxCounter = KMUTX_MAX_CPT;
@@ -486,8 +486,8 @@ static	int32_t	local_waitMutex(uint32_t core, mutx_t *handle, uint32_t timeout) 
 // IF (timeout value == ...)										THEN (vKern_runProc[core]->oInternal.oTimeout = ...)	AND (wkTimeout = ...)
 //
 // == KWAIT_INFINITY			  									= KWAIT_INFINITY										= KWAIT_INFINITY
-//					 == KWAIT_REMAINING_TIMEOUT					    = vKern_runProc[core]->oInternal.oTimeout				= vKern_runProc[core]->oInternal.oTimeout
-//							  				    == timeout value	= (timeout value / unit)								= (timeout value / unit)
+//					 == KWAIT_REMAINING_TIMEOUT						= vKern_runProc[core]->oInternal.oTimeout				= vKern_runProc[core]->oInternal.oTimeout
+//							  					== timeout value	= (timeout value / unit)								= (timeout value / unit)
 
 	wkTimeout = (timeout == KWAIT_INFINITY)			 ? (KWAIT_INFINITY)							 : (timeout / KKERN_TIC_TIME);
 	wkTimeout = (timeout == KWAIT_REMAINING_TIMEOUT) ? (vKern_runProc[core]->oInternal.oTimeout) : (wkTimeout);

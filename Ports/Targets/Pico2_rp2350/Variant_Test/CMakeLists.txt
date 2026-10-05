@@ -102,7 +102,7 @@ endif()
 
 # Customisation of firmware copyright text
 add_compile_definitions(
-	"uKOS_OWNER=(c) LvA"
+	"uKOS_OWNER=(c) Edo. Franzi"
 	"SECURE_S"
 	"__DYNAMIC_REENT__"
 )
@@ -132,8 +132,8 @@ set(FIRST_P
 add_library(rtcb_p)
 target_sources(rtcb_p PRIVATE
 	${PATH_OSYS}/Boots/boot/boot.c
-	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_PORT}/EquatesModels/Cores/${CORE}/Runtime/syscallDispatcher.c
+	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_BASE}/Runtime/cmns.c
 	${PATH_BASE}/Runtime/exce.c
 	${PATH_VARI}/Runtime/init.c
@@ -161,8 +161,10 @@ target_sources(kern_p PRIVATE
 	${PATH_BASE}/Lib_kernels/kern/stub_kern_kernel.c
 )
 target_link_libraries(kern_p PUBLIC system_compiler_flags)
+# Table sizes are unsigned, like their defaults in kern.h: the code
+# that prints and compares them expects unsigned int
 add_compile_definitions(
-	KKERN_NB_PRECISE_SIGNALS=0
+	KKERN_NB_PRECISE_SIGNALS=0u
 )
 
 # uKernel components (user) -> libkern_u.a
@@ -200,7 +202,8 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
 
 # Lib_xxxx components (user) -> liblibx_u.a
 add_library(libx_u)
-add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+# C library integration (newlib, picolibc or llvmlibc, selected by C_LIBRARY)
+add_clib_manager_source(libx_u)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
@@ -218,12 +221,12 @@ target_link_libraries(proc_p PUBLIC system_compiler_flags)
 # Process components (user) -> libproc_u.a
 add_library(proc_u)
 target_sources(proc_u PRIVATE
+	${PATH_OSYS}/Processes/TinyUSB/TinyUSB.c
 	${PATH_OSYS}/Processes/alive/alive.c
 	${PATH_OSYS}/Processes/launcher/launcher.c
 	${PATH_OSYS}/Processes/startUp/startUp.c
-	${PATH_OSYS}/Processes/TinyUSB/TinyUSB.c
-	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_BASE}/Processes/TinyUSB/stub_TinyUSB.c
+	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
 )
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})

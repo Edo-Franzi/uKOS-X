@@ -158,7 +158,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	}
 
 	if (error == false) { (void)dprintf(KSYST, "\n");				   status = EXIT_OS_SUCCESS_CLI; }
-	else				{ (void)dprintf(KSYST, "Protocol error.\n\n"); status = EXIT_OS_FAILURE;     }
+	else				{ (void)dprintf(KSYST, "Protocol error.\n\n"); status = EXIT_OS_FAILURE;	 }
 	return (status);
 }
 
@@ -183,7 +183,7 @@ static	void	local_printLine(const uint8_t *memory, uint32_t nbBytes) {
 		offset = (size_t)i * (size_t)16u;
 		param  = (const uint8_t *)(memory + offset);
 
-		(void)dprintf(KSYST, "0x%016X: ", (uintptr_t)param);
+		(void)dprintf(KSYST, "0x%016"PRIXPTR": ", (uintptr_t)param);
 		for (j = 0u; j < 15u; j++) {
 			(void)dprintf(KSYST, "%02X,",  *(memory + ((size_t)i * (size_t)16u) + (size_t)j));
 		}

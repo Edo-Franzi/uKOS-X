@@ -145,7 +145,7 @@ static	void	local_DrawImage(void) {
 	vImage[core] = lv_image_create(lv_screen_active());
 	lv_image_set_src(vImage[core], &Team);
 	lv_obj_align(vImage[core], LV_ALIGN_TOP_MID, 0, 15);
-    lv_obj_remove_flag(vImage[core], LV_OBJ_FLAG_HIDDEN);
+	lv_obj_set_hidden(vImage[core], false);
 	kern_unlockMutex(vLVGL_API[core]);
 }
 

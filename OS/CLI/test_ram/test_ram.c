@@ -98,13 +98,38 @@ enum {
 
 // Prototypes
 
+static	int32_t	local_test(uint32_t argc, const char_t *argv[]);
 static	void	local_display(int32_t error, void *add, uint32_t expe, uint32_t read);
 
 /*
  * \brief Main entry point
  *
+ * - The test sweeps the whole external RAM, and on a user-mode image only part
+ *   of it is open to user processes: on Discovery_N657 the user MPU region is
+ *   the 16 MB user memory, half of the 32 MB swept. Run the sweep privileged,
+ *   as dump -S and fill -S do, and restore the mode on every path - local_test()
+ *   returns from inside its loops on the first error
+ *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+	int32_t		status;
+
+	PRIVILEGE_ELEVATE;
+	status = local_test(argc, argv);
+	PRIVILEGE_RESTORE;
+	return (status);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_test
+ *
+ * - Fill, verify and hold the external RAM with 8, 16 and 32-bit patterns
+ *
+ */
+static	int32_t	local_test(uint32_t argc, const char_t *argv[]) {
 			char_t		*dummy;
 			uint32_t	add, nb32Dots;
 			uint8_t		led, pattern_08, expe_08, read_08, *memory_08;
@@ -114,6 +139,15 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 	const	char_t		*dot;
 
 	(void)dprintf(KSYST, "System tests.\n");
+
+// Nothing to sweep: no external RAM (linker_lnEXRAM is 0 on Nucleo_H743), or
+// none beyond the start offset. The loops below would all be empty, and the
+// test used to report "Test passed" after its 60 s retention wait anyway
+
+	if (KEND <= KSTART) {
+		(void)dprintf(KSYST, "No external RAM to test.\n\n");
+		return (EXIT_OS_FAILURE);
+	}
 
 // Analyse the command line
 // ------------------------
@@ -147,7 +181,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 
@@ -188,7 +222,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 
@@ -224,7 +258,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 
@@ -265,7 +299,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 
@@ -301,7 +335,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 
@@ -342,7 +376,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 
@@ -378,7 +412,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		nb32Dots = 32u;
 		for (tests = 0u; tests < nbTests; tests++) {
 			nb32Dots--;
-			dot      = (nb32Dots > 0u) ? (".")      : (".\n");
+			dot		 = (nb32Dots > 0u) ? (".")		: (".\n");
 			nb32Dots = (nb32Dots > 0u) ? (nb32Dots) : (32u);
 			(void)dprintf(KSYST, "%s", dot);
 

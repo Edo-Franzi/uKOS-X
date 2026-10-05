@@ -68,7 +68,7 @@ endif
 SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mfloat-abi=hard -mfpu=fpv5-sp-d16
-CPU_SPEC		?= -march=armv8.1-m.main+pacbti+mve.fp -mthumb -mfloat-abi=hard -mbranch-protection=standard
+CPU_SPEC		?= -march=armv8.1-m.main+pacbti+mve.fp -mthumb -mbranch-protection=standard
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)

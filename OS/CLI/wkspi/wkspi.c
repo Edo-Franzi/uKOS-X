@@ -119,14 +119,14 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				bool			equals;
 				uint8_t			m, unit = 0u, valueW = 0u, valueR = 0u, pin = 0u, pol = 0u, pha = 0u;
 				spiManager_t	spiManager;
-				uint32_t		speed = 0u;
+				uint32_t		speed = 0u, number;
 				enum			{ KCS_LOW, KCS_HIGH } mode = KCS_LOW;
-				enum			{ KERR_NOT, KERR_OKX, KERR_OCS, KERR_SET, KERR_BSY, KERR_INA, KERR_GEN } error = KERR_INA;
+				enum			{ KERR_NOT, KERR_OKX, KERR_OCS, KERR_SET, KERR_BSY, KERR_INA, KERR_GEN, KERR_UNI } error = KERR_INA;
 	volatile	uint32_t		*port = nullptr;
 	static		spiCnf_t		configure = {
-									.oSpeed    = 5000000u,
-									.oMode     = (uint8_t)KSPI_MASTER,
-									.oClock    = (1u<<(uint8_t)BSPI_POL) | (1u<<(uint8_t)BSPI_PHA)
+									.oSpeed	= 5000000u,
+									.oMode	= (uint8_t)KSPI_MASTER,
+									.oClock	= (1u<<(uint8_t)BSPI_POL) | (1u<<(uint8_t)BSPI_PHA)
 								};
 
 	(void)dprintf(KSYST, "wkspi operations.\n");
@@ -146,16 +146,21 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // Set mode
 //  wkspi 0 -set POL PHA Speed
 
-	unit = (uint8_t)strtoul(argv[1], &dummy, 10u);
-	switch (unit) {
-		default:
+// Only spi0..spi3 exist. A unit above 3 used to fall into spi0 while every
+// report printed the unit that was typed; the whole value is checked, since
+// the uint8_t unit alone would also turn 256 into spi0
+
+	number = (uint32_t)strtoul(argv[1], &dummy, 10u);
+	unit   = (uint8_t)number;
+	switch (number) {
 		case 0u: { spiManager = KSPI0; break; }
 		case 1u: { spiManager = KSPI1; break; }
 		case 2u: { spiManager = KSPI2; break; }
 		case 3u: { spiManager = KSPI3; break; }
+		default: { error = KERR_UNI;   break; }
 	}
 
-	if (spi_reserve(spiManager, KMODE_READ_WRITE, 2000u) == KERR_SPI_NOERR) {
+	if ((error != KERR_UNI) && (spi_reserve(spiManager, KMODE_READ_WRITE, 2000u) == KERR_SPI_NOERR)) {
 		spi_configure(spiManager, &configure);
 
 		switch (argc) {
@@ -333,7 +338,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		spi_release(spiManager, KMODE_READ_WRITE);
 	}
 	else {
-		error = KERR_BSY;
+		error = (error == KERR_UNI) ? (KERR_UNI) : (KERR_BSY);
 	}
 
 	switch (error) {
@@ -343,6 +348,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		case KERR_INA: { (void)dprintf(KSYST, "Incorrect arguments.\n\n");																		  status = EXIT_OS_FAILURE;     break; }
 		case KERR_GEN: { (void)dprintf(KSYST, "spi%d general problem.\n\n", unit);																  status = EXIT_OS_FAILURE;     break; }
 		case KERR_BSY: { (void)dprintf(KSYST, "spi%d busy\n\n", unit);																			  status = EXIT_OS_FAILURE;     break; }
+		case KERR_UNI: { (void)dprintf(KSYST, "spi%s does not exist.\n\n", argv[1]);															  status = EXIT_OS_FAILURE;     break; }
 		default:	   {																														  status = EXIT_OS_FAILURE;     break; }
 	}
 	return (status);

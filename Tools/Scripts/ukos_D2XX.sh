@@ -17,7 +17,7 @@
 #			./ukos_D2XX.sh
 #
 #			OS:
-#			OSX 26.xx			yes
+#			OSX 27.xx			yes
 #			Ubuntu 26.04 LTS	yes
 #
 #   (c) 2025-2026, Edo. Franzi
@@ -88,7 +88,7 @@ case "$(uname)" in
 		fi
 		;;
 	*)
-		if [[ -f "libftd2xx-linux-arm-v8-1.4.35.tgz" ]]; then
+		if [[ -f "libftd2xx-linux-arm-v8-1.4.36.tgz" ]]; then
 			rm -fr ../D2XX
 			tar xf "libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz"
 			mv linux-arm-v8 ../D2XX

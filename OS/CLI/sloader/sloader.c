@@ -115,7 +115,8 @@ enum {
 		KERR_S_LOADER_NOI,
 		KERR_S_LOADER_FRA,
 		KERR_S_LOADER_PAR,
-		KERR_S_LOADER_OUM
+		KERR_S_LOADER_OUM,
+		KERR_S_LOADER_HEX
 };
 
 enum {
@@ -196,7 +197,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			case '1':
 			case '2':
 			case '3': {
-				error = local_getCounter(&counter, &checksum);                 if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
+				error = local_getCounter(&counter, &checksum);				   if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
 				error = local_getAddress(&address, &counter, &checksum, byte); if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
 				error = local_getData(&counter, &checksum, address, &size);    if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
 				break;
@@ -204,7 +205,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			case '7':
 			case '8':
 			case '9': {
-				error = local_getCounter(&counter, &checksum);                 if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
+				error = local_getCounter(&counter, &checksum);				   if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
 				error = local_getAddress(&address, &counter, &checksum, byte); if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
 				error = local_getData(&counter, &checksum, address, &size);	   if (error != KERR_S_LOADER_NOT) { terminate = true; break; }
 				terminate = true;
@@ -260,6 +261,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		case KERR_S_LOADER_NOI: { (void)dprintf(KSYST, "\nS: noise error.\n\n");					return (EXIT_OS_FAILURE); }
 		case KERR_S_LOADER_FRA: { (void)dprintf(KSYST, "\nS: framing error.\n\n");					return (EXIT_OS_FAILURE); }
 		case KERR_S_LOADER_PAR: { (void)dprintf(KSYST, "\nS: parity error.\n\n");					return (EXIT_OS_FAILURE); }
+		case KERR_S_LOADER_HEX: { (void)dprintf(KSYST, "\nS: not a hex digit.\n\n");				return (EXIT_OS_FAILURE); }
 		default:				{																	return (EXIT_OS_FAILURE); }
 	}
 }
@@ -339,14 +341,17 @@ static	int32_t	local_getHexValue(uint8_t *value) {
 		return (status);
 	}
 
-	if       ((byte >= '0') && (byte <= '9'))									   { *value = (uint8_t)(aTabAB[byte - (uint8_t)'0']<<4u);							 }
+// A character that is not a hex digit is an error: it used to contribute 0,
+// so only the record checksum stood between a corrupt stream and a bad load
+
+	if		 ((byte >= '0') && (byte <= '9'))									   { *value = (uint8_t)(aTabAB[byte - (uint8_t)'0']<<4u);							 }
 	else if (((byte >= 'A') && (byte <= 'F')) || ((byte >= 'a') && (byte <= 'f'))) { *value = (uint8_t)(aTabAB[(byte & (uint8_t)(~0x20u)) - (uint8_t)'0']<<4u);		 }
-	else { ; }
+	else { return (KERR_S_LOADER_HEX); }
 
 	status = local_getByte(&byte);  if (status != KERR_S_LOADER_NOT) { return (status); }
-	if       ((byte >= '0') && (byte <= '9'))									   { *value = *value + (uint8_t)(aTabAB[byte - (uint8_t)'0']);						 }
+	if		 ((byte >= '0') && (byte <= '9'))									   { *value = *value + (uint8_t)(aTabAB[byte - (uint8_t)'0']);						 }
 	else if (((byte >= 'A') && (byte <= 'F')) || ((byte >= 'a') && (byte <= 'f'))) { *value = *value + (uint8_t)(aTabAB[(byte & (uint8_t)(~0x20u)) - (uint8_t)'0']); }
-	else { ; }
+	else { return (KERR_S_LOADER_HEX); }
 
 	return (KERR_S_LOADER_NOT);
 }

@@ -134,8 +134,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 // object -proc 5 (default, core 0)
 // object -mbox 1 (default, core 0)
 
+// Only 1, 3 and 4 arguments are forms of the command. Any other count used to
+// fall into the summary, which left "Incorrect arguments." unreachable
+
 	switch (argc) {
-		default:
 		case 1u: {
 			object = KOBJ_ALL;
 			break;
@@ -171,6 +173,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			text_checkAsciiBuffer(argv[2], "-prcs", &equals); if (equals == true) { object = KOBJ_PSIG; break; }
 
 			error = KERR_NOB;
+			break;
+		}
+		default: {
+			error = KERR_PAR;
 			break;
 		}
 	}

@@ -96,7 +96,6 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			int32_t		status, counter;
 			uint32_t	core;
 			uint16_t	i, j, k, nbAttached;
-			enum		{ KERR_NOT, KERR_MEM } error = KERR_NOT;
 			proc_t		*process;
 	const	char_t		*idBuffer[KNB_CORES][KKERN_NB_PROCESSES], *identifier, *idSpacerI, *syncProcess, *idSpacerS;
 
@@ -163,11 +162,11 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		}
 	}
 
-	switch (error) {
-		case KERR_NOT: { (void)dprintf(KSYST, "\n");					 status = EXIT_OS_SUCCESS_CLI; break; }
-		case KERR_MEM: { (void)dprintf(KSYST, "Not enough memory.\n\n"); status = EXIT_OS_FAILURE;     break; }
-		default:	   {												 status = EXIT_OS_FAILURE;     break; }
-	}
+// Nothing here allocates or can fail: the former "Not enough memory." arm
+// was never reachable
+
+	(void)dprintf(KSYST, "\n");
+	status = EXIT_OS_SUCCESS_CLI;
 
 	PRIVILEGE_RESTORE;
 	return (status);
@@ -194,7 +193,7 @@ static	void	local_compose(const char_t *identifier, const char_t **idSpacer) {
 	size_t	len;
 
 // --------------------------------------|------------------------------|---
-//                                      "Semaphore_to_count_the_number_xy";
+//										"Semaphore_to_count_the_number_xy";
 	static	const	char_t	aSpacer[] = "                                ";
 
 	len = strlen(identifier);

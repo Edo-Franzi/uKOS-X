@@ -15,7 +15,7 @@
 ; Resources used:
 ;   TIMER0 ALARM0 – 1-ms reference tick  (scheduler_callBackFast)
 ;   TIMER0 ALARM1 – 20-ms process quota  (Phase 3.3: timeout tracking only,
-;                                          no preemptive stack switch)
+;                                         no preemptive stack switch)
 ;   ecall slot 11 – kernel message path  (kernel_message_C0 via ecall)
 ;
 ; Preemptive context switching from interrupt context requires saving the full
@@ -287,6 +287,32 @@ void	kernel_message_C0(void) {
 
 	scheduler_callBackTrap(vMessage[KCORE_0]);
 	local_timeStart_C0();
+
+// Privilege of the process about to resume: mret consumes mstatus.MPP from the saved
+// frame first_handle_trap is about to restore. vKern_stackProc[KCORE_0] points at that
+// 35-word frame; word [2] is mstatus. Privileged daemons (oMode == KPROC_PRIVILEGED) and
+// processes that requested elevation (BPROC_PRIV_ELEVATED) stay M-mode; the rest drop to
+// U-mode. Done inline rather than via SET_*_MODE: those macros also serve privileges.c's
+// elevation path, where editing a saved frame would corrupt a running process's stack.
+
+	#ifdef PRIVILEGED_USER_S
+	{
+		uint32_t    *frame = (uint32_t *)vKern_stackProc[KCORE_0];
+		if ((vKern_runProc[KCORE_0]->oSpecification.oMode == KPROC_PRIVILEGED) ||
+			((vKern_runProc[KCORE_0]->oInternal.oState & (1U<<BPROC_PRIV_ELEVATED)) != 0U)) {
+
+// MPP = 3 (M-mode)
+
+			frame[2] |= (uint32_t)MSTATUS_MPP;
+		}
+		else {
+
+// MPP = 0 (U-mode)
+
+			frame[2] &= ~(uint32_t)MSTATUS_MPP;
+		}
+	}
+	#endif
 
 	vSaveStack[KCORE_0] = (uintptr_t)vKern_stackProc[KCORE_0];
 

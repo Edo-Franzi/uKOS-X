@@ -90,12 +90,14 @@ static	void	local_getChar(serialManager_t serialManager, char_t *c, sema_t *sema
  * Call example in C:
  *
  * \code{.c}
- *          char_t      *argv[KLNINPBUF];
+ * #define    KNBARGS    16
+ *
+ *          char_t      *argv[KNBARGS];
  *          uint32_t    argc;
  *          int32_t     status;
  * const    char_t      commandLine[KLNINPBUF] = ”Line: 3224.5 test 123”;
  *
- *    status = text_readArgs(commandLine, KLNINPBUF, argv, &argc);
+ *    status = text_readArgs(commandLine, KLNINPBUF, argv, KNBARGS, &argc);
  *
  *    (void)dprintf(KSYST, “%d\n”, argc);     // --> 4
  *    (void)dprintf(KSYST, “%d\n”, argv[0]);  // --> line
@@ -108,14 +110,23 @@ static	void	local_getChar(serialManager_t serialManager, char_t *c, sema_t *sema
  *   - Ex. buffer1 R________
  *         buffer2 RXYZCRLF\0
  *
+ * - Leading blanks are skipped: argv[0] is the first word, and a line of
+ *   blanks yields no argument (argc = 0)
+ *
+ * - A line with more arguments than argv can hold stores only the first
+ *   nbArgs of them and returns KERR_TEXT_TMARG: the line is not the one the
+ *   user typed, so a caller should refuse it rather than act on it
+ *
  * \param[in]	*ascii			Ptr on the ASCII buffer
  * \param[in]	size			Size of the buffer
  * \param[out]	*argv			Ptr on the ASCII argument buffer
+ * \param[in]	nbArgs			Capacity of argv (number of pointers)
  * \param[out]	*argc			Ptr on the number of ASCII arguments
  * \return		KERR_TEXT_NOERR	OK
+ * \return		KERR_TEXT_TMARG	Too many arguments
  *
  */
-int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32_t *argc) {
+int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32_t nbArgs, uint32_t *argc) {
 	uint32_t	i, j = 0u;
 	bool		terminate = false, start = false, quote = false;
 
@@ -149,10 +160,16 @@ int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32
 // Ex. in:  abc0def000werw000000000000000
 //     out: |   |     |
 //          0   1     2 --> vArg
+//
+// Never more than nbArgs pointers: argv is the caller's array, and a line with
+// more tokens than it holds used to write past its end.
+// The walk starts as if after a separator, so argv[0] is the first non-blank
+// character: leading blanks are skipped, and a line of blanks has no argument.
+// argv[0] used to be the buffer itself, an empty string after a leading blank,
+// so "   uKOS" at the console answered "Module not found"
 
-	argv[j] = ascii;
-	j++;
-	*argc = 1u;
+	*argc = 0u;
+	start = true;
 
 	for (i = 0u; i < size; i++) {
 		if (ascii[i] == '\0') {
@@ -160,6 +177,10 @@ int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32
 		}
 		else {
 			if ((start == true) && (ascii[i] != '\0')) {
+				if (j == nbArgs) {
+					return (KERR_TEXT_TMARG);
+				}
+
 				argv[j] = (ascii + i);
 				j++;
 				*argc += 1u;
@@ -182,26 +203,42 @@ int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32
  *          int32_t    status;
  * const    char_t     asciiS[] = ”This is the buffer 2”;
  *
- *    status = text_copyBufferZ(asciiD, asciiS);
+ *    status = text_copyAsciiBufferZ(asciiD, KSIZE, asciiS);
  * \endcode
  *
  * - The char "_" is used for space!
  *   - Ex. buffer1 R________
  *         buffer2 RXYZCRLF\0
  *
+ * - sizeD is the size of asciiD, terminator included. A source that does not
+ *   fit is truncated to sizeD - 1 characters, still terminated, and
+ *   KERR_TEXT_TOLNG is returned; with sizeD == 0 nothing is written
+ *
  * \param[out]	*asciiD			Ptr on the ASCII destination buffer
+ * \param[in]	sizeD			Size of the destination buffer (terminator included)
  * \param[in]	*asciiS			Ptr on the ASCII source buffer
  * \return		KERR_TEXT_NOERR	OK
+ * \return		KERR_TEXT_TOLNG	Text too long
  *
  */
-int32_t	text_copyAsciiBufferZ(char_t *asciiD, const char_t *asciiS) {
-			size_t	i, size;
-			char_t	*wkAsciiD = asciiD;
-	const	char_t	*wkAsciiS = asciiS;
+int32_t	text_copyAsciiBufferZ(char_t *asciiD, uint32_t sizeD, const char_t *asciiS) {
+			size_t		i, size;
+			int32_t		status = KERR_TEXT_NOERR;
+			char_t		*wkAsciiD = asciiD;
+	const	char_t		*wkAsciiS = asciiS;
+
+	if (sizeD == 0u) {
+		return (KERR_TEXT_TOLNG);
+	}
+
+// A source that does not fit is truncated, and the destination still ends with
+// its terminator. An empty source still gets its terminator: returning early
+// here used to leave the previous contents of asciiD in place
 
 	size = strlen(wkAsciiS);
-	if (size == 0u) {
-		return (KERR_TEXT_NOERR);
+	if (size >= sizeD) {
+		size   = sizeD - 1u;
+		status = KERR_TEXT_TOLNG;
 	}
 
 	for (i = 0u; i < size; i++) {
@@ -210,7 +247,7 @@ int32_t	text_copyAsciiBufferZ(char_t *asciiD, const char_t *asciiS) {
 		wkAsciiS++;
 	}
 	*wkAsciiD = '\0';
-	return (KERR_TEXT_NOERR);
+	return (status);
 }
 
 /*
@@ -225,22 +262,29 @@ int32_t	text_copyAsciiBufferZ(char_t *asciiD, const char_t *asciiS) {
  *          int32_t    status;
  * const    char_t     asciiS[] = ”This is the buffer 2”;
  *
- *    status = text_copyBufferN(asciiD, asciiS);
+ *    status = text_copyAsciiBufferN(asciiD, KSIZE, asciiS);
  * \endcode
  *
+ * - At most sizeD characters are written. A longer source is truncated and
+ *   KERR_TEXT_TOLNG is returned
+ *
  * \param[out]	*asciiD			Ptr on the ASCII destination buffer
+ * \param[in]	sizeD			Number of characters asciiD can take
  * \param[in]	*asciiS			Ptr on the ASCII source buffer
  * \return		KERR_TEXT_NOERR	OK
+ * \return		KERR_TEXT_TOLNG	Text too long
  *
  */
-int32_t	text_copyAsciiBufferN(char_t *asciiD, const char_t *asciiS) {
-			size_t	i, size;
-			char_t	*wkAsciiD = asciiD;
-	const	char_t	*wkAsciiS = asciiS;
+int32_t	text_copyAsciiBufferN(char_t *asciiD, uint32_t sizeD, const char_t *asciiS) {
+			size_t		i, size;
+			int32_t		status = KERR_TEXT_NOERR;
+			char_t		*wkAsciiD = asciiD;
+	const	char_t		*wkAsciiS = asciiS;
 
 	size = strlen(wkAsciiS);
-	if (size == 0u) {
-		return (KERR_TEXT_NOERR);
+	if (size > sizeD) {
+		size   = sizeD;
+		status = KERR_TEXT_TOLNG;
 	}
 
 	for (i = 0u; i < size; i++) {
@@ -248,7 +292,7 @@ int32_t	text_copyAsciiBufferN(char_t *asciiD, const char_t *asciiS) {
 		wkAsciiD++;
 		wkAsciiS++;
 	}
-	return (KERR_TEXT_NOERR);
+	return (status);
 }
 
 /*

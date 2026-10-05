@@ -76,7 +76,7 @@ include(proj_config)
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
-	"uKOS_OWNER=(c) LvA"
+	"uKOS_OWNER=(c) Edo. Franzi"
 )
 
 # Flash programming script selection
@@ -100,8 +100,8 @@ set(FIRST_P
 add_library(rtcb_p)
 target_sources(rtcb_p PRIVATE
 	${PATH_OSYS}/Boots/boot/boot.c
-	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_PORT}/EquatesModels/Cores/${CORE}/Runtime/syscallDispatcher.c
+	${PATH_PORT}/EquatesModels/Generic/Runtime/crt0.c
 	${PATH_BASE}/Runtime/cmns.c
 	${PATH_BASE}/Runtime/exce.c
 	${PATH_VARI}/Runtime/init.c
@@ -163,7 +163,8 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags)
 
 # Lib_xxxx components (user) -> liblibx_u.a
 add_library(libx_u)
-add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+# C library integration (newlib, picolibc or llvmlibc, selected by C_LIBRARY)
+add_clib_manager_source(libx_u)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
 

@@ -80,7 +80,7 @@ file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DCACHE_D_S ")
 # Customisation of firmware copyright text
 add_compile_definitions(
 	"uKOS_NAME="
-	"uKOS_OWNER=(c) LvA"
+	"uKOS_OWNER=(c) Edo. Franzi"
 )
 
 # Flash programming script selection
@@ -187,7 +187,8 @@ target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
 
 # Lib_xxxx components (user) -> liblibx_u.a
 add_library(libx_u)
-add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/newlib/newlib.c CONFIG_MAN_NEWLIB_S)
+# C library integration (newlib, picolibc or llvmlibc, selected by C_LIBRARY)
+add_clib_manager_source(libx_u)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_generics/text/text.c CONFIG_MAN_TEXT_S)
 add_source_with_define(libx_u ${PATH_OSYS}/Lib_neurals/mlpn/mlpn.c CONFIG_MAN_MLPN_S)
 target_link_libraries(libx_u PUBLIC system_compiler_flags)
@@ -204,13 +205,13 @@ target_link_libraries(proc_p PUBLIC system_compiler_flags)
 # Process components (user) -> libproc_u.a
 add_library(proc_u)
 target_sources(proc_u PRIVATE
+	${PATH_OSYS}/Processes/TinyUSB/TinyUSB.c
 	${PATH_OSYS}/Processes/alive/alive.c
 	${PATH_OSYS}/Processes/getTemp/getTemp.c
 	${PATH_OSYS}/Processes/launcher/launcher.c
 	${PATH_OSYS}/Processes/startUp/startUp.c
-	${PATH_OSYS}/Processes/TinyUSB/TinyUSB.c
-	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_BASE}/Processes/TinyUSB/stub_TinyUSB.c
+	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
 )
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})
