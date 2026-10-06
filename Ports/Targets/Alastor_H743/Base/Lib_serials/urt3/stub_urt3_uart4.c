@@ -61,6 +61,7 @@
 #define	model_usart_write		stub_urt3_write
 #define	model_usart_read		stub_urt3_read
 #define	model_usart_flush		stub_urt3_flush
+#define	model_usart_isConnected	stub_urt3_isConnected
 
 #define	KUSART_SEMA_RX_S
 #define	KUSART_SEMA_TX_S

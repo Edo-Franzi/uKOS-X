@@ -93,12 +93,13 @@ MODULE(
 
 // Prototypes
 
-static	void	local_printObjects(void);
-static	void	local_printProcess(uint32_t core, uint16_t number);
-static	void	local_printSemaphore(uint32_t core, uint16_t number);
-static	void	local_printMutex(uint32_t core, uint16_t number);
-static	void	local_printMailBox(uint32_t core, uint16_t number);
-static	void	local_printSignalGroup(uint32_t core, uint16_t number);
+static	const	char_t	*local_text(const char_t *text);
+static			void	local_printObjects(void);
+static			void	local_printProcess(uint32_t core, uint16_t number);
+static			void	local_printSemaphore(uint32_t core, uint16_t number);
+static			void	local_printMutex(uint32_t core, uint16_t number);
+static			void	local_printMailBox(uint32_t core, uint16_t number);
+static			void	local_printSignalGroup(uint32_t core, uint16_t number);
 
 #if (KKERN_NB_SOFTWARE_TIMERS > 0)
 static	void	local_printSoftwareTimer(uint32_t core, uint16_t number);
@@ -166,7 +167,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			number = (uint32_t)strtoul(argv[3], &dummy, 10u);
 			text_checkAsciiBuffer(argv[2], "-proc", &equals); if (equals == true) { object = KOBJ_PROC; break; }
 			text_checkAsciiBuffer(argv[2], "-sema", &equals); if (equals == true) { object = KOBJ_SEMA;	break; }
-			text_checkAsciiBuffer(argv[1], "-mutx", &equals); if (equals == true) { object = KOBJ_MUTX; break; }
+			text_checkAsciiBuffer(argv[2], "-mutx", &equals); if (equals == true) { object = KOBJ_MUTX; break; }
 			text_checkAsciiBuffer(argv[2], "-mbox", &equals); if (equals == true) { object = KOBJ_MBOX; break; }
 			text_checkAsciiBuffer(argv[2], "-stim", &equals); if (equals == true) { object = KOBJ_STIM;	break; }
 			text_checkAsciiBuffer(argv[2], "-sign", &equals); if (equals == true) { object = KOBJ_SIGN; break; }
@@ -251,6 +252,19 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 
 // Local routines
 // ==============
+
+/*
+ * \brief local_text
+ *
+ * - The text to print for an identifier or a description that may be absent:
+ *   an unused slot has no identifier, and a process need not have a text.
+ *   Handing a null pointer to %s is undefined behaviour
+ *
+ */
+static	const	char_t	*local_text(const char_t *text) {
+
+	return ((text == nullptr) ? ("(none)") : (text));
+}
 
 /*
  * \brief local_printObjects
@@ -349,8 +363,8 @@ static	void	local_printProcess(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "Process %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "-----------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",					 process.oSpecification.oIdentifier);
-	(void)dprintf(KSYST, "   Text:                 %s\n",					 process.oSpecification.oText);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",					 local_text(process.oSpecification.oIdentifier));
+	(void)dprintf(KSYST, "   Text:                 %s\n",					 local_text(process.oSpecification.oText));
 	(void)dprintf(KSYST, "   Process father:       %s\n",					 father);
 	(void)dprintf(KSYST, "   Impure data:          0x%016"PRIXPTR"\n",		 (uintptr_t)process.oInternal.oLocal);
 	(void)dprintf(KSYST, "   Stack mode:           0x%04"PRIX16", %s\n",	 process.oSpecification.oStackMode, mode);
@@ -411,7 +425,7 @@ static	void	local_printSemaphore(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "Semaphore %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "-------------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",					 semaphore.oIdentifier);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",					 local_text(semaphore.oIdentifier));
 	(void)dprintf(KSYST, "   Semaphore state:      0x%04"PRIX16", %s\n",	 semaphore.oState, state);
 	(void)dprintf(KSYST, "   Counter:              %"PRId32"\n",			 semaphore.oCounter);
 	(void)dprintf(KSYST, "   Max. Counter:         %"PRId32"\n",			 semaphore.oMaxCounter);
@@ -453,7 +467,7 @@ static	void	local_printMutex(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "Mutex %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "---------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",					 mutex.oIdentifier);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",					 local_text(mutex.oIdentifier));
 	(void)dprintf(KSYST, "   Mutex state:          0x%04"PRIX16", %s\n",	 mutex.oState, state);
 	(void)dprintf(KSYST, "   Counter:              %"PRId32"\n",			 mutex.oCounter);
 	(void)dprintf(KSYST, "   Max. Counter:         %"PRId32"\n",			 mutex.oMaxCounter);
@@ -493,7 +507,7 @@ static	void	local_printMailBox(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "Mailbox %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "-----------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",				 mailBox.oIdentifier);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",				 local_text(mailBox.oIdentifier));
 	(void)dprintf(KSYST, "   Mailbox state:        0x%04"PRIX16", %s\n", mailBox.oState, state);
 	(void)dprintf(KSYST, "   Max. packets:         %"PRIu32"\n",		 mailBox.oNbMaxPacks);
 	(void)dprintf(KSYST, "   Used packets:         %"PRIu32"\n",		 mailBox.oNbUsedPacks);
@@ -530,7 +544,7 @@ static	void	local_printSignalGroup(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "Signal group %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "----------------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",			   signalGroup.oIdentifier);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",			   local_text(signalGroup.oIdentifier));
 	(void)dprintf(KSYST, "   Group number:         %"PRIu32"\n",	   signalGroup.oGroupNumber);
 	(void)dprintf(KSYST, "   Used bit:             0x%08"PRIX32"\n\n", signalGroup.oUsedBit);
 
@@ -584,7 +598,7 @@ static	void	local_printSoftwareTimer(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "S-timer %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "-----------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",				 softwareTimer.oIdentifier);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",				 local_text(softwareTimer.oIdentifier));
 	(void)dprintf(KSYST, "   S-Timer state:        0x%04"PRIX16", %s\n", softwareTimer.oState, state);
 	(void)dprintf(KSYST, "   S-Timer mode:         0x%02"PRIX8", %s\n",  softwareTimer.oTimerSpec.oMode, mode);
 	(void)dprintf(KSYST, "   Initial time:         %"PRIu32" [ms]\n",	 softwareTimer.oTimerSpec.oInitialTime);
@@ -634,7 +648,7 @@ static	void	local_printSPreciseSignal(uint32_t core, uint16_t number) {
 	(void)dprintf(KSYST, "Precise signal %02"PRIu16":\n", number);
 	(void)dprintf(KSYST, "------------------\n\n");
 
-	(void)dprintf(KSYST, "   Identifier:           %s\n",				   preciseSignal.oIdentifier);
+	(void)dprintf(KSYST, "   Identifier:           %s\n",				   local_text(preciseSignal.oIdentifier));
 	(void)dprintf(KSYST, "   Precise signal state: 0x%04"PRIX16", %s\n",   preciseSignal.oState, state);
 	(void)dprintf(KSYST, "   Precise signal mode:  0x%02"PRIX8", %s\n",	   preciseSignal.oMode, mode);
 	(void)dprintf(KSYST, "   Period:               %"PRIu64"\n",		   preciseSignal.oPeriod);

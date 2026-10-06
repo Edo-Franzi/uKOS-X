@@ -240,6 +240,24 @@ extern	int32_t	ble0_getIdSemaphore(uint8_t semaphore, char_t **identifier);
  */
 extern	int32_t	ble0_flush(void);
 
+/*!
+ * \brief Is the ble0 connected
+ *
+ * Call example in C:
+ *
+ * \code{.c}
+ * int32_t    status;
+ *
+ *    status = ble0_isConnected();
+ * \endcode
+ *
+ * \return		KERR_SERIAL_NOERR	OK
+ * \return		KERR_SERIAL_NOTCO	The device is not connected
+ * \return		KERR_SERIAL_GEERR	General error
+ *
+ */
+extern	int32_t	ble0_isConnected(void);
+
 #if (defined(__cplusplus))
 }
 #endif

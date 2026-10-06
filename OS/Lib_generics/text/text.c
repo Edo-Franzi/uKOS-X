@@ -107,15 +107,15 @@ static	void	local_getChar(serialManager_t serialManager, char_t *c, sema_t *sema
  * \endcode
  *
  * - The char "_" is used for space!
- *   - Ex. buffer1 R________
- *         buffer2 RXYZCRLF\0
+ *	 - Ex. buffer1 R________
+ *		   buffer2 RXYZCRLF\0
  *
  * - Leading blanks are skipped: argv[0] is the first word, and a line of
- *   blanks yields no argument (argc = 0)
+ *	 blanks yields no argument (argc = 0)
  *
  * - A line with more arguments than argv can hold stores only the first
- *   nbArgs of them and returns KERR_TEXT_TMARG: the line is not the one the
- *   user typed, so a caller should refuse it rather than act on it
+ *	 nbArgs of them and returns KERR_TEXT_TMARG: the line is not the one the
+ *	 user typed, so a caller should refuse it rather than act on it
  *
  * \param[in]	*ascii			Ptr on the ASCII buffer
  * \param[in]	size			Size of the buffer
@@ -146,13 +146,13 @@ int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32
 			ascii[i] = '\0';
 		}
 		else {
-			if ( ascii[i] == '\0')   { terminate = true;   }
-			if ( ascii[i] == '\r')   { ascii[i]  = '\0';   }
-			if ( ascii[i] == '\n')   { ascii[i]  = '\0';   }
-			if ( ascii[i] == '"' )   { quote	 = !quote; }
+			if ( ascii[i] == '\0')	 { terminate = true;   }
+			if ( ascii[i] == '\r')	 { ascii[i]	 = '\0';   }
+			if ( ascii[i] == '\n')	 { ascii[i]	 = '\0';   }
+			if ( ascii[i] == '"' )	 { quote	 = !quote; }
 
-			if ((quote    == false) &&
-				(ascii[i] == ' ' ))	 { ascii[i]  = '\0';   }
+			if ((quote	  == false) &&
+				(ascii[i] == ' ' ))	 { ascii[i]	 = '\0';   }
 		}
 	}
 
@@ -207,12 +207,12 @@ int32_t	text_readArgs(char_t *ascii, uint32_t size, const char_t *argv[], uint32
  * \endcode
  *
  * - The char "_" is used for space!
- *   - Ex. buffer1 R________
- *         buffer2 RXYZCRLF\0
+ *	 - Ex. buffer1 R________
+ *		   buffer2 RXYZCRLF\0
  *
  * - sizeD is the size of asciiD, terminator included. A source that does not
- *   fit is truncated to sizeD - 1 characters, still terminated, and
- *   KERR_TEXT_TOLNG is returned; with sizeD == 0 nothing is written
+ *	 fit is truncated to sizeD - 1 characters, still terminated, and
+ *	 KERR_TEXT_TOLNG is returned; with sizeD == 0 nothing is written
  *
  * \param[out]	*asciiD			Ptr on the ASCII destination buffer
  * \param[in]	sizeD			Size of the destination buffer (terminator included)
@@ -266,7 +266,7 @@ int32_t	text_copyAsciiBufferZ(char_t *asciiD, uint32_t sizeD, const char_t *asci
  * \endcode
  *
  * - At most sizeD characters are written. A longer source is truncated and
- *   KERR_TEXT_TOLNG is returned
+ *	 KERR_TEXT_TOLNG is returned
  *
  * \param[out]	*asciiD			Ptr on the ASCII destination buffer
  * \param[in]	sizeD			Number of characters asciiD can take
@@ -364,8 +364,8 @@ int32_t	text_checkAsciiBuffer(const char_t *ascii1, const char_t *ascii2, bool *
  * \endcode
  *
  * - Format of the order:
- *   - string\0 char is added at the end
- *     The CR or LF at the end are skipped
+ *	 - string\0 char is added at the end
+ *	   The CR or LF at the end are skipped
  *
  * \param[in]	serialManager	Serial Communication Manager
  * \param[in]	*ascii			Ptr on the ASCII buffer

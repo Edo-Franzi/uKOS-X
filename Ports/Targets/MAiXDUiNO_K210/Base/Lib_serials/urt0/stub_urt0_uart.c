@@ -181,3 +181,14 @@ int32_t	stub_urt0_flush(void) {
 	else				 { status = model_usart_flush_C1(); }
 	return (status);
 }
+
+int32_t	stub_urt0_isConnected(void) {
+	uint32_t	core;
+	int32_t		status;
+
+	core = GET_RUNNING_CORE;
+
+	if (core == KCORE_0) { status = model_usart_isConnected_C0(); }
+	else				 { status = model_usart_isConnected_C1(); }
+	return (status);
+}

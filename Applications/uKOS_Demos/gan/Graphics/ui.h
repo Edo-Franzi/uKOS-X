@@ -78,6 +78,7 @@
 
 #define	KARC_DIAMETER		87						// Arc diameter
 #define	KARC_MARGIN			20						// Arc margin
+#define	KARC_WIDTH			5						// Arc width
 #define	KARC_POS_X			693						// X Arc
 #define	KARC_POS_Y			340						// Y Arc
 

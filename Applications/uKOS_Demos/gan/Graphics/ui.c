@@ -244,6 +244,9 @@ static	void	local_PrepareDrawingArc(void) {
 	kern_lockMutex(vLVGL_API[core], KWAIT_INFINITY);
 	vArc[core] = lv_arc_create(lv_screen_active());
 	lv_obj_set_size(vArc[core], KARC_DIAMETER, KARC_DIAMETER);
+	lv_obj_set_style_arc_width(vArc[core], KARC_WIDTH, LV_PART_MAIN);
+	lv_obj_set_style_arc_width(vArc[core], KARC_WIDTH, LV_PART_INDICATOR);
+
 	lv_arc_set_rotation(vArc[core], 270u);
 	lv_arc_set_bg_angles(vArc[core], 0u, 360u);
 	lv_obj_remove_style(vArc[core], nullptr, LV_PART_KNOB);

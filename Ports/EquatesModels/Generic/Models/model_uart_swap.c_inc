@@ -126,3 +126,14 @@ int32_t	CAT(stub_, CAT(DEVICE_IN, _flush))(void) {
 
 	return (CAT(DEVICE_OUT, _flush)());
 }
+
+/*
+ * \brief stub_DEVICE_OUT_isConnected
+ *
+ * - Flush the DEVICE_OUT manager
+ *
+ */
+int32_t	CAT(stub_, CAT(DEVICE_IN, _isConnected))(void) {
+
+	return (CAT(DEVICE_OUT, _isConnected)());
+}

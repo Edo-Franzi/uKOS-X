@@ -51,8 +51,6 @@
 
 #include	"uKOS.h"
 
-extern	bool	TinyUSB_cdc_isConnected(uint8_t itf);
-
 // Bootstrap function table
 // ------------------------
 
@@ -242,10 +240,11 @@ void	stub_startUp_launch(void) {
 
 	#if (CONFIG_DIFFERENT_SERIAL_PER_CORE_S == true)
 	if (core == KCORE_0) {
-		while (TinyUSB_cdc_isConnected(0u) == false) {
+		while (cdc0_isConnected() == KERR_SERIAL_NOTCO) {
 			kern_suspendProcess(10u);
 		}
 		kern_suspendProcess(100u);
+
 		(void)dprintf(KSYST, "%s", aStrLogo);
 		(void)dprintf(KSYST, "Signature:\n%s\n\n", signature);
 		(void)dprintf(KSYST, "%ssw = %"PRIX32"\n", identifier, mode);

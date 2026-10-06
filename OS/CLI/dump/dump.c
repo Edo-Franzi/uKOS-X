@@ -179,7 +179,10 @@ static	void	local_printLine(const uint8_t *memory, uint32_t nbBytes) {
 			char_t		ascii[(8u * 2u) + 1u], element;
 	const	uint8_t		*param;
 
-	for (i = 0u; i < ((nbBytes + 16u) / 16u); i++) {
+// One line per 16 bytes, rounded up: (nbBytes + 16) / 16 printed, and read, a
+// whole line past the range, and a line for an empty one
+
+	for (i = 0u; i < ((nbBytes + 15u) / 16u); i++) {
 		offset = (size_t)i * (size_t)16u;
 		param  = (const uint8_t *)(memory + offset);
 

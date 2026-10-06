@@ -107,7 +107,7 @@ static	void	local_getDevice(serialManager_t serialManager, serialManager_t *mana
  *									KWAIT_REMAINING_TIMEOUT, waiting for the remaining timeout
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
- * \return		KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_reserve(serialManager_t serialManager, reserveMode_t reserveMode, uint32_t timeout) {
@@ -172,7 +172,7 @@ int32_t	serial_reserve(serialManager_t serialManager, reserveMode_t reserveMode,
  * \param[in]	reserveMode			KMODE_READ, KMODE_WRITE, KMODE_READ_WRITE
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
- * \return		KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_release(serialManager_t serialManager, reserveMode_t reserveMode) {
@@ -244,7 +244,7 @@ int32_t	serial_release(serialManager_t serialManager, reserveMode_t reserveMode)
  * \param[in]	*configure			Ptr on the configuration buffer
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
- * \return		KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_configure(serialManager_t serialManager, const void *configure) {
@@ -322,7 +322,7 @@ int32_t	serial_configure(serialManager_t serialManager, const void *configure) {
  * \param[in]	size				Size of the buffer
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
- * \return		KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_write(serialManager_t serialManager, const uint8_t *buffer, uint32_t size) {
@@ -394,7 +394,7 @@ int32_t	serial_write(serialManager_t serialManager, const uint8_t *buffer, uint3
  * \param[in, out]	*size				Ptr to a variable storing the size, initialized with the size of the buffer
  * \return			KERR_SERIAL_NOERR	OK
  * \return			KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
- * \return			KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager
+ * \return			KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_read(serialManager_t serialManager, uint8_t *buffer, uint32_t *size) {
@@ -465,7 +465,7 @@ int32_t	serial_read(serialManager_t serialManager, uint8_t *buffer, uint32_t *si
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	No corresponding Serial Communication Manager
  * \return		KERR_SERIAL_SENOE	The semaphore does not exist
- * \return		KERR_xxxxxx_NODEV	Depends on the "xxxx" Serial Communication Manager
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_getIdSemaphore(serialManager_t serialManager, uint8_t semaphore, char_t **identifier) {
@@ -529,6 +529,7 @@ int32_t	serial_getIdSemaphore(serialManager_t serialManager, uint8_t semaphore, 
  * \param[in]	serialManager		Serial Communication Manager
  * \return		KERR_SERIAL_NOERR	OK
  * \return		KERR_SERIAL_NODEV	The serialManager does not exist
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
  *
  */
 int32_t	serial_flush(serialManager_t serialManager) {
@@ -575,6 +576,71 @@ int32_t	serial_flush(serialManager_t serialManager) {
 		#endif
 
 		default:    { return (KERR_SERIAL_NODEV); }
+	}
+}
+
+/*
+ * \brief Is the Serial Communication connected
+ *
+ * Call example in C:
+ *
+ * \code{.c}
+ * int32_t    status;
+ *
+ *    status = serial_isConnected(KDEF0);
+ * \endcode
+ *
+ * \param[in]	serialManager		Serial Communication Manager
+ * \return		KERR_SERIAL_NOERR	OK
+ * \return		KERR_SERIAL_NOTCO	The device is not connected
+ * \return		KERR_SERIAL_NODEV	The serialManager does not exist
+ * \return		KERR_SERIAL_xxxxx	Depends on the "xxxx" Serial Communication Manager
+ *
+ */
+int32_t	serial_isConnected(serialManager_t serialManager) {
+	serialManager_t		manager;
+
+	local_getDevice(serialManager, &manager);
+
+	switch (manager) {
+
+		#if (defined(CONFIG_MAN_URT0_S))
+		case KURT0: { return (urt0_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_URT1_S))
+		case KURT1: { return (urt1_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_URT2_S))
+		case KURT2: { return (urt2_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_URT3_S))
+		case KURT3: { return (urt3_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_URT4_S))
+		case KURT4: { return (urt4_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_CDC0_S))
+		case KCDC0: { return (cdc0_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_CDC1_S))
+		case KCDC1: { return (cdc1_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_WFI0_S))
+		case KWFI0: { return (wfi0_isConnected()); }
+		#endif
+
+		#if (defined(CONFIG_MAN_BLE0_S))
+		case KBLE0: { return (ble0_isConnected()); }
+		#endif
+
+		default:    { return (KERR_SERIAL_NODEV);  }
 	}
 }
 

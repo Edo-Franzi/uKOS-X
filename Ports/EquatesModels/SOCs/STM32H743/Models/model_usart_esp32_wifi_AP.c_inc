@@ -333,6 +333,17 @@ int32_t	model_usart_flush(void) {
 	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
 }
 
+/*
+ * \brief model_usart_isConnected
+ *
+ * - Is the usart connected
+ *
+ */
+int32_t	model_usart_isConnected(void) {
+
+	return (KERR_SERIAL_NOERR);
+}
+
 // Local routines
 // ==============
 

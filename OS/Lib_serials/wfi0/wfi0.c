@@ -88,6 +88,7 @@ extern	int32_t		stub_wfi0_write(const uint8_t *buffer, uint32_t size);
 extern	int32_t		stub_wfi0_read(uint8_t *buffer, uint32_t *size);
 extern	int32_t		stub_wfi0_getIdSemaphore(uint8_t semaphore, char_t **identifier);
 extern	int32_t		stub_wfi0_flush(void);
+extern	int32_t		stub_wfi0_isConnected(void);
 
 /*
  * \brief Reserve the wfi0 manager
@@ -273,6 +274,27 @@ int32_t	wfi0_getIdSemaphore(uint8_t semaphore, char_t **identifier) {
 int32_t	wfi0_flush(void) {
 
 	return (stub_wfi0_flush());
+}
+
+/*
+ * \brief Is the wfi0 connected
+ *
+ * Call example in C:
+ *
+ * \code{.c}
+ * int32_t    status;
+ *
+ *    status = wfi0_isConnected();
+ * \endcode
+ *
+ * \return		KERR_SERIAL_NOERR	OK
+ * \return		KERR_SERIAL_NOTCO	The device is not connected
+ * \return		KERR_SERIAL_GEERR	General error
+ *
+ */
+int32_t	wfi0_isConnected(void) {
+
+	return (stub_wfi0_isConnected());
 }
 
 #endif

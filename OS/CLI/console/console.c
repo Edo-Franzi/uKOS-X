@@ -201,7 +201,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			KKERN_PRIORITY_NORMAL_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 		);
 
-		if (kern_createProcess(&specification, &pack, &process) != KERR_KERN_NOERR) { error  = KERR_PRO; }
+// kern_createProcess() does not release a stack it refuses: give it back here,
+// otherwise every refused console ("already active") leaks one console stack
+
+		if (kern_createProcess(&specification, &pack, &process) != KERR_KERN_NOERR) { memo_free(vStack_0); error  = KERR_PRO; }
 	}
 
 	switch (error) {

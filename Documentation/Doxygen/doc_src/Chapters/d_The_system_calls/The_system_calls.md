@@ -131,15 +131,16 @@ urt0_configure(&configure);
 | **serial System Calls**                   |                                                              |
 | :---------------------------------------- | :----------------------------------------------------------- |
 | serial_reserve                            | Reserve the serial communication manager                     |
-| serial_release                            | Release the serial  communication manager                    |
-| serial_configure                          | Configure the serial  communication manager                  |
-| serial_write                              | Write a buffer to the serial  communication manager          |
-| serial_read                               | Read a buffer from the serial  communication manager         |
-| serial_flush                              | Flush the serial  communication manager                      |
-| serial_getIdSemaphore                     | Get the RX-TX semaphore id of the serial  communication manager |
-| serial_getDefSerialManager                | Get the default serial  communication manager                |
-| serial_setDefSerialManager                | Set the default serial  communication manager                |
-| serial_getFatherSerialManager             | Get the father (or older) serial  communication manager      |
+| serial_release                            | Release the serial communication manager                     |
+| serial_configure                          | Configure the serial communication manager                   |
+| serial_write                              | Write a buffer to the serial communication manager           |
+| serial_read                               | Read a buffer from the serial communication manager          |
+| serial_flush                              | Flush the serial communication manager                       |
+| serial_isConnected                        | Is the Serial Communication connected                        |
+| serial_getIdSemaphore                     | Get the RX-TX semaphore id of the serial communication manager |
+| serial_getDefSerialManager                | Get the default serial communication manager                 |
+| serial_setDefSerialManager                | Set the default serial communication manager                 |
+| serial_getFatherSerialManager             | Get the father (or older) serial  ommunication manager       |
 |                                           |                                                              |
 | **xyzt = urtx, cdcx, wfi0, System Calls** |                                                              |
 | xyzt_reserve                              | Reserve the xyzt Serial Communication Manager                |
@@ -148,6 +149,7 @@ urt0_configure(&configure);
 | xyzt_write                                | Write a buffer to the xyzt Serial Communication Manager      |
 | xyzt_read                                 | Read a buffer on the xyzt Serial Communication Manager       |
 | xyzt_flush                                | Flush of the xyzt Serial Communication Manager               |
+| xyzt_isConnected                          | Is the xyzt connected                                        |
 | xyzt_getIdSemaphore                       | Get the RX-TX semaphore id of the xyzt Serial Communication Manager |
 
 </div>

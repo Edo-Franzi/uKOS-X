@@ -293,6 +293,17 @@ static	int32_t	model_uart_flush_C1(void) {
 	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
 }
 
+/*
+ * \brief model_uart_isConnected_C1
+ *
+ * - Is the usart connected
+ *
+ */
+static	int32_t	model_uart_isConnected_C1(void) {
+
+	return (KERR_SERIAL_NOERR);
+}
+
 // Local routines
 // ==============
 

@@ -157,3 +157,14 @@ int32_t	stub_urt1_flush(void) {
 	else				 { status = KERR_SERIAL_NODEV;		}
 	return (status);
 }
+
+int32_t	stub_urt1_isConnected(void) {
+	uint32_t	core;
+	int32_t		status;
+
+	core = GET_RUNNING_CORE;
+
+	if (core == KCORE_0) { status = model_usart_isConnected_C0(); }
+	else				 { status = KERR_SERIAL_NODEV;			  }
+	return (status);
+}

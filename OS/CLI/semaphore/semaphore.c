@@ -132,8 +132,13 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 				nbAttached = 0u;
 				if (vKern_sema[core][i].oList.oNbElements > 0u) {
 					process = vKern_sema[core][i].oList.oFirst;
+
+// idBuffer holds KKERN_NB_PROCESSES names per core: never more than that, and
+// never past the end of the chain, whatever oNbElements says
+
 					k = vKern_sema[core][i].oList.oNbElements;
-					for (j = 0u; j < k; j++) {
+					k = (k > KKERN_NB_PROCESSES) ? ((uint16_t)KKERN_NB_PROCESSES) : (k);
+					for (j = 0u; (j < k) && (process != nullptr); j++) {
 
 // Save the names of all the attached
 // processes

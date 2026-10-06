@@ -65,6 +65,7 @@
 #define	model_usart_write				stub_wfi0_write
 #define	model_usart_read				stub_wfi0_read
 #define	model_usart_flush				stub_wfi0_flush
+#define	model_usart_isConnected			stub_wfi0_isConnected
 
 #define	KUSART_SEMA_RX_S
 #define	KUSART_SEMA_TX_S
