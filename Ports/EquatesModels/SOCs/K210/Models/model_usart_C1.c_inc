@@ -306,8 +306,6 @@ static	int32_t	model_usart_isConnected_C1(void) {
 static	void	local_USART_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 	volatile	uint32_t	iir;
 
-	UNUSED(parameter);
-
 	iir = USART_C1->IIR;
 	if ((iir & UART_IIR_ERBFI) != 0u) {
 

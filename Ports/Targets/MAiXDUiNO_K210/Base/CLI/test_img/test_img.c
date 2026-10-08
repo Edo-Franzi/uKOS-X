@@ -97,11 +97,8 @@ static	void	local_process(const void *argument);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	proc_t	*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	(void)dprintf(KSYST, "IMG tests.\n");
 
@@ -130,12 +127,10 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 [[noreturn]]
-static	void	local_process(const void *argument) {
+static	void	local_process([[maybe_unused]] const void *argument) {
 	uint16_t	*image;
 	cnfImgk_t	configure;
 	sema_t		*semaphore;
-
-	UNUSED(argument);
 
 // Window position
 

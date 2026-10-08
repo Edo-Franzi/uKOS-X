@@ -235,8 +235,6 @@ static	void	local_initDMA1(void) {
  */
 static	void	local_DMA1_STR0_IRQHandler(void) {
 
-	UNUSED(number);
-
 	DMA1->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CFEIF0;
 
 	LED_YELLOW_TOGGLE;
@@ -249,8 +247,6 @@ static	void	local_DMA1_STR0_IRQHandler(void) {
  *
  */
 static	void	local_DMA1_STR1_IRQHandler(void) {
-
-	UNUSED(number);
 
 	DMA1->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CFEIF1;
 

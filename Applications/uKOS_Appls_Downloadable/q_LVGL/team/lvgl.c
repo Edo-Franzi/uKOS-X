@@ -74,11 +74,9 @@ extern	void	ui_setBar_3(uint32_t position);
  *
  */
 [[noreturn]]
-static	void	aProcess_lvgl_tick(const void *argument) {
+static	void	aProcess_lvgl_tick([[maybe_unused]] const void *argument) {
 	uint32_t	core, delta;
 	uint64_t	last, now;
-
-	UNUSED(argument);
 
 	core = GET_RUNNING_CORE;
 
@@ -111,13 +109,11 @@ static	void	aProcess_lvgl_tick(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_lvgl(const void *argument) {
+static	void	aProcess_lvgl([[maybe_unused]] const void *argument) {
 	uint32_t	core, LCDBufferSize;
 	uint32_t	usedTime_idle, usedTime_lvgl_tick, usedTime_lvgl;
 	lv_color_t	*LCDBuffer;
 	proc_t		*process_idle, *process_lvgl_tick, *process_lvgl;
-
-	UNUSED(argument);
 
 	core = GET_RUNNING_CORE;
 

@@ -76,7 +76,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "temperature process\n"
 
 #define	KEXECUTION_CORE		(1u<<BCORE_0)
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 static	int32_t		temperature_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -112,12 +112,9 @@ static	void	local_process(const void *argument);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
 	proc_t		*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = false;
@@ -146,11 +143,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-static	int32_t	temperature_clean(uint32_t argc, const char_t *argv[]) {
+static	int32_t	temperature_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;

@@ -801,8 +801,6 @@ static	void	local_read(uint32_t core, mbox_t *handle, void **message, uint32_t *
 	uint32_t	nbMaxPacks, copySize;
 	proc_t		*process;
 
-	UNUSED(core);
-
 // Read the message
 
 	nbMaxPacks = handle->oNbMaxPacks;

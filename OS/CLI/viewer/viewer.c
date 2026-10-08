@@ -53,7 +53,7 @@
 extern	const	char_t	aStrApplication[];
 extern	const	char_t	aStrHelp[];
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 extern	int32_t		viewer_uvc0_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(

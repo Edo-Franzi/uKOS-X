@@ -1,0 +1,486 @@
+From 12701234e205df16938a70e93cbbfebd37e21523 Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Fri, 17 Jul 2026 12:10:34 +0300
+Subject: [PATCH 5/5] build: Suppress aarch64* libraries
+
+---
+ .../embedded/arm-multilib/json/multilib.json  | 120 -----------
+ .../baremetal-semihosting-aarch64.test        |   4 -
+ .../baremetal-semihosting-aarch64/Makefile    |  28 ---
+ .../baremetal-semihosting-aarch64/README.md   |  11 -
+ .../src/baremetal-semihosting-aarch64/hello.c |  12 --
+ .../embedded/test/multilib/aarch64.test       | 193 ------------------
+ .../aarch64_a_supported_variants.test         |  35 ----
+ .../aarch64_r_supported_variants.test         |   5 -
+ 8 files changed, 408 deletions(-)
+ delete mode 100644 arm-software/embedded/packagetest/baremetal-semihosting-aarch64.test
+ delete mode 100644 arm-software/embedded/samples/src/baremetal-semihosting-aarch64/Makefile
+ delete mode 100644 arm-software/embedded/samples/src/baremetal-semihosting-aarch64/README.md
+ delete mode 100644 arm-software/embedded/samples/src/baremetal-semihosting-aarch64/hello.c
+ delete mode 100644 arm-software/embedded/test/multilib/aarch64.test
+ delete mode 100644 arm-software/embedded/test/multilib/aarch64_a_supported_variants.test
+ delete mode 100644 arm-software/embedded/test/multilib/aarch64_r_supported_variants.test
+
+diff --git a/arm-software/embedded/arm-multilib/json/multilib.json b/arm-software/embedded/arm-multilib/json/multilib.json
+index 934532fe9f08..5fbb90880d6d 100644
+--- a/arm-software/embedded/arm-multilib/json/multilib.json
++++ b/arm-software/embedded/arm-multilib/json/multilib.json
+@@ -1,125 +1,5 @@
+ {
+     "libs": [
+-        {
+-            "variant": "aarch64a_exn_rtti_unaligned",
+-            "json": "aarch64a_exn_rtti_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64a_unaligned",
+-            "json": "aarch64a_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -fno-exceptions -fno-rtti -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64a_be_exn_rtti",
+-            "json": "aarch64a_be_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf"
+-        },
+-        {
+-            "variant": "aarch64a_be",
+-            "json": "aarch64a_be.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -fno-exceptions -fno-rtti"
+-        },
+-        {
+-            "variant": "aarch64a_exn_rtti",
+-            "json": "aarch64a_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -mno-unaligned-access"
+-        },
+-        {
+-            "variant": "aarch64a",
+-            "json": "aarch64a.json",
+-            "flags": "--target=aarch64-unknown-none-elf -mno-unaligned-access -fno-exceptions -fno-rtti"
+-        },
+-        {
+-            "variant": "aarch64a_soft_nofp_exn_rtti",
+-            "json": "aarch64a_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64a_soft_nofp",
+-            "json": "aarch64a_soft_nofp.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -fno-exceptions -fno-rtti",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64a_be_soft_nofp_exn_rtti",
+-            "json": "aarch64a_be_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64a_be_soft_nofp",
+-            "json": "aarch64a_be_soft_nofp.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -fno-exceptions -fno-rtti",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_exn_rtti_unaligned",
+-            "json": "aarch64r_exn_rtti_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r_unaligned",
+-            "json": "aarch64r_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -fno-exceptions -fno-rtti -munaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r_be_exn_rtti",
+-            "json": "aarch64r_be_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r"
+-        },
+-        {
+-            "variant": "aarch64r_be",
+-            "json": "aarch64r_be.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r -fno-exceptions -fno-rtti"
+-        },
+-        {
+-            "variant": "aarch64r_exn_rtti",
+-            "json": "aarch64r_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -mno-unaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r",
+-            "json": "aarch64r.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -fno-exceptions -fno-rtti -mno-unaligned-access"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp_exn_rtti_unaligned",
+-            "json": "aarch64r_soft_nofp_exn_rtti_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -munaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp_unaligned",
+-            "json": "aarch64r_soft_nofp_unaligned.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft -munaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp_exn_rtti",
+-            "json": "aarch64r_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft -mno-unaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_soft_nofp",
+-            "json": "aarch64r_soft_nofp.json",
+-            "flags": "--target=aarch64-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft -mno-unaligned-access",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_be_soft_nofp_exn_rtti",
+-            "json": "aarch64r_be_soft_nofp_exn_rtti.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+-        {
+-            "variant": "aarch64r_be_soft_nofp",
+-            "json": "aarch64r_be_soft_nofp.json",
+-            "flags": "--target=aarch64_be-unknown-none-elf -march=armv8-r -march=armvX+nofp -march=armvX+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft",
+-            "libraries_supported": "picolibc,llvmlibc"
+-        },
+         {
+             "variant": "armv4t_exn_rtti_size",
+             "json": "armv4t_exn_rtti_size.json",
+diff --git a/arm-software/embedded/packagetest/baremetal-semihosting-aarch64.test b/arm-software/embedded/packagetest/baremetal-semihosting-aarch64.test
+deleted file mode 100644
+index 553e57528eea..000000000000
+--- a/arm-software/embedded/packagetest/baremetal-semihosting-aarch64.test
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# RUN: make -C %samples_dir/src/baremetal-semihosting-aarch64 clean
+-# RUN: make -C %samples_dir/src/baremetal-semihosting-aarch64 run BIN_PATH=%unpack_directory/bin %sample_libc 2>&1 | FileCheck %s
+-# RUN: make -C %samples_dir/src/baremetal-semihosting-aarch64 clean
+-# CHECK: Hello World!
+diff --git a/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/Makefile b/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/Makefile
+deleted file mode 100644
+index e7e5b640eea2..000000000000
+--- a/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/Makefile
++++ /dev/null
+@@ -1,28 +0,0 @@
+-#
+-# Copyright (c) 2020-2025, Arm Limited and affiliates.
+-# Part of the Arm Toolchain project, under the Apache License v2.0 with LLVM Exceptions.
+-# See https://llvm.org/LICENSE.txt for license information.
+-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+-#
+-
+-include ../../Makefile.conf
+-
+-build: hello.elf
+-
+-hello.elf: *.c
+-	$(BIN_PATH)/clang -E -P -x c -DLIBC_LD_FILE=$(LIBC_LD_FILE) ../../ldscripts/raspi3b.ld.in -o raspi3b.ld
+-	$(BIN_PATH)/clang $(CFG_FILE) $(AARCH64_TARGET) $(CRT_SEMIHOST) -Wl,--pic-veneer -mno-unaligned-access -g -T raspi3b.ld -o hello.elf $^
+-
+-%.img: %.elf
+-	$(BIN_PATH)/llvm-objcopy -O binary $< $@
+-
+-run: hello.img
+-	qemu-system-aarch64 -M raspi3b $(QEMU_SEMIHOSTING) -kernel $<
+-
+-debug: hello.img
+-	qemu-system-aarch64 -M raspi3b $(QEMU_SEMIHOSTING) -kernel $< -s -S
+-
+-clean:
+-	rm -f *.elf *.img *.ld
+-
+-.PHONY: clean run debug
+diff --git a/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/README.md b/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/README.md
+deleted file mode 100644
+index db415aacfa53..000000000000
+--- a/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/README.md
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# Bare-metal AArch64 semihosting sample
+-
+-This sample shows how to use semihosting with
+-[QEMU Arm System emulator](https://www.qemu.org/docs/master/system/target-arm.html)
+-targeting the
+-[Raspberry Pi 3 Model B](https://www.qemu.org/docs/master/system/arm/raspi.html).
+-
+-Running the sample using `make run` should print a message:
+-```
+-Hello World!
+-```
+diff --git a/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/hello.c b/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/hello.c
+deleted file mode 100644
+index 3484fa739098..000000000000
+--- a/arm-software/embedded/samples/src/baremetal-semihosting-aarch64/hello.c
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/* Copyright (c) 2020-2025, Arm Limited and affiliates. 
+- *
+- * Part of the Arm Toolchain project, under the Apache License v2.0 with LLVM Exceptions.
+- * See https://llvm.org/LICENSE.txt for license information.
+- * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception */
+-
+-#include <stdio.h>
+-
+-int main(void) {
+-  printf("Hello World!\n");
+-  return 0;
+-}
+diff --git a/arm-software/embedded/test/multilib/aarch64.test b/arm-software/embedded/test/multilib/aarch64.test
+deleted file mode 100644
+index ee79edbf749c..000000000000
+--- a/arm-software/embedded/test/multilib/aarch64.test
++++ /dev/null
+@@ -1,193 +0,0 @@
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-a | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-a+fp16 | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.1-a | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.5-a+nodotprod | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.9-a | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv9.5-a | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv9.5-a+sve2+sme2 | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-a57 | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-a57+fp16 | FileCheck %s --check-prefix=AARCH64-EXNRTTI-UNALIGNED
+-
+-# AARCH64-EXNRTTI-UNALIGNED: aarch64-none-elf/aarch64a_exn_rtti_unaligned{{$}}
+-# AARCH64-EXNRTTI-UNALIGNED-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.5-a+nodotprod -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv9.5-a+sve2+sme2 -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-a57+fp16 -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-UNALIGNED
+-
+-# AARCH64-UNALIGNED: aarch64-none-elf/aarch64a_unaligned{{$}}
+-# AARCH64-UNALIGNED-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r | FileCheck %s --check-prefix=AARCH64R-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 | FileCheck %s --check-prefix=AARCH64R-EXNRTTI-UNALIGNED
+-
+-# AARCH64R-EXNRTTI-UNALIGNED: aarch64-none-elf/aarch64r_exn_rtti_unaligned{{$}}
+-# AARCH64R-EXNRTTI-UNALIGNED-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64R-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64R-UNALIGNED
+-
+-# AARCH64R-UNALIGNED: aarch64-none-elf/aarch64r_unaligned{{$}}
+-# AARCH64R-UNALIGNED-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP-EXNRTTI-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP-EXNRTTI-UNALIGNED
+-
+-# AARCH64R-NOFP-EXNRTTI-UNALIGNED: aarch64-none-elf/aarch64r_soft_nofp_exn_rtti_unaligned{{$}}
+-# AARCH64R-NOFP-EXNRTTI-UNALIGNED-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP-UNALIGNED
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP-UNALIGNED
+-
+-# AARCH64R-NOFP-UNALIGNED: aarch64-none-elf/aarch64r_soft_nofp_unaligned{{$}}
+-# AARCH64R-NOFP-UNALIGNED-EMPTY:
+-
+-
+-# Strictalign
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-a+fp16 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.1-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.5-a+nodotprod -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.9-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv9.5-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv9.5-a+sve2+sme2 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-a57 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-a57+fp16 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-EXNRTTI
+-
+-# AARCH64-EXNRTTI: aarch64-none-elf/aarch64a_exn_rtti{{$}}
+-# AARCH64-EXNRTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8.5-a+nodotprod -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv9.5-a+sve2+sme2 -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-a57+fp16 -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64
+-
+-# AARCH64: aarch64-none-elf/aarch64a{{$}}
+-# AARCH64-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R-EXNRTTI
+-
+-# AARCH64R-EXNRTTI: aarch64-none-elf/aarch64r_exn_rtti{{$}}
+-# AARCH64R-EXNRTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R
+-
+-# AARCH64R: aarch64-none-elf/aarch64r{{$}}
+-# AARCH64R-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -mno-unaligned-access -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -mno-unaligned-access -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP-EXNRTTI
+-
+-# AARCH64R-NOFP-EXNRTTI: aarch64-none-elf/aarch64r_soft_nofp_exn_rtti{{$}}
+-# AARCH64R-NOFP-EXNRTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -fno-exceptions -fno-rtti -mno-unaligned-access -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -fno-exceptions -fno-rtti -mno-unaligned-access -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-NOFP
+-
+-# AARCH64R-NOFP: aarch64-none-elf/aarch64r_soft_nofp{{$}}
+-# AARCH64R-NOFP-EMPTY:
+-
+-# Big endian
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8-a | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8-a+fp16 | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.1-a | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.5-a+nodotprod | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.9-a | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv9.5-a | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv9.5-a+sve2+sme2 | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mcpu=cortex-a57 | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mcpu=cortex-a57+fp16 | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8-a+fp16 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.1-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.5-a+nodotprod -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.9-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv9.5-a -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv9.5-a+sve2+sme2 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mcpu=cortex-a57 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mcpu=cortex-a57+fp16 -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE-EXNRTTI
+-
+-# AARCH64-BE-EXNRTTI: aarch64-none-elf/aarch64a_be_exn_rtti{{$}}
+-# AARCH64-BE-EXNRTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.5-a+nodotprod -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv9.5-a+sve2+sme2 -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mcpu=cortex-a57+fp16 -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv8.5-a+nodotprod -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -march=armv9.5-a+sve2+sme2 -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mbig-endian -mcpu=cortex-a57+fp16 -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64-BE
+-
+-# AARCH64-BE: aarch64-none-elf/aarch64a_be{{$}}
+-# AARCH64-BE-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -mbig-endian | FileCheck %s --check-prefix=AARCH64R-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -mbig-endian | FileCheck %s --check-prefix=AARCH64R-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -mbig-endian -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R-BE-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -mbig-endian -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R-BE-EXNRTTI
+-
+-# AARCH64R-BE-EXNRTTI: aarch64-none-elf/aarch64r_be_exn_rtti{{$}}
+-# AARCH64R-BE-EXNRTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -mbig-endian -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64R-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -mbig-endian -fno-exceptions -fno-rtti | FileCheck %s --check-prefix=AARCH64R-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r -mbig-endian -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R-BE
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82 -mbig-endian -fno-exceptions -fno-rtti -mno-unaligned-access | FileCheck %s --check-prefix=AARCH64R-BE
+-
+-# AARCH64R-BE: aarch64-none-elf/aarch64r_be{{$}}
+-# AARCH64R-BE-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -mno-unaligned-access -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -mno-unaligned-access -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP-EXNRTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP-EXNRTTI
+-
+-# AARCH64R-BE-NOFP-EXNRTTI: aarch64-none-elf/aarch64r_be_soft_nofp_exn_rtti{{$}}
+-# AARCH64R-BE-NOFP-EXNRTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -fno-exceptions -fno-rtti -mno-unaligned-access -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -fno-exceptions -fno-rtti -mno-unaligned-access -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -march=armv8-r+nofp+nosimd -fno-exceptions -fno-rtti -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-none-elf -mcpu=cortex-r82+nofp+nosimd -fno-exceptions -fno-rtti -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64R-BE-NOFP
+-
+-# AARCH64R-BE-NOFP: aarch64-none-elf/aarch64r_be_soft_nofp{{$}}
+-# AARCH64R-BE-NOFP-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64A-SOFT-NOFP-EXN-RTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mabi=aapcs-soft -ffixed-x18 | FileCheck %s --check-prefix=AARCH64A-SOFT-NOFP-EXN-RTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mabi=aapcs-soft -mno-unaligned-access -fPIC -ffixed-x18 | FileCheck %s --check-prefix=AARCH64A-SOFT-NOFP-EXN-RTTI
+-
+-# AARCH64A-SOFT-NOFP-EXN-RTTI: aarch64-none-elf/aarch64a_soft_nofp_exn_rtti{{$}}
+-# AARCH64A-SOFT-NOFP-EXN-RTTI-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -fno-exceptions -fno-rtti -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64A-BE-SOFT-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -fno-exceptions -fno-rtti -mbig-endian -mabi=aapcs-soft -fPIC | FileCheck %s --check-prefix=AARCH64A-BE-SOFT-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -fno-exceptions -fno-rtti -mbig-endian -mabi=aapcs-soft -mno-unaligned-access -fPIC -ffixed-x18 | FileCheck %s --check-prefix=AARCH64A-BE-SOFT-NOFP
+-
+-# AARCH64A-BE-SOFT-NOFP: aarch64-none-elf/aarch64a_be_soft_nofp{{$}}
+-# AARCH64A-BE-SOFT-NOFP-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -fno-exceptions -fno-rtti -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64A-SOFT-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mabi=aapcs-soft -fno-exceptions -fno-rtti -mno-unaligned-access -fPIC -ffixed-x18 | FileCheck %s --check-prefix=AARCH64A-SOFT-NOFP
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -fno-exceptions -fno-rtti -march=armv8-a+nofp+nosimd -mabi=aapcs-soft -mno-unaligned-access -fPIC -ffixed-x18 | FileCheck %s --check-prefix=AARCH64A-SOFT-NOFP
+-
+-# AARCH64A-SOFT-NOFP: aarch64-none-elf/aarch64a_soft_nofp{{$}}
+-# AARCH64A-SOFT-NOFP-EMPTY:
+-
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64-BE-SOFT-NOFP-EXN-RTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mbig-endian -mabi=aapcs-soft -mno-unaligned-access -fPIC -ffixed-x18 | FileCheck %s --check-prefix=AARCH64-BE-SOFT-NOFP-EXN-RTTI
+-# RUN: %clang -print-multi-directory --target=aarch64-unknown-none-elf -march=armv8-a+nofp+nosimd -mbig-endian -mabi=aapcs-soft | FileCheck %s --check-prefix=AARCH64-BE-SOFT-NOFP-EXN-RTTI
+-
+-# AARCH64-BE-SOFT-NOFP-EXN-RTTI: aarch64-none-elf/aarch64a_be_soft_nofp_exn_rtti{{$}}
+-# AARCH64-BE-SOFT-NOFP-EXN-RTTI-EMPTY:
+-
+diff --git a/arm-software/embedded/test/multilib/aarch64_a_supported_variants.test b/arm-software/embedded/test/multilib/aarch64_a_supported_variants.test
+deleted file mode 100644
+index 5e4563b1a243..000000000000
+--- a/arm-software/embedded/test/multilib/aarch64_a_supported_variants.test
++++ /dev/null
+@@ -1,35 +0,0 @@
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.1-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.1-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.2-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.2-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.3-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.3-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.4-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.4-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.5-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.5-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.6-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.6-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.7-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.7-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.8-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.8-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.9-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8.9-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.1-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.1-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.2-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.2-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.3-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.3-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.4-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.4-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.5-a		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv9.5-a	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-
+-# CHECK-NOT: error
+-# CHECK-NOT: warning
+diff --git a/arm-software/embedded/test/multilib/aarch64_r_supported_variants.test b/arm-software/embedded/test/multilib/aarch64_r_supported_variants.test
+deleted file mode 100644
+index 615367470091..000000000000
+--- a/arm-software/embedded/test/multilib/aarch64_r_supported_variants.test
++++ /dev/null
+@@ -1,5 +0,0 @@
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8-r		 2>&1 | FileCheck %s --match-full-lines
+-# RUN: %clang -print-multi-flags-experimental -S -x c -v - '-###'	--target=aarch64-none-elf	-march=armv8-r	-mabi=aapcs-soft	 2>&1 | FileCheck %s --match-full-lines
+-
+-# CHECK-NOT: error
+-# CHECK-NOT: warning
+-- 
+2.54.0 (Apple Git-157)
+

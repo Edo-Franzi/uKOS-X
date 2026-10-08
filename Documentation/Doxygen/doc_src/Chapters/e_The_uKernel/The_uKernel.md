@@ -566,10 +566,8 @@ However, in all other cases — especially when access may take longer or involv
 static uint8_t    vBuffer[KSZ_BUF];     // Critical resource
 
 [[noreturn]]
-static void process_1(const void *argument) {
+static void process_1([[maybe_unused]] const void *argument) {
     uint8_t    i, result;
-
-    UNUSED(argument);
 
     while (true) {
         for (i = 0u; i < KSZ_BUF; i++) {
@@ -582,10 +580,8 @@ static void process_1(const void *argument) {
 }
 
 [[noreturn]]
-static void process_2(const void *argument) {
+static void process_2([[maybe_unused]] const void *argument) {
     uint8_t    i, result;
-
-    UNUSED(argument);
 
     while (true) {
         for (i = 0u; i < KSZ_BUF; i++) {
@@ -907,9 +903,8 @@ interruption_RS232() {
 }
 
 [[noreturn]]
-static void process_1(const void *argument) {
+static void process_1([[maybe_unused]] const void *argument) {
 
-    UNUSED(argument);
     ...
     while (true) {
 
@@ -1017,15 +1012,13 @@ Mailboxes and queues both enable **safe and decoupled communication** between ta
 // Example of a mailbox (PX sends a buffer, PY receives it)
 
 [[noreturn]]
-static void process_X(const void *argument) {
+static void process_X([[maybe_unused]] const void *argument) {
     uint8_t     *bufSnd;
     uint16_t    sizeSnd;
     uint32_t    counterSnd = 0u;
     mcnf_t      configure;
     int32_t     status;
     mbox_t      *mailBox;
-
-    UNUSED(argument);
 
 // Create and configure the mailbox
 
@@ -1065,12 +1058,10 @@ static void process_X(const void *argument) {
 }
 
 [[noreturn]]
-static void process_Y(const void *argument) {
+static void process_Y([[maybe_unused]] const void *argument) {
     uint8_t     *bufRec;
     uint16_t    sizeRec;
     mbox_t      *mailBox;
-
-    UNUSED(argument);
 
 // Waiting for the creation of the X to Y mailbox
 
@@ -1108,13 +1099,11 @@ The **resolution** of software timers is **1-ms**, providing a fine granularity 
 // Example of software timer (single shot and continuous modes)
 
 [[noreturn]]
-static void process(const void *argument) {
+static void process([[maybe_unused]] const void *argument) {
           int32_t     status;
           tspc_t      configure_0, configure_1;
           stim_t      *softwareTimer_0, *softwareTimer_1;
     const uint32_t    argument_0[] = { 5u }, argument_1[] = { 2u };
-
-    UNUSED(argument);
 
     configure_0.oMode        = KSTIM_SINGLE_SHOT;
     configure_0.oInitialTime = 200u;
@@ -1188,12 +1177,10 @@ This design ensures that signals are a **lightweight, scalable, and real-time fr
 // Example of signal usage (referred to the figure)
 
 [[noreturn]]
-static void Process_A(const void *argument) {
+static void Process_A([[maybe_unused]] const void *argument) {
     int32_t     status;
     uint32_t    signal_usb;
     sign_t      *group_usb;
-
-    UNUSED(argument);
 
     status = kern_createSignalGroup("Group Usb", &group_usb);
     if (status != KERR_KERN_NOERR) {
@@ -1211,12 +1198,10 @@ static void Process_A(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_B(const void *argument) {
+static void Process_B([[maybe_unused]] const void *argument) {
     int32_t     status;
     uint32_t    signal_key, signal_mouse;
     sign_t      *group_key, *group_mouse;
-
-    UNUSED(argument);
 
     while (kern_getSignalGroupById("Group mouse", &group_mouse) != KERR_KERN_NOERR) {
         kern_suspendProcess(1u);
@@ -1239,12 +1224,10 @@ static void Process_B(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_C(const void *argument) {
+static void Process_C([[maybe_unused]] const void *argument) {
     int32_t     status;
     uint32_t    signal_alarm;
     sign_t      *group_usb;
-
-    UNUSED(argument);
 
     while (kern_getSignalGroupById("Group Usb", &group_usb) != KERR_KERN_NOERR) {
         kern_suspendProcess(1u);
@@ -1259,12 +1242,10 @@ static void Process_C(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_D(const void *argument) {
+static void Process_D([[maybe_unused]] const void *argument) {
     int32_t     status;
     uint32_t    signal_key;
     sign_t      *group_key;
-
-    UNUSED(argument);
 
     while (kern_getSignalGroupById("Group Key", &group_key) != KERR_KERN_NOERR) {
         kern_suspendProcess(1u);
@@ -1277,12 +1258,10 @@ static void Process_D(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_E(const void *argument) {
+static void Process_E([[maybe_unused]] const void *argument) {
     int32_t      status;
     uint32_t     signals;
     sign_t       *group_usb;
-
-    UNUSED(argument);
 
     while (kern_getSignalGroupById("Group Usb", &group_usb) != KERR_KERN_NOERR) {
         kern_suspendProcess(1u);
@@ -1320,12 +1299,10 @@ This makes precise signals especially suitable for real-time tasks requiring **d
 static prcs_t    *vPrecise_0, *vPrecise_1;
 
 [[noreturn]]
-static void Process_main(const void *argument) {
+static void Process_main([[maybe_unused]] const void *argument) {
     int32_t     status;
     uint32_t    time;
     sign_t      *sigGroup_0, *sigGroup_1;
-
-    UNUSED(argument);
 
 // Create the 2 precise signals
 
@@ -1366,11 +1343,9 @@ static void Process_main(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_0(const void *argument) {
+static void Process_0([[maybe_unused]] const void *argument) {
     uint32_t    signal;
     sign_t      *sigGroup = nullptr;
-
-    UNUSED(argument);
 
     while (true) {
         signal = KSIGNAL_A;
@@ -1382,11 +1357,9 @@ static void Process_0(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_1(const void *argument) {
+static void Process_1([[maybe_unused]] const void *argument) {
     uint32_t    signal;
     sign_t      *sigGroup = nullptr;
-
-    UNUSED(argument);
 
     while (true) {
         signal = KSIGNAL_B;
@@ -1398,11 +1371,9 @@ static void Process_1(const void *argument) {
 }
 
 [[noreturn]]
-static void Process_2(const void *argument) {
+static void Process_2([[maybe_unused]] const void *argument) {
     uint32_t    signal;
     sign_t      *sigGroup = nullptr;
-
-    UNUSED(argument);
 
     while (true) {
         signal = KSIGNAL_A | KSIGNAL_B;
@@ -1469,11 +1440,9 @@ Sometimes it is useful to measure the CPU time used by a portion of the code. Th
 
 ```c
 [[noreturn]]
-static void process_1(const void *argument) {
+static void process_1([[maybe_unused]] const void *argument) {
     uint64_t    time[2];
     uint32_t    duration;
-
-    UNUSED(argument);
 
     while (true) {
         kern_getTiccount(&time[0]);                //

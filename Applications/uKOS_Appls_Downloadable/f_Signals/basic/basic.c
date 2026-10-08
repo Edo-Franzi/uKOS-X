@@ -165,10 +165,8 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	sign_t	*group;
-
-	UNUSED(argument);
 
 	if (kern_createSignalGroup("Group 0", &group) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sigr"); exit(EXIT_OS_FAILURE); }
 
@@ -189,10 +187,8 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	sign_t	*group;
-
-	UNUSED(argument);
 
 	if (kern_createSignalGroup("Group 1", &group) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sigr"); exit(EXIT_OS_FAILURE); }
 
@@ -212,11 +208,9 @@ static	void	aProcess_1(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_2(const void *argument) {
+static	void	aProcess_2([[maybe_unused]] const void *argument) {
 	uint32_t	signal;
 	sign_t		*group;
-
-	UNUSED(argument);
 
 // Get the events
 
@@ -239,11 +233,9 @@ static	void	aProcess_2(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_3(const void *argument) {
+static	void	aProcess_3([[maybe_unused]] const void *argument) {
 	uint32_t	signal;
 	sign_t		*group;
-
-	UNUSED(argument);
 
 	while (kern_getSignalGroupById("Group 1", &group) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
@@ -276,9 +268,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_1[]) = "Process Synchro 1.                        (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_2[]) = "Process user 2.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_3[]) = "Process user 3.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

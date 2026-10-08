@@ -309,33 +309,23 @@ void	gc_collect(void) {
 	gc_dump_info(&mp_plat_print);
 }
 
-mp_lexer_t	*mp_lexer_new_from_file(qstr filename) {
-
-	UNUSED(filename);
+mp_lexer_t	*mp_lexer_new_from_file([[maybe_unused]] qstr filename) {
 
 	mp_raise_OSError(MP_ENOENT);
 }
 
-mp_import_stat_t	mp_import_stat(const char_t *path) {
-
-	UNUSED(path);
+mp_import_stat_t	mp_import_stat([[maybe_unused]] const char_t *path) {
 
 	return (MP_IMPORT_STAT_NO_EXIST);
 }
 
-mp_obj_t	mp_builtin_open(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs) {
-
-	UNUSED(n_args);
-	UNUSED(args);
-	UNUSED(kwargs);
+mp_obj_t	mp_builtin_open([[maybe_unused]] size_t n_args, [[maybe_unused]] const mp_obj_t *args, [[maybe_unused]] mp_map_t *kwargs) {
 
 	return (mp_const_none);
 }
 MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);
 
-void NORETURN nlr_jump_fail(void *val) {
-
-	UNUSED(val);
+void NORETURN nlr_jump_fail([[maybe_unused]] void *val) {
 
 	(void)dprintf(KSYST, "MicroPython fatal error\n");
 	(void)dprintf(KSYST, "Leave the MicroPython process!\n");
@@ -351,9 +341,7 @@ void NORETURN __fatal_error(const char_t *msg) {
 }
 
 #if (!defined(NDEBUG))
-void	MP_WEAK __assert_func(const char_t *file, int line, const char_t *func, const char_t *expr) {
-
-	UNUSED(func);
+void	MP_WEAK __assert_func(const char_t *file, int line, [[maybe_unused]] const char_t *func, const char_t *expr) {
 
 	(void)dprintf(KSYST, "Assertion '%s' failed, at file %s:%d\n", expr, file, line);
 	__fatal_error("Assertion failed");

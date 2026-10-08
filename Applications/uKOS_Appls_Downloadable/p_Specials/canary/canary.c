@@ -138,9 +138,6 @@ MAIN_ENTRY(argc, argv[]) {
 				uint32_t	i;
 	volatile	uint32_t	array[KNB_ELEMENTS];
 
-	UNUSED(argc);
-	UNUSED(argv);
-
 // Initialise 0..n-1 elements
 
 	for (i = 0; i < KNB_ELEMENTS; i++) {

@@ -180,11 +180,9 @@ namespace {
 namespace {
 
 [[noreturn]]
-void	aProcess_0(const void *argument) {
+void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint32_t	i;
 	char_t		text[40];
-
-	UNUSED(argument);
 
 	PRIVILEGE_ELEVATE;
 	tfl::tfl_init();
@@ -228,9 +226,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden_0[]) =    "Process_gan";
 	STRG_LOC_CONST(aStrText_0[]) =    "Process gan.                              (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	lvgl_init();
 

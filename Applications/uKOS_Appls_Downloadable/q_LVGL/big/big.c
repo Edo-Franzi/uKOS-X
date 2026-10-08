@@ -131,9 +131,6 @@ extern	void	lvgl_init(void);
  */
 MAIN_ENTRY(argc, argv[]) {
 
-	UNUSED(argc);
-	UNUSED(argv);
-
 	lvgl_init();
 
 	LOG(KINFO_USER, "Application launched");

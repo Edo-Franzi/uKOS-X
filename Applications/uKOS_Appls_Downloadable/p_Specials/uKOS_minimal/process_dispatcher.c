@@ -96,10 +96,8 @@ bool	installaProcess_dispatcher(void) {
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
+static	void	aProcess([[maybe_unused]] const void *argument) {
 	uintptr_t	message;
-
-	UNUSED(argument);
 
 	while (vQueue_dispatcher == nullptr) { kern_suspendProcess(1u); }
 

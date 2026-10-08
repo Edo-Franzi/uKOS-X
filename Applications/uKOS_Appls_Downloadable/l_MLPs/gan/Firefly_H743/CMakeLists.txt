@@ -96,13 +96,16 @@ set(PATH_INCLUDES
 )
 find_library(MYLIB TFLite ${PATH_UKOS}/Third_Parties/Tflite-micro/Library/${CORE})
 
+# Directories in the makefile's APPL_SRC declaration order -- the link order
+# of the make build is recovered from the first appearance of each directory.
 set(OBJ
-    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Classifier/tfl_classifier.cpp
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/gan.cpp
     ${PATH_UKOS}/Applications/uKOS_Demos/gan/Firefly_H743/stub.c
-    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/Widgets/Firefly_H743/background/background.c
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Classifier/nnh_classifier.c
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Classifier/tfl_classifier.cpp
     ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/lvgl.c
     ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/ui.c
-    ${PATH_UKOS}/Applications/uKOS_Demos/gan/gan.cpp
+    ${PATH_UKOS}/Applications/uKOS_Demos/gan/Graphics/Widgets/Firefly_H743/background/background.c
 )
 
 include(common)

@@ -65,7 +65,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Test of the multi-core communications\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 static	int32_t		test_mcore_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -109,12 +109,9 @@ static	void	local_process_TX(const void *argument);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
 	proc_t		*process_RX, *process_TX;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = false;
@@ -155,11 +152,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-static	int32_t	test_mcore_clean(uint32_t argc, const char_t *argv[]) {
+static	int32_t	test_mcore_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;

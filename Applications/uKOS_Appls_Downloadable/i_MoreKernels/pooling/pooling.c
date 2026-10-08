@@ -144,13 +144,11 @@ static	pool_t	*vMemoryPool;
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint16_t	*array_0, *array_1, *array_2;
 	uint32_t	i, nbElements;
 	int32_t		status;
 	pool_t		*memoryPool;
-
-	UNUSED(argument);
 
 	status = kern_getPoolById("Memory pool", &memoryPool);
 	if (status != KERR_KERN_NOERR) { (void)dprintf(KSYST, "No pool\n"); LOG(KFATAL_USER, "No pool"); exit(EXIT_OS_FAILURE); }
@@ -201,13 +199,11 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	uint16_t	*array_0, *array_1, *array_2;
 	uint32_t	i, nbElements;
 	int32_t		status;
 	pool_t		*memoryPool;
-
-	UNUSED(argument);
 
 // Waiting until P0 has filled at least once the 3 arrays
 // Get the pool information
@@ -291,9 +287,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	vConfigure.oNbBlocks  = 3u;
 	vConfigure.oBlockSize = 1000u * sizeof(uint16_t);

@@ -111,10 +111,7 @@ uint32_t	board_millis(void) {
  * - No idea
  *
  */
-size_t	board_get_unique_id(uint8_t id[], size_t max_len) {
-
-	UNUSED(id);
-	UNUSED(max_len);
+size_t	board_get_unique_id([[maybe_unused]] uint8_t id[], [[maybe_unused]] size_t max_len) {
 
 	return (0u);
 }
@@ -149,10 +146,8 @@ uint32_t	osal_time_millis(void) {
  * - Create an anonymous synchro semaphore
  *
  */
-osal_semaphore_t	osal_semaphore_create(osal_semaphore_def_t *semdef) {
+osal_semaphore_t	osal_semaphore_create([[maybe_unused]] osal_semaphore_def_t *semdef) {
 	sema_t	*semaphore = nullptr;
-
-	UNUSED(semdef);
 
 	if (kern_createSemaphore(nullptr, 0, 1, &semaphore) == KERR_KERN_NOERR) {
 		return ((osal_semaphore_t)(semaphore));
@@ -167,10 +162,8 @@ osal_semaphore_t	osal_semaphore_create(osal_semaphore_def_t *semdef) {
  * - Signal the synchro semaphore
  *
  */
-bool	osal_semaphore_post(osal_semaphore_t sem_hdl, bool in_isr) {
+bool	osal_semaphore_post(osal_semaphore_t sem_hdl, [[maybe_unused]] bool in_isr) {
 	bool	status;
-
-	UNUSED(in_isr);
 
 	status = (kern_signalSemaphore((sema_t *)sem_hdl) == KERR_KERN_NOERR) ? (true) : (false);
 	return (status);
@@ -182,10 +175,8 @@ bool	osal_semaphore_post(osal_semaphore_t sem_hdl, bool in_isr) {
  * - Waiting for the synchro semaphore
  *
  */
-bool	osal_semaphore_wait(osal_semaphore_t sem_hdl, uint32_t msec) {
+bool	osal_semaphore_wait(osal_semaphore_t sem_hdl, [[maybe_unused]] uint32_t msec) {
 	bool	status;
-
-	UNUSED(msec);
 
 	status = (kern_waitSemaphore((sema_t *)sem_hdl, 0u) == KERR_KERN_NOERR) ? (true) : (false);
 	return (status);
@@ -208,10 +199,8 @@ void	osal_semaphore_reset(osal_semaphore_t sem_hdl) {
  * - Create an anonymous mutex semaphore
  *
  */
-osal_mutex_t osal_mutex_create(osal_mutex_def_t *mdef) {
+osal_mutex_t osal_mutex_create([[maybe_unused]] osal_mutex_def_t *mdef) {
 	mutx_t	*mutex = nullptr;
-
-	UNUSED(mdef);
 
 	if (kern_createMutex(nullptr, &mutex) == KERR_KERN_NOERR) {
 	    return ((osal_mutex_t)(mutex));
@@ -312,11 +301,9 @@ bool	osal_queue_receive(osal_queue_t qhdl, void *data, uint32_t msec) {
 #else
 #pragma GCC diagnostic  ignored "-Wdiscarded-qualifiers"
 #endif
-bool	osal_queue_send(osal_queue_t qhdl, void const *data, bool in_isr) {
+bool	osal_queue_send(osal_queue_t qhdl, void const *data, [[maybe_unused]] bool in_isr) {
 	bool	status;
 	mbox_t	*mailBox = (mbox_t *)qhdl;
-
-	UNUSED(in_isr);
 
 	status = (kern_writeMailbox((mbox_t *)qhdl, data, mailBox->oDataEntrySize, 0u) == KERR_KERN_NOERR) ? (true) : (false);
 	return (status);

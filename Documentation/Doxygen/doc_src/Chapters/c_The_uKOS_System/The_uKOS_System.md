@@ -655,10 +655,8 @@ MODULE(
  *
  */
 [[noreturn]]
-static void aProcess_0(const void *argument) {
+static void aProcess_0([[maybe_unused]] const void *argument) {
     int32_t    cpt = 0;
-
-    UNUSED(argument);
 
     while (true) {
         kern_suspendProcess(P0_PERIOD);
@@ -672,10 +670,8 @@ static void aProcess_0(const void *argument) {
 }
 
 [[noreturn]]
-static void aProcess_1(const void *argument) {
+static void aProcess_1([[maybe_unused]] const void *argument) {
     int32_t    cpt = 0;
-
-    UNUSED(argument);
 
     while (true) {
         kern_suspendProcess(P1_PERIOD);

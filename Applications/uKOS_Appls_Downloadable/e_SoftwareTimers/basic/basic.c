@@ -128,7 +128,7 @@ MODULE(
 
 // Prototypes
 
-static	void	local_changeStateLed(const void *argument);
+static	void	local_changeStateLed([[maybe_unused]] const void *argument);
 
 /*
  * \brief aProcess
@@ -140,13 +140,11 @@ static	void	local_changeStateLed(const void *argument);
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
+static	void	aProcess([[maybe_unused]] const void *argument) {
 					uint32_t	time;
 					tspc_t		configure_0, configure_1;
 					stim_t		*softwareTimer_0, *softwareTimer_1;
 	static	const	uint32_t	argument_0[2] = { 0u }, argument_1[2] = { 1u };
-
-	UNUSED(argument);
 
 
 	configure_0.oMode		 = KSTIM_SINGLE_SHOT;
@@ -240,9 +238,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden[]) = "Process_Software_Timer";
 	STRG_LOC_CONST(aStrText[]) = "Process Software Timer.                   (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

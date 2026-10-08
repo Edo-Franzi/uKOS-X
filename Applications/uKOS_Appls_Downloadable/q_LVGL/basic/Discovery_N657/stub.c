@@ -81,8 +81,6 @@ void	stub_LCD_flush_cb(lv_display_t *lv_display, const lv_area_t *area, uint8_t 
 	int32_t		line, x, y;
 	uint8_t		*src, *dst;
 
-	UNUSED(lv_display);
-
 	for (line = 0; line < h; line++) {
 		y = area->y1 + line;
 		x = area->x1;

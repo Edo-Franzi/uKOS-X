@@ -66,11 +66,9 @@
  *	- Pi = sqrt(6 * (1/1^2 + 1/2^2 + 1/3^2 +...)
  *
  */
-float64_t	pi_lambert(float64_t index, float64_t oldPi) {
+float64_t	pi_lambert(float64_t index, [[maybe_unused]] float64_t oldPi) {
 			float64_t	pi;
 	static	float64_t	v = 0.0;
-
-	UNUSED(oldPi);
 
 	v = v + (1.0 / pow(index, 2));
 	pi = sqrt(v * 6);

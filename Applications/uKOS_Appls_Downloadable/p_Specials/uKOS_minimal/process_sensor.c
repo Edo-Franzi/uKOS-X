@@ -98,11 +98,9 @@ bool	installaProcess_sensor(void) {
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
+static	void	aProcess([[maybe_unused]] const void *argument) {
 	uint8_t		value = 0u;
 	uintptr_t	message_sensor;
-
-	UNUSED(argument);
 
 	while (vQueue_dispatcher == nullptr) { kern_suspendProcess(1u); }
 

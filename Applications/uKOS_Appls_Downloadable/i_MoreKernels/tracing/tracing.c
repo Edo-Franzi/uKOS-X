@@ -289,11 +289,9 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
+static	void	aProcess([[maybe_unused]] const void *argument) {
 	uint32_t	time = 20u;
 	uintptr_t	i;
-
-	UNUSED(argument);
 
 	LOG(KINFO_USER, "launched");
 	(void)dprintf(KSYST,"\nThe machine will crash in %"PRIu32" seconds!!\n", time--);
@@ -337,9 +335,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden[]) = "Process_User_0";
 	STRG_LOC_CONST(aStrText[]) = "Process user 0.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	LOG(KINFO_USER, "launched");
 	record_trace("--> Main: Enter", 0x04040404);

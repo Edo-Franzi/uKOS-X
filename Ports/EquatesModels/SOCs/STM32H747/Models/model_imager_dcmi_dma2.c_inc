@@ -455,13 +455,11 @@ static	int32_t	local_confPixe(const imagerCnf_t *configure) {
  * - Configure the memory buffers
  *
  */
-static	int32_t	local_confMemo(const imagerCnf_t *configure) {
+static	int32_t	local_confMemo([[maybe_unused]] const imagerCnf_t *configure) {
 			int32_t		status	 = KERR_IMAGER_NOERR;
 	const	size_t		nbPixels = (size_t)vFrameNbPixels;
 	const	size_t		elemSize = (size_t)vSize;
 	const	size_t		nbBytes	 = nbPixels * elemSize;
-
-	UNUSED(configure);
 
 	if (vImageE0 != nullptr) { memo_free(vImageE0); }
 

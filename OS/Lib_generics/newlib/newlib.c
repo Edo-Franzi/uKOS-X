@@ -164,11 +164,7 @@ extern	void		crt0_exit(int number);
  * - open - Open a file
  *
  */
-int		_open_r(reent_t *reent, const char_t *path, int oflag, int mode) {
-
-	UNUSED(path);
-	UNUSED(oflag);
-	UNUSED(mode);
+int		_open_r(reent_t *reent, [[maybe_unused]] const char_t *path, [[maybe_unused]] int oflag, [[maybe_unused]] int mode) {
 
 	reent->_errno = ENODEV;
 	return (-1);
@@ -180,9 +176,7 @@ int		_open_r(reent_t *reent, const char_t *path, int oflag, int mode) {
  * - close - Close a file descriptor
  *
  */
-int		_close_r(reent_t *reent, int fd) {
-
-	UNUSED(fd);
+int		_close_r(reent_t *reent, [[maybe_unused]] int fd) {
 
 	reent->_errno = EBADF;
 	return (-1);
@@ -194,13 +188,11 @@ int		_close_r(reent_t *reent, int fd) {
  * - write - Write to a file descriptor
  *
  */
-_ssize_t	_write_r(reent_t *reent, int fd, const void *buf, size_t count) {
+_ssize_t	_write_r([[maybe_unused]] reent_t *reent, int fd, const void *buf, size_t count) {
 	_ssize_t			nbPrintChars;
 	serialManager_t		serialManager;
 	uint32_t			stdio = (uint32_t)fd;
 	proc_t				*process;
-
-	UNUSED(reent);
 
 	switch (stdio) {
 
@@ -248,13 +240,11 @@ _ssize_t	_write_r(reent_t *reent, int fd, const void *buf, size_t count) {
  * - read - Read from a file descriptor
  *
  */
-_ssize_t	_read_r(reent_t *reent, int fd, void *buf, size_t count) {
+_ssize_t	_read_r([[maybe_unused]] reent_t *reent, int fd, void *buf, size_t count) {
 	_ssize_t			nbReadChars;
 	serialManager_t		serialManager;
 	uint32_t			stdio = (uint32_t)fd;
 	proc_t				*process;
-
-	UNUSED(reent);
 
 	switch (stdio) {
 
@@ -305,11 +295,8 @@ _ssize_t	_read_r(reent_t *reent, int fd, void *buf, size_t count) {
  * - gettimeofday_r - Get the date and time
  *
  */
-int		_gettimeofday_r(reent_t *reent, struct timeval *tv, void *tzvp) {
+int		_gettimeofday_r([[maybe_unused]] reent_t *reent, struct timeval *tv, [[maybe_unused]] void *tzvp) {
 	uint64_t	unixTime;
-
-	UNUSED(reent);
-	UNUSED(tzvp);
 
 // Read the 64-bit time @ 1-us resolution
 // Extract the seconds and the micro-seconds
@@ -359,9 +346,7 @@ clock_t		_times_r(reent_t *reent, struct tms *buf) {
  * - isatty - Test whether a file descriptor refers to a terminal
  *
  */
-int		_isatty_r(reent_t *reent, int fd) {
-
-	UNUSED(reent);
+int		_isatty_r([[maybe_unused]] reent_t *reent, int fd) {
 
 	return ((fd <= 2) ? (1) : (0));
 }
@@ -372,9 +357,7 @@ int		_isatty_r(reent_t *reent, int fd) {
  * - wait - Wait for a child process to stop or terminate
  *
  */
-int		_wait_r(reent_t *reent, const int *stat_loc) {
-
-	UNUSED(stat_loc);
+int		_wait_r(reent_t *reent, [[maybe_unused]] const int *stat_loc) {
 
 	reent->_errno = ECHILD;
 	return (-1);
@@ -409,10 +392,7 @@ int		_fork_r(reent_t *reent) {
  * - stat - Get file status
  *
  */
-int		_stat_r(reent_t *reent, const char_t *path, struct stat *pstat) {
-
-	UNUSED(reent);
-	UNUSED(path);
+int		_stat_r([[maybe_unused]] reent_t *reent, [[maybe_unused]] const char_t *path, struct stat *pstat) {
 
 	pstat->st_mode = S_IFCHR;
 	return (0);
@@ -424,10 +404,7 @@ int		_stat_r(reent_t *reent, const char_t *path, struct stat *pstat) {
  * - fstat - Get file status
  *
  */
-int		_fstat_r(reent_t *reent, int fd, struct stat *pstat) {
-
-	UNUSED(reent);
-	UNUSED(fd);
+int		_fstat_r([[maybe_unused]] reent_t *reent, [[maybe_unused]] int fd, struct stat *pstat) {
 
 	pstat->st_mode = S_IFCHR;
 	return (0);
@@ -439,10 +416,7 @@ int		_fstat_r(reent_t *reent, int fd, struct stat *pstat) {
  * - link - Call the link function to create a link to a file
  *
  */
-int		_link_r(reent_t *reent, const char_t *oldpath, const char_t *newpath) {
-
-	UNUSED(oldpath);
-	UNUSED(newpath);
+int		_link_r(reent_t *reent, [[maybe_unused]] const char_t *oldpath, [[maybe_unused]] const char_t *newpath) {
 
 	reent->_errno = EMLINK;
 	return (-1);
@@ -454,9 +428,7 @@ int		_link_r(reent_t *reent, const char_t *oldpath, const char_t *newpath) {
  * - unlink - Delete a name and possibly the file it refers to
  *
  */
-int		_unlink_r(reent_t *reent, const char_t *pathname) {
-
-	UNUSED(pathname);
+int		_unlink_r(reent_t *reent, [[maybe_unused]] const char_t *pathname) {
 
 	reent->_errno = EMLINK;
 	return (-1);
@@ -468,12 +440,7 @@ int		_unlink_r(reent_t *reent, const char_t *pathname) {
  * - lseek - Reposition read/write file offset
  *
  */
-off_t	_lseek_r(reent_t *reent, int filedes, off_t offset, int whence) {
-
-	UNUSED(reent);
-	UNUSED(filedes);
-	UNUSED(offset);
-	UNUSED(whence);
+off_t	_lseek_r([[maybe_unused]] reent_t *reent, [[maybe_unused]] int filedes, [[maybe_unused]] off_t offset, [[maybe_unused]] int whence) {
 
 	return (0);
 }
@@ -484,12 +451,10 @@ off_t	_lseek_r(reent_t *reent, int filedes, off_t offset, int whence) {
  * - getpid - Get the process ID
  *
  */
-int		_getpid_r(reent_t *reent) {
+int		_getpid_r([[maybe_unused]] reent_t *reent) {
 	int			id;
 	uint32_t	core;
 	proc_t		*process;
-
-	UNUSED(reent);
 
 	core = GET_RUNNING_CORE;
 
@@ -504,12 +469,9 @@ int		_getpid_r(reent_t *reent) {
  * - kill - Send signal to a process
  *
  */
-int		_kill_r(reent_t *reent, int pid, int sig) {
+int		_kill_r([[maybe_unused]] reent_t *reent, int pid, [[maybe_unused]] int sig) {
 	proc_t		*process;
 	uint32_t	core;
-
-	UNUSED(reent);
-	UNUSED(sig);
 
 	core = GET_RUNNING_CORE;
 
@@ -540,9 +502,7 @@ void	_exit(int number) {
  * - sbrk - Change data segment size
  *
  */
-void	*_sbrk_r(reent_t *reent, ptrdiff_t increment) {
-
-	UNUSED(increment);
+void	*_sbrk_r(reent_t *reent, [[maybe_unused]] ptrdiff_t increment) {
 
 	reent->_errno = ENOMEM;
 
@@ -560,8 +520,6 @@ void	*_sbrk_r(reent_t *reent, ptrdiff_t increment) {
 void	*__wrap__malloc_r(reent_t *reent, size_t size) {
 	void	*address;
 
-	UNUSED(reent);
-
 	address = memo_malloc(KMEMO_ALIGN_8, ((uint32_t)size * sizeof(uint8_t)), "__wrap__malloc_r");
 	if (address == nullptr) {
 		reent->_errno = ENOMEM;
@@ -577,9 +535,7 @@ void	*__wrap__malloc_r(reent_t *reent, size_t size) {
  * - free - Release a memory block
  *
  */
-void	__wrap__free_r(reent_t *reent, void *address) {
-
-	UNUSED(reent);
+void	__wrap__free_r([[maybe_unused]] reent_t *reent, void *address) {
 
 	memo_free(address);
 }
@@ -592,8 +548,6 @@ void	__wrap__free_r(reent_t *reent, void *address) {
  */
 void	*__wrap__realloc_r(reent_t *reent, void *address, size_t size) {
 	void	*newAddress;
-
-	UNUSED(reent);
 
 	newAddress = memo_realloc(KMEMO_ALIGN_8, address, (uint32_t)size, "__wrap__realloc_r");
 	if (newAddress == nullptr) {
@@ -612,8 +566,6 @@ void	*__wrap__realloc_r(reent_t *reent, void *address, size_t size) {
  */
 void	*__wrap__calloc_r(reent_t *reent, size_t num, size_t size) {
 	void	*address;
-
-	UNUSED(reent);
 
 	address = memo_malloc(KMEMO_ALIGN_8, ((uint32_t)((num * size) * sizeof(uint8_t))), "__wrap__calloc_r");
 	if (address == nullptr) {

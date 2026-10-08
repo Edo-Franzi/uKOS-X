@@ -152,7 +152,7 @@ extern	void	stub_intr_timer_init(void);
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
+static	void	aProcess([[maybe_unused]] const void *argument) {
 	uintptr_t	counter = 0u, expectedCounter = 0u;
 	int32_t		status;
 	mbox_t		*queue;
@@ -160,8 +160,6 @@ static	void	aProcess(const void *argument) {
 					.oNbMaxPacks = 10u,
 					.oDataEntrySize	= 0u
 				};
-
-	UNUSED(argument);
 
 	#if(defined(ALLOW_HARDWARE_ACCESS_S))
 	LOG(KWARNING_USER, "Direct hardware access permitted");
@@ -223,9 +221,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden[]) = "Process_User";
 	STRG_LOC_CONST(aStrText[]) = "Process user.                             (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

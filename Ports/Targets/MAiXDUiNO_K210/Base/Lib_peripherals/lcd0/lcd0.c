@@ -114,10 +114,8 @@ static	void	local_drawPoint(uint16_t x, uint16_t y, uint16_t color);
  * \return	  	KERR_LCD0_CHBSY	The manager is busy
  *
  */
-int32_t	lcd0_reserve(reserveMode_t reserveMode, uint32_t timeout) {
+int32_t	lcd0_reserve([[maybe_unused]] reserveMode_t reserveMode, uint32_t timeout) {
 	int32_t		status;
-
-	UNUSED(reserveMode);
 
 	status = local_init();
 	if (status != KERR_LCD0_NOERR) { return (status); }
@@ -147,10 +145,8 @@ int32_t	lcd0_reserve(reserveMode_t reserveMode, uint32_t timeout) {
  * \return		KERR_LCD0_CAREL	Cannot release the manager
  *
  */
-int32_t	lcd0_release(reserveMode_t reserveMode) {
+int32_t	lcd0_release([[maybe_unused]] reserveMode_t reserveMode) {
 	int32_t		status;
-
-	UNUSED(reserveMode);
 
 	status = local_init();
 	if (status != KERR_LCD0_NOERR) { return (status); }

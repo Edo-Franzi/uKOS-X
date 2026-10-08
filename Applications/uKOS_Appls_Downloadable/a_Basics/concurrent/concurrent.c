@@ -245,9 +245,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_4[]) = "Process user 4.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_5[]) = "Process user 5.                           (c) EFr-2026";
 
-	UNUSED(argc);
-	UNUSED(argv);
-
 // Specifications for the processes
 
 	PROCESS_STACKMALLOC(

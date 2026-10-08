@@ -89,13 +89,10 @@ extern				spinlock_t	vLockVector;
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 			uint32_t	core;
 			uint8_t		i, first;
 	static	bool		vError[KNB_CORES] = MCSET(false);
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	(void)dprintf(KSYST, "Core tests.\n");

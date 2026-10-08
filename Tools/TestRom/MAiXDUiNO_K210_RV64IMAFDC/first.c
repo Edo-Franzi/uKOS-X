@@ -62,11 +62,7 @@ static	void		local_interruptions(uint32_t core, uint64_t number);
 static	void		local_exception(uint32_t core, uint64_t number, uint64_t message);
 
 [[gnu::naked]]
-void	Reset_Handler(uint32_t core) {
-
-	#if (!defined(__clang__))
-	UNUSED(core);
-	#endif
+void	Reset_Handler([[maybe_unused]] uint32_t core) {
 
 	__asm volatile ("j	local_reset");
 }
@@ -207,11 +203,9 @@ static	void	local_exception(uint32_t core, uint64_t number, uint64_t message) {
  *   PLIC dispatcher
  *
  */
-void	first_handle_MachineExternal(uint32_t core, uint64_t parameter) {
+void	first_handle_MachineExternal(uint32_t core, [[maybe_unused]] uint64_t parameter) {
 	void		(*go)(uint32_t core, uint64_t number);
 	uint64_t	number;
-
-	UNUSED(parameter);
 
 	number = (uint64_t)plic->targets.target[core].claim_complete;
 

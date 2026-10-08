@@ -238,9 +238,8 @@ static	void	model_kernel_setLowPower_C1(uint8_t mode) {
  * - Set the precise timer
  *
  */
-static	void	model_kernel_setPreciseSignal_C1(volatile prcs_t *handle) {
+static	void	model_kernel_setPreciseSignal_C1([[maybe_unused]] volatile prcs_t *handle) {
 
-	UNUSED(handle);
 }
 
 /*
@@ -343,12 +342,7 @@ static	void	local_TIM0_B_IRQHandler_C1(uint32_t core, uint64_t parameter) {
 		void	local_changeContext_PRE_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack);
 
 [[gnu::naked]]
-static	void	local_PREEMPTION_IRQHandler_C1(uint32_t core, uint64_t parameter) {
-
-	#if (!defined(__clang__))
-	UNUSED(core);
-	UNUSED(parameter);
-	#endif
+static	void	local_PREEMPTION_IRQHandler_C1([[maybe_unused]] uint32_t core, [[maybe_unused]] uint64_t parameter) {
 
 	KERN_SAVE_FRAME;
 
@@ -473,12 +467,7 @@ static	void	local_newContextPRE_C1(uint32_t core, uint64_t parameter) {
 		void	local_changeContext_TOU_C1(uint32_t core, uint64_t parameter, uint64_t *threshold, uintptr_t *stack);
 
 [[gnu::naked]]
-static	void	local_TIM2_B_IRQHandler_C1(uint32_t core, uint64_t parameter) {
-
-	#if (!defined(__clang__))
-	UNUSED(core);
-	UNUSED(parameter);
-	#endif
+static	void	local_TIM2_B_IRQHandler_C1([[maybe_unused]] uint32_t core, [[maybe_unused]] uint64_t parameter) {
 
 	KERN_SAVE_FRAME;
 
@@ -605,12 +594,7 @@ static	void	local_newContextTOU_C1(uint32_t core, uint64_t parameter) {
 		void	local_changeContext_MSG_C1(uint32_t core, uint64_t message, uint64_t *threshold, uintptr_t *stack);
 
 [[gnu::naked]]
-static	void	local_ECALL_message_C1(uint32_t core, uint64_t message) {
-
-	#if (!defined(__clang__))
-	UNUSED(core);
-	UNUSED(message);
-	#endif
+static	void	local_ECALL_message_C1([[maybe_unused]] uint32_t core, [[maybe_unused]] uint64_t message) {
 
 	KERN_SAVE_FRAME;
 

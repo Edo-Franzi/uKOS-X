@@ -1,0 +1,178 @@
+From 994a87ef2ffb4e69b774a53a74f3b2a05fc69fea Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Fri, 4 Sep 2026 07:12:40 +0300
+Subject: [PATCH 4/5] Adapt configuration to needs for uKOS-X
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+picolibc: do not use TLS
+
+uKOS-X installs no thread pointer: it links -nostartfiles with its own
+crt0, so picolibc's crt0 - the only caller of _set_tls() - is never
+linked and picolibc's __tls stays zero. Thread-local data would then
+be addressed as tp + offset with tp unset, i.e. a near-null address:
+silently tolerated in machine mode, a fault in user mode. picolibc's
+default derives TLS from "not cc.has_function('__emutls_get_address')",
+which is false for GCC (libgcc ships emutls.o) but true for
+Clang/compiler-rt, so the two C libraries silently diverged. Pin the
+option so both agree; set it to true once a thread pointer exists.
+build: Make macOS package Apple Silicon only
+
+Apple announced deprecation of Intel-based Macs in coming macOS version,
+majority of users moved to Apple Silicon Macs already and it is
+difficult to get hold of Intel-based Macs to test on, so default to
+building Apple Silicon only binaries. Which makes them much smaller as
+well.
+
+Keep the option to build universal binaries from source in place.
+
+build: suppress generating of libdummypackeys.a that is used only in tests
+
+Why libdummypackeys.a exists
+
+It comes from upstream arm-toolchain, not from your scripts. It is only built for the LLVM libc build (-l)
+and only for M-profile PACBTI multilib variants.
+Its purpose (from docs/llvmlibc.md): it overrides the weak _platform_setup_arch_extensions() hook with
+fixed dummy PAC keys so the toolchain's own lit tests can run PAC/BTI code. The docs are explicit that it
+is test-only — "Do not use this library in production builds".
+
+What to change
+
+The minimal edit is in arm-software/embedded/arm-runtimes/CMakeLists.txt — delete the block at 818-821:
+
+  if(VARIANT MATCHES "(^|_)pacret_bti(_|$)")
+      set(enable_dummypackeys ON)
+      list(APPEND llvmlibc_test_link_options -ldummypackeys)
+  endif()
+
+enable_dummypackeys stays OFF from line 796, so llvmlibc-support never builds or installs the library.
+Dropping the -ldummypackeys link option in the same block is what keeps it coherent —
+leaving that flag while removing the library would break the pacret_bti lit tests at link time.
+---
+ arm-software/embedded/CMakeLists.txt          | 12 ++++++----
+ .../embedded/arm-runtimes/CMakeLists.txt      | 23 ++++++++++++++-----
+ 2 files changed, 24 insertions(+), 11 deletions(-)
+
+diff --git a/arm-software/embedded/CMakeLists.txt b/arm-software/embedded/CMakeLists.txt
+index bc63df30e117..dfb096f01e8b 100644
+--- a/arm-software/embedded/CMakeLists.txt
++++ b/arm-software/embedded/CMakeLists.txt
+@@ -151,7 +151,7 @@ set(PARALLEL_LIB_BUILD_LEVELS
+ option(
+     ENABLE_QEMU_TESTING
+     "Enable tests that use QEMU. This option is ON by default."
+-    ON
++    OFF
+ )
+ option(
+     ENABLE_FVP_TESTING
+@@ -172,8 +172,8 @@ set(LLVM_TOOLCHAIN_C_LIBRARY
+ set_property(CACHE LLVM_TOOLCHAIN_C_LIBRARY
+     PROPERTY STRINGS picolibc newlib newlib-nano llvmlibc)
+ 
+-option(LLVM_TOOLCHAIN_ENABLE_PICOLIBC "Enable building picolibc runtime" ON)
+-option(LLVM_TOOLCHAIN_ENABLE_NEWLIB "Enable building newlib runtime" OFF)
++option(LLVM_TOOLCHAIN_ENABLE_PICOLIBC "Enable building picolibc runtime" OFF)
++option(LLVM_TOOLCHAIN_ENABLE_NEWLIB "Enable building newlib runtime" ON)
+ option(LLVM_TOOLCHAIN_ENABLE_NEWLIB_NANO "Enable building newlib-nano runtime" OFF)
+ option(LLVM_TOOLCHAIN_ENABLE_LLVMLIBC "Enable building LLVM libc runtime" OFF)
+ 
+@@ -305,6 +305,8 @@ set(LLVM_DISTRIBUTION_COMPONENTS
+     llvm-strings
+     llvm-strip
+     llvm-symbolizer
++    scan-build
++    clang-tidy
+     LTO
+     CACHE STRING ""
+ )
+@@ -319,7 +321,7 @@ installed by the install-llvm-toolchain target"
+ )
+ set(LLVM_ENABLE_PROJECTS clang;clang-tools-extra;lld CACHE STRING "")
+ set(LLVM_TARGETS_TO_BUILD AArch64;ARM CACHE STRING "")
+-set(LLVM_DEFAULT_TARGET_TRIPLE aarch64-unknown-linux-gnu CACHE STRING "")
++set(LLVM_DEFAULT_TARGET_TRIPLE arm-none-eabi CACHE STRING "")
+ set(LLVM_APPEND_VC_REV OFF CACHE BOOL "")
+ set(LLVM_ENABLE_TERMINFO OFF CACHE BOOL "")
+ set(LLVM_ENABLE_ZSTD OFF CACHE BOOL "")
+@@ -333,7 +335,7 @@ if(NOT CMAKE_BUILD_TYPE)
+     set(CMAKE_BUILD_TYPE Release CACHE BOOL "" FORCE)
+ endif()
+ 
+-set(CMAKE_OSX_ARCHITECTURES arm64;x86_64 CACHE STRING "")
++set(CMAKE_OSX_ARCHITECTURES arm64 CACHE STRING "")
+ 
+ find_package(Python3 REQUIRED COMPONENTS Interpreter)
+ 
+diff --git a/arm-software/embedded/arm-runtimes/CMakeLists.txt b/arm-software/embedded/arm-runtimes/CMakeLists.txt
+index 876b31ab8250..cdc084a57597 100644
+--- a/arm-software/embedded/arm-runtimes/CMakeLists.txt
++++ b/arm-software/embedded/arm-runtimes/CMakeLists.txt
+@@ -509,6 +509,7 @@ if(C_LIBRARY STREQUAL picolibc)
+ 
+     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/meson-cross-build.txt.in ${CMAKE_CURRENT_BINARY_DIR}/meson-cross-build.txt @ONLY)
+ 
++    set(PICOLIBC_OPTIONS -Dmultilib=false -Dio-c99-formats=true -Dio-long-long=true -Dposix-console=true -Dpicocrt=false -Dpicocrt-lib=false -Dtests=false)
+     ExternalProject_Add(
+         picolibc
+         STAMP_DIR ${PROJECT_PREFIX}/picolibc/${VARIANT_BUILD_ID}/stamp
+@@ -524,12 +525,23 @@ if(C_LIBRARY STREQUAL picolibc)
+             -Dincludedir=include
+             -Dlibdir=lib
+             -Dspecsdir=none
++            ${PICOLIBC_OPTIONS}
+             -Dmultilib=false
+             -Ddebug=false
+             -Dtests-enable-stack-protector=false
+             -Dtest-long-double=${enable_picolibc_long_double_test}
+             -Dtest-machine=${TEST_EXECUTOR}
+             -Dtests=false
++            # uKOS-X installs no thread pointer: it links -nostartfiles with its own
++            # crt0, so picolibc's crt0 - the only caller of _set_tls() - is never
++            # linked and picolibc's __tls stays zero. Thread-local data would then
++            # be addressed as tp + offset with tp unset, i.e. a near-null address:
++            # silently tolerated in machine mode, a fault in user mode. picolibc's
++            # default derives TLS from "not cc.has_function('__emutls_get_address')",
++            # which is false for GCC (libgcc ships emutls.o) but true for
++            # Clang/compiler-rt, so the two C libraries silently diverged. Pin the
++            # option so both agree; set it to true once a thread pointer exists.
++            -Dthread-local-storage=false
+             --prefix <INSTALL_DIR>
+             --cross-file ${CMAKE_CURRENT_BINARY_DIR}/meson-cross-build.txt
+             --buildtype=${LIBRARY_MESON_BUILD_TYPE}
+@@ -711,7 +723,10 @@ if(C_LIBRARY MATCHES "^newlib")
+             --disable-nls
+             --enable-lite-exit
+             --disable-multilib
+-            --enable-newlib-retargetable-locking)
++            --enable-newlib-retargetable-locking
++            --enable-newlib-io-float)
++        set(newlib_optim_flags
++            "-O2")
+     endif()
+ 
+     include(${TOOLCHAIN_SOURCE_DIR}/cmake/fetch_newlib.cmake)
+@@ -815,10 +830,6 @@ if(C_LIBRARY STREQUAL llvmlibc)
+     if(NOT target_supports_lock_free_atomics)
+         list(APPEND llvmlibc_test_link_options -latomic-fallback)
+     endif()
+-    if(VARIANT MATCHES "(^|_)pacret_bti(_|$)")
+-        set(enable_dummypackeys ON)
+-        list(APPEND llvmlibc_test_link_options -ldummypackeys)
+-    endif()
+     list(JOIN llvmlibc_test_link_options "," llvmlibc_test_link_options_default)
+ 
+     # libc tests use upstream start.cpp as the bootcode, libcxx tests need crt0
+@@ -1002,7 +1013,7 @@ if(C_LIBRARY STREQUAL llvmlibc)
+             cxxlibs-install
+             llvmlibc-xfail-lit-args
+         )
+-        
++
+         add_dependencies(check-llvmlibc llvmlibc-check-lit)
+     endif()
+ endif()
+-- 
+2.54.0 (Apple Git-157)
+

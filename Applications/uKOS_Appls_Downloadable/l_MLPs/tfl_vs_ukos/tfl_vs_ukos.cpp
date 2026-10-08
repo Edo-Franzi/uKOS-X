@@ -202,8 +202,6 @@ void	RegisterOps(tflite::MicroMutableOpResolver<3> &resolver) {
 #if (defined(RISCV))
 extern "C"	char_t	putchar_(char_t ch) {
 
-	UNUSED(ch);
-
 	return (ch);
 }
 #endif
@@ -231,15 +229,13 @@ void	debuglog(const char *s) {
 namespace {
 
 [[noreturn]]
-void	aProcess_0(const void *argument) {
+void	aProcess_0([[maybe_unused]] const void *argument) {
 	TfLiteTensor	*input;
 	uint64_t		time[2];
 	uint32_t		random[2], delta = 0u;
 	uint32_t		minUkos = 0xFFFFFFFFu, minTFL = 0xFFFFFFFFu;
 	uint32_t		maxUkos = 0u, maxTFL = 0u;
 	float32_t		x, y, gain = 2.0f;
-
-	UNUSED(argument);
 
 	#if (defined(CORTEX))
 	RegisterDebugLogCallback(debuglog);
@@ -329,9 +325,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden_0[]) =    "Process_User";
 	STRG_LOC_CONST(aStrText_0[]) =    "Process user.                             (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Initialise the C++ constructors
 

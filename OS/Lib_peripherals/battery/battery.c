@@ -109,11 +109,9 @@ extern	int32_t		stub_battery_read(batteryInfo_t *infoBattery);
  * \return		KERR_BATTERY_CHBSY	The manager is busy
  *
  */
-int32_t	battery_reserve(reserveMode_t reserveMode, uint32_t timeout) {
+int32_t	battery_reserve([[maybe_unused]] reserveMode_t reserveMode, uint32_t timeout) {
 	int32_t		status;
 	uint32_t	core;
-
-	UNUSED(reserveMode);
 
 	core = GET_RUNNING_CORE;
 
@@ -148,11 +146,9 @@ int32_t	battery_reserve(reserveMode_t reserveMode, uint32_t timeout) {
  * \return		KERR_BATTERY_CAREL	Cannot release the manager
  *
  */
-int32_t	battery_release(reserveMode_t reserveMode) {
+int32_t	battery_release([[maybe_unused]] reserveMode_t reserveMode) {
 	int32_t		status;
 	uint32_t	core;
-
-	UNUSED(reserveMode);
 
 	core = GET_RUNNING_CORE;
 

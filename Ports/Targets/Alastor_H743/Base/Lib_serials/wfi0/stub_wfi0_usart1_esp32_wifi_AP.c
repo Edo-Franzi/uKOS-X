@@ -422,9 +422,7 @@ static	void	local_state_EM(uint8_t data) {
  * - Set the flag vReadyToSend
  *
  */
-static	void	local_state_BG(uint8_t data) {
-
-	UNUSED(data);
+static	void	local_state_BG([[maybe_unused]] uint8_t data) {
 
 	vReadyToSend = true;
 	vState = nullptr;

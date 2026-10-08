@@ -128,11 +128,9 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	int32_t		status;
 	sema_t		*semaphore;
-
-	UNUSED(argument);
 
 	while (kern_getSemaphoreById(KURT0_SEMAPHORE_RX, &semaphore) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
@@ -193,9 +191,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden_0[]) = "Process_User_0";
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

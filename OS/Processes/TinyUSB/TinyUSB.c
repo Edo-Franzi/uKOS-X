@@ -79,7 +79,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "TinyUSB process\n"
 
 #define	KEXECUTION_CORE		(1u<<BCORE_0)
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	TinyUSB,						// Module name (the first letter has to be upper case)
@@ -115,11 +115,8 @@ extern	void	stub_TinyUSB_cyclic(void);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	proc_t	*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	PROCESS_STACKMALLOC(
 		0,									// Index
@@ -148,10 +145,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 [[noreturn]]
-static	void	local_process(const void *argument) {
+static	void	local_process([[maybe_unused]] const void *argument) {
 	uint32_t	core;
-
-	UNUSED(argument);
 
 // Initialise the device stack on configured roothub port
 
@@ -206,9 +201,7 @@ void	tud_umount_cb(void) {
  * - Called when usb bus is suspended
  *
  */
-void	tud_suspend_cb(bool remote_wakeup_en) {
-
-	UNUSED(remote_wakeup_en);
+void	tud_suspend_cb([[maybe_unused]] bool remote_wakeup_en) {
 
 	LOG(KINFO_SYSTEM, "TinyUSB: suspended");
 }

@@ -66,7 +66,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Control the temperature\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	X,									// Module name (the first letter has to be upper case)
@@ -89,16 +89,13 @@ MODULE(
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 			uint32_t	core, sizeRec;
 			int32_t		status;
 			uint16_t	*bufRec, i;
 	static	uint16_t	vTemperature[KNB_CORES][KNB_SAMPLES];
 	static	bool		vInitialised[KNB_CORES] = MCSET(false);
 	static	mbox_t		*vMailBox[KNB_CORES];
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 

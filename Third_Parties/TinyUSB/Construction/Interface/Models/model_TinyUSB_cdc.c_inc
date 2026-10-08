@@ -152,9 +152,7 @@ bool	TinyUSB_cdc_isConnected(uint8_t itf) {
  * - Called when cdc when line state changed e.g connected/disconnected
  *
  */
-void	tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
-
-	UNUSED(rts);
+void	tud_cdc_line_state_cb(uint8_t itf, bool dtr, [[maybe_unused]] bool rts) {
 
 	if (dtr == true) {
 		if (vConnected[itf] == KDISCONNECTED) {
@@ -178,7 +176,6 @@ void	tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
  * - Called when CDC interface received data from host
  *
  */
-void	tud_cdc_rx_cb(uint8_t itf) {
+void	tud_cdc_rx_cb([[maybe_unused]] uint8_t itf) {
 
-	UNUSED(itf);
 }

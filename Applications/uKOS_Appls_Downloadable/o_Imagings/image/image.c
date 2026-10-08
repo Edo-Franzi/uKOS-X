@@ -137,11 +137,9 @@ static	void	local_transfer(void);
  *
  */
 [[noreturn]]
-static	void	aProcess_acquisition(const void *argument) {
+static	void	aProcess_acquisition([[maybe_unused]] const void *argument) {
 	imagerCnf_t	configureIMG0;
 	mutx_t			*mutex;
-
-	UNUSED(argument);
 
 	if (kern_createSemaphore(aStrAcquisition, 0, 1, &vSemaphore_IM) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sema G"); exit(EXIT_OS_FAILURE); }
 
@@ -198,11 +196,9 @@ static	void	aProcess_acquisition(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_send(const void *argument) {
+static	void	aProcess_send([[maybe_unused]] const void *argument) {
 	uint8_t		*imageGray, *imageYUY2;
 	mutx_t		*mutex;
-
-	UNUSED(argument);
 
 	PRIVILEGE_ELEVATE;
 
@@ -254,9 +250,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_acquisition[]) = "Process Acquisition.                      (c) EFr-2026";
 	STRG_LOC_CONST(aStrIden_send[])		   = "Process_Send_Image";
 	STRG_LOC_CONST(aStrText_send[])		   = "Process Send Image.                       (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

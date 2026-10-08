@@ -187,12 +187,10 @@ MODULE(
 extern	float64_t	pi_spigot(float64_t index, float64_t oldPi);
 
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	volatile	float64_t	n = 0.0, pi = 0.0;
 	uint64_t	time[2];
 	uint32_t	delta;
-
-	UNUSED(argument);
 
 	(void)dprintf(KSYST, "\n\n");
 	while (true) {
@@ -221,10 +219,8 @@ static	void	aProcess_0(const void *argument) {
 extern	float64_t	pi_lambert(float64_t index, float64_t oldPi);
 
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	volatile	float64_t	n = 1.0, pi = 0.0;
-
-	UNUSED(argument);
 
 	(void)dprintf(KSYST, "\n\n");
 	while (true) {
@@ -256,9 +252,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

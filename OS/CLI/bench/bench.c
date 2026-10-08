@@ -70,7 +70,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "The CPU cores benches\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	Bench,										// Module name (the first letter has to be upper case)
@@ -100,13 +100,10 @@ extern	bool		bench_05(void);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	int32_t		status = EXIT_OS_SUCCESS_CLI;
 	priority_t	priority;
 	proc_t		*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	PRIVILEGE_ELEVATE;
 

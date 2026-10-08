@@ -342,12 +342,9 @@ STRG_LOC_CONST(aStrText[]) = "Process get_temp: acq. temp   (c) EFr-2026";
  * \brief Main entry point
  *
  */
-static int32_t prgm(uint32_t argc, char_t *argv[]) {
+static int32_t prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] char_t *argv[]) {
     uint32_t    core;
     proc_t      *process;
-
-    UNUSED(argc);
-    UNUSED(argv);
 
     core = GET_RUNNING_CORE;
     vKillRequest[core] = false;
@@ -380,11 +377,8 @@ static int32_t prgm(uint32_t argc, char_t *argv[]) {
  *        - Free all the ressources
  *
  */
-static int32_t temperature_clean(uint32_t argc, const char_t *argv[]) {
+static int32_t temperature_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
     uint32_t    core;
-
-    UNUSED(argc);
-    UNUSED(argv);
 
     core = GET_RUNNING_CORE;
     vKillRequest[core] = true;
@@ -579,16 +573,13 @@ MODULE(
  * \brief Main entry point
  *
  */
-static int32_t prgm(uint32_t argc, char_t *argv[]) {
+static int32_t prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] char_t *argv[]) {
            uint32_t    core, sizeRec;
            int32_t     status;
            uint16_t    *bufRec, i;
     static uint16_t    vTemperature[KNB_CORES][KNB_SAMPLES];
     static bool        vInitialised[KNB_CORES] = MCSET(false);
     static mbox_t      *vMailBox[KNB_CORES];
-
-    UNUSED(argc);
-    UNUSED(argv);
 
     core = GET_RUNNING_CORE;
 

@@ -164,12 +164,10 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 				uint32_t	delta;
 				uint64_t	time[2];
 	volatile	float64_t	n = 0.0, Pi = 0.0;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(100u);
@@ -200,10 +198,8 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	int32_t		a, b, c, d;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(100u);
@@ -234,13 +230,11 @@ static	void	aProcess_1(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_2(const void *argument) {
+static	void	aProcess_2([[maybe_unused]] const void *argument) {
 
 // !!! For big strings, consider to use pointers to accomodate them
 
 	char_t	myBigText[] = "P2: The old dreams were good dreams. They didn't work out, but I'm glad I had them.\n";
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(100u);
@@ -268,9 +262,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrIden_2[]) = "Process_User_2";
 	STRG_LOC_CONST(aStrText_2[]) = "Process user 2.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

@@ -149,9 +149,7 @@ extern	void	stub_intr_io_init(void);
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
-
-	UNUSED(argument);
+static	void	aProcess([[maybe_unused]] const void *argument) {
 
 	#if(defined(ALLOW_HARDWARE_ACCESS_S))
 	LOG(KWARNING_USER, "Direct hardware access permitted");
@@ -188,9 +186,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden[]) = "Process_User_0";
 	STRG_LOC_CONST(aStrText[]) = "Process user 0.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

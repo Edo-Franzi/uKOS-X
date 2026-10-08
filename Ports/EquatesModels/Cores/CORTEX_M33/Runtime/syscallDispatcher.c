@@ -92,9 +92,7 @@ void	SVCall_C1_IRQHandler(void) {
 #endif
 
 [[noreturn]]
-void	syscall(const uintptr_t *arg) {
-
-	UNUSED(arg);
+void	syscall([[maybe_unused]] const uintptr_t *arg) {
 
 	LOG(KFATAL_SYSTEM, "syscallDispatcher: no system call");
 	exit(EXIT_OS_PANIC_NO_SYSCALL);

@@ -68,7 +68,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Launch a function module\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 static	int32_t		pre_init(uint32_t argc, const char_t *argv[]);
 
 extern	uint8_t		linker_stUMemo[];
@@ -142,12 +142,9 @@ static	int32_t prgm(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-static	int32_t pre_init(uint32_t argc, const char_t *argv[]) {
+static	int32_t pre_init([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 			uint8_t		*demoAPSRAM = linker_stUMemo;
 	const	size_t		demoSize	= 0x800000;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	memset(demoAPSRAM, 0, demoSize);
 

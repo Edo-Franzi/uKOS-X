@@ -67,7 +67,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "alive process\n"
 
 #define	KEXECUTION_CORE		((1u<<BCORE_0) | (1u<<BCORE_1) | (1u<<BCORE_2) | (1u<<BCORE_3))
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 static	int32_t		alive_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -149,11 +149,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-static	int32_t	alive_clean(uint32_t argc, const char_t *argv[]) {
+static	int32_t	alive_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;

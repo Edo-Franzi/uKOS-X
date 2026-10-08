@@ -164,7 +164,7 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint32_t	sizeRec;
 	uint8_t		*bufPtr;
 	uint8_t		*bufRec;
@@ -173,8 +173,6 @@ static	void	aProcess_0(const void *argument) {
 					.oNbMaxPacks	= 10u,
 					.oDataEntrySize	= 0u
 				};
-
-	UNUSED(argument);
 
 	sizeRec = 256u;
 	bufPtr  = (uint8_t *)memo_malloc(KMEMO_ALIGN_8, (sizeRec * sizeof(uint8_t)), "basic");
@@ -213,13 +211,11 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	size_t		sizeSnd;
 	uint8_t		*bufSnd;
 	mbox_t		*mailBox;
 	STRG_LOC_CONST(message[]) = "P1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.";
-
-	UNUSED(argument);
 
 // Waiting for the creation of the "Mailbox receive status"
 
@@ -259,13 +255,11 @@ static	void	aProcess_1(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_2(const void *argument) {
+static	void	aProcess_2([[maybe_unused]] const void *argument) {
 	size_t		sizeSnd;
 	uint8_t		*bufSnd;
 	mbox_t		*mailBox;
 	STRG_LOC_CONST(message[]) = "P2: The quick brown fox jumps over the lazy dog.";
-
-	UNUSED(argument);
 
 // Waiting for the creation of the "Mailbox receive status"
 
@@ -306,13 +300,11 @@ static	void	aProcess_2(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_3(const void *argument) {
+static	void	aProcess_3([[maybe_unused]] const void *argument) {
 	size_t		sizeSnd;
 	uint8_t		*bufSnd;
 	mbox_t		*mailBox;
 	STRG_LOC_CONST(message[]) = "P3: I didn't know he was dead...I thought he was British. (Woody Allen).";
-
-	UNUSED(argument);
 
 // Waiting for the creation of the "Mailbox receive status"
 
@@ -365,9 +357,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_2[]) = "Process user 2.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_3[]) = "Process user 3.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

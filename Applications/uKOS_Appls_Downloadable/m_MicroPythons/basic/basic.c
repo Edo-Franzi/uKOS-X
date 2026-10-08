@@ -141,9 +141,7 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
-
-	UNUSED(argument);
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(1000u);
@@ -161,7 +159,7 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 			uint32_t			size;
 			uint8_t				*memory;
 			microPythonCnf_t	configure;
@@ -172,8 +170,6 @@ static	void	aProcess_1(const void *argument) {
 
 							 				  "	switch.mode(mode)\n"
 							 				  "	return mode\n";
-
-	UNUSED(argument);
 
 // Try to reserve the MPY memory segment
 
@@ -219,9 +215,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

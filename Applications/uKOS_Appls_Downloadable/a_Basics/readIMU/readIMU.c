@@ -168,9 +168,7 @@ static	void	local_display(int32_t fpPrint,
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
-
-	UNUSED(argument);
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(1000u);
@@ -188,7 +186,7 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 					float64_t			mAcce_X, mAcce_Y, mAcce_Z;
 					float64_t			mGyro_X, mGyro_Y, mGyro_Z;
 					float64_t			mMagn_X, mMagn_Y, mMagn_Z;
@@ -200,8 +198,6 @@ static	void	aProcess_1(const void *argument) {
 											.oGyroMode = KIMU_MAX_2000DPS,
 											.oMagnMode = KIMU_MAX_8GAUSS
 										};
-
-	UNUSED(argument);
 
 // Open and reserve a comm channel for write operations
 
@@ -244,9 +240,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

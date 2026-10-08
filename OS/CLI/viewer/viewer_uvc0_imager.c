@@ -94,12 +94,9 @@ static	void	aProcess_acquisition(const void *argument);
  * - Kill the "main". At this moment only the launched processes are executed
  *
  */
-int32_t	viewer_uvc0(uint32_t argc, const char_t *argv[]) {
+int32_t	viewer_uvc0([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
 	proc_t		*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = false;
@@ -132,11 +129,8 @@ int32_t	viewer_uvc0(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-int32_t	viewer_uvc0_clean(uint32_t argc, const char_t *argv[]) {
+int32_t	viewer_uvc0_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;

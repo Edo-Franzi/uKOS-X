@@ -173,9 +173,7 @@ This is crucial when **multiple processes** share the **same serial communicatio
  *   Print a string
  */
 [[noreturn]]
-static void process_0(const void *argument) {
-
-    UNUSED(argument);
+static void process_0([[maybe_unused]] const void *argument) {
 
     while (true) {
         kern_suspendProcess(1000u);
@@ -194,9 +192,7 @@ static void process_0(const void *argument) {
  *   Print a string
  */
 [[noreturn]]
-static void process_1(const void *argument) {
-
-    UNUSED(argument);
+static void process_1([[maybe_unused]] const void *argument) {
 
     while (true) {
         kern_suspendProcess(879u);
@@ -643,13 +639,11 @@ MODULE(
  *
  */
 [[noreturn]]
-static void aProcess_0(const void *argument) {
+static void aProcess_0([[maybe_unused]] const void *argument) {
     float32_t    x, y, result, gain = 2.0f;
     uint64_t     time[2];
     uint32_t     delta = 0u;
     char_t       *winner;
-
-    UNUSED(argument);
 
     mlpn_configure(&aNetwork);
 

@@ -168,11 +168,9 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint8_t		mSeconds = 0u;
 	sign_t		*group;
-
-	UNUSED(argument);
 
 	if (kern_createSignalGroup("Calendar", &group) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sigr"); exit(EXIT_OS_FAILURE); }
 
@@ -194,14 +192,12 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	uint64_t	unixTime;
 	time_t		now;
 	tm_t		localTime;
 	uint32_t	signal;
 	sign_t		*group;
-
-	UNUSED(argument);
 
 // Get the synchro handles
 
@@ -234,10 +230,8 @@ static	void	aProcess_1(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_2(const void *argument) {
+static	void	aProcess_2([[maybe_unused]] const void *argument) {
 	sign_t	*group;
-
-	UNUSED(argument);
 
 	while (kern_getSignalGroupById("Calendar", &group) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
@@ -266,9 +260,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrText_0[]) = "Process Synchro.                          (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_2[]) = "Process Alarm.                            (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

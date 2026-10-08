@@ -146,10 +146,8 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	int32_t		cpt = 0u;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(P0_PERIOD);
@@ -167,10 +165,8 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	int32_t		cpt = 0u;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(P1_PERIOD);
@@ -196,9 +192,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

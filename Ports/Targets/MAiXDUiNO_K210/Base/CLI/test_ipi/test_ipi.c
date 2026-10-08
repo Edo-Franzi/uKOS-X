@@ -150,11 +150,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  * - Initialise the interruption vector
  *
  */
-static	int32_t	test_ipi_pre_init(uint32_t argc, const char_t *argv[]) {
+static	int32_t	test_ipi_pre_init([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 
@@ -171,9 +168,7 @@ static	int32_t	test_ipi_pre_init(uint32_t argc, const char_t *argv[]) {
  * - Increment a counter
  *
  */
-static	void	local_machineSoftware_IRQHandler(uint32_t core, uint64_t parameter) {
-
-	UNUSED(parameter);
+static	void	local_machineSoftware_IRQHandler(uint32_t core, [[maybe_unused]] uint64_t parameter) {
 
 	clint->msip[core].msip = 0u;
 	vCounter[core]++;

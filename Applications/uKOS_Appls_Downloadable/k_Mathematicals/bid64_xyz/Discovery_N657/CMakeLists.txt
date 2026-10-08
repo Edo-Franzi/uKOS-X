@@ -67,7 +67,7 @@ set(SOC STM32N657)
 set(CORE CORTEX_M55)
 
 # Target
-set(BOARD Nucleo_N657)
+set(BOARD Discovery_N657)
 set(VARIANT Variant_Test)
 
 # Extra compilation options

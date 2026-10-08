@@ -166,12 +166,10 @@ MODULE(
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint16_t	x;
 	uint32_t	random;
 	float64_t	y;
-
-	UNUSED(argument);
 
 // Wait a bit (to allow to switch CoolTerm2 in the right mode)
 
@@ -209,9 +207,6 @@ static	void	aProcess_0(const void *argument) {
  */
 MAIN_ENTRY(argc, argv[]) {
 	proc_t	*process_0;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

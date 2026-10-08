@@ -131,8 +131,6 @@ void	test_01(void) {
 static	void	local_RTC_IRQHandler(void) {
 	static	uint8_t		state = 0;
 
-	UNUSED(number);
-
 	RTC->CTL &= ~RTC_CTL_SCIF;
 
 	switch (state) {

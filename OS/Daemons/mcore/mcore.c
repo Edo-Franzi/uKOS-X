@@ -67,7 +67,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "mcore process\n"
 
 #define	KEXECUTION_CORE		((1u<<BCORE_0) | (1u<<BCORE_1) | (1u<<BCORE_2) | (1u<<BCORE_3))
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	Mcore,							// Module name (the first letter has to be upper case)
@@ -100,12 +100,9 @@ static	void	local_process_RecX(const void *argument);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
 	proc_t		*process_SndX, *process_RecX;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 
@@ -160,7 +157,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 [[noreturn]]
-static	void	local_process_SndX(const void *argument) {
+static	void	local_process_SndX([[maybe_unused]] const void *argument) {
 			uint32_t	core, toCore, size, order = 0u;
 			uint8_t		*receive = nullptr, *send = nullptr;
 			mbox_t		*mailBox;
@@ -170,8 +167,6 @@ static	void	local_process_SndX(const void *argument) {
 							.oDataEntrySize	= KASMP_MBOX_ENTRY_SIZE
 						};
 	const	char_t		*idSendMbox;
-
-	UNUSED(argument);
 
 // If the running core is the core 0
 //	- The message is for the core 1 via the mailbox 1
@@ -241,7 +236,7 @@ static	void	local_process_SndX(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	local_process_RecX(const void *argument) {
+static	void	local_process_RecX([[maybe_unused]] const void *argument) {
 			uint32_t	core, fromCore, size, order;
 			uint8_t		*receive = nullptr, *send = nullptr;
 			mbox_t		*mailBox;
@@ -251,8 +246,6 @@ static	void	local_process_RecX(const void *argument) {
 							.oDataEntrySize	= KASMP_MBOX_ENTRY_SIZE
 						};
 	const	char_t		*idReceiveMbox;
-
-	UNUSED(argument);
 
 // If the running core is the core 0
 //	- The message is coming from the core 1 via the mailbox 1

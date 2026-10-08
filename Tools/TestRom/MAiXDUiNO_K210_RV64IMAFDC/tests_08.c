@@ -275,9 +275,7 @@ void	test_08(void) {
  * - Blink the Red 1 Led
  *
  */
-void	process_0(uintptr_t *argument) {
-
-	UNUSED(argument);
+void	process_0([[maybe_unused]] uintptr_t *argument) {
 
 	cmns_send(KURT0, "Enter P0\n");
 
@@ -297,10 +295,8 @@ void	process_0(uintptr_t *argument) {
  * - Blink the Green 1 Led
  *
  */
-void	process_1(uintptr_t *argument) {
+void	process_1([[maybe_unused]] uintptr_t *argument) {
 	uint32_t	message = KMSGRUNP0;
-
-	UNUSED(argument);
 
 	cmns_send(KURT0, "Enter P1\n");
 

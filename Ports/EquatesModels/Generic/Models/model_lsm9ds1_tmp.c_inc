@@ -87,9 +87,7 @@ int32_t	model_lsM9ds1tmp_read(float64_t *temperature) {
  * - Set the temperature
  *
  */
-int32_t	model_lsM9ds1tmp_write(float64_t temperature) {
-
-	UNUSED(temperature);
+int32_t	model_lsM9ds1tmp_write([[maybe_unused]] float64_t temperature) {
 
 	return (KERR_TEMPERATURE_SYCNA);
 }

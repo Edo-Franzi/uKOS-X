@@ -89,7 +89,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Motorola S1-9, S2-8, S3-7 loader\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	Sloader,									// Module name (the first letter has to be upper case)
@@ -138,15 +138,13 @@ static	bool		local_isApplication(int32_t (*code)(uint32_t argc, const char_t *ar
  *
  */
 static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
-	char_t			*dummy;
-	uint8_t			*address = nullptr, byte = 0u, checksum, counter;
-	int32_t			status, error = KERR_S_LOADER_NOT, (*code)(uint32_t argc, const char_t *argv[]);
-	bool			terminate = false, equals;
-	uint8_t			run = KRUN;
-	uint32_t		size = 0u;
-	uKOS_header_t	ramHeader;
-
-	UNUSED(dummy);
+						uint8_t			*address = nullptr, byte = 0u, checksum, counter;
+						int32_t			status, error = KERR_S_LOADER_NOT, (*code)(uint32_t argc, const char_t *argv[]);
+						bool			terminate = false, equals;
+						uint8_t			run = KRUN;
+						uint32_t		size = 0u;
+						uKOS_header_t	ramHeader;
+	[[maybe_unused]]	char_t			*dummy;
 
 	(void)dprintf(KSYST, "S format Motorola loader mode; waiting for the code.\n");
 

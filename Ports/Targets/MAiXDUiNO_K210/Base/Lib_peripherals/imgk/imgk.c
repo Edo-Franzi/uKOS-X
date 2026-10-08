@@ -305,10 +305,8 @@ static	void	local_initOV2640(const cnfImgk_t *configure);
  * \return	  	KERR_IMGK_CHBSY	The manager is busy
  *
  */
-int32_t	imgk_reserve(reserveMode_t reserveMode, uint32_t timeout) {
+int32_t	imgk_reserve([[maybe_unused]] reserveMode_t reserveMode, uint32_t timeout) {
 	int32_t		status;
-
-	UNUSED(reserveMode);
 
 	status = local_init();
 	if (status != KERR_IMGK_NOERR) { return (status); }
@@ -337,10 +335,8 @@ int32_t	imgk_reserve(reserveMode_t reserveMode, uint32_t timeout) {
  * \return		KERR_IMGK_CAREL	Cannot release the manager
  *
  */
-int32_t	imgk_release(reserveMode_t reserveMode) {
+int32_t	imgk_release([[maybe_unused]] reserveMode_t reserveMode) {
 	int32_t		status;
-
-	UNUSED(reserveMode);
 
 	status = local_init();
 	if (status != KERR_IMGK_NOERR) { return (status); }
@@ -411,11 +407,9 @@ int32_t	imgk_release(reserveMode_t reserveMode) {
  * \return		KERR_IMGK_NOMEM	Not enough memory
  *
  */
-int32_t	imgk_configure(const cnfImgk_t *configure) {
+int32_t	imgk_configure([[maybe_unused]] const cnfImgk_t *configure) {
 	uint32_t	current;
 	int32_t		status = KERR_IMGK_NOERR;
-
-	UNUSED(configure);
 
 	status = local_init();
 	if (status != KERR_IMGK_NOERR) { return (status); }
@@ -588,11 +582,9 @@ static	int32_t	local_init(void) {
  * - Initialise the clock rate
  *
  */
-static	void	local_initCKRate(const cnfImgk_t *configure) {
+static	void	local_initCKRate([[maybe_unused]] const cnfImgk_t *configure) {
 	uint32_t	period;
 	uint32_t	current;
-
-	UNUSED(configure);
 
 // Clock devided by 16, and clock enable
 
@@ -642,10 +634,8 @@ static	void	local_initCKRate(const cnfImgk_t *configure) {
  * - Initialise the image forrmats
  *
  */
-static	void	local_initImages(const cnfImgk_t *configure) {
+static	void	local_initImages([[maybe_unused]] const cnfImgk_t *configure) {
 	uint32_t	current;
-
-	UNUSED(configure);
 
 // Set the format
 
@@ -683,10 +673,8 @@ static	void	local_sendData(uint8_t address, uint16_t location, uint8_t data) {
 	while ((dvp->sts & DVP_STS_SCCB_EN) != 0u) { kern_suspendProcess(1u); }
 }
 
-static	void	local_initOV2640(const cnfImgk_t *configure) {
+static	void	local_initOV2640([[maybe_unused]] const cnfImgk_t *configure) {
 	uint16_t	i;
-
-	UNUSED(configure);
 
 	for (i = 0u; i < (uint16_t)KNBCNF; i++) {
 		local_sendData(KOV2640A, aOV2640_Cnf[i].oRegNumber, aOV2640_Cnf[i].oValue);

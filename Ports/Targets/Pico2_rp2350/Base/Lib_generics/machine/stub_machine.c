@@ -145,9 +145,7 @@ int32_t	stub_machine_readPC(const uintptr_t *stackProcess, uintptr_t *pc) {
  * - Return the function name that belong to a given PC
  *
  */
-int32_t	stub_machine_readFunctionName(const uintptr_t pc, const char_t **function) {
-
-	UNUSED(pc);
+int32_t	stub_machine_readFunctionName([[maybe_unused]]const uintptr_t pc, const char_t **function) {
 
 	#if (!defined(__clang__))
 			intptr_t	offset, nameLen;

@@ -127,13 +127,11 @@ static	void	local_prepareImage(uint8_t *image, uint32_t w, uint32_t h, uint32_t 
  *
  */
 [[noreturn]]
-static	void	aProcess(const void *argument) {
+static	void	aProcess([[maybe_unused]] const void *argument) {
 			uint32_t	w, h, frame = 0;
 			uint8_t		*image_0, *image_1;
 			float64_t	frameRate = 0.0;
 	static	uint64_t	vTime[2];
-
-	UNUSED(argument);
 
 	PRIVILEGE_ELEVATE;
 
@@ -183,9 +181,6 @@ MAIN_ENTRY(argc, argv[]) {
 
 	STRG_LOC_CONST(aStrIden[]) = "Process_User";
 	STRG_LOC_CONST(aStrText[]) = "Process user.                             (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

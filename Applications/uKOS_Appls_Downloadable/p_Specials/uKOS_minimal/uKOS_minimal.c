@@ -171,9 +171,6 @@ MAIN_ENTRY(argc, argv[]) {
 				.oArgument	  = nullptr
 			};
 
-	UNUSED(argc);
-	UNUSED(argv);
-
 // Create the "dispatcher" queue
 // Create the software timer
 // Launch the processes
@@ -197,10 +194,8 @@ MAIN_ENTRY(argc, argv[]) {
  * - 8 x blinks and long pause
  *
  */
-static	void	local_changeStateLed(const void *argument) {
+static	void	local_changeStateLed([[maybe_unused]] const void *argument) {
 	static	uint8_t		vCptBlink = 0u;
-
-	UNUSED(argument);
 
 	((vCptBlink & 0x1Fu) > 8u) ? (led_off(KLED_1)) : (led_toggle(KLED_1));
 	vCptBlink++;

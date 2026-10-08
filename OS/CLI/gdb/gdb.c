@@ -67,7 +67,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "gdb\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	Gdb,										// Module name (the first letter has to be upper case)
@@ -97,11 +97,8 @@ static	void	local_process(const void *argument);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	proc_t	*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	(void)dprintf(KSYST, "Freeze the uKernel.\n");
 
@@ -131,9 +128,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 [[noreturn]]
-static	void	local_process(const void *argument) {
-
-	UNUSED(argument);
+static	void	local_process([[maybe_unused]] const void *argument) {
 
 	(void)dprintf(KSYST, "\n\nOn the host open 2 terminal tabs:\n"
 				   "(example for cortex based cpus)\n\n"

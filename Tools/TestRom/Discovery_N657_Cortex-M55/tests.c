@@ -78,24 +78,18 @@ volatile	bool	vPriv_insideException[KNB_CORES] = MCSET(false);
 
 #if 0
 [[noreturn]]
-void	model_coreDump_displayExceptions(uintptr_t lr, uintptr_t *msp) {
+void	model_coreDump_displayExceptions([[maybe_unused]] uintptr_t lr, [[maybe_unused]] uintptr_t *msp) {
 
 	LED_RED_ON;
-
-	UNUSED(lr);
-	UNUSED(msp);
 
 	while (true) { ; }
 }
 #endif
 
 [[noreturn]]
-void	model_coreDump_displayInterruptions(uintptr_t lr, uintptr_t *msp) {
+void	model_coreDump_displayInterruptions([[maybe_unused]] uintptr_t lr, [[maybe_unused]] uintptr_t *msp) {
 
 	LED_RED_ON;
-
-	UNUSED(lr);
-	UNUSED(msp);
 
 	while (true) { ; }
 }

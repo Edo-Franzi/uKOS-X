@@ -167,11 +167,9 @@ static	volatile	bool		vEnd = false;
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint64_t	counter, time;
 	sign_t		*group;
-
-	UNUSED(argument);
 
 	if (kern_createSignalGroup("Synchro", &group) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); exit(EXIT_OS_FAILURE); }
 
@@ -217,11 +215,9 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	uint32_t	signal;
 	sign_t		*group;
-
-	UNUSED(argument);
 
 	while (kern_getSignalGroupById("Synchro", &group) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
 
@@ -251,9 +247,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_0[]) = "Process_Synchro.                          (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

@@ -69,7 +69,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "cycle\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 static	int32_t		cycle_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -148,9 +148,6 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 			cyclePack_t			pack;
 			bool				stop = false, releasePack = false;
 	const	uKOS_module_t		*module = nullptr;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = false;
@@ -311,11 +308,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-static	int32_t	cycle_clean(uint32_t argc, const char_t *argv[]) {
+static	int32_t	cycle_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;

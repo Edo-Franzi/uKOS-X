@@ -83,7 +83,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Give the uKernel memory footprint\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	Szkern,										// Module name (the first letter has to be upper case)
@@ -113,13 +113,10 @@ MODULE(
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint16_t	nbDeamons = 2u;
 	int32_t		szTEXT, szRODATA, szDATA, szBSS;
 	float64_t	szTEXTf, szRODATAf, szDATAf, szBSSf;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	#if (KKERN_WITH_STATISTICS_S == true)
 	nbDeamons += 1u;

@@ -168,9 +168,7 @@ static	float64_t	local_atan2(int32_t y, int32_t x);
  *
  */
 [[noreturn]]
-static	void	aProcess_0(const void *argument) {
-
-	UNUSED(argument);
+static	void	aProcess_0([[maybe_unused]] const void *argument) {
 
 	while (true) {
 		kern_suspendProcess(1000u);
@@ -186,12 +184,10 @@ static	void	aProcess_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	aProcess_1(const void *argument) {
+static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	uint64_t	time[2];
 	uint32_t	delta = 0;
 	float64_t	angle;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(200u);
@@ -289,9 +285,6 @@ MAIN_ENTRY(argc, argv[]) {
 	STRG_LOC_CONST(aStrIden_1[]) = "Process_User_1";
 	STRG_LOC_CONST(aStrText_0[]) = "Process user 0.                           (c) EFr-2026";
 	STRG_LOC_CONST(aStrText_1[]) = "Process user 1.                           (c) EFr-2026";
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 // Specifications for the processes
 

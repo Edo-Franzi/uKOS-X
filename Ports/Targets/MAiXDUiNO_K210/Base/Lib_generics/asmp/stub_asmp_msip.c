@@ -281,11 +281,9 @@ static	void	local_initInterCore(uint32_t core) {
  * - Channel management
  *
  */
-static	void	local_machineSoftware_IRQHandler(uint32_t core, uint64_t number) {
+static	void	local_machineSoftware_IRQHandler(uint32_t core, [[maybe_unused]] uint64_t number) {
 			sema_t		*semaphore_RX, *semaphore_TX;
 	const	char_t		*identifier_RX, *identifier_TX;
-
-	UNUSED(number);
 
 	identifier_RX = (core == KCORE_0) ? (KASMP_SEMA_RX_CORE_0_FULL)  : (KASMP_SEMA_RX_CORE_1_FULL);
 	identifier_TX = (core == KCORE_0) ? (KASMP_SEMA_TX_CORE_0_EMPTY) : (KASMP_SEMA_TX_CORE_1_EMPTY);

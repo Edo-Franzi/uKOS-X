@@ -1,0 +1,91 @@
+From 420b90606c03123c976b342624c8e3628f94fd74 Mon Sep 17 00:00:00 2001
+From: Laur59 <148864407+Laur59@users.noreply.github.com>
+Date: Sun, 23 Aug 2026 23:18:43 +0300
+Subject: [PATCH 2/5] newlib, llvm-libc: use microsecond also for 32-bit Arm
+ cores
+
+Baremetal LLVM libc defaults CLOCKS_PER_SEC to 100 on Arm, matching the
+centiseconds that an Arm semihosting SYS_CLOCK time source would return.
+
+uKOS-X never uses that default: it drives clock() from its own 64-bit
+kernel counter with a 1-us resolution. A centisecond clock_t would also
+disagree with _CLOCKS_PER_SEC_ and with the newlib and picolibc builds,
+so 32-bit Arm is moved to the microsecond branch. This mirrors the
+newlib patch 0002-Patch-time.h-for-uKOS.patch, which does the same to
+newlib/libc/include/machine/time.h.
+
+Patching the header rather than passing -D__CLK_TCK=1000000 from the
+uKOS-X build also fixes libc.a itself: libc/src/time/baremetal/clock.cpp
+is compiled against this header (through hdr/time_macros.h in a full
+build), so the library and the application agree on the unit.
+
+AArch64 keeps the semihosting default; uKOS-X has no AArch64 port.
+
+Add patch so that newlib uses also microsecond for Arm processor
+---
+ .../newlib/0002-Patch-time.h-for-uKOS.patch   | 28 +++++++++++++++++++
+ .../llvm-libc-macros/baremetal/time-macros.h  |  8 ++++--
+ 2 files changed, 34 insertions(+), 2 deletions(-)
+ create mode 100644 arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch
+
+diff --git a/arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch b/arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch
+new file mode 100644
+index 000000000000..1a97b0049f02
+--- /dev/null
++++ b/arm-software/embedded/patches/newlib/0002-Patch-time.h-for-uKOS.patch
+@@ -0,0 +1,28 @@
++From 24556284f6bac3cb00a3099bf60389a34d94079c Mon Sep 17 00:00:00 2001
++From: Laur59 <148864407+Laur59@users.noreply.github.com>
++Date: Thu, 27 Mar 2025 13:44:52 +0200
++Subject: [PATCH 2/2] Patch time.h for uKOS
++
++---
++ newlib/libc/include/machine/time.h | 4 ++--
++ 1 file changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/newlib/libc/include/machine/time.h b/newlib/libc/include/machine/time.h
++index c75edafa7..deb35d845 100644
++--- a/newlib/libc/include/machine/time.h
+++++ b/newlib/libc/include/machine/time.h
++@@ -1,9 +1,9 @@
++ #ifndef	_MACHTIME_H_
++ #define	_MACHTIME_H_
++ 
++-#if defined(__rtems__) || defined(__VISIUM__) || defined(__riscv)
+++#if defined(__rtems__) || defined(__VISIUM__) || defined(__riscv) || defined(__arm__)
++ #define _CLOCKS_PER_SEC_ 1000000
++-#elif defined(__aarch64__) || defined(__arm__) || defined(__thumb__)
+++#elif defined(__aarch64__) || defined(__thumb__)
++ #define _CLOCKS_PER_SEC_ 100
++ #endif
++ 
++-- 
++2.39.5 (Apple Git-154)
++
+diff --git a/libc/include/llvm-libc-macros/baremetal/time-macros.h b/libc/include/llvm-libc-macros/baremetal/time-macros.h
+index 3537376c4bca..8065f585fd51 100644
+--- a/libc/include/llvm-libc-macros/baremetal/time-macros.h
++++ b/libc/include/llvm-libc-macros/baremetal/time-macros.h
+@@ -12,13 +12,17 @@
+ #ifdef __CLK_TCK
+ #define CLOCKS_PER_SEC __CLK_TCK
+ #else
+-#if defined(__arm__) || defined(_M_ARM) || defined(__aarch64__) ||             \
+-    defined(__arm64__) || defined(_M_ARM64)
++#if defined(__aarch64__) || defined(__arm64__) || defined(_M_ARM64)
+ // This default implementation of this function shall use semihosting
+ // Semihosting measures time in centiseconds
+ // https://github.com/ARM-software/abi-aa/blob/main/semihosting/semihosting.rst#sys-clock-0x10
+ #define CLOCKS_PER_SEC 100
+ #else
++// uKOS-X: 32-bit Arm counts microseconds, like every other non-AArch64 target.
++// uKOS-X supplies its own clock() from a 1-us kernel counter and never uses the
++// semihosting default; a centisecond clock_t would also disagree with
++// _CLOCKS_PER_SEC_ and with the newlib and picolibc builds (see the newlib
++// machine/time.h patch).
+ #define CLOCKS_PER_SEC 1000000
+ #endif
+ #endif
+-- 
+2.54.0 (Apple Git-157)
+

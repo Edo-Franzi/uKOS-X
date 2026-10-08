@@ -118,11 +118,8 @@ static	void	local_process_4(const void *argument);
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	proc_t	*process_0, *process_1, *process_2, *process_3, *process_4;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	(void)dprintf(KSYST, "LCD tests.\n");
 
@@ -201,7 +198,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *
  */
 [[noreturn]]
-static	void	local_process_0(const void *argument) {
+static	void	local_process_0([[maybe_unused]] const void *argument) {
 
 // Window position
 
@@ -218,8 +215,6 @@ static	void	local_process_0(const void *argument) {
 	const	char_t		strg1[] = "nous sommes toujours";
 	const	char_t		strg2[] = "vainqueurs ... nous sommes ";
 	const	char_t		strg3[] = "les petits Schtroumpfs.";
-
-	UNUSED(argument);
 
 	RESERVE(LCD0, KMODE_READ_WRITE);
 	lcd0_setDirection(KDIR_XY_LRDU);
@@ -263,7 +258,7 @@ static	void	local_process_0(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	local_process_1(const void *argument) {
+static	void	local_process_1([[maybe_unused]] const void *argument) {
 
 // Window position
 
@@ -274,8 +269,6 @@ static	void	local_process_1(const void *argument) {
 
 	uint16_t	x, y, color;
 	uint32_t	value;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(10u);
@@ -298,7 +291,7 @@ static	void	local_process_1(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	local_process_2(const void *argument) {
+static	void	local_process_2([[maybe_unused]] const void *argument) {
 
 // Window position
 
@@ -311,8 +304,6 @@ static	void	local_process_2(const void *argument) {
 			uint16_t	x, y, result, oldResult = 0xFFu;
 			uint16_t	color_0 = 0u, color_1 = 0u, color_2 = 0u, color_3 = 0u, color_4 = 0u;
 	static	uint16_t	vImage[KNB_CORES][KW2_DX * KW2_DY];
-
-	UNUSED(argument);
 
 	core = GET_RUNNING_CORE;
 
@@ -357,7 +348,7 @@ static	void	local_process_2(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	local_process_3(const void *argument) {
+static	void	local_process_3([[maybe_unused]] const void *argument) {
 
 	#define	KW3_X0		60u
 	#define	KW3_Y0		20u
@@ -385,8 +376,6 @@ static	void	local_process_3(const void *argument) {
 									{ "  1                                                                                                                          " },
 									{ " 1                                                                                                                           " }
 								};
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(1000u);
@@ -433,11 +422,9 @@ static	void	local_process_3(const void *argument) {
  *
  */
 [[noreturn]]
-static	void	local_process_4(const void *argument) {
+static	void	local_process_4([[maybe_unused]] const void *argument) {
 	uint16_t	color;
 	uint32_t	value;
-
-	UNUSED(argument);
 
 	while (true) {
 		kern_suspendProcess(60000u);

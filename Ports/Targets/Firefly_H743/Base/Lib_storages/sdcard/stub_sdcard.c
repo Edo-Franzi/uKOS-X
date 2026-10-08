@@ -78,9 +78,7 @@ enum {
  *   - Initialise
  *
  */
-static	void	cb_control(uint8_t mode) {
-
-	UNUSED(mode);
+static	void	cb_control([[maybe_unused]] uint8_t mode) {
 
 	RCC->AHB3ENR |= RCC_AHB3ENR_SDMMC1EN;
 }

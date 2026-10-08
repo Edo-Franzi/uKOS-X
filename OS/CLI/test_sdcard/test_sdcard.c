@@ -65,7 +65,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "sdcard R/W tests\n"
 
 									"Module built on "__DATE__"  "__TIME__" (c) EFr-2026\n\n";
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 static	int32_t		test_sdcard_clean(uint32_t argc, const char_t *argv[]);
 
 MODULE(
@@ -109,13 +109,10 @@ static	void	local_error(uint8_t error, int32_t status, uint32_t sector, uint8_t 
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
 	int32_t		status;
 	proc_t		*process;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = false;
@@ -148,11 +145,8 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
  *		- Free all the ressources
  *
  */
-static	int32_t	test_sdcard_clean(uint32_t argc, const char_t *argv[]) {
+static	int32_t	test_sdcard_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	core;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	core = GET_RUNNING_CORE;
 	vKillRequest[core] = true;

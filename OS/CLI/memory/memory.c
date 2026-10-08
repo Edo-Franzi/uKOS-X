@@ -97,7 +97,7 @@ STRG_LOC_CONST(aStrHelp[])		  = "Give the memory information\n"
 
 #endif
 
-static	int32_t		prgm(uint32_t argc, const char_t *argv[]);
+static	int32_t		prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]);
 
 MODULE(
 	Memory,										// Module name (the first letter has to be upper case)
@@ -138,12 +138,9 @@ static	void	local_displayHeap(uint8_t *stHeap, uint32_t blocks, uint32_t used, i
  * \brief Main entry point
  *
  */
-static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
+static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_t *argv[]) {
 	uint32_t	usdMemory, nbBlocks;
 	intptr_t	length;
-
-	UNUSED(argc);
-	UNUSED(argv);
 
 	PRIVILEGE_ELEVATE;
 

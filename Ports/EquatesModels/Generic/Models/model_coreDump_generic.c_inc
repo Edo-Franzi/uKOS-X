@@ -55,9 +55,7 @@ extern	proc_t	*vKern_runProc[KNB_CORES];
  * - Return the function name that belong to a given PC
  *
  */
-void	local_readFunctionName(const uintptr_t pc, const char_t **function) {
-
-	UNUSED(pc);
+void	local_readFunctionName([[maybe_unused]] const uintptr_t pc, const char_t **function) {
 
 	#if ((uKOS_ARCHITECTURE == 0u) && (!defined(__clang__)))
 			intptr_t	offset, nameLen;
@@ -73,7 +71,6 @@ void	local_readFunctionName(const uintptr_t pc, const char_t **function) {
 		}
 
 	}
-	*function = nullptr;
 	#endif
 
 	*function = nullptr;
