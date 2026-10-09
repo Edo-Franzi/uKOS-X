@@ -124,7 +124,7 @@ static	uint32_t	vW, vH;
 
 		void	TinyUSB_video_init(void);
 		void	TinyUSB_video_getImageSize(uint32_t *w, uint32_t *h);
-		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h);
+		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h, void (*callBack)(const void *argument), const void *argument);
 static	void	local_initialiseYUY2(uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_convertToYUY2(const uint8_t *input, uint8_t *output, uint32_t w, uint32_t h);
 static	void	local_transfer(void);
@@ -223,7 +223,7 @@ static	void	aProcess_send([[maybe_unused]] const void *argument) {
 			local_convertToYUY2(imageGray, imageYUY2, vW, vH);
 			kern_unlockMutex(mutex);
 
-			TinyUSB_video_sendImage(imageYUY2, vW, vH);
+			TinyUSB_video_sendImage(imageYUY2, vW, vH, nullptr, nullptr);
 			led_toggle(KLED_1);
 		}
 		else {

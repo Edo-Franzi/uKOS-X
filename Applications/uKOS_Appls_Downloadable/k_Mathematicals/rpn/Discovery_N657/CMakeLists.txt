@@ -63,13 +63,12 @@ project(
 set(PATH_DECNUMBER ${PATH_UKOS}/Third_Parties/decnumber)
 
 # Microcontroller description (mandatory variables)
-set(SOC STM32H747)
-set(CORE CORTEX_M7)
+set(SOC STM32N657)
+set(CORE CORTEX_M55)
 
 # Target
-set(BOARD Asmodee_H747)
-set(VARIANT Variant_Test_CM7)
-set(BASE Base_CM7)
+set(BOARD Discovery_N657)
+set(VARIANT Variant_Test)
 
 # Extra compilation options
 add_compile_options(

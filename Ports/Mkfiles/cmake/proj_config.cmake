@@ -681,4 +681,13 @@ macro(add_LVGL)
 	find_library(LVGL LVGL ${PATH_UKOS}/Third_Parties/LVGL/Library/${LVGL_DISPLAY}/${CORE})
 	file(APPEND "${ARTEFACTS_DIR}/FLASH.cnf" "-DSYSTEM_LVGL_S ")
 	list(APPEND UKOS_COMPONENTS ${LVGL})
+
+	# Headers of LVGL and of the panel, for the system sources drawing on the
+	# display: target_include_directories(<lib> PRIVATE ${LVGL_INCLUDE_DIRECTORIES})
+	set(LVGL_INCLUDE_DIRECTORIES
+		${PATH_UKOS}/Third_Parties/LVGL/Library/${LVGL_DISPLAY}
+		${PATH_UKOS}/Third_Parties/LVGL/Library/${LVGL_DISPLAY}/${CORE}
+		${PATH_UKOS}/Third_Parties/LVGL/LVGL-current
+		${PATH_UKOS}/Third_Parties/LVGL/LVGL-current/src
+	)
 endmacro()

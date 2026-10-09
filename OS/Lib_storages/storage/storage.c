@@ -168,7 +168,7 @@ int32_t	storage_release(storage_manager_t manager, reserveMode_t reserveMode) {
  * \return		KERR_STORAGE_XXXXX	Depends on the "xxxx" device manager
  *
  */
-int32_t	storage_initialise(storage_manager_t manager, void  *specification) {
+int32_t	storage_initialise(storage_manager_t manager, [[maybe_unused]] void  *specification) {
 
 	switch (manager) {
 

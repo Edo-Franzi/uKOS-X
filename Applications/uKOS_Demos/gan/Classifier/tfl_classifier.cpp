@@ -136,12 +136,12 @@ void	tfl_init(void) {
  *
  */
 void	tfl_classify(float32_t *entry, uint8_t *face) {
-	TfLiteTensor	*input;
-	TfLiteTensor	*output;
-	uint64_t		time[2];
-	int32_t			q;
-	uint32_t		i, delta = 0u;
-	char_t			text[40];
+	tflite::micro::TfLiteTensor		*input;
+	tflite::micro::TfLiteTensor		*output;
+	uint64_t						time[2];
+	int32_t							q;
+	uint32_t						i, delta = 0u;
+	char_t							text[40];
 
 // Load the TFLite model
 
@@ -160,7 +160,7 @@ void	tfl_classify(float32_t *entry, uint8_t *face) {
 
 // Allocate for the tensors
 
-	if (interpreter.AllocateTensors() != kTfLiteOk) {
+	if (interpreter.AllocateTensors() != tflite::micro::kTfLiteOk) {
 		(void)dprintf(KSYST, "Error: Tensor allocation!\n");
 		exit(EXIT_OS_FAILURE);
 	}
@@ -179,7 +179,7 @@ void	tfl_classify(float32_t *entry, uint8_t *face) {
 	}
 
 	kern_readTickCount(&time[0]);
-	if (interpreter.Invoke() != kTfLiteOk) {
+	if (interpreter.Invoke() != tflite::micro::kTfLiteOk) {
 		(void)dprintf(KSYST, "Error: Excecution!\n");
 		exit(EXIT_OS_FAILURE);
 	}

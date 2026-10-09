@@ -115,7 +115,7 @@ MODULE(
 
 		void	TinyUSB_video_init(void);
 		void	TinyUSB_video_getImageSize(uint32_t *w, uint32_t *h);
-		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h);
+		void	TinyUSB_video_sendImage(uint8_t *image, uint32_t w, uint32_t h, void (*callBack)(const void *argument), const void *argument);
 static	void	local_prepareImage(uint8_t *image, uint32_t w, uint32_t h, uint32_t startPosition);
 
 /*
@@ -155,11 +155,11 @@ static	void	aProcess([[maybe_unused]] const void *argument) {
 // Prepare the next image
 
 		local_prepareImage(image_0, w, h, frame);
-		TinyUSB_video_sendImage(image_0, w, h);
+		TinyUSB_video_sendImage(image_0, w, h, nullptr, nullptr);
 		frame++;
 
 		local_prepareImage(image_1, w, h, frame);
-		TinyUSB_video_sendImage(image_1, w, h);
+		TinyUSB_video_sendImage(image_1, w, h, nullptr, nullptr);
 		frame++;
 
 		(void)dprintf(KSYST, "Image size: %"PRIu32" x %"PRIu32", Frame rate = %5.2f-fps\n", w, h, frameRate);

@@ -510,7 +510,7 @@ static	void	local_GPIO_Configuration(void) {
  */
 static	void	local_RCC_Configuration(void) {
 
-	#ifdef KCALENDAR_WITH_HW_RTC_S
+	#if (KCALENDAR_WITH_HW_RTC_S == true)
 
 // Enable backup domain access
 

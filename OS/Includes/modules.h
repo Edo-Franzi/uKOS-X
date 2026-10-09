@@ -294,7 +294,8 @@ enum {
 			KNUM_MCORE			   = (((uint32_t)'0'<<8) + (uint32_t)'5'),									// multi-core module
 			KNUM_NOP			   = (((uint32_t)'0'<<8) + (uint32_t)'6'),									// nop module (test)
 			KNUM_STARTUP		   = (((uint32_t)'0'<<8) + (uint32_t)'7'),									// startup module
-			KNUM_TUSB			   = (((uint32_t)'0'<<8) + (uint32_t)'8')									// TinyUSB moduele
+            KNUM_TUSB              = (((uint32_t)'0'<<8) + (uint32_t)'8'),                                  // TinyUSB moduele
+            KNUM_SPLASH            = (((uint32_t)'0'<<8) + (uint32_t)'9')                                   // splash module
 };
 
 // Daemons

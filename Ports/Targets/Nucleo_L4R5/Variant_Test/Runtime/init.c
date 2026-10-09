@@ -389,7 +389,7 @@ static	void	local_RCC_Configuration(void) {
 
 	RCC->CSR	 |= RCC_CSR_LSION;						// Enable the LSI
 
-	#ifdef KCALENDAR_WITH_HW_RTC_S
+	#if (KCALENDAR_WITH_HW_RTC_S == true)
 	while ((RCC->CSR & RCC_CSR_LSIRDY) == 0u) { ; }		// Wait for LSI ready
 
 // Enable backup domain access and configure RTC

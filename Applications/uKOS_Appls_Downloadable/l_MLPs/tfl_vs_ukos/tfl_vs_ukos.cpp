@@ -230,12 +230,12 @@ namespace {
 
 [[noreturn]]
 void	aProcess_0([[maybe_unused]] const void *argument) {
-	TfLiteTensor	*input;
-	uint64_t		time[2];
-	uint32_t		random[2], delta = 0u;
-	uint32_t		minUkos = 0xFFFFFFFFu, minTFL = 0xFFFFFFFFu;
-	uint32_t		maxUkos = 0u, maxTFL = 0u;
-	float32_t		x, y, gain = 2.0f;
+	tflite::micro::TfLiteTensor		*input;;
+	uint64_t						time[2];
+	uint32_t						random[2], delta = 0u;
+	uint32_t						minUkos = 0xFFFFFFFFu, minTFL = 0xFFFFFFFFu;
+	uint32_t						maxUkos = 0u, maxTFL = 0u;
+	float32_t						x, y, gain = 2.0f;
 
 	#if (defined(CORTEX))
 	RegisterDebugLogCallback(debuglog);
@@ -261,7 +261,7 @@ void	aProcess_0([[maybe_unused]] const void *argument) {
 
 // Allocate for the tensors
 
-		if (interpreter.AllocateTensors() != kTfLiteOk) {
+		if (interpreter.AllocateTensors() != tflite::micro::kTfLiteOk) {
 			(void)dprintf(KSYST, "Error: Tensor allocation!\n");
 			exit(EXIT_OS_FAILURE);
 		}
@@ -282,7 +282,11 @@ void	aProcess_0([[maybe_unused]] const void *argument) {
 		input->data.f[1] = y;
 
 		kern_readTickCount(&time[0]);
-		interpreter.Invoke();
+		if (interpreter.Invoke() != tflite::micro::kTfLiteOk) {
+			(void)dprintf(KSYST, "Error: TensorFlow inference!\n");
+			exit(EXIT_OS_FAILURE);
+		}
+
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);
 

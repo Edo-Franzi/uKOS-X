@@ -214,6 +214,13 @@ target_sources(proc_u PRIVATE
 	${PATH_BASE}/Processes/alive/stub_alive.c
 	${PATH_VARI}/Processes/startUp/stub_startUp.c
 )
+# Boot banner on the LCD display (requires add_LVGL(), see below)
+target_sources(proc_u PRIVATE
+	${PATH_OSYS}/Processes/splash/splash.c
+	${PATH_OSYS}/Processes/splash/splash_ui.c
+	${PATH_BASE}/Processes/splash/stub_splash.c
+)
+target_include_directories(proc_u PRIVATE ${PATH_OSYS}/Processes/splash)
 target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})
 
 # CLI components (user) -> libtool_u.a
@@ -267,6 +274,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 # Optional managers
 add_MicroPython()
 add_LVGL(DISPLAY RK050HR18_5_Inches)
+target_include_directories(proc_u PRIVATE ${LVGL_INCLUDE_DIRECTORIES})
 
 # System configuration flags
 

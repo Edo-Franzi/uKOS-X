@@ -397,7 +397,7 @@ static	void	local_RCU_Configuration(void) {
 
 // 10. Initialise RTC if enabled
 
-	#ifdef KCALENDAR_WITH_HW_RTC_S
+	#if (KCALENDAR_WITH_HW_RTC_S == true)
 
 // Enable RTC clock
 

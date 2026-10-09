@@ -1,45 +1,19 @@
 /*
-; link_App.
-; =========
+; ulvgl.
+; ======
 
 ; SPDX-License-Identifier: MIT
-; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Laurent von Allmen	The 2026-10-08
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Linker description for uKOS-X applications.
-;			User only support
+; Goal:		Wrapper for the LVGL header file; suppress the conversion warnings.
 ;
-;                   CODE
-; linker_stTEXT		+-----------------+
-;					|                 |
-;					| .header         |
-;					| .text           |
-;					| .ctor           |
-;					| .dtor           |
-; linker_enCTOR		|                 |
-; linker_enDTOR		|                 |
-; linker_enTEXT		|                 |
-; linker_stRODATA	+-----------------+
-;					|                 |
-;					| .rodata         |
-; linker_enRODATA	|                 |
-; linker_stDATA		+-----------------+
-;					|                 |
-;					| .data           |
-; linker_enDATA		|                 |
-; linker_stBSS		+-----------------+
-;					|                 |
-;					| .bss            |
-; linker_enBSS		| COMMON          |
-;					|                 |
-; _end				+-----------------+
-;
-;   (c) 2025-2026, Edo. Franzi
-;   --------------------------
+;   (c) 2026, Laurent von Allmen
+;   ----------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -73,11 +47,37 @@
 ;------------------------------------------------------------------------
 */
 
-ENTRY(aStart)
+#pragma once
 
-MEMORY {
-	prgm_code (rx)	: ORIGIN = 0x20050000, LENGTH = 124K
-	prgm_data (rwx)	: ORIGIN = 0x2006F000, LENGTH = 12K
-}
+#if (defined(__clang__))
 
-INCLUDE		application.ld
+// Ignore the clang diagnostic
+//
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+#pragma clang diagnostic ignored "-Wimplicit-int-conversion"
+#endif
+
+#if (defined(__GNUC__))
+
+// Ignore the GCC diagnostic
+//
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
+#include	"lvgl.h"
+
+#if (defined(__clang__))
+
+// Restore the clang diagnostic
+//
+#pragma clang diagnostic pop
+#endif
+
+#if (defined(__GNUC__))
+
+// Restore the GCC diagnostic
+//
+#pragma GCC diagnostic pop
+#endif

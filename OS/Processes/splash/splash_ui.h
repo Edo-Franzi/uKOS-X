@@ -1,45 +1,19 @@
 /*
-; link_App.
-; =========
+; splash_ui.
+; ==========
 
 ; SPDX-License-Identifier: MIT
-; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+; SPDX-FileCopyrightText: 2026 Laurent von Allmen
 
 ;------------------------------------------------------------------------
-; Author:	Edo. Franzi		The 2025-01-01
+; Author:	Laurent von Allmen	The 2026-10-08
 ; Modifs:
 ;
 ; Project:	uKOS-X
-; Goal:		Linker description for uKOS-X applications.
-;			User only support
+; Goal:		Drawing of the boot banner of the splash process.
 ;
-;                   CODE
-; linker_stTEXT		+-----------------+
-;					|                 |
-;					| .header         |
-;					| .text           |
-;					| .ctor           |
-;					| .dtor           |
-; linker_enCTOR		|                 |
-; linker_enDTOR		|                 |
-; linker_enTEXT		|                 |
-; linker_stRODATA	+-----------------+
-;					|                 |
-;					| .rodata         |
-; linker_enRODATA	|                 |
-; linker_stDATA		+-----------------+
-;					|                 |
-;					| .data           |
-; linker_enDATA		|                 |
-; linker_stBSS		+-----------------+
-;					|                 |
-;					| .bss            |
-; linker_enBSS		| COMMON          |
-;					|                 |
-; _end				+-----------------+
-;
-;   (c) 2025-2026, Edo. Franzi
-;   --------------------------
+;   (c) 2026, Laurent von Allmen
+;   ----------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
@@ -73,11 +47,35 @@
 ;------------------------------------------------------------------------
 */
 
-ENTRY(aStart)
+#pragma once
 
-MEMORY {
-	prgm_code (rx)	: ORIGIN = 0x20050000, LENGTH = 124K
-	prgm_data (rwx)	: ORIGIN = 0x2006F000, LENGTH = 12K
+#include	"splash.h"
+
+// Logo
+// The logo of ip.h is an ASCII art made of '_' and '/', each one drawn
+// as a line inside a cell. Further than KLOGO_NB_COLUMNS, its rows hold
+// the tag line, which is a text
+
+#define KMARGIN					20u													// Left and right margins
+#define KLOGO_NB_COLUMNS		68u													// Columns of the ASCII art
+#define KLOGO_CELL_WIDTH		((KLCD_WIDTH - (2u * KMARGIN)) / KLOGO_NB_COLUMNS)	// Cell width
+#define KLOGO_CELL_HEIGHT		(2u * KLOGO_CELL_WIDTH)								// Cell height
+#define KLOGO_LINE_WIDTH		2u													// Line width
+#define KLOGO_NB_TAG_LINES		2u													// Max. number of tag lines
+
+// Positions
+
+#define KTITLE_POS_Y			12													// Y of the title
+#define KLOGO_GAP_Y				10													// Gap between the title and the logo
+#define KTAG_GAP_Y				4													// Tag line shift under the logo
+#define KINFO_GAP_Y				14													// Gap between the logo and the information
+
+#if (defined(__cplusplus))
+extern	"C" {
+#endif
+
+extern	void	splash_ui_draw(void);
+
+#if (defined(__cplusplus))
 }
-
-INCLUDE		application.ld
+#endif

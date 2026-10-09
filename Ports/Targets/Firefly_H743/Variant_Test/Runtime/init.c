@@ -623,7 +623,7 @@ static	void	local_RCC_Configuration(void) {
 			  | (1u * RCC_CFGR_MCO1PRE_0)				// prescaler / 1
 			  | (3u * RCC_CFGR_SW_0);					// CPU clock = PLL
 
-	#ifdef KCALENDAR_WITH_HW_RTC_S
+	#if (KCALENDAR_WITH_HW_RTC_S == true)
 
 // RTC
 // ---
@@ -668,6 +668,13 @@ static	void	local_FMC_Configuration(void) {
 	local_wait_us(200000u);
 
 	FMC->BCR1 &= ~FMC_BCR1_FMCEN;
+
+// The NOR/SRAM bank 1 is enabled out of reset and nothing is connected to it.
+// As long as it is, the accesses of the CPU to the SDRAM (the heap) hold up
+// the reads of the LTDC in the frame buffer, which is in the same SDRAM:
+// the picture is displaced by about half a line, for a frame
+
+	FMC->BCR1 &= ~FMC_BCR1_MBKEN;
 
 	SDRAM_COMMAND_BANK_CTB1(0x0u, 0u,      0u    );		// Normal mode
 

@@ -105,7 +105,10 @@ LVGL					=  libLVGL
 
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/LVGL-current
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/LVGL-current/src
+PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/Library/$(DISPLAY)
 PATH_INCLUDES			+= -I$(PATH_UKOS)/Third_Parties/LVGL/Library/$(DISPLAY)/$(CORE)
+PATH_INCLUDES			+= -I$(PATH_OSYS)/Processes/splash
 
 # Target & Infrastructure
 
@@ -283,6 +286,11 @@ PROC_U			+= $(PATH_OSYS)/Processes/getTemp/getTemp.c
 PROC_U			+=  											$(PATH_BASE)/Processes/alive/stub_alive.c
 PROC_U			+= 												$(PATH_VARI)/Processes/startUp/stub_startUp.c
 PROC_U			+= 												$(PATH_BASE)/Processes/TinyUSB/stub_TinyUSB.c
+
+# With the boot banner on the LCD display (needs the LVGL library)
+PROC_U			+= $(PATH_OSYS)/Processes/splash/splash.c
+PROC_U			+= $(PATH_OSYS)/Processes/splash/splash_ui.c
+PROC_U			+= 												$(PATH_BASE)/Processes/splash/stub_splash.c
 
 # The CLI components (user)
 

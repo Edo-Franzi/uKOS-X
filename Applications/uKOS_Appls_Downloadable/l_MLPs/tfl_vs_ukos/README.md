@@ -18,7 +18,7 @@ The model used in this example is derived from the `class_TFL` application.
 # From the .tflite to network.c_inc
 # This extract the information of .tflite and create the structure.c file
 cd _Models
-./build
+./build.sh
 
 # Modify the file network.c_inc with the information included in the file structure.c
 ```
