@@ -94,7 +94,6 @@
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma GCC diagnostic ignored "-Wpedantic"
-#include	"tensorflow/lite/core/c/common.h"
 #include	"tensorflow/lite/micro/micro_interpreter.h"
 #include	"tensorflow/lite/micro/micro_log.h"
 #include	"tensorflow/lite/micro/micro_mutable_op_resolver.h"

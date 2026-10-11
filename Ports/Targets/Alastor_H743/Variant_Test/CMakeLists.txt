@@ -237,6 +237,7 @@ target_link_libraries(proc_u PUBLIC system_compiler_flags)
 # CLI components (user) -> libtool_u.a
 add_library(tool_u)
 target_sources(tool_u PRIVATE
+	${PATH_OSYS}/CLI/X/X.c
 	${PATH_OSYS}/CLI/bangla/BaNgLa.c
 	${PATH_OSYS}/CLI/bench/bench.c
 	${PATH_OSYS}/CLI/bench/bench_00.c
@@ -278,7 +279,6 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/wki2c/wki2c.c
 	${PATH_OSYS}/CLI/wkserial/wkserial.c
 	${PATH_OSYS}/CLI/wkspi/wkspi.c
-	${PATH_OSYS}/CLI/X/X.c
 	${PATH_BASE}/CLI/esp32/esp32.c
 )
 if(DEFINED WITHAPP AND WITHAPP STREQUAL "class_Py")

@@ -118,9 +118,9 @@ FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
 
 RTCB_P			=
 RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
-RTCB_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/cache.c
-RTCB_P			+=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0.c
 RTCB_P			+=												$(PATH_PORT)/EquatesModels/Cores/$(CORE)/Runtime/syscallDispatcher.c
+RTCB_P			+=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0.c
+RTCB_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/cache.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/cmns.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/exce.c
 RTCB_P			+=												$(PATH_VARI)/Runtime/init.c
@@ -212,6 +212,9 @@ LIBX_P			+= $(PATH_OSYS)/Lib_peripherals/temperature/temperature.c
 # With the WATCHDOG manager
 CONF_SYSTEM		+= -DCONFIG_MAN_WATCHDOG_S
 LIBX_P			+= $(PATH_OSYS)/Lib_peripherals/watchdog/watchdog.c
+# With the BLE0 communication manager
+CONF_SYSTEM		+= -DCONFIG_MAN_BLE0_S
+LIBX_P			+= $(PATH_OSYS)/Lib_serials/ble0/ble0.c
 # With the SERIAL communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/serial/serial.c
@@ -227,38 +230,35 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt2/urt2.c
 # With the URT3 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_URT3_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt3/urt3.c
-# With the BLE0 communication manager
-CONF_SYSTEM		+= -DCONFIG_MAN_BLE0_S
-LIBX_P			+= $(PATH_OSYS)/Lib_serials/ble0/ble0.c
-# With the STORAGE manager
-CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
-LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
 # With the SDCARD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SDCARD_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdcard/sdcard.c
 # With the SERIAL_FLASH manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_FLASH_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/serialFlash/serialFlash.c
+# With the STORAGE manager
+CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
 LIBX_P			+=												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 LIBX_P			+=												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/battery/stub_battery_bq27510g3.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/i2c0/stub_i2c0_si2c2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/i2c1/stub_i2c1_si2c1.c
-LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/imager/stub_imager_mt9v03x.c
-LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/imu/stub_imu_lsm9ds1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/spi0/stub_spi0_sspi2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/spi1/stub_spi1_sspi4.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
-LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/temperature/stub_temperature_lsm9ds1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
+LIBX_P			+=												$(PATH_BASE)/Lib_serials/ble0/stub_ble0_urt2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt1/stub_urt1_usart3.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt2/stub_urt2_usart1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt3/stub_urt3_uart4.c
-LIBX_P			+=												$(PATH_BASE)/Lib_serials/ble0/stub_ble0_urt2.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/serialFlash/stub_serialFlash.c
+LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/imager/stub_imager_mt9v03x.c
+LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/imu/stub_imu_lsm9ds1.c
+LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/temperature/stub_temperature_lsm9ds1.c
 
 # The Lib_xxxx components (user)
 
@@ -300,6 +300,7 @@ PROC_U			+= 												$(PATH_VARI)/Processes/startUp/stub_startUp.c
 # The CLI components (user)
 
 CLI_U			=
+CLI_U			+= $(PATH_OSYS)/CLI/X/X.c
 CLI_U			+= $(PATH_OSYS)/CLI/bangla/BaNgLa.c
 CLI_U			+= $(PATH_OSYS)/CLI/bench/bench.c
 CLI_U			+= $(PATH_OSYS)/CLI/bench/bench_00.c
@@ -315,7 +316,6 @@ CLI_U			+= $(PATH_OSYS)/CLI/dump/dump.c
 CLI_U			+= $(PATH_OSYS)/CLI/dumplog/dumplog.c
 CLI_U			+= $(PATH_OSYS)/CLI/dumptrace/dumptrace.c
 CLI_U			+= $(PATH_OSYS)/CLI/echo/echo.c
-CLI_U			+= $(PATH_BASE)/CLI/esp32/esp32.c
 CLI_U			+= $(PATH_OSYS)/CLI/fill/fill.c
 CLI_U			+= $(PATH_OSYS)/CLI/gdb/gdb.c
 CLI_U			+= $(PATH_OSYS)/CLI/hexloader/hexloader.c
@@ -342,7 +342,7 @@ CLI_U			+= $(PATH_OSYS)/CLI/uKOS/uKOS.c
 CLI_U			+= $(PATH_OSYS)/CLI/wki2c/wki2c.c
 CLI_U			+= $(PATH_OSYS)/CLI/wkserial/wkserial.c
 CLI_U			+= $(PATH_OSYS)/CLI/wkspi/wkspi.c
-CLI_U			+= $(PATH_OSYS)/CLI/X/X.c
+CLI_U			+= $(PATH_BASE)/CLI/esp32/esp32.c
 
 # All the uKOS-X library components
 

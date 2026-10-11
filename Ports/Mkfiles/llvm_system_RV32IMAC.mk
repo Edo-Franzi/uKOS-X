@@ -76,7 +76,7 @@ MODE			=  _p
 SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mabi=ilp32
-CPU_SPEC		?= -march=rv32imac
+CPU_SPEC		?= -march=rv32imac_zicsr_zifencei
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)
@@ -89,6 +89,8 @@ C_CXX_FLAGS		+= -MMD
 
 C_CXX_FLAGS		+= -fshort-enums
 C_CXX_FLAGS		+= -fstack-usage
+C_CXX_FLAGS		+= -ffunction-sections
+C_CXX_FLAGS		+= -fdata-sections
 C_CXX_FLAGS		+= -gdwarf-4
 
 # Warnings for the build

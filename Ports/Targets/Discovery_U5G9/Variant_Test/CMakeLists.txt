@@ -274,9 +274,6 @@ add_MicroPython()
 # Statistics support
 add_compile_definitions(KKERN_WITH_STATISTICS_S=true)
 
-# Hardware RTC support
-add_compile_definitions(KCALENDAR_WITH_HW_RTC_S=true)
-
 # Hardware check of the stack
 add_compile_definitions(STUB_KERN_CHECK_XSP_LIMIT_S)
 

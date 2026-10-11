@@ -226,6 +226,7 @@ target_link_libraries(proc_u PUBLIC system_compiler_flags ${TINYUSB})
 # CLI components (user) -> libtool_u.a
 add_library(tool_u)
 target_sources(tool_u PRIVATE
+	${PATH_OSYS}/CLI/X/X.c
 	${PATH_OSYS}/CLI/bangla/BaNgLa.c
 	${PATH_OSYS}/CLI/bench/bench.c
 	${PATH_OSYS}/CLI/bench/bench_00.c
@@ -263,7 +264,6 @@ target_sources(tool_u PRIVATE
 	${PATH_OSYS}/CLI/uKOS/uKOS.c
 	${PATH_OSYS}/CLI/wki2c/wki2c.c
 	${PATH_OSYS}/CLI/wkserial/wkserial.c
-	${PATH_OSYS}/CLI/X/X.c
 )
 target_link_libraries(tool_u PUBLIC system_compiler_flags)
 

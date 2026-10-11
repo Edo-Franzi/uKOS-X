@@ -99,6 +99,8 @@ C_CXX_FLAGS		+= -MMD
 
 C_CXX_FLAGS		+= -fshort-enums
 C_CXX_FLAGS		+= -fstack-usage
+C_CXX_FLAGS		+= -ffunction-sections
+C_CXX_FLAGS		+= -fdata-sections
 #C_CXX_FLAGS	+= -mpoke-function-name				#NOTE: option unknown by clang
 
 # Warnings for the build

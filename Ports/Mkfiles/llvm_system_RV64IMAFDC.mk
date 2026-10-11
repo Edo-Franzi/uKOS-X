@@ -76,7 +76,7 @@ MODE			=  _p
 SWTCH_OBJDUMP	= -d -S -h -t
 
 FLAGS_FP		?= -mabi=lp64d
-CPU_SPEC		?= -march=rv64imafdc -mcmodel=medany
+CPU_SPEC		?= -march=rv64imafdc_zicsr_zifencei -mcmodel=medany
 
 C_CXX_FLAGS		+= $(CPU_SPEC) $(FLAGS_FP)
 C_CXX_FLAGS		+= -g3 $(OPTIMISATION)

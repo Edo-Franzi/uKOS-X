@@ -108,36 +108,36 @@ BURN			?= kflash_maixduino
 
 # The really first pcs of code (privileged)
 
-FIRST_P			=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/vectors.S
-FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
+FIRST_P			=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/first.c
+FIRST_P			+=												$(PATH_PORT)/EquatesModels/SOCs/$(SOC)/Runtime/vectors.S
 
 # The runtime & common components (privileged)
 
 RTCB_P			=
 RTCB_P			+= $(PATH_OSYS)/Boots/boot/boot.c
 RTCB_P			+=												$(PATH_PORT)/EquatesModels/Generic/Runtime/crt0_r_mc.c
-RTCB_P			+=												$(PATH_VARI)/Runtime/init.c
-RTCB_P			+=												$(PATH_BASE)/Runtime/exce.c
 RTCB_P			+=												$(PATH_BASE)/Runtime/cmns.c
+RTCB_P			+=												$(PATH_BASE)/Runtime/exce.c
+RTCB_P			+=												$(PATH_VARI)/Runtime/init.c
 
 # The uKernel components (privileged)
 
 KERN_P			=
-KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/kern.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/debug.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/identifier.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/kern.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/lists.c
-KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/processes.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/mailboxes.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/mutexes.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/pools.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/preciseSignals.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/processes.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/scheduler.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/semaphores.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/signals.c
-KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/statistics.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/softwareTimers.c
-KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/debug.c
+KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/statistics.c
 KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/temporal.c
-KERN_P			+= $(PATH_OSYS)/Lib_kernels/kern/mailboxes.c
 KERN_P			+=												$(PATH_BASE)/Lib_kernels/kern/stub_kern_kernel.c
 
 # The uKernel components (user)
@@ -150,30 +150,33 @@ KERN_U			+= $(PATH_OSYS)/Lib_kernels/kern/xLibrary.c
 
 LIBX_P			=
 
+# With the RANDOM manager
+CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
+LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
+# With the ASMP manager
+CONF_SYSTEM		+= -DCONFIG_MAN_ASMP_S
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/asmp/asmp.c
+# With the CALENDAR manager
+CONF_SYSTEM		+= -DCONFIG_MAN_CALENDAR_S
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/calendar/calendar.c
+# With the MACHINE manager
+CONF_SYSTEM		+= -DCONFIG_MAN_MACHINE_S
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/machine/machine.c
+# With the MEMO manager
+CONF_SYSTEM		+= -DCONFIG_MAN_MEMO_S
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/memo/memo.c
+# With the RECORD manager
+CONF_SYSTEM		+= -DCONFIG_MAN_RECORD_S
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/record/record.c
+# With the SYSTEM manager
+CONF_SYSTEM		+= -DCONFIG_MAN_SYSTEM_S
+LIBX_P			+= $(PATH_OSYS)/Lib_generics/system/system.c
 # With the LED manager
 CONF_SYSTEM		+= -DCONFIG_MAN_LED_S
 LIBX_P			+= $(PATH_OSYS)/Lib_peripherals/led/led.c
 # With the SWITCH manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SWITCH_S
 LIBX_P			+= $(PATH_OSYS)/Lib_peripherals/switch/switch.c
-# With the ASMP manager
-CONF_SYSTEM		+= -DCONFIG_MAN_ASMP_S
-LIBX_P			+= $(PATH_OSYS)/Lib_generics/asmp/asmp.c
-# With the RECORD manager
-CONF_SYSTEM		+= -DCONFIG_MAN_RECORD_S
-LIBX_P			+= $(PATH_OSYS)/Lib_generics/record/record.c
-# With the MEMO manager
-CONF_SYSTEM		+= -DCONFIG_MAN_MEMO_S
-LIBX_P			+= $(PATH_OSYS)/Lib_generics/memo/memo.c
-# With the SYSTEM manager
-CONF_SYSTEM		+= -DCONFIG_MAN_SYSTEM_S
-LIBX_P			+= $(PATH_OSYS)/Lib_generics/system/system.c
-# With the MACHINE manager
-CONF_SYSTEM		+= -DCONFIG_MAN_MACHINE_S
-LIBX_P			+= $(PATH_OSYS)/Lib_generics/machine/machine.c
-# With the CALENDAR manager
-CONF_SYSTEM		+= -DCONFIG_MAN_CALENDAR_S
-LIBX_P			+= $(PATH_OSYS)/Lib_generics/calendar/calendar.c
 # With the SERIAL communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/serial/serial.c
@@ -186,32 +189,29 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt1/urt1.c
 # With the WFI0 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_WFI0_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/wfi0/wfi0.c
-# With the RANDOM manager
-CONF_SYSTEM		+= -DCONFIG_MAN_RANDOM_S
-LIBX_P			+= $(PATH_OSYS)/Lib_cryptographics/random/random.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/lcd0/lcd0.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/tft0/tft0.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/oct0/oct0.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/imgk/imgk.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/asmp/stub_asmp_msip.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_generics/machine/stub_machine.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/imgk/imgk.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/lcd0/lcd0.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/led/stub_led.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/oct0/oct0.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
+LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/tft0/tft0.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_uart.c
 LIBX_P			+= 												$(PATH_BASE)/Lib_serials/urt1/stub_urt1_uart.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/wfi0/stub_wfi0_urt1.c
-LIBX_P			+= 												$(PATH_BASE)/Lib_cryptographics/random/stub_random.c
 
 # The Lib_xxxx components (user)
 
 LIBX_U			=
 
-# With the TEXT manager
-CONF_SYSTEM		+= -DCONFIG_MAN_TEXT_S
-LIBX_U			+= $(PATH_OSYS)/Lib_generics/text/text.c
 # With the NEWLIB manager
 CONF_SYSTEM		+= -DCONFIG_MAN_NEWLIB_S
 LIBX_U			+= $(PATH_OSYS)/Lib_generics/newlib/newlib.c
+# With the TEXT manager
+CONF_SYSTEM		+= -DCONFIG_MAN_TEXT_S
+LIBX_U			+= $(PATH_OSYS)/Lib_generics/text/text.c
 # With the MLPN manager
 CONF_SYSTEM		+= -DCONFIG_MAN_MLPN_S
 LIBX_U			+= $(PATH_OSYS)/Lib_neurals/mlpn/mlpn.c
@@ -224,15 +224,15 @@ SHAR_P			=
 
 PROC_P			=
 PROC_P			+= $(PATH_OSYS)/Daemons/idle/idle.c
-PROC_P			+= $(PATH_OSYS)/Daemons/stimer/stimer.c
-PROC_P			+= $(PATH_OSYS)/Daemons/stack/stack.c
 PROC_P			+= $(PATH_OSYS)/Daemons/mcore/mcore.c
+PROC_P			+= $(PATH_OSYS)/Daemons/stack/stack.c
+PROC_P			+= $(PATH_OSYS)/Daemons/stimer/stimer.c
 
 # The process components (user)
 
 PROC_U			=
-PROC_U			+= $(PATH_OSYS)/Processes/launcher/launcher.c
 PROC_U			+= $(PATH_OSYS)/Processes/alive/alive.c
+PROC_U			+= $(PATH_OSYS)/Processes/launcher/launcher.c
 PROC_U			+= $(PATH_OSYS)/Processes/startUp/startUp.c
 PROC_U			+=  											$(PATH_BASE)/Processes/alive/stub_alive.c
 PROC_U			+= 												$(PATH_VARI)/Processes/startUp/stub_startUp.c
@@ -256,7 +256,6 @@ CLI_U			+= $(PATH_OSYS)/CLI/dumplog/dumplog.c
 CLI_U			+= $(PATH_OSYS)/CLI/dumpshared/dumpshared.c
 CLI_U			+= $(PATH_OSYS)/CLI/dumptrace/dumptrace.c
 CLI_U			+= $(PATH_OSYS)/CLI/echo/echo.c
-CLI_U			+= $(PATH_BASE)/CLI/esp32/esp32.c
 CLI_U			+= $(PATH_OSYS)/CLI/fill/fill.c
 CLI_U			+= $(PATH_OSYS)/CLI/gdb/gdb.c
 CLI_U			+= $(PATH_OSYS)/CLI/hexloader/hexloader.c
@@ -274,16 +273,17 @@ CLI_U			+= $(PATH_OSYS)/CLI/run/run.c
 CLI_U			+= $(PATH_OSYS)/CLI/semaphore/semaphore.c
 CLI_U			+= $(PATH_OSYS)/CLI/sloader/sloader.c
 CLI_U			+= $(PATH_OSYS)/CLI/test_malloc/test_malloc.c
-CLI_U			+= $(PATH_BASE)/CLI/test_lcd/test_lcd.c
-CLI_U			+= $(PATH_BASE)/CLI/test_img/test_img.c
-CLI_U			+= $(PATH_BASE)/CLI/test_ipi/test_ipi.c
 CLI_U			+= $(PATH_OSYS)/CLI/test_mcore/test_mcore.c
 CLI_U			+= $(PATH_OSYS)/CLI/uKOS/uKOS.c
+CLI_U			+= $(PATH_BASE)/CLI/esp32/esp32.c
+CLI_U			+= $(PATH_BASE)/CLI/test_img/test_img.c
+CLI_U			+= $(PATH_BASE)/CLI/test_ipi/test_ipi.c
+CLI_U			+= $(PATH_BASE)/CLI/test_lcd/test_lcd.c
 
 # All the uKOS-X library components
 
-UKOS_FIRST_P	=  vectors.c first.c
-UKOS_COMPONENTS	=  librtcb_p.a libkern_p.a libkern_u.a liblibx_p.a liblibx_u.a libshar_p.a libproc_p.a libproc_u.a libtool_u.a
+UKOS_FIRST_P	=  first.c vectors.c
+UKOS_COMPONENTS	=  librtcb_p.a libkern_p.a libkern_u.a liblibx_p.a liblibx_u.a libproc_p.a libproc_u.a libtool_u.a
 
 # With the LVGL library
 CONF_SYSTEM		+= -DSYSTEM_LVGL_S
