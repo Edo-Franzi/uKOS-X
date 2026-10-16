@@ -1,9 +1,9 @@
 /*
 ; stm32N657_i3c.
 ; ==============
-
+;
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:

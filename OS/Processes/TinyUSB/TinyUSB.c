@@ -1,10 +1,10 @@
 /*
 ; TinyUSB.
 ; ========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -111,6 +111,13 @@ static	void	local_process(const void *argument);
 extern	void	stub_TinyUSB_init(void);
 extern	void	stub_TinyUSB_cyclic(void);
 
+// Return the USB product name of this board, or nullptr to keep the generic
+// one held by the TinyUSB archive. Unlike the unique identifier above this is
+// not a board stub: the name is simply BOARD, which the system build defines
+// for every translation unit, so one implementation serves every board.
+
+extern	const	char_t	*TinyUSB_getProductName(void);
+
 /*
  * \brief Main entry point
  *
@@ -133,6 +140,23 @@ static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_
 
 	LOG(KINFO_SYSTEM, "TinyUSB: process TinyUSB launched");
 	return (EXIT_OS_SUCCESS_CLI);
+}
+
+/*
+ * \brief TinyUSB_getProductName
+ *
+ * - Return the USB product name string of this board
+ *
+ */
+const	char_t	*TinyUSB_getProductName(void) {
+
+// The string descriptors live in the prebuilt TinyUSB archive, which is shared
+// by every board with the same SoC, profile and speed - Firefly_H743 and
+// Nucleo_H743 link the very same file - so the name cannot be baked in there.
+// It is built here instead, where the system build defines BOARD, and the
+// archive asks for it when the host reads the product string descriptor.
+
+	return ("uKOS-X " STRG(BOARD));
 }
 
 // Local routines

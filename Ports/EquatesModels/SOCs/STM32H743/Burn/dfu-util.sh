@@ -1,8 +1,11 @@
 #!/usr/bin/env zsh
-
+#
+# dfu-util.
+# =========
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi		The 2026-05-25
 # Modifs:

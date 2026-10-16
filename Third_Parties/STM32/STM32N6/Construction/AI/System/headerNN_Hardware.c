@@ -1,10 +1,10 @@
 /*
 ; headerNN_Hardware.
 ; ==================
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2026-07-26
 ; Modifs:

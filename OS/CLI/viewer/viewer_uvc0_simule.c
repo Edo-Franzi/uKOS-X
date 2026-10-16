@@ -1,10 +1,10 @@
 /*
 ; viewer_uvc0_simule.
 ; ===================
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -161,7 +161,7 @@ int32_t	viewer_uvc0_clean([[maybe_unused]] uint32_t argc, [[maybe_unused]] const
 [[noreturn]]
 static	void	aProcess(const void *argument) {
 			uint32_t	w, h;
-			float64_t	frameRate;
+			float64_t	frameRate_f;
 			uint8_t		*image_0, *image_1;
 			uint64_t	time[2];
 			graphic_t	pack_0, pack_1;
@@ -209,9 +209,9 @@ static	void	aProcess(const void *argument) {
 		TinyUSB_video_sendImage(image_1, w, h, local_callBack, (const void *)&pack_0);
 		kern_readTickCount(&time[1]);
 
-		frameRate = (1000000.0 / (float64_t)(time[1] - time[0])) * 2.0;
+		frameRate_f = (1000000.0 / (float64_t)(time[1] - time[0])) * 2.0;
 
-		(void)dprintf(KSYST, "Image size: %"PRIu32" x %"PRIu32", Frame rate = %5.2f-fps\n", w, h, frameRate);
+		(void)dprintf(KSYST, "Image size: %"PRIu32" x %"PRIu32", Frame rate = %5.2f-fps\n", w, h, frameRate_f);
 	}
 
 // Kill the process & the ressources

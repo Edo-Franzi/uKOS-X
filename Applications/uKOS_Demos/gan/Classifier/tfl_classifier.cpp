@@ -1,10 +1,10 @@
 /*
 ; tfl_classifier.
 ; ===============
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -68,7 +68,6 @@
 #include	"tensorflow/lite/micro/micro_profiler.h"
 #include	"tensorflow/lite/micro/recording_micro_interpreter.h"
 #include	"tensorflow/lite/micro/system_setup.h"
-#include	"tensorflow/lite/schema/schema_generated.h"
 #include	"tensorflow/lite/micro/cortex_m_generic/debug_log_callback.h"
 
 #pragma GCC diagnostic pop
@@ -134,7 +133,7 @@ void	tfl_init(void) {
  * - Classify a data vector
  *
  */
-void	tfl_classify(float32_t *entry, uint8_t *face) {
+void	tfl_classify(float32_t *entry_f, uint8_t *face) {
 	tflite::micro::TfLiteTensor		*input;
 	tflite::micro::TfLiteTensor		*output;
 	uint64_t						time[2];
@@ -169,7 +168,7 @@ void	tfl_classify(float32_t *entry, uint8_t *face) {
 	input = interpreter.input(0);
 	for (i = 0u; i < KNN_INPUT_SIZE; i++) {
 
-		q = (int32_t)roundf(entry[i] / input->params.scale) + input->params.zero_point;
+		q = (int32_t)roundf(entry_f[i] / input->params.scale) + input->params.zero_point;
 
 		if (q < -128) { q = -128; }
 		if (q >  127) { q =  127; }

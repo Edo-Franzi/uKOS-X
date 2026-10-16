@@ -1,10 +1,10 @@
 /*
 ; basic.
 ; ======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -167,24 +167,24 @@ MODULE(
 static	void	aProcess_0([[maybe_unused]] const void *argument) {
 				uint32_t	delta;
 				uint64_t	time[2];
-	volatile	float64_t	n = 0.0, Pi = 0.0;
+	volatile	float64_t	n_f = 0.0, Pi_f = 0.0;
 
 	while (true) {
 		kern_suspendProcess(100u);
 		led_toggle(KLED_1);
 
 		kern_readTickCount(&time[0]);
-		Pi = Pi + ((1.0 / pow(16, n)) * ((4.0 / ((8.0 * n) + 1.0)))
-	   			- (2.0 / ((8.0 * n) + 4.0))
-	    		- (1.0 / ((8.0 * n) + 5.0))
-				- (1.0 / ((8.0 * n) + 6.0)));
+		Pi_f = Pi_f + ((1.0 / pow(16, n_f)) * ((4.0 / ((8.0 * n_f) + 1.0)))
+	   				-  (2.0 / ((8.0 * n_f) + 4.0))
+	    			-  (1.0 / ((8.0 * n_f) + 5.0))
+					-  (1.0 / ((8.0 * n_f) + 6.0)));
 
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);
 
-		n = n + 1.0;
+		n_f = n_f + 1.0;
 
-		(void)dprintf(KSTDOUT, "n = %"PRIu32", Pi = %.9f Time = %"PRIu32"\n", (uint32_t)n, Pi, delta);
+		(void)dprintf(KSTDOUT, "n = %"PRIu32", Pi = %.9f Time = %"PRIu32"\n", (uint32_t)n_f, Pi_f, delta);
 	}
 }
 

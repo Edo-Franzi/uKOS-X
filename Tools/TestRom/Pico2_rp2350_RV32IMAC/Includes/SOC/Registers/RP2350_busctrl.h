@@ -1,10 +1,10 @@
 /*
 ; RP2350_busctrl.
 ; ===============
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:

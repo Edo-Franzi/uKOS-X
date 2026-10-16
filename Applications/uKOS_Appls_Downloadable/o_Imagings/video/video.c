@@ -1,10 +1,10 @@
 /*
 ; video.
 ; ======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -130,7 +130,7 @@ static	void	local_prepareImage(uint8_t *image, uint32_t w, uint32_t h, uint32_t 
 static	void	aProcess([[maybe_unused]] const void *argument) {
 			uint32_t	w, h, frame = 0;
 			uint8_t		*image_0, *image_1;
-			float64_t	frameRate = 0.0;
+			float64_t	frameRate_f = 0.0;
 	static	uint64_t	vTime[2];
 
 	PRIVILEGE_ELEVATE;
@@ -149,7 +149,7 @@ static	void	aProcess([[maybe_unused]] const void *argument) {
 		vTime[0] = vTime[1];
 		kern_readTickCount(&vTime[1]);
 
-		frameRate = (1000000.0 / (float64_t)(vTime[1] - vTime[0])) * 2.0;
+		frameRate_f = (1000000.0 / (float64_t)(vTime[1] - vTime[0])) * 2.0;
 
 // Send it over usb
 // Prepare the next image
@@ -162,7 +162,7 @@ static	void	aProcess([[maybe_unused]] const void *argument) {
 		TinyUSB_video_sendImage(image_1, w, h, nullptr, nullptr);
 		frame++;
 
-		(void)dprintf(KSYST, "Image size: %"PRIu32" x %"PRIu32", Frame rate = %5.2f-fps\n", w, h, frameRate);
+		(void)dprintf(KSYST, "Image size: %"PRIu32" x %"PRIu32", Frame rate = %5.2f-fps\n", w, h, frameRate_f);
 	}
 }
 

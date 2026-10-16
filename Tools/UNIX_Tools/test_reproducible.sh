@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
-
+#
 # test_reproducible.
 # ==================
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2025-12-19
 # Modifs:

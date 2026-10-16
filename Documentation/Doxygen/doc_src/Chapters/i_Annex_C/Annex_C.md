@@ -81,10 +81,10 @@ This file will contain all exported functions, properly registered and linked to
 /*
 ; stub_temperature_adt7320.
 ; =========================
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
 ; Modifs:
@@ -251,10 +251,10 @@ To activate this simulation mode, simply define the **SIMULE_S** flag prior to c
 /*
 ; get_temp.
 ; =========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
 ; Modifs:
@@ -506,10 +506,10 @@ The CLI tool **module X** is responsible for handling messages received from a h
 /*
 ; X.
 ; ==
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:     Edo. Franzi    The 2025-01-01
 ; Modifs:
@@ -641,7 +641,7 @@ While Python offers exceptional flexibility and ease of integration, other **vis
 ```python
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+#
 #------------------------------------------------------------------------
 # Author:     Edo. Franzi    The 2025-01-01
 # Modifs:

@@ -1,10 +1,10 @@
 /*
 ; asmp.
 ; =====
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -113,7 +113,7 @@
 #endif
 
 #if (!defined(KASMP_MBOX_ENTRY_SIZE))
-#define	KASMP_MBOX_ENTRY_SIZE	0u								// Entry size (0 = mbox with copy)
+#define	KASMP_MBOX_ENTRY_SIZE	0u								// Entry size (0 = data referenced by pointers)
 #endif
 
 typedef	struct asmpShared	asmpShared_t;

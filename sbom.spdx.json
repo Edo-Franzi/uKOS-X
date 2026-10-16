@@ -2,8 +2,8 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "uKOS-X SBOM (0.6.4)",
-  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.6.4-2026-10-11",
+  "name": "uKOS-X SBOM (0.6.5)",
+  "documentNamespace": "https://github.com/Edo-Franzi/uKOS-X/spdx/sbom-0.6.5-2026-10-16",
   "creationInfo": {
     "created": "2026-02-11T00:00:00Z",
     "creators": [
@@ -18,11 +18,6 @@
       "extractedText": "License text not embedded in this SBOM. See the FatFs license/notice shipped in Third_Parties/FatFs/ or upstream documentation."
     },
     {
-      "licenseId": "LicenseRef-IntelRDFPMath",
-      "name": "IntelRDFPMathLib License (Intel Corp.)",
-      "extractedText": "License text not embedded in this SBOM. See the IntelRDFPMathLib license/notice shipped in Third_Parties/IntelRDFPMath/ or upstream documentation."
-    },
-    {
       "licenseId": "LicenseRef-decnumber",
       "name": "decnumber License",
       "extractedText": "License text not embedded in this SBOM. See LICENSES/License_DecNumbers.txt and upstream headers."
@@ -32,7 +27,7 @@
     {
       "name": "uKOS-X",
       "SPDXID": "SPDXRef-Package-uKOS-X",
-      "versionInfo": "0.6.4",
+      "versionInfo": "0.6.5",
       "downloadLocation": "https://github.com/Edo-Franzi/uKOS-X",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",
@@ -42,7 +37,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.6.4",
+          "referenceLocator": "pkg:github/Edo-Franzi/uKOS-X@0.6.5",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -68,7 +63,7 @@
     {
       "name": "decnumber",
       "SPDXID": "SPDXRef-Package-decnumber",
-      "versionInfo": "3.68 commit 4771421",
+      "versionInfo": "3.68 commit f8d97fc",
       "downloadLocation": "https://github.com/raitechnology/libdecnumber.git",
       "filesAnalyzed": false,
       "licenseDeclared": "LicenseRef-decnumber",
@@ -78,7 +73,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/raitechnology/libdecnumber@ace3fa6",
+          "referenceLocator": "pkg:github/raitechnology/libdecnumber@f8d97fc",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -133,24 +128,6 @@
         {
           "referenceType": "purl",
           "referenceLocator": "pkg:github/abbrev/fatfs@30ca13c",
-          "referenceCategory": "PACKAGE-MANAGER"
-        }
-      ]
-    },
-    {
-      "name": "IntelRDFPMathLib",
-      "SPDXID": "SPDXRef-Package-IntelRDFPMath",
-      "versionInfo": "2.3 commit ffca6d2",
-      "downloadLocation": "https://github.com/xmake-mirror/IntelRDFPMathLib.git",
-      "filesAnalyzed": false,
-      "licenseDeclared": "LicenseRef-IntelRDFPMath",
-      "licenseConcluded": "LicenseRef-IntelRDFPMath",
-      "copyrightText": "Copyright (c) 2007-2024, Intel Corp.",
-      "comment": "Location: Third_Parties/IntelRDFPMath/. License: Intel Corp.",
-      "externalRefs": [
-        {
-          "referenceType": "purl",
-          "referenceLocator": "pkg:github/xmake-mirror/IntelRDFPMathLib@ffca6d2",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -212,7 +189,7 @@
     {
       "name": "tflite-micro",
       "SPDXID": "SPDXRef-Package-TFLiteMicro",
-      "versionInfo": "commit 5328e0d",
+      "versionInfo": "commit ec2f97d",
       "downloadLocation": "https://github.com/tensorflow/tflite-micro.git",
       "filesAnalyzed": false,
       "licenseDeclared": "Apache-2.0",
@@ -222,7 +199,7 @@
       "externalRefs": [
         {
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/tensorflow/tflite-micro@90b983c",
+          "referenceLocator": "pkg:github/tensorflow/tflite-micro@ec2f97d",
           "referenceCategory": "PACKAGE-MANAGER"
         }
       ]
@@ -230,7 +207,7 @@
     {
       "name": "TinyUSB",
       "SPDXID": "SPDXRef-Package-TinyUSB",
-      "versionInfo": "0.21.0 commit 3174e76",
+      "versionInfo": "0.21.0 commit 3c6524e",
       "downloadLocation": "https://github.com/hathach/tinyusb.git",
       "filesAnalyzed": false,
       "licenseDeclared": "MIT",

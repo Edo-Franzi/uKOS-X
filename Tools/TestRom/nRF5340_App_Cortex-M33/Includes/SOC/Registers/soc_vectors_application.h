@@ -1,9 +1,9 @@
 /*
 ; soc_vectors_application.
 ; ========================
-
+;
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:

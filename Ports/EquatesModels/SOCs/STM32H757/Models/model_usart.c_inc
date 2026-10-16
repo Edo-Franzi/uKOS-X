@@ -1,0 +1,376 @@
+/*
+; model_usart.
+; ============
+;
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+;
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for controlling the "usart" device.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+static	volatile	bool		vSending = false;
+static	volatile	bool		vWithSemaphore_RX = false;
+static	volatile	bool		vWithSemaphore_TX = false;
+static	volatile	uint8_t		vSndBuffer[KUSART_SZ_TX_BUF];
+static	volatile	uint8_t		vRecBuffer[KUSART_SZ_RX_BUF];
+static	volatile	uint8_t		* volatile vRRecBuffer;
+static	volatile	uint8_t		* volatile vWRecBuffer;
+static	volatile	uint8_t		* volatile vRSndBuffer;
+static	volatile	uint8_t		* volatile vWSndBuffer;
+static	volatile	int32_t		vStatus = KERR_SERIAL_NOERR;
+static				sema_t		*vSemaphore_RX;
+static				sema_t		*vSemaphore_TX;
+
+STRG_LOC_CONST(aStrSemaphore_RX[]) = KUSART_SEMAPHORE_RX;
+STRG_LOC_CONST(aStrSemaphore_TX[]) = KUSART_SEMAPHORE_TX;
+
+// Prototypes
+
+static	void	local_USART_IRQHandler(void);
+
+/*
+ * \brief model_usart_init
+ *
+ * - Initialise the manager
+ *
+ */
+int32_t	model_usart_init(void) {
+
+	cb_enable();
+
+// Create the semaphores
+
+	if (kern_createSemaphore(aStrSemaphore_RX, 0, 1, &vSemaphore_RX) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "model_usart: create sema"); exit(EXIT_OS_PANIC); }
+	if (kern_createSemaphore(aStrSemaphore_TX, 0, 1, &vSemaphore_TX) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "model_usart: create sema"); exit(EXIT_OS_PANIC); }
+
+// Initialise the circular buffers (snd) and (rec)
+
+	vRSndBuffer = vSndBuffer;
+	vWSndBuffer = vSndBuffer;
+	vRRecBuffer = vRecBuffer;
+	vWRecBuffer = vRecBuffer;
+
+// Initialise the UART (Rx and Tx) and set it to 8-bits, 1-stop-bits, default baudrate and no parity
+
+	INTERRUPT_VECTOR(USART_VECTOR_NUMBER, local_USART_IRQHandler);
+	NVIC_SetPriority(USART_VECTOR_NUMBER, KINT_LEVEL_COMMUNICATIONS);
+	NVIC_EnableIRQ(USART_VECTOR_NUMBER);
+
+	USART->CR1	= 0u;
+	USART->CR1	= (USART_CR1_TE | USART_CR1_RE | USART_CR1_FIFOEN);
+	USART->BRR	= BAUDRATE(USART_FREQUENCY, KSERIAL_DEFAULT_BAUDRATE);
+	USART->CR1 |= USART_CR1_RXNEIE;
+	USART->CR1 |= USART_CR1_UE;
+
+	cb_init();
+	return (KERR_SERIAL_NOERR);
+}
+
+/*
+ * \brief model_usart_configure
+ *
+ * - Configure the manager
+ *
+ */
+int32_t	model_usart_configure(const urtxCnf_t *configure) {
+
+	INTERRUPTION_OFF;
+	USART->CR1 &= (uint32_t)~USART_CR1_UE;
+	USART->CR1 &= (uint32_t)~(USART_CR1_M1 | USART_CR1_M0);
+	switch (configure->oNBBits) {
+		case KSERIAL_NB_BITS_7: {
+			if (configure->oParity == KSERIAL_PARITY_NONE) {
+				USART->CR1 |= USART_CR1_M1;
+			}
+			break;
+		}
+		default:
+		case KSERIAL_NB_BITS_8: {
+			if (configure->oParity != KSERIAL_PARITY_NONE) {
+				USART->CR1 |= USART_CR1_M0;
+			}
+			break;
+		}
+	}
+
+	USART->CR1 &= (uint32_t)~(USART_CR1_PCE | USART_CR1_PS);
+	switch (configure->oParity) {
+		case KSERIAL_PARITY_EVEN: { USART->CR1 |= USART_CR1_PCE;                break; }
+		case KSERIAL_PARITY_ODD:  { USART->CR1 |= USART_CR1_PCE | USART_CR1_PS; break; }
+		default:
+		case KSERIAL_PARITY_NONE: { 											break; }
+	}
+
+	USART->CR2 &= (uint32_t)~(3u * USART_CR2_STOP_0);
+	(configure->oStopBits == KSERIAL_STOPBITS_2) ? (USART->CR2 |= (2u * USART_CR2_STOP_0)) : (USART->CR2 |= 0u);
+
+	switch (configure->oBaudRate) {
+		case KSERIAL_BAUDRATE_DEFAULT: { USART->BRR = BAUDRATE(USART_FREQUENCY, KSERIAL_DEFAULT_BAUDRATE); break; }
+		case KSERIAL_BAUDRATE_2400:	   { USART->BRR = BAUDRATE(USART_FREQUENCY, 2400u);        		       break; }
+		case KSERIAL_BAUDRATE_4800:	   { USART->BRR = BAUDRATE(USART_FREQUENCY, 4800u);        		       break; }
+		case KSERIAL_BAUDRATE_9600:	   { USART->BRR = BAUDRATE(USART_FREQUENCY, 9600u);        		       break; }
+		case KSERIAL_BAUDRATE_19200:   { USART->BRR = BAUDRATE(USART_FREQUENCY, 19200u);       		       break; }
+		case KSERIAL_BAUDRATE_38400:   { USART->BRR = BAUDRATE(USART_FREQUENCY, 38400u);       		       break; }
+		case KSERIAL_BAUDRATE_57600:   { USART->BRR = BAUDRATE(USART_FREQUENCY, 57600u);       		       break; }
+		case KSERIAL_BAUDRATE_115200:  { USART->BRR = BAUDRATE(USART_FREQUENCY, 115200u);      		       break; }
+		case KSERIAL_BAUDRATE_230400:  { USART->BRR = BAUDRATE(USART_FREQUENCY, 230400u);      		       break; }
+		case KSERIAL_BAUDRATE_460800:  { USART->BRR = BAUDRATE(USART_FREQUENCY, 460800u);      		       break; }
+		case KSERIAL_BAUDRATE_500000:  { USART->BRR = BAUDRATE(USART_FREQUENCY, 500000u);      		       break; }
+		case KSERIAL_BAUDRATE_921600:  { USART->BRR = BAUDRATE(USART_FREQUENCY, 921600u);      		       break; }
+		case KSERIAL_BAUDRATE_1000000: { USART->BRR = BAUDRATE(USART_FREQUENCY, 1000000u);     		       break; }
+		case KSERIAL_BAUDRATE_1500000: { USART->BRR = BAUDRATE(USART_FREQUENCY, 1500000u);     		       break; }
+		case KSERIAL_BAUDRATE_1843200: { USART->BRR = BAUDRATE(USART_FREQUENCY, 1843200u);     		       break; }
+		case KSERIAL_BAUDRATE_2000000: { USART->BRR = BAUDRATE(USART_FREQUENCY, 2000000u);     		       break; }
+		case KSERIAL_BAUDRATE_2500000: { USART->BRR = BAUDRATE(USART_FREQUENCY, 2500000u);     		       break; }
+		case KSERIAL_BAUDRATE_3000000: { USART->BRR = BAUDRATE(USART_FREQUENCY, 3000000u);     		       break; }
+		default:					   { USART->BRR = BAUDRATE(USART_FREQUENCY, KSERIAL_DEFAULT_BAUDRATE); break; }
+	}
+
+	vWithSemaphore_RX = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
+	vWithSemaphore_TX = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
+	USART->CR1 |= USART_CR1_UE;
+	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
+}
+
+/*
+ * \brief model_usart_write
+ *
+ * - Write a buffer
+ *
+ */
+int32_t	model_usart_write(const uint8_t *buffer, uint32_t size) {
+			uint32_t	i, newSize, wkSize = size;
+	const	uint8_t		*wkBuffer = buffer;
+	static	bool		terminate = false, busy = false;
+
+	INTERRUPTION_OFF;
+	if ((vSending == true) || (busy == true)) { RETURN_INT_RESTORE(KERR_SERIAL_SEPRO); }
+	if (wkSize == 0u)		  				  { RETURN_INT_RESTORE(KERR_SERIAL_LNBU0); }
+
+	busy = true;
+	INTERRUPTION_RESTORE;
+
+	while (terminate == false) {
+		while (vSending == true) { kern_suspendProcess(1u); }
+
+		if (wkSize > KUSART_SZ_TX_BUF) { newSize = KUSART_SZ_TX_BUF; wkSize -= KUSART_SZ_TX_BUF; }
+		else						   { newSize = wkSize; terminate = true;					 }
+
+// Copy the input buffer into the send one and start the transfer
+// Enable the TX interruption
+
+		vSending = true;
+		for (i = 0u; i < newSize; i++) {
+			vSndBuffer[i] = wkBuffer[i];
+		}
+
+		vWSndBuffer = (volatile	uint8_t *)((uintptr_t)vSndBuffer + (uintptr_t)newSize);
+		wkBuffer	= (const uint8_t	*)((uintptr_t)wkBuffer	 + (uintptr_t)newSize);
+		vRSndBuffer = vSndBuffer;
+
+		USART->CR1 |= USART_CR1_TXEIE;
+	}
+	busy = false;
+	terminate = false;
+	return (KERR_SERIAL_NOERR);
+}
+
+/*
+ * \brief model_usart_read
+ *
+ * - Read n x bytes
+ *
+ */
+int32_t	model_usart_read(uint8_t *buffer, uint32_t *size) {
+	uint8_t		*wkBuffer = buffer;
+	int32_t		status;
+	uint32_t	i;
+
+	INTERRUPTION_OFF;
+	status  = vStatus;
+	vStatus = KERR_SERIAL_NOERR;
+
+// Interruption problem: buffer full, Framing error, Overrun error.
+// In this case, we return 0-bytes read with the corresponding error.
+// The Error is then cancelled for the next time.
+
+	if (status != KERR_SERIAL_NOERR)	{ *size = 0u; RETURN_INT_RESTORE(status);			 }
+	if (*size == 0u) 					{ *size = 0u; RETURN_INT_RESTORE(KERR_SERIAL_NOERR); }
+
+// cppcheck-suppress premium-misra-c-2023-13.2
+//
+	if (vRRecBuffer == vWRecBuffer)     { *size = 0u; RETURN_INT_RESTORE(KERR_SERIAL_RBUEM); }
+
+	for (i = 0u; i < *size; i++) {
+
+// cppcheck-suppress premium-misra-c-2023-13.2
+//
+		if (vRRecBuffer == vWRecBuffer) { *size = i; RETURN_INT_RESTORE(KERR_SERIAL_NOERR);  }
+
+		*wkBuffer = *vRRecBuffer;
+		wkBuffer++;
+		vRRecBuffer++;
+
+// cppcheck-suppress premium-misra-c-2023-13.2
+//
+		vRRecBuffer = (vRRecBuffer == &vRecBuffer[KUSART_SZ_RX_BUF]) ? (vRecBuffer) : (vRRecBuffer);
+	}
+	RETURN_INT_RESTORE(status);
+}
+
+/*
+ * \brief model_usart_flush
+ *
+ * - Flush the usart manager
+ *
+ */
+int32_t	model_usart_flush(void) {
+	sema_t	*semaphore;
+
+// Initialise the circular buffers (rec) and restart the associated semaphore
+
+	INTERRUPTION_OFF;
+	vRRecBuffer = vRecBuffer;
+	vWRecBuffer = vRecBuffer;
+	kern_getSemaphoreById(KUSART_SEMAPHORE_RX, &semaphore);
+	kern_restartSemaphore(semaphore);
+	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
+}
+
+/*
+ * \brief model_usart_isConnected
+ *
+ * - Is the usart connected
+ *
+ */
+int32_t	model_usart_isConnected(void) {
+
+	return (KERR_SERIAL_NOERR);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_USART_IRQHandler
+ *
+ * - Interruption RX-TX
+ *
+ */
+static	void	local_USART_IRQHandler(void) {
+				uint32_t	core;
+	volatile	uint32_t	iir;
+
+	core = GET_RUNNING_CORE;
+
+	iir = USART->ISR;
+	if ((iir & USART_ISR_RXNE) != 0u) {
+
+// RX interruption
+
+		if ((iir & USART_ISR_ORE) != 0u) { vStatus = KERR_SERIAL_EROVR; }
+		if ((iir & USART_ISR_FE)  != 0u) { vStatus = KERR_SERIAL_ERFRA; }
+		if ((iir & USART_ISR_PE)  != 0u) { vStatus = KERR_SERIAL_ERPAR; }
+
+// Read the data and signal the event
+
+		do {
+			*vWRecBuffer = (uint8_t)USART->RDR;
+			vWRecBuffer++;
+
+// cppcheck-suppress premium-misra-c-2023-13.2
+//
+			vStatus = (vWRecBuffer == vRRecBuffer) ? (KERR_SERIAL_RBFUL) : (vStatus);
+
+// cppcheck-suppress premium-misra-c-2023-13.2
+//
+			vWRecBuffer = (vWRecBuffer == &vRecBuffer[KUSART_SZ_RX_BUF]) ? (vRecBuffer) : (vWRecBuffer);
+		} while ((USART->ISR & USART_ISR_RXNE) != 0u);
+
+		#if (defined(KUSART_SEMA_RX_S))
+		if (vWithSemaphore_RX == true) { kern_signalSemaphore(vSemaphore_RX); }
+		#endif
+
+// cppcheck-suppress premium-misra-c-2023-5.8
+//
+		PREEMPTION_THRESHOLD(core);
+	}
+
+	if (((iir & USART_ISR_TXE) != 0u) && ((USART->CR1 & USART_CR1_TXEIE) != 0u)) {
+
+// TX interruption
+
+		if (cb_CTSCheck() == true) {
+			USART->TDR = (uint16_t)*vRSndBuffer;
+			vRSndBuffer++;
+
+// cppcheck-suppress premium-misra-c-2023-13.2
+//
+			if (vRSndBuffer == vWSndBuffer) {
+
+// Terminated; disable the Tx interruption
+
+				USART->CR1 &= (uint32_t)~USART_CR1_TXEIE;
+				vSending = false;
+
+				#if (defined(KUSART_SEMA_TX_S))
+				if (vWithSemaphore_TX == true) { kern_signalSemaphore(vSemaphore_TX); }
+				#endif
+			}
+		}
+
+// Continue to send data
+
+	}
+
+// Clear the possible pending interruptions
+
+	USART->ICR = USART_ICR_CMCF
+			| USART_ICR_TCBGTC
+			| USART_ICR_TCCF
+			| USART_ICR_TXFECF
+			| USART_ICR_IDLECF
+			| USART_ICR_ORECF
+			| USART_ICR_NCF
+			| USART_ICR_FECF
+			| USART_ICR_PECF;
+}

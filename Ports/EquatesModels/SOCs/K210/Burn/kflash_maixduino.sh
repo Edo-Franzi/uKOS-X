@@ -1,8 +1,11 @@
 #!/usr/bin/env zsh
-
+#
+# kflash_maixduino.
+# =================
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi			The 2025-01-01
 # Modifs:	Laurent von Allmen	The 2025-01-01

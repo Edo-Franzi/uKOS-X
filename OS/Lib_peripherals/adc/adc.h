@@ -1,10 +1,10 @@
 /*
 ; adc.
 ; ====
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -130,11 +130,11 @@ extern	int32_t	adc_release(reserveMode_t reserveMode);
  *
  * \code{.c}
  * int32_t      status;
- * float64_t    reference, result[6];
+ * float64_t    reference_f, result_f[6];
  * uint8_t      channel;
  *
  *    for (channel = 0; channel < 6; channel++) {
- *        status = adc_read(channel, &reference, &result[channel]);
+ *        status = adc_read(channel, &reference_f, &result_f[channel]);
  *        if (status != KERR_ADC_NOERR) {
  *            return (status);
  *        }
@@ -142,14 +142,14 @@ extern	int32_t	adc_release(reserveMode_t reserveMode);
  * \endcode
  *
  * \param[in]	channel			Channel (0..n)
- * \param[out]	*reference		Ptr on the reference of the A/D
- * \param[out]	*data			Ptr on the conversion result
+ * \param[out]	*reference_f	Ptr on the reference of the A/D
+ * \param[out]	*data_f			Ptr on the conversion result
  * \return		KERR_ADC_NOERR	OK
  * \return		KERR_ADC_GEERR	General error
  * \return		KERR_ADC_NODEV	The selected channel does not exist
  *
  */
-extern	int32_t	adc_read(uint8_t channel, float64_t *reference, float64_t *data);
+extern	int32_t	adc_read(uint8_t channel, float64_t *reference_f, float64_t *data_f);
 
 #if (defined(__cplusplus))
 }

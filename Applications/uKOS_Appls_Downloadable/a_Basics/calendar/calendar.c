@@ -1,10 +1,10 @@
 /*
 ; calendar.
 ; =========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -147,7 +147,7 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 			clock_t		tic1, toc1;
 			timeval_t	tic2, toc2;
 			uint64_t	unixTime;
-			float64_t	totalTime;
+			float64_t	totalTime_f;
 			tm_t		localTime, currentTime;
 	static	char_t		formattedTime[100];
 
@@ -184,8 +184,8 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	kern_suspendProcess(1234u);
 	toc1 = clock();
 
-	totalTime = (float64_t)(toc1 - tic1) / CLOCKS_PER_SEC;
-	(void)dprintf(KSYST, "Execution time: %.6f seconds\n", totalTime);
+	totalTime_f = (float64_t)(toc1 - tic1) / CLOCKS_PER_SEC;
+	(void)dprintf(KSYST, "Execution time: %.6f seconds\n", totalTime_f);
 
 // Measure the real time
 // !!! This is the measure of the real time
@@ -194,8 +194,8 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	kern_suspendProcess(1234u);
 	gettimeofday(&toc2, nullptr);
 
-	totalTime = (double)(toc2.tv_sec - tic2.tv_sec) + ((double)(toc2.tv_usec - tic2.tv_usec) / 1e6);
-	(void)dprintf(KSYST, "Execution time: %.6f seconds\n", totalTime);
+	totalTime_f = (double)(toc2.tv_sec - tic2.tv_sec) + ((double)(toc2.tv_usec - tic2.tv_usec) / 1e6);
+	(void)dprintf(KSYST, "Execution time: %.6f seconds\n", totalTime_f);
 
 // Generate the new Unix time 64-bits with 1us
 

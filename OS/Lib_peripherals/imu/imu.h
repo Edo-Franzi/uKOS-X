@@ -1,10 +1,10 @@
 /*
 ; imu.
 ; ====
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -86,21 +86,21 @@ struct imuCnf {
 // Data access
 
 struct imuAccePack {
-			float64_t	oAcce_X;								// X Accelerometer
-			float64_t	oAcce_Y;								// Y Accelerometer
-			float64_t	oAcce_Z;								// Z Accelerometer
+			float64_t	oAcce_X_f;								// X Accelerometer
+			float64_t	oAcce_Y_f;								// Y Accelerometer
+			float64_t	oAcce_Z_f;								// Z Accelerometer
 };
 
 struct imuGyroPack {
-			float64_t	oGyro_X;								// X gyroscope
-			float64_t	oGyro_Y;								// Y gyroscope
-			float64_t	oGyro_Z;								// Z gyroscope
+			float64_t	oGyro_X_f;								// X gyroscope
+			float64_t	oGyro_Y_f;								// Y gyroscope
+			float64_t	oGyro_Z_f;								// Z gyroscope
 };
 
 struct imuMagnPack {
-			float64_t	oMagn_X;								// X magnetometer
-			float64_t	oMagn_Y;								// Y magnetometer
-			float64_t	oMagn_Z;								// Z magnetometer
+			float64_t	oMagn_X_f;								// X magnetometer
+			float64_t	oMagn_Y_f;								// Y magnetometer
+			float64_t	oMagn_Z_f;								// Z magnetometer
 };
 
 // Acceleration mode
@@ -219,15 +219,15 @@ extern	int32_t	imu_configure(const imuCnf_t *configure);
  *
  *    status = imu_read(&accelerometer, &gyroscope, &magnetometer);
  *    dprintf(KSYST, “%3f %3f %3f,   %3f %3f %3f,   %3f %3f %3f\n”, \
- *                                                                  accelerometer.oAcce_X, \
- *                                                                  accelerometer.oAcce_Y, \
- *                                                                  accelerometer.oAcce_Z, \
- *                                                                  gyroscope.oGyro_X, \
- *                                                                  gyroscope.oGyro_Y, \
- *                                                                  gyroscope.oGyro_Z, \
- *                                                                  magnetometer.oMagn_X, \
- *                                                                  magnetometer.oMagn_Y, \
- *                                                                  magnetometer.oMagn_Z);
+ *                                                                  accelerometer.oAcce_X_f, \
+ *                                                                  accelerometer.oAcce_Y_f, \
+ *                                                                  accelerometer.oAcce_Z_f, \
+ *                                                                  gyroscope.oGyro_X_f, \
+ *                                                                  gyroscope.oGyro_Y_f, \
+ *                                                                  gyroscope.oGyro_Z_f, \
+ *                                                                  magnetometer.oMagn_X_f, \
+ *                                                                  magnetometer.oMagn_Y_f, \
+ *                                                                  magnetometer.oMagn_Z_f);
  * \endcode
  *
  * \param[out]	*accelerometer	Ptr on the accelerometer pack

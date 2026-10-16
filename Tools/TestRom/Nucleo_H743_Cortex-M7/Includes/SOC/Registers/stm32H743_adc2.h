@@ -1,9 +1,9 @@
 /*
 ; stm32H743_adc2.
 ; ===============
-
+;
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:

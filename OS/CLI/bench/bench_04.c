@@ -1,10 +1,10 @@
 /*
 ; bench_04.
 ; =========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -76,7 +76,7 @@
 
 // Prototypes
 
-static	void	 local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x);
+static	void	 local_atan2(uint64_t *time, float64_t *angle_f, int32_t y, int32_t x);
 
 /*
  * \brief bench_04
@@ -88,14 +88,14 @@ bool	bench_04(void) {
 	uint64_t	time, sumTime = 0u;
 	uint32_t	j;
 	int32_t		x, y;
-	float64_t	angle;
+	float64_t	angle_f;
 
 // atan2(234, 10345) = 178.7042-deg
 
 	x = 10345; y = 234;
 
 	for (j = 0u; j < KNB_TESTS; j++) {
-		local_atan2(&time, &angle, y, x);
+		local_atan2(&time, &angle_f, y, x);
 		sumTime += time;
 	}
 
@@ -107,7 +107,7 @@ bool	bench_04(void) {
 						 "          algorithm\n"
 						 "          Angle                                        a = %3.6f [Rad]\n"
 						 "          Number of tests                              n = %8d [-]\n"
-						 "          1000 x atan2(y, x)                           t = %8lld [us]\n\n", angle, KNB_TESTS, sumTime);
+						 "          1000 x atan2(y, x)                           t = %8lld [us]\n\n", angle_f, KNB_TESTS, sumTime);
 	return (true);
 }
 
@@ -120,7 +120,7 @@ bool	bench_04(void) {
  * - Compute the atan2
  *
  */
-static	void local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x) {
+static	void local_atan2(uint64_t *time, float64_t *angle_f, int32_t y, int32_t x) {
 						uint64_t	tStamp[2];
 			register	uint32_t	i, j, sh;
 			register	int32_t		yi, lx, ly;
@@ -147,12 +147,12 @@ static	void local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x) 
 
 	INTERRUPTION_OFF_HARD;
 	for (i = 0u; i < KNB_TESTS; i++) {
-		*angle = 0.0;
+		*angle_f = 0.0;
 
 // Special case: vectors = 0
 
 		if ((x == 0) && (y == 0)) {
-			*angle = 0.0;
+			*angle_f = 0.0;
 			INTERRUPTION_ON_HARD;
 
 			kern_readTickCount(&tStamp[1]);
@@ -164,8 +164,8 @@ static	void local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x) 
 
 // Verify the right plane
 
-		if (lx < 0) { lx = -lx; ly = -ly; *angle = KPI;	   }
-		if (ly > 0) {                     *angle = -(*angle); }
+		if (lx < 0) { lx = -lx; ly = -ly; *angle_f = KPI;		  }
+		if (ly > 0) {                     *angle_f = -(*angle_f); }
 
 // Rotate the vector and compute the angle
 
@@ -178,7 +178,7 @@ static	void local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x) 
 				lx = lx - (int32_t)sh;
 
 				ly = yi;
-				*angle -= aTabAtan[j];
+				*angle_f -= aTabAtan[j];
 			}
 			else {
 				sh = ((uint32_t)lx)>>j;
@@ -188,7 +188,7 @@ static	void local_atan2(uint64_t *time, float64_t *angle, int32_t y, int32_t x) 
 				lx = lx + (int32_t)sh;
 
 				ly = yi;
-				*angle += aTabAtan[j];
+				*angle_f += aTabAtan[j];
 			}
 		}
 	}

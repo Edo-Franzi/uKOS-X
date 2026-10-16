@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#
 # backprop.
 # =========
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi     The 2025-01-01
 # Modifs:
@@ -174,10 +174,10 @@ def mlp_exportNetwork(weights, layers, filename = "network.c_inc"):
 			f.write(f"#define\tKMLPN_L{index}_NB_OUT\t{nb_out}\n")
 
 			if index == 1:
-				f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvInput_L1[KMLPN_L1_NB_IN];\n")
-			f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvActivation_L{index}[KMLPN_L{index}_NB_OUT];\n")
-			f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvOutput_L{index}[KMLPN_L{index}_NB_OUT + 1];\n")
-			f.write(f"\n[[gnu::aligned(16)]]\nstatic\tconst\tfloat32_t\tvWeight_L{index}[KMLPN_L{index}_NB_OUT][KMLPN_L{index}_NB_IN] = {{\n")
+				f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvInput_L1_f[KMLPN_L1_NB_IN];\n")
+			f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvActivation_L{index}_f[KMLPN_L{index}_NB_OUT];\n")
+			f.write(f"\n[[gnu::aligned(16)]]\nstatic\t\t\tfloat32_t\tvOutput_L{index}_f[KMLPN_L{index}_NB_OUT + 1];\n")
+			f.write(f"\n[[gnu::aligned(16)]]\nstatic\tconst\tfloat32_t\tvWeight_L{index}_f[KMLPN_L{index}_NB_OUT][KMLPN_L{index}_NB_IN] = {{\n")
 			for row in w:
 				values = ', '.join(f"{v:.6f}f" for v in row)
 				f.write(f"\t\t\t\t\t\t\t\t{{ {values} }},\n")
@@ -192,12 +192,12 @@ def mlp_exportNetwork(weights, layers, filename = "network.c_inc"):
 			f.write(f"\t\t\t\t\t\t\tKMLPN_L{index}_NB_IN,\n")
 			f.write(f"\t\t\t\t\t\t\tKMLPN_L{index}_NB_OUT,\n")
 			if index == 1:
-				f.write(f"\t\t\t\t\t\t\t&vInput_L1[0],\n")
+				f.write(f"\t\t\t\t\t\t\t&vInput_L1_f[0],\n")
 			else:
-				f.write(f"\t\t\t\t\t\t\t&vOutput_L{index-1}[0],\n")
-			f.write(f"\t\t\t\t\t\t\t&vActivation_L{index}[0],\n")
-			f.write(f"\t\t\t\t\t\t\t&vOutput_L{index}[0],\n")
-			f.write(f"\t\t\t\t\t\t\t&vWeight_L{index}[0][0]\n")
+				f.write(f"\t\t\t\t\t\t\t&vOutput_L{index-1}_f[0],\n")
+			f.write(f"\t\t\t\t\t\t\t&vActivation_L{index}_f[0],\n")
+			f.write(f"\t\t\t\t\t\t\t&vOutput_L{index}_f[0],\n")
+			f.write(f"\t\t\t\t\t\t\t&vWeight_L{index}_f[0][0]\n")
 			f.write("\t\t\t\t\t\t};\n\n")
 
 		# Network structure

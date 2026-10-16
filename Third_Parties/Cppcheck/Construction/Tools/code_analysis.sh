@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
-
+#
 # code_analysis.
 # ==============
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2025-10-02
 # Modifs:

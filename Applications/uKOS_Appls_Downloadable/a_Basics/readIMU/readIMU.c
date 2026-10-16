@@ -1,10 +1,10 @@
 /*
 ; readIMU.
 ; ========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -147,18 +147,18 @@ enum {
 
 // Prototypes
 
-static	void	local_filter(float64_t ax,   float64_t ay,    float64_t az,
-							 float64_t gx,   float64_t gy,    float64_t gz,
-							 float64_t mx,   float64_t my,    float64_t mz,
-							 float64_t *mAx, float64_t *mAy,  float64_t *mAz,
-							 float64_t *mGx, float64_t *mGy,  float64_t *mGz,
-							 float64_t *mMx, float64_t *mMy,  float64_t *mMz);
+static	void	local_filter(float64_t ax_f,   float64_t ay_f,    float64_t az_f,
+							 float64_t gx_f,   float64_t gy_f,    float64_t gz_f,
+							 float64_t mx_f,   float64_t my_f,    float64_t mz_f,
+							 float64_t *mAx_f, float64_t *mAy_f,  float64_t *mAz_f,
+							 float64_t *mGx_f, float64_t *mGy_f,  float64_t *mGz_f,
+							 float64_t *mMx_f, float64_t *mMy_f,  float64_t *mMz_f);
 
 static	void	local_display(int32_t fpPrint,
 							 uint8_t  mode,
-							 float64_t mAx, float64_t mAy,  float64_t mAz,
-							 float64_t mGx, float64_t mGy,  float64_t mGz,
-							 float64_t mMx, float64_t mMy,  float64_t mMz);
+							 float64_t mAx_f, float64_t mAy_f,  float64_t mAz_f,
+							 float64_t mGx_f, float64_t mGy_f,  float64_t mGz_f,
+							 float64_t mMx_f, float64_t mMy_f,  float64_t mMz_f);
 
 /*
  * \brief aProcess 0
@@ -187,9 +187,9 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
  */
 [[noreturn]]
 static	void	aProcess_1([[maybe_unused]] const void *argument) {
-					float64_t			mAcce_X, mAcce_Y, mAcce_Z;
-					float64_t			mGyro_X, mGyro_Y, mGyro_Z;
-					float64_t			mMagn_X, mMagn_Y, mMagn_Z;
+					float64_t			mAcce_X_f, mAcce_Y_f, mAcce_Z_f;
+					float64_t			mGyro_X_f, mGyro_Y_f, mGyro_Z_f;
+					float64_t			mMagn_X_f, mMagn_Y_f, mMagn_Z_f;
 					imuAccePack_t		accelerometer;
 					imuGyroPack_t		gyroscope;
 					imuMagnPack_t		magnetometer;
@@ -208,18 +208,18 @@ static	void	aProcess_1([[maybe_unused]] const void *argument) {
 
 		imu_read(&accelerometer, &gyroscope, &magnetometer);
 
-		local_filter(accelerometer.oAcce_X, accelerometer.oAcce_Y, accelerometer.oAcce_Z,
-					 gyroscope.oGyro_X,     gyroscope.oGyro_Y,     gyroscope.oGyro_Z,
-					 magnetometer.oMagn_X,  magnetometer.oMagn_Y,  magnetometer.oMagn_Z,
-					 &mAcce_X,              &mAcce_Y,              &mAcce_Z,
-					 &mGyro_X,              &mGyro_Y,              &mGyro_Z,
-					 &mMagn_X,              &mMagn_Y,              &mMagn_Z);
+		local_filter(accelerometer.oAcce_X_f, accelerometer.oAcce_Y_f, accelerometer.oAcce_Z_f,
+					 gyroscope.oGyro_X_f,     gyroscope.oGyro_Y_f,     gyroscope.oGyro_Z_f,
+					 magnetometer.oMagn_X_f,  magnetometer.oMagn_Y_f,  magnetometer.oMagn_Z_f,
+					 &mAcce_X_f,			  &mAcce_Y_f,			   &mAcce_Z_f,
+					 &mGyro_X_f,			  &mGyro_Y_f,			   &mGyro_Z_f,
+					 &mMagn_X_f,			  &mMagn_Y_f,			   &mMagn_Z_f);
 
 		local_display(KCHANNEL,
 					  KDISPLAY_ACC,
-					  mAcce_X, mAcce_Y, mAcce_Z,
-					  mGyro_X, mGyro_Y, mGyro_Z,
-					  mMagn_X, mMagn_Y, mMagn_Z);
+					  mAcce_X_f, mAcce_Y_f, mAcce_Z_f,
+					  mGyro_X_f, mGyro_Y_f, mGyro_Z_f,
+					  mMagn_X_f, mMagn_Y_f, mMagn_Z_f);
 	}
 }
 
@@ -283,36 +283,36 @@ MAIN_ENTRY(argc, argv[]) {
  */
 #define	KFILTER		16u
 
-static	void	local_filter(float64_t ax,   float64_t ay,    float64_t az,
-							 float64_t gx,   float64_t gy,    float64_t gz,
-							 float64_t mx,   float64_t my,    float64_t mz,
-							 float64_t *mAx, float64_t *mAy,  float64_t *mAz,
-							 float64_t *mGx, float64_t *mGy,  float64_t *mGz,
-							 float64_t *mMx, float64_t *mMy,  float64_t *mMz) {
+static	void	local_filter(float64_t ax_f,   float64_t ay_f,    float64_t az_f,
+							 float64_t gx_f,   float64_t gy_f,    float64_t gz_f,
+							 float64_t mx_f,   float64_t my_f,    float64_t mz_f,
+							 float64_t *mAx_f, float64_t *mAy_f,  float64_t *mAz_f,
+							 float64_t *mGx_f, float64_t *mGy_f,  float64_t *mGz_f,
+							 float64_t *mMx_f, float64_t *mMy_f,  float64_t *mMz_f) {
 
 	static	uint8_t		i, k = 0u;
-	static	float64_t	aFilter[KNB_AXIS][KFILTER];
-	static	float64_t	gFilter[KNB_AXIS][KFILTER];
-	static	float64_t	mFilter[KNB_AXIS][KFILTER];
+	static	float64_t	aFilter_f[KNB_AXIS][KFILTER];
+	static	float64_t	gFilter_f[KNB_AXIS][KFILTER];
+	static	float64_t	mFilter_f[KNB_AXIS][KFILTER];
 
 // Window filtering
 
-	aFilter[KX_AXIS][k] = ax; aFilter[KY_AXIS][k] = ay; aFilter[KZ_AXIS][k] = az;
-	gFilter[KX_AXIS][k] = gx; gFilter[KY_AXIS][k] = gy; gFilter[KZ_AXIS][k] = gz;
-	mFilter[KX_AXIS][k] = mx; mFilter[KY_AXIS][k] = my; mFilter[KZ_AXIS][k] = mz;
+	aFilter_f[KX_AXIS][k] = ax_f; aFilter_f[KY_AXIS][k] = ay_f; aFilter_f[KZ_AXIS][k] = az_f;
+	gFilter_f[KX_AXIS][k] = gx_f; gFilter_f[KY_AXIS][k] = gy_f; gFilter_f[KZ_AXIS][k] = gz_f;
+	mFilter_f[KX_AXIS][k] = mx_f; mFilter_f[KY_AXIS][k] = my_f; mFilter_f[KZ_AXIS][k] = mz_f;
 
-	*mAx = *mAy = *mAz = 0.0;
-	*mGx = *mGy = *mGz = 0.0;
-	*mMx = *mMy = *mMz = 0.0;
+	*mAx_f = *mAy_f = *mAz_f = 0.0;
+	*mGx_f = *mGy_f = *mGz_f = 0.0;
+	*mMx_f = *mMy_f = *mMz_f = 0.0;
 
 	for (i = 0u; i < KFILTER; i++) {
-		*mAx += aFilter[KX_AXIS][i]; *mAy += aFilter[KY_AXIS][i]; *mAz += aFilter[KZ_AXIS][i];
-		*mGx += gFilter[KX_AXIS][i]; *mGy += gFilter[KY_AXIS][i]; *mGz += gFilter[KZ_AXIS][i];
-		*mMx += mFilter[KX_AXIS][i]; *mMy += mFilter[KY_AXIS][i]; *mMz += mFilter[KZ_AXIS][i];
+		*mAx_f += aFilter_f[KX_AXIS][i]; *mAy_f += aFilter_f[KY_AXIS][i]; *mAz_f += aFilter_f[KZ_AXIS][i];
+		*mGx_f += gFilter_f[KX_AXIS][i]; *mGy_f += gFilter_f[KY_AXIS][i]; *mGz_f += gFilter_f[KZ_AXIS][i];
+		*mMx_f += mFilter_f[KX_AXIS][i]; *mMy_f += mFilter_f[KY_AXIS][i]; *mMz_f += mFilter_f[KZ_AXIS][i];
 	}
-	*mAx = *mAx / KFILTER; *mAy = *mAy / KFILTER; *mAz = *mAz / KFILTER;
-	*mGx = *mGx / KFILTER; *mGy = *mGy / KFILTER; *mGz = *mGz / KFILTER;
-	*mMx = *mMx / KFILTER; *mMy = *mMy / KFILTER; *mMz = *mMz / KFILTER;
+	*mAx_f = *mAx_f / KFILTER; *mAy_f = *mAy_f / KFILTER; *mAz_f = *mAz_f / KFILTER;
+	*mGx_f = *mGx_f / KFILTER; *mGy_f = *mGy_f / KFILTER; *mGz_f = *mGz_f / KFILTER;
+	*mMx_f = *mMx_f / KFILTER; *mMy_f = *mMy_f / KFILTER; *mMz_f = *mMz_f / KFILTER;
 
 	k++; if (k == KFILTER) { k = 0u; };
 }
@@ -325,26 +325,26 @@ static	void	local_filter(float64_t ax,   float64_t ay,    float64_t az,
  */
 static	void	local_display(int32_t fpPrint,
 							  uint8_t  mode,
-							  float64_t mAx, float64_t mAy,  float64_t mAz,
-							  float64_t mGx, float64_t mGy,  float64_t mGz,
-							  float64_t mMx, float64_t mMy,  float64_t mMz) {
+							  float64_t mAx_f, float64_t mAy_f,  float64_t mAz_f,
+							  float64_t mGx_f, float64_t mGy_f,  float64_t mGz_f,
+							  float64_t mMx_f, float64_t mMy_f,  float64_t mMz_f) {
 
-	float64_t	x, y, z;
+	float64_t	x_f, y_f, z_f;
 
 	switch (mode) {
-		case KDISPLAY_ACC:	   { x = mAx; y = mAy; z = mAz; break; }
-		case KDISPLAY_GYRO:	   { x = mGx; y = mGy; z = mGz; break; }
-		case KDISPLAY_MAGNETO: { x = mMx; y = mMy; z = mMz; break; }
-		default:			   { x = mAx; y = mAy; z = mAz; break; }
+		case KDISPLAY_ACC:	   { x_f = mAx_f; y_f = mAy_f; z_f = mAz_f; break; }
+		case KDISPLAY_GYRO:	   { x_f = mGx_f; y_f = mGy_f; z_f = mGz_f; break; }
+		case KDISPLAY_MAGNETO: { x_f = mMx_f; y_f = mMy_f; z_f = mMz_f; break; }
+		default:			   { x_f = mAx_f; y_f = mAy_f; z_f = mAz_f; break; }
 	}
 
 // Print the results
 
 	#if (defined(DISP_COOLTERM_S))
-	(void)dprintf(fpPrint, "%f\t%f\t%f\n", x, y, z);
+	(void)dprintf(fpPrint, "%f\t%f\t%f\n", x_f, y_f, z_f);
 	#else
 
 	uint32_t	sample = 0u;
-	(void)dprintf(fpPrint, "%"PRIu32" %f %f %f\n", ++sample, x, y, z);
+	(void)dprintf(fpPrint, "%"PRIu32" %f %f %f\n", ++sample, x_f, y_f, z_f);
 	#endif
 }

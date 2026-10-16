@@ -1,10 +1,10 @@
 /*
 ; nnh_classifier.
 ; ===============
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -81,7 +81,7 @@ void	nnh_init(void) {
  * - Classify a data vector
  *
  */
-void	nnh_classify(float32_t *entry, uint8_t *face) {
+void	nnh_classify(float32_t *entry_f, uint8_t *face) {
 	uint64_t	time[2];
 	int32_t		q;
 	uint32_t	i, delta = 0u;
@@ -96,7 +96,7 @@ void	nnh_classify(float32_t *entry, uint8_t *face) {
 	#define	KSCALE	0.03315797075629234f
 	#define	KZERO	-13
 	
-		q = (int32_t)roundf(entry[i] / KSCALE) + KZERO;
+		q = (int32_t)roundf(entry_f[i] / KSCALE) + KZERO;
 
 		if (q < -128) { q = -128; }
 		if (q >  127) { q =  127; }

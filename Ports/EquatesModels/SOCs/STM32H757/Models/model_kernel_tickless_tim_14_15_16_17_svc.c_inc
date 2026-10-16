@@ -1,0 +1,970 @@
+/*
+; model_kernel_tickless_tim_14_15_16_17_svc.
+; ==========================================
+;
+; SPDX-License-Identifier: MIT
+; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
+;
+;------------------------------------------------------------------------
+; Author:	Edo. Franzi		The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		Model for controlling the "model_kernel_tickless_tim_14_15_16_17_svc" device.
+;
+;			Tim 14	- 1-us free running timer
+;			Tim 15	- 20-ms	process timeout
+;			Tim 16	- user defined intervals for precise signals
+;			Tim 17	- Nx1-ms reference time for tickless
+;			svc		- software interruption for message passing
+;			PendSV  - software interruption for the preemption
+;
+;			This code has to support the following routines:
+;			- model_kernel_init
+;			- model_kernel_runKernel
+;			- model_kernel_setLowPower
+;			- model_kernel_setPreciseSignal
+;			- model_kernel_readTickCount
+;			- model_kernel_newProcessTimeout
+;			- model_kernel_stopProcessTimeout
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#include	"kern/private/private_processes.h"
+#include	"kern/private/private_scheduler.h"
+#include	"kern/private/private_temporal.h"
+#include	"kern/private/private_preciseSignals.h"
+
+#define	K1ms		((float64_t)(0.001))
+
+#define KPSCT14		((KFREQUENCY_T14 / KFREQUENCY_1MHz) - 1u)							// Prescaler for 1'000'000-Hz
+#define KARRT14		(~0u)																// Autoreload (every 4294-s)
+
+#define KPSCT15		((KFREQUENCY_T15 / KFREQUENCY_1MHz) - 1u)							// Prescaler for 1'000'000-Hz
+#define KARRT15		((uint32_t)((KFREQUENCY_1MHz * KKERN_PROC_TIMEOUT * K1ms) - 1u))	// Autoreload
+
+#if (KKERN_NB_PRECISE_SIGNALS > 0)
+#define KPSCT16		((KFREQUENCY_T16 / KFREQUENCY_1MHz) - 1u)							// Prescaler for 1'000'000-Hz
+#define KARRT16		(~0u)																// Autoreload (every 4294-s)
+#endif
+
+// Special initialisation for the tickless scheduler
+// 1-bit corresponds to 0.250-ms, so N = 4
+// The maximum usable time withing the tickless mode is:
+// (0xFFFFFFFF - 1) >> 4 --> 0x3FFFFFFF
+
+#define	N			4u																	// 1 bit corresponds to 0.25-ms
+#define KPSCT17		((KFREQUENCY_T17 / (N * KFREQUENCY_1KHz)) - 1u)						// Prescaler for 1'000'000-Hz
+#define KARRT17		((uint32_t)((N * KFREQUENCY_1KHz * KKERN_TIC_TIME * K1ms) - 1u))	// Autoreload
+
+enum {
+		KWUNORTO = 0u,																	// Tickless wake-up by a normal timeout
+		KWUINTPR																		// Tickless wake-up by a preemption interruption
+};
+
+#if (KKERN_NB_PRECISE_SIGNALS > 0)
+static				uint64_t	vPrcsAbsCount  = 0u;									// 64-bit timer (1-us) for signal precise
+static				uint8_t		vPrcsIndex     = 0u;									// Index for signal precise
+#endif
+
+static	volatile	uint32_t	vTimeStart     = 0u;									// Time-stamp: when the process was scheduled
+static	volatile	uint32_t	vTimeStop      = 0u;									// Time-stamp: when the process was stopped
+static	volatile	uint32_t	vTimeLastStart = 0u;									// Time-stamp: when the process was started (previous cycle)
+static	volatile	uint64_t	vTickCount	   = 0u;									// 64-bit timer (1-us)
+static	volatile	bool		vTickLess	   = false;									// Tickless mode
+static	volatile	bool		vTimeout	   = false;									// Timeout
+extern	volatile	bool		vPriv_insideSVC[KNB_CORES];								// Inside an SVC call
+
+// Prototypes
+
+#if (KKERN_NB_PRECISE_SIGNALS > 0)
+static	void		local_TIM16_IRQHandler(void);
+static	void		local_nextTime(uint64_t absTime);
+#endif
+
+static	void		local_TIM14_IRQHandler(void);
+static	void		local_TIM17_IRQHandler(void);
+static	void		local_updateTickless(uint8_t mode);
+static	void		local_updateTickTimer(uint32_t tickTime);
+static	void		local_timeStmp(bool overflow);
+static	void		local_timeStart(void);
+static	void		local_timeStop(void);
+
+/*
+ * \brief Initialise the uKernel
+ *
+ * - Initialise the manager
+ *
+ */
+void	model_kernel_init(void) {
+
+	#if (KKERN_NB_PRECISE_SIGNALS > 0)
+	RCC->APB2ENR  |= RCC_APB2ENR_TIM16EN;
+	#endif
+
+	RCC->APB1LENR |= RCC_APB1LENR_TIM14EN;
+	RCC->APB2ENR  |= RCC_APB2ENR_TIM17EN;
+	RCC->APB2ENR  |= RCC_APB2ENR_TIM15EN;
+
+	#if (KKERN_NB_PRECISE_SIGNALS > 0)
+	INTERRUPT_VECTOR(TIM16_C0_IRQn, local_TIM16_IRQHandler);
+	NVIC_SetPriority(TIM16_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	#endif
+
+	INTERRUPT_VECTOR(TIM8_TRG_COM_TIM14_C0_IRQn, local_TIM14_IRQHandler);
+	INTERRUPT_VECTOR(TIM17_C0_IRQn, local_TIM17_IRQHandler);
+
+	NVIC_SetPriority(TIM8_TRG_COM_TIM14_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	NVIC_SetPriority(TIM17_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	NVIC_SetPriority(TIM15_C0_IRQn, KINT_LEVEL_KERNEL_TIMERS);
+	NVIC_SetPriority(PendSV_C0_IRQn, KINT_LEVEL_KERNEL_PREEMPTION);
+
+// Timer 16 (1-us free running timer for signal precise)
+
+	#if (KKERN_NB_PRECISE_SIGNALS > 0)
+	TIM16->PSC  = (uint32_t)KPSCT16;
+	TIM16->ARR  = (uint32_t)KARRT16;
+	TIM16->EGR  = (uint32_t)TIM16_EGR_UG;
+	TIM16->CNT  = 0u;
+	TIM16->DIER = (uint32_t)TIM16_DIER_UIE;
+	TIM16->SR  &= (uint32_t)~TIM16_SR_UIF;
+	TIM16->CR1 |= (uint32_t)TIM16_CR1_CEN;
+	#endif
+
+// Timer 14 (free running timer for statistics and for the tickcount)
+
+	TIM14->PSC  = (uint32_t)KPSCT14;
+	TIM14->ARR  = (uint32_t)KARRT14;
+	TIM14->EGR  = (uint32_t)TIM14_EGR_UG;
+	TIM14->CNT  = 0u;
+	TIM14->DIER = (uint32_t)TIM14_DIER_UIE;
+	TIM14->SR  &= (uint32_t)~TIM14_SR_UIF;
+	TIM14->CR1 |= (uint32_t)TIM14_CR1_CEN;
+
+// Timer 17 (1-ms or tickless)
+
+	TIM17->PSC  = (uint32_t)KPSCT17;
+	TIM17->ARR  = (uint32_t)KARRT17;
+	TIM17->EGR  = (uint32_t)TIM17_EGR_UG;
+	TIM17->CNT  = 0u;
+	TIM17->DIER = (uint32_t)TIM17_DIER_UIE;
+	TIM17->SR  &= (uint32_t)~TIM17_SR_UIF;
+	TIM17->CR1 |= (uint32_t)TIM17_CR1_CEN;
+
+// Timer 15 (20-ms)
+
+	TIM15->PSC  = (uint32_t)KPSCT15;
+	TIM15->ARR  = (uint32_t)KARRT15;
+	TIM15->EGR  = (uint32_t)TIM15_EGR_UG;
+	TIM15->CNT  = 0u;
+	TIM15->DIER = (uint32_t)TIM15_DIER_UIE;
+	TIM15->SR  &= (uint32_t)~TIM15_SR_UIF;
+	TIM15->CR1 |= (uint32_t)TIM15_CR1_CEN;
+}
+
+/*
+ * \brief Run the multitasking
+ *
+ * - Run the kernel
+ *
+ */
+void	model_kernel_runKernel(void) {
+
+	#if (KKERN_NB_PRECISE_SIGNALS > 0)
+	NVIC_ClearPendingIRQ(TIM16_C0_IRQn);
+	NVIC_EnableIRQ(TIM16_C0_IRQn);
+	#endif
+
+	NVIC_ClearPendingIRQ(TIM8_TRG_COM_TIM14_C0_IRQn);
+	NVIC_ClearPendingIRQ(TIM17_C0_IRQn);
+	NVIC_ClearPendingIRQ(TIM15_C0_IRQn);
+
+	NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_C0_IRQn);
+	NVIC_EnableIRQ(TIM17_C0_IRQn);
+	NVIC_EnableIRQ(TIM15_C0_IRQn);
+
+	vTickCount = 0u;
+}
+
+/*
+ * \brief Set the low power mode
+ *
+ * - Set the low power mode
+ *
+ * KKERN_CPU_MODE_NORMAL		-> Normal mode
+ * KKERN_CPU_MODE_DEEP_SLEEP	-> CPU in a deep sleep mode
+ * KKERN_CPU_MODE_HIBERNATE		-> CPU in a hibernate mode
+ * KKERN_CPU_MODE_STOP			-> CPU in a stop mode
+ *
+ */
+void	model_kernel_setLowPower(uint8_t mode) {
+	uint32_t	timeStop;
+
+	switch (mode) {
+		case KKERN_CPU_MODE_NORMAL:
+		case KKERN_CPU_MODE_DEEP_SLEEP:
+		case KKERN_CPU_MODE_HIBERNATE:
+		case KKERN_CPU_MODE_STOP:
+		default: {
+
+// Freeze the timeout timer
+// Max time 0x7FFFFFFF (TIM17 is clocked to 0.5-ms)
+// Here, we have a 16-bit timer. So, the max time
+// is 0x7FFF (hier timeouts are multiple of 0x7FFF timeouts)
+
+  			TIM15->CR1 &= (uint32_t)~TIM15_CR1_CEN;
+
+			if (vTickLess == false) {
+
+				INTERRUPTION_OFF;
+				vTickLess = true;
+
+				timeStop = temporal_getNextLowPowerTime();
+				timeStop = (timeStop > (0xFFFFu / N)) ? (0xFFFFu / N) : (timeStop);
+				timeStop = (timeStop == 0u)			  ? (1u)		  : (timeStop);
+
+   				TIM17->CR1 &= (uint32_t)~TIM17_CR1_CEN;
+				TIM17->SR  &= (uint32_t)~TIM17_SR_UIF;
+				TIM17->ARR  = (timeStop * N) - 1u;
+
+				TIM17->CNT  = (N > 1u) ? (TIM17->CNT % N) : (0u);
+
+				NVIC_ClearPendingIRQ(TIM17_C0_IRQn);
+				TIM17->CR1 |= TIM17_CR1_CEN;
+				INTERRUPTION_RESTORE;
+			}
+
+// We arrive here by:
+// - Tickless timeout
+// - Pre-emption interruptions
+// - Conventional interruptions
+
+			vTimeout = false;
+			do { WAITING_INTERRUPTION; } while (vTimeout == false);
+
+			break;
+		}
+	}
+}
+
+#if (KKERN_NB_PRECISE_SIGNALS > 0)
+/*
+ * \brief Precise signal (minimal jitter)
+ *
+ * - Set the precise timer
+ *
+ */
+void	model_kernel_setPreciseSignal(prcs_t *handle) {
+
+	TIM16->DIER &= (uint32_t)~TIM16_DIER_CC1IE;
+
+	INTERRUPTION_OFF;
+	vPrcsAbsCount &= 0xFFFFFFFFFFFF0000u;
+	vPrcsAbsCount |= (uint64_t)TIM16->CNT;
+
+	handle->oNextTime = vPrcsAbsCount + handle->oPeriod;
+
+	local_nextTime(vPrcsAbsCount);
+	INTERRUPTION_RESTORE;
+}
+#endif
+
+/*
+ * \brief Read the tickCount
+ *
+ * - Read the tickcount
+ *
+ */
+void	model_kernel_readTickCount(uint64_t *tickCount) {
+
+	INTERRUPTION_OFF;
+	local_timeStmp(false);
+
+	*tickCount = vTickCount;
+	INTERRUPTION_RESTORE;
+}
+
+/*
+ * \brief Start a new process timeout
+ *
+ * - Start a new process timeout
+ *
+ */
+void	model_kernel_newProcessTimeout(void) {
+
+	TIM15->CR1 &= (uint32_t)~TIM15_CR1_CEN;
+	TIM15->SR  &= (uint32_t)~TIM15_SR_UIF;
+	NVIC_ClearPendingIRQ(TIM15_C0_IRQn);
+	NVIC_EnableIRQ(TIM15_C0_IRQn);
+
+	TIM15->CNT  = 0u;
+	TIM15->ARR  = KARRT15;
+	TIM15->SR  &= (uint32_t)~TIM15_SR_UIF;
+	TIM15->CR1 |= TIM15_CR1_CEN;
+}
+
+/*
+ * \brief Stop the process timeout
+ *
+ * - Stop the process timeout
+ *
+ */
+void	model_kernel_stopProcessTimeout(void) {
+
+	NVIC_DisableIRQ(TIM15_C0_IRQn);
+}
+
+// Local routines
+// ==============
+
+/*
+ * \brief local_TIM14_IRQHandler
+ *
+ * - Update the 1-us 64-bit counter
+ *
+ */
+static	void	local_TIM14_IRQHandler(void) {
+
+// INT acknowledge
+
+	TIM14->SR &= (uint32_t)~TIM14_SR_UIF;
+	local_timeStmp(true);
+}
+
+#if (KKERN_NB_PRECISE_SIGNALS > 0)
+/*
+ * \brief local_TIM16_IRQHandler
+ *
+ * - Signal precise
+ *
+ */
+static	void	local_TIM16_IRQHandler(void) {
+	uint8_t		i, mode;
+	uint32_t	signal;
+	uint64_t	period;
+	sign_t		*signalGroup;
+	proc_t		*toProcess;
+
+// INT acknowledge
+// Overflow -> increment the vPrcsAbsCount
+
+	if ((TIM16->SR & TIM16_SR_UIF) != 0u) {
+		TIM16->SR &= (uint32_t)~TIM16_SR_UIF;
+
+		vPrcsAbsCount &= 0xFFFFFFFFFFFF0000u;
+		vPrcsAbsCount |= (uint64_t)TIM16->CNT;
+		vPrcsAbsCount += 0x10000u;
+
+		local_nextTime(vPrcsAbsCount);
+		return;
+	}
+
+// INT acknowledge
+// Compare -> Short delay
+// Generate the corresponding signal (broadcast)
+
+	if ((TIM16->SR & TIM16_SR_CC1IF) != 0u) {
+		TIM16->SR &= (uint32_t)~TIM16_SR_CC1IF;
+
+		vPrcsAbsCount &= 0xFFFFFFFFFFFF0000u;
+		vPrcsAbsCount |= (uint64_t)TIM16->CNT;
+
+		i = vPrcsIndex;
+
+		signal		= vKern_prcs[KCORE_0][i].oSignal;
+		mode		= vKern_prcs[KCORE_0][i].oMode;
+		period		= vKern_prcs[KCORE_0][i].oPeriod;
+		signalGroup = vKern_prcs[KCORE_0][i].oSignalGroup;
+		toProcess	= vKern_prcs[KCORE_0][i].oToProcess;
+		kern_signalSignal(signalGroup, signal, toProcess, KSIGN_SIGNALE_WITH_CONTEXT_SWITCH);
+
+		if (vKern_prcs[KCORE_0][i].oMode == KPRCS_CONTINUOUS) {
+			kern_setPreciseSignal(&vKern_prcs[KCORE_0][i], &signalGroup, toProcess, period, mode, signal);
+		}
+		else {
+			vKern_prcs[KCORE_0][i].oMode = KPRCS_STOP;
+			local_nextTime(vPrcsAbsCount);
+		}
+	}
+}
+
+/*
+ * \brief local_nextTime
+ *
+ * - Compute the next relative time
+ *
+ */
+static	void	local_nextTime(uint64_t absTime) {
+	uint8_t		i;
+	uint64_t	minNextTime;
+	bool		found = false;
+
+	TIM16->DIER &= (uint32_t)~TIM16_DIER_CC1IE;
+
+	INTERRUPTION_OFF;
+
+// Determine the next shortest time
+
+	minNextTime = 0xFFFFFFFFFFFFFFFFu;
+	for (i = 0u; i < KKERN_NB_PRECISE_SIGNALS; i++) {
+		if (((vKern_prcs[KCORE_0][i].oState & (1u<<BPRCS_INSTALLED)) != 0u) && (vKern_prcs[KCORE_0][i].oMode != KPRCS_STOP) && (vKern_prcs[KCORE_0][i].oNextTime < minNextTime)) {
+			minNextTime = vKern_prcs[KCORE_0][i].oNextTime;
+			found = true;
+			vPrcsIndex = i;
+		}
+	}
+
+// For Shortest request, it can happen that minNextTime < vCNT (too slow process).
+// In this case, we launch the new time with a minimal delay of 2 ...
+
+	if (found == true) {
+		minNextTime = (minNextTime < absTime) ? (2u) : (minNextTime - absTime);
+		minNextTime = (minNextTime < 2u)   	  ? (2u) : (minNextTime);
+		if (minNextTime < 65536u) {
+			TIM16->CCR1  = TIM16->CNT + (uint16_t)minNextTime;
+			TIM16->SR   &= (uint32_t)~TIM16_SR_CC1IF;
+			TIM16->DIER |= TIM16_DIER_CC1IE;
+		}
+	}
+	INTERRUPTION_RESTORE;
+}
+#endif
+
+/*
+ * \brief local_TIM17_IRQHandler
+ *
+ * - TL or 1-ms fine time interruption
+ *
+ */
+static	void	local_TIM17_IRQHandler(void) {
+
+// INT acknowledge
+
+	TIM17->SR &= (uint32_t)~TIM17_SR_UIF;
+	local_updateTickless(KWUNORTO);
+}
+
+/*
+ * \brief PendSV_C0_IRQHandler
+ *
+ * - Pre-emption
+ * - Save the context
+ * - Save the context stack
+ * - Change the context
+ * - Give another timeout to the process
+ * - Recover another context
+ *
+ * - Save the full stack frame (uKOS-X like)
+ *
+ *		Normal stack frame			Stack frame with FPU
+ *
+ *		->							FPSCR
+ *		->							S15..S0
+ *		->	xPSR					xPSR
+ *		->	PC						PC
+ *		->	LR(R14)					LR(R14)
+ *		->	R12						R12
+ *		->	R3..R0					R3..R0		Block stacked by an exception
+ *
+ *		->	R11..R4					R11..R4
+ *		->	BASEPRI					BASEPRI
+ *		->							S31..S16
+ *		->	LR(R14)					LR(R14)		Block stacked manually
+ *
+ * !!! Do not generate prologue/epilogue sequences
+ *
+ */
+uintptr_t	*local_newContextPRE(uintptr_t *stack);
+
+[[gnu::naked]]
+void		PendSV_C0_IRQHandler(void) {
+
+	KERN_SAVE_FRAME_NORMAL;
+
+// Change the context due to a preemption
+
+	CALL_FNCT(local_newContextPRE);
+
+	KERN_NEW_FRAME;
+	KERN_RETURN;
+}
+
+/*
+ * \brief local_newContextPRE
+ *
+ * - Pre-emption, change of the context
+ *	 - Save the stack of the old process
+ *   - Change the context and prepare the next process
+ *     - Verify the sanity of the stack
+ *     - Stop time of the process
+ *     - Change the context
+ *     - Start time of the process
+ *	 - Return the stack of the new process
+ *
+ */
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextPRE(uintptr_t *stack) {
+
+// Save the stack of the old process
+
+	vKern_stackProc[KCORE_0] = stack;
+
+	local_updateTickless(KWUINTPR);
+	local_timeStop();
+
+	INTERRUPTION_SET_PERIPH;
+
+// Verify the sanity of the stack
+
+	CHECK_STACK_SANITY(KCORE_0);
+
+	scheduler_callBackSlow();
+	local_timeStart();
+
+// Statistics
+
+	#if (KKERN_WITH_STATISTICS_S == true)
+	INTERRUPTION_OFF;
+	const	uint32_t	tStart = vTimeStart;
+	const	uint32_t	tStop  = vTimeStop;
+	const	uint32_t	tLast  = vTimeLastStart;
+	const	uint32_t	tExc   = vKern_TimeException[KCORE_0];
+			proc_t		*proc  = vKern_backwardProc[KCORE_0];
+	INTERRUPTION_RESTORE;
+
+	statistics_statistic(proc, tStart, tStop, tLast, tExc);
+	vKern_TimeException[KCORE_0] = 0u;
+	#endif
+
+// Restore the user / privileged mode
+// vKern_runProc is the process that will run in a short ...
+
+	#if (defined(PRIVILEGED_USER_S))
+	if ((vKern_runProc[KCORE_0]->oSpecification.oMode == KPROC_PRIVILEGED) || ((vKern_runProc[KCORE_0]->oInternal.oState & (1u<<BPROC_PRIV_ELEVATED)) != 0u)) { SET_PRIVILEGED_MODE; }
+	else																																					  { SET_USER_MODE;		 }
+	#endif
+
+// Return the stack of the new process
+
+	return (vKern_stackProc[KCORE_0]);
+}
+
+/*
+ * \brief TIM15_C0_IRQHandler
+ *
+ * - Time slice timeout
+ * - Save the context
+ * - Save the context stack
+ * - Change the context
+ * - Give another timeout to the process
+ * - Recover another context
+ *
+ * - Save the full stack frame (uKOS-X like)
+ *
+ *		Normal stack frame			Stack frame with FPU
+ *
+ *		->							FPSCR
+ *		->							S15..S0
+ *		->	xPSR					xPSR
+ *		->	PC						PC
+ *		->	LR(R14)					LR(R14)
+ *		->	R12						R12
+ *		->	R3..R0					R3..R0		Block stacked by an exception
+ *
+ *		->	R11..R4					R11..R4
+ *		->	BASEPRI					BASEPRI
+ *		->							S31..S16
+ *		->	LR(R14)					LR(R14)		Block stacked manually
+ *
+ * !!! Do not generate prologue/epilogue sequences
+ *
+ */
+uintptr_t	*local_newContextTOU(uintptr_t *stack);
+
+[[gnu::naked]]
+void		TIM15_C0_IRQHandler(void) {
+
+	KERN_SAVE_FRAME_NORMAL;
+
+// Change the context due to a timeout
+
+	CALL_FNCT(local_newContextTOU);
+
+	KERN_NEW_FRAME;
+	KERN_RETURN;
+}
+
+/*
+ * \brief local_newContextTOU
+ *
+ * - Process timeout, change of the context
+ *	 - Save the stack of the old process
+ *   - INT acknowledge and new time for the next process
+ *   - Change the context and prepare the next process
+ *     - Clear the interruption
+ *     - Disable the timer
+ *     - Verify the sanity of the stack
+ *     - Stop time of the process
+ *     - Change the context
+ *     - Start time of the process
+ *	 - Return the stack of the new process
+ *
+ */
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextTOU(uintptr_t *stack) {
+
+// Save the stack of the old process
+
+	vKern_stackProc[KCORE_0] = stack;
+
+	local_timeStop();
+	TIM15->CR1 &= (uint32_t)~TIM15_CR1_CEN;
+	TIM15->SR  &= (uint32_t)~TIM15_SR_UIF;
+	NVIC_ClearPendingIRQ(TIM15_C0_IRQn);
+
+	INTERRUPTION_SET_PERIPH;
+
+// Verify the sanity of the stack
+
+	CHECK_STACK_SANITY(KCORE_0);
+
+	scheduler_callBackSlow();
+	local_timeStart();
+
+// Statistics
+
+	#if (KKERN_WITH_STATISTICS_S == true)
+	INTERRUPTION_OFF;
+	const	uint32_t	tStart = vTimeStart;
+	const	uint32_t	tStop  = vTimeStop;
+	const	uint32_t	tLast  = vTimeLastStart;
+	const	uint32_t	tExc   = vKern_TimeException[KCORE_0];
+			proc_t		*proc  = vKern_backwardProc[KCORE_0];
+	INTERRUPTION_RESTORE;
+
+	statistics_statistic(proc, tStart, tStop, tLast, tExc);
+	vKern_TimeException[KCORE_0] = 0u;
+	#endif
+
+// Restore the user / privileged mode
+// vKern_runProc is the process that will run in a short ...
+
+	#if (defined(PRIVILEGED_USER_S))
+	if ((vKern_runProc[KCORE_0]->oSpecification.oMode == KPROC_PRIVILEGED) || ((vKern_runProc[KCORE_0]->oInternal.oState & (1u<<BPROC_PRIV_ELEVATED)) != 0u)) { SET_PRIVILEGED_MODE; }
+	else																																					  { SET_USER_MODE;		 }
+	#endif
+
+// Return the stack of the new process
+
+	return (vKern_stackProc[KCORE_0]);
+}
+
+/*
+ * \brief kernel_message_C0
+ *
+ * - TRAP
+ * - Save the context
+ * - Save the context stack
+ * - Process the message sent
+ * - Change the context
+ * - Give another timeout to the process
+ * - Recover another context
+ *
+ * - Save the full stack frame (uKOS-X like)
+ *
+ *		Normal stack frame				Stack frame with FPU
+ *
+ *		->	Message			+40 (36)	+108 (104)
+ *		->	Message			+36 (32)	+104 (100)
+ *		->	(alignment)		+32			+100			Implementation specific
+ *
+ *		->								FPSCR
+ *		->								S15..S0
+ *		->	xPSR						xPSR
+ *		->	PC							PC
+ *		->	LR(R14)						LR(R14)
+ *		->	R12							R12
+ *		->	R3..R0						R3..R0			Block stacked by an exception
+ *
+ *		->	R11..R4						R11..R4
+ *		->	BASEPRI						BASEPRI
+ *		->								S31..S16
+ *		->	LR(R14)						LR(R14)			Block stacked manually
+ *
+ * !!! Do not generate prologue/epilogue sequences
+ *
+ */
+uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message);
+
+[[gnu::naked]]
+void		kernel_message_C0(void) {
+
+	KERN_RECOVER_MESSAGE;
+	KERN_SAVE_FRAME_MESSAGE;
+
+// Change the context due to a message
+
+	CALL_FNCT(local_newContextMSG);
+
+	KERN_NEW_FRAME;
+	KERN_RETURN;
+}
+
+/*
+ * \brief local_newContextMSG
+ *
+ * - Message, change the context
+ *	 - Save the stack of the old process
+ *   - INT acknowledge and new time for the next process
+ *   - Change the context and prepare the next process
+ *     - Verify the sanity of the stack
+ *     - Stop time of the process
+ *     - Change the context
+ *     - Start time of the process
+ *	 - Return the stack of the new process
+ *
+ */
+[[gnu::noinline, gnu::used]]
+uintptr_t	*local_newContextMSG(uintptr_t *stack, uint32_t message) {
+
+// Save the stack of the old process
+
+	vKern_stackProc[KCORE_0] = stack;
+	vPriv_insideSVC[KCORE_0] = true;
+
+	local_timeStop();
+
+	INTERRUPTION_SET_PERIPH;
+
+// Verify the sanity of the stack
+
+	CHECK_STACK_SANITY(KCORE_0);
+
+	scheduler_callBackTrap(message);
+	local_timeStart();
+
+// Statistics
+
+	#if (KKERN_WITH_STATISTICS_S == true)
+	INTERRUPTION_OFF;
+	const	uint32_t	tStart = vTimeStart;
+	const	uint32_t	tStop  = vTimeStop;
+	const	uint32_t	tLast  = vTimeLastStart;
+	const	uint32_t	tExc   = vKern_TimeException[KCORE_0];
+			proc_t		*proc  = vKern_backwardProc[KCORE_0];
+	INTERRUPTION_RESTORE;
+
+	statistics_statistic(proc, tStart, tStop, tLast, tExc);
+	vKern_TimeException[KCORE_0] = 0u;
+	#endif
+
+// Restore the user / privileged mode
+// vKern_runProc is the process that will run in a short ...
+
+	#if (defined(PRIVILEGED_USER_S))
+	if ((vKern_runProc[KCORE_0]->oSpecification.oMode == KPROC_PRIVILEGED) || ((vKern_runProc[KCORE_0]->oInternal.oState & (1u<<BPROC_PRIV_ELEVATED)) != 0u)) { SET_PRIVILEGED_MODE; }
+	else																																					  { SET_USER_MODE;		 }
+	#endif
+
+// Return the stack of the new process
+
+	vPriv_insideSVC[KCORE_0] = false;
+	return (vKern_stackProc[KCORE_0]);
+}
+
+/*
+ * \brief local_updateTickless
+ *
+ * - Update the tickless logic
+ *   - Next tick event (1-ms to time)
+ *   - Update the next process timeouts
+ *
+ *
+ * Normal cases (tickless timeout)
+ *                                               1-ms ticks
+ *    +---------------------------------+       +---+   +---+
+ *    |                                 |       |   |   |   |
+ * ---+                                 +-------+   +---+   +---
+ *     <------------------------------->
+ *              timeout = ARR
+ *
+ *
+ * Interruptions before the tickless timeout
+ *
+ *                            /  /  / interruptions
+ *                            ^  ^  ^
+ *                                               1-ms ticks
+ *    +----------------------+----------+       +---+   +---+
+ *    |                      :          |       |   |   |   |
+ * ---+                      :..........+-------+   +---+   +---
+ *     <--------------------> <-------->
+ *          elapsed = CNT     waiting for the end
+ *
+ *     <------------------------------->
+ *              timeout = ARR
+ *
+ */
+[[gnu::used]]
+static	void	local_updateTickless(uint8_t mode) {
+	uint32_t	elapsedTime;
+
+	switch (mode) {
+
+// Wake-up by a normal tickless timeout interruption
+// - Set the mode tick (1-ms)
+// - Update the process list with the elapsed time (timeout -= elapsed time)
+
+		case KWUNORTO: {
+			vTimeout = true;
+			elapsedTime = ((TIM17->ARR + 1u) / N) & 0x0000FFFFu;
+			if (vTickLess == true) {
+				vTickLess = false;
+
+				local_updateTickTimer(KARRT17);
+			}
+			scheduler_callBackFast(elapsedTime);
+			break;
+		}
+
+// Wake-up by a preemption interruption
+// - Set the tickless timeout with the remaining time (expected time - elapsed time)
+// - Update the process list with the elapsed time (timeout -= elapsed time)
+
+		case KWUINTPR: {
+			if (vTickLess == true) {
+				vTickLess = false;
+
+				elapsedTime = (TIM17->CNT / N) & 0x0000FFFFu;
+
+				local_updateTickTimer(KARRT17);
+				scheduler_callBackFast(elapsedTime);
+			}
+			break;
+		}
+		default: {
+
+// Make MISRA happy :-)
+
+			break;
+		}
+	}
+}
+
+/*
+ * \brief local_updateTickTimer
+ *
+ * - Update the tick timer
+ *   - Next tick event (1-ms to time)
+ *
+ */
+static	void	local_updateTickTimer(uint32_t tickTime) {
+
+	TIM17->CR1 &= (uint32_t)~TIM17_CR1_CEN;
+	TIM17->SR  &= (uint32_t)~TIM17_SR_UIF;
+
+	TIM17->CNT  = (N > 1u) ? (TIM17->CNT % N) : (0u);
+
+	TIM17->ARR  = tickTime;
+	TIM17->CR1 |= TIM17_CR1_CEN;
+}
+
+/*
+ * \brief local_timeStart
+ *
+ * - Give a new time-stamp (1-us of resolution)
+ *   - 0x000 to 0xFFFF incremental counter
+ *
+ */
+static	void	local_timeStart(void) {
+
+	INTERRUPTION_OFF;
+	vTimeLastStart = vTimeStart;
+	vTimeStart = TIM14->CNT & 0x0000FFFFu;
+
+// Correct the times due to the 16-bit sign
+
+	vTimeLastStart = (vTimeStop < vTimeLastStart) ? (vTimeLastStart | 0xFFFF0000u) : (vTimeLastStart);
+	vTimeStop      = (vTimeStart < vTimeStop)     ? (vTimeStop      | 0xFFFF0000u) : (vTimeStop);
+	INTERRUPTION_RESTORE;
+}
+
+/*
+ * \brief local_timeStop
+ *
+ * - Give a new time-stamp (1-us of resolution)
+ *   - 0x000 to 0xFFFF incremental counter
+ *
+ */
+static	void	local_timeStop(void) {
+
+	INTERRUPTION_OFF;
+	vTimeStop = TIM14->CNT & 0x0000FFFFu;
+	INTERRUPTION_RESTORE;
+}
+
+/*
+ * \brief local_timeStmp
+ *
+ * - Maintain a 64-bit counter with 1-us of resolution
+ *   - The 64-bit counter is based on an soft extension of the 16-bit timer
+ *     The 16-bit timer is clocked @ 1-MHz, so, the rollover is after 65-ms
+ *     It is mandatory to call this function about 1 time per 65-ms
+ *   - The timer count from 0 to 0xFFFF --> 65-ms
+ *
+ */
+static	void	local_timeStmp(bool overflow) {
+	uint32_t	newTime;
+
+	INTERRUPTION_OFF;
+	newTime = TIM14->CNT & 0x0000FFFFu;
+
+// Overflow; add 0x10000 to the counter
+// Update the 1-us 64-bit tickCount
+
+	if (overflow == true) {
+		vTickCount = (vTickCount & 0xFFFFFFFFFFFF0000u) + 0x10000u;
+		INTERRUPTION_RESTORE;
+		return;
+	}
+
+// Normal mode
+// Update the 1-us 64-bit tickCount
+
+	if (newTime > 0u) {
+		vTickCount = (vTickCount & 0xFFFFFFFFFFFF0000u) | newTime;
+	}
+	INTERRUPTION_RESTORE;
+}

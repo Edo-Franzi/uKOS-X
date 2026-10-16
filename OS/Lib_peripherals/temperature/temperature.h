@@ -1,10 +1,10 @@
 /*
 ; temperature.
 ; ============
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -132,19 +132,19 @@ extern	int32_t	temperature_release(reserveMode_t reserveMode);
  *
  * \code{.c}
  * int32_t      status;
- * float64_t    temperature;
+ * float64_t    temperature_f;
  *
- *    status = temperature_read(&temperature);
+ *    status = temperature_read(&temperature_f);
  *
- *    (void)dprintf(KSYST, "Temp = %f\n", temperature);
+ *    (void)dprintf(KSYST, "Temp = %f\n", temperature_f);
  * \endcode
  *
- * \param[out]	*temperature			Ptr on the temperature
+ * \param[out]	*temperature_f			Ptr on the temperature
  * \return		KERR_TEMPERATURE_NOERR	OK
  * \return		KERR_TEMPERATURE_GEERR	General error
  *
  */
-extern	int32_t	temperature_read(float64_t *temperature);
+extern	int32_t	temperature_read(float64_t *temperature_f);
 
 /*!
  * \brief Set the temperature (K)
@@ -153,17 +153,17 @@ extern	int32_t	temperature_read(float64_t *temperature);
  *
  * \code{.c}
  * int32_t      status;
- * float64_t    temperature = 37.7 - KTEMPERATURE_ZERO_KELVIN;
+ * float64_t    temperature_f = 37.7 - KTEMPERATURE_ZERO_KELVIN;
  *
- *    status = temperature_write(temperature);
+ *    status = temperature_write(temperature_f);
  * \endcode
  *
- * \param[in]	temperature				The temperature
+ * \param[in]	temperature_f			The temperature
  * \return		KERR_TEMPERATURE_NOERR	OK
  * \return		KERR_TEMPERATURE_GEERR	General error
  *
  */
-extern	int32_t	temperature_write(float64_t temperature);
+extern	int32_t	temperature_write(float64_t temperature_f);
 
 #if (defined(__cplusplus))
 }

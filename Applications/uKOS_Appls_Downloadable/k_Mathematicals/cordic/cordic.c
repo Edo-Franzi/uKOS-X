@@ -1,10 +1,10 @@
 /*
 ; cordic.
 ; =======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -187,7 +187,7 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 static	void	aProcess_1([[maybe_unused]] const void *argument) {
 	uint64_t	time[2];
 	uint32_t	delta = 0;
-	float64_t	angle;
+	float64_t	angle_f;
 
 	while (true) {
 		kern_suspendProcess(200u);
@@ -195,29 +195,29 @@ static	void	aProcess_1([[maybe_unused]] const void *argument) {
 // Cordic implementation
 
 		kern_readTickCount(&time[0]);
-		angle = local_atan2(123456789, 23456789);
+		angle_f = local_atan2(123456789, 23456789);
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);
 
-		(void)dprintf(KSYST, "Cordic angle %10.7f, time %"PRIu32"-us\n", angle, delta);
+		(void)dprintf(KSYST, "Cordic angle %10.7f, time %"PRIu32"-us\n", angle_f, delta);
 
 // Newlib implementation
 
 		kern_readTickCount(&time[0]);
-		angle = atan2(123456789, 23456789);
+		angle_f = atan2(123456789, 23456789);
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);
 
-		(void)dprintf(KSYST, "newlib angle %10.7f, time %"PRIu32"-us\n", angle, delta);
+		(void)dprintf(KSYST, "newlib angle %10.7f, time %"PRIu32"-us\n", angle_f, delta);
 	}
 }
 
 static	float64_t local_atan2(int32_t y, int32_t x) {
 	register	uint32_t	i;
 	register	int32_t		lx, ly, yi;
-	register	float64_t	angle = 0.0;
-	register	float64_t	*tabAtan;
-	static		float64_t	aTabAtan[] = {
+	register	float64_t	angle_f = 0.0;
+	register	float64_t	*tabAtan_f;
+	static		float64_t	aTabAtan_f[] = {
 								0.785398163397448000000000000000, 0.463647609000806000000000000000,
 								0.244978663126864000000000000000, 0.124354994546761000000000000000,
 								0.062418809995957400000000000000, 0.031239833430268300000000000000,
@@ -244,10 +244,10 @@ static	float64_t local_atan2(int32_t y, int32_t x) {
 
 // Verify the right plane
 
-	if (lx < 0) { lx = -lx; ly = -ly; angle = KPI;    }
-	if (ly > 0) {                     angle = -angle; }
+	if (lx < 0) { lx = -lx; ly = -ly; angle_f = KPI;	  }
+	if (ly > 0) {                     angle_f = -angle_f; }
 
-	tabAtan = &aTabAtan[0];
+	tabAtan_f = &aTabAtan_f[0];
 
 // Rotate the vector and compute the angle
 
@@ -256,16 +256,16 @@ static	float64_t local_atan2(int32_t y, int32_t x) {
 			yi = ly + (lx>>i);
 			lx = lx - (ly>>i);
 			ly = yi;
-			angle -= tabAtan[i];
+			angle_f -= tabAtan_f[i];
 		}
 		else {
 			yi = ly - (lx>>i);
 			lx = lx + (ly>>i);
 			ly = yi;
-			angle += tabAtan[i];
+			angle_f += tabAtan_f[i];
 		}
 	}
-	return (angle);
+	return (angle_f);
 }
 
 /*

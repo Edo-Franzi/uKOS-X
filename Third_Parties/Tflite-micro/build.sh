@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
-
+#
 # build.
 # ======
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi		The 2025-01-01
 # Modifs:
@@ -81,7 +81,7 @@ fi
 # Packages
 # --------
 
-readonly hash=5328e0d
+readonly hash=ec2f97d
 
 printf '\n%bDownload the Tflite-micro package ...%b\n\n' "${BOLD}" "${NC}"
 

@@ -1,9 +1,9 @@
 # config_install.
 # ===============
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2025-01-01
 # Modifs:	Edo. Franzi			The 2025-01-01
@@ -145,7 +145,7 @@ export PICOTOOL_VER=2.3.1
 
 export GCC_ARC_VER=16.2.0
 export BOOST_VER=1.92.0
-export IMAGEMAGICK_VER=7.1.2-32
+export IMAGEMAGICK_VER=7.1.2-33
 export PK2CMD_VER=1.27.01
 export SDCC_VER=4.6.0
 export SRECORD_VER=1.65

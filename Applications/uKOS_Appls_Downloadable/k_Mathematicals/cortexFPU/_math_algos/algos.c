@@ -1,10 +1,10 @@
 /*
 ; pi.
 ; ===
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -66,13 +66,13 @@
  *	- Pi = sqrt(6 * (1/1^2 + 1/2^2 + 1/3^2 +...)
  *
  */
-float64_t	pi_lambert(float64_t index, [[maybe_unused]] float64_t oldPi) {
-			float64_t	pi;
-	static	float64_t	v = 0.0;
+float64_t	pi_lambert(float64_t index, [[maybe_unused]] float64_t oldPi_f) {
+			float64_t	pi_f;
+	static	float64_t	v_f = 0.0;
 
-	v = v + (1.0 / pow(index, 2));
-	pi = sqrt(v * 6);
-	return (pi);
+	v_f = v_f + (1.0 / pow(index, 2));
+	pi_f = sqrt(v_f * 6);
+	return (pi_f);
 }
 
 /*
@@ -82,14 +82,14 @@ float64_t	pi_lambert(float64_t index, [[maybe_unused]] float64_t oldPi) {
  *	- Pi = Sum 1/16^^n * (4/(8n + 1) - 2/(8n + 4) - 1/(8n + 5) - 1/(8n + 6))
  *
  */
-float64_t	pi_spigot(float64_t index, float64_t oldPi) {
-	float64_t	pi;
+float64_t	pi_spigot(float64_t index, float64_t oldPi_f) {
+	float64_t	pi_f;
 
-	pi = oldPi + ((1.0 / pow(16.0, index)) *
-			   ((4.0 / ((8.0 * index) + 1.0))
-			   - (2.0 / ((8.0 * index) + 4.0))
-			   - (1.0 / ((8.0 * index) + 5.0))
-			   - (1.0 / ((8.0 * index) + 6.0))));
+	pi_f = oldPi_f + ((1.0 / pow(16.0, index)) *
+					 ((4.0 / ((8.0 * index) + 1.0))
+				    - (2.0 / ((8.0 * index) + 4.0))
+				    - (1.0 / ((8.0 * index) + 5.0))
+				    - (1.0 / ((8.0 * index) + 6.0))));
 
-	return (pi);
+	return (pi_f);
 }

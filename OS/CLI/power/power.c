@@ -1,10 +1,10 @@
 /*
 ; power.
 ; ======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -115,11 +115,11 @@ static	int32_t	prgm([[maybe_unused]] uint32_t argc, [[maybe_unused]] const char_
 
 	if (status != KERR_BATTERY_NOERR) { (void)dprintf(KSYST, "Battery manager problem!\n\n"); return (EXIT_OS_FAILURE); }
 
-	(void)dprintf(KSYST, "Battery voltage:       %7.2f [V]\n",		batteryInfo.oVoltage);
-	(void)dprintf(KSYST, "Battery current:       %7.2f [mA]\n",		batteryInfo.oCurrent);
-	(void)dprintf(KSYST, "Battery temperature:   %7.2f [K]\n",		batteryInfo.oTemperature);
-	(void)dprintf(KSYST, "Full charged capacity: %7.2f [mAh]\n",	batteryInfo.oFullChargedCapacity);
-	(void)dprintf(KSYST, "Remaining capacity:    %7.2f [mAh]\n",	batteryInfo.oRemainingCapacity);
+	(void)dprintf(KSYST, "Battery voltage:       %7.2f [V]\n",		batteryInfo.oVoltage_f);
+	(void)dprintf(KSYST, "Battery current:       %7.2f [mA]\n",		batteryInfo.oCurrent_f);
+	(void)dprintf(KSYST, "Battery temperature:   %7.2f [K]\n",		batteryInfo.oTemperature_f);
+	(void)dprintf(KSYST, "Full charged capacity: %7.2f [mAh]\n",	batteryInfo.oFullChargedCapacity_f);
+	(void)dprintf(KSYST, "Remaining capacity:    %7.2f [mAh]\n",	batteryInfo.oRemainingCapacity_f);
 
 	if (batteryInfo.oTimeToEmpty < 65535u) {
 		(void)dprintf(KSYST, "Time to empty:          %6d [m]\n",	batteryInfo.oTimeToEmpty);

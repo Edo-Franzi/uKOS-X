@@ -1,10 +1,10 @@
 /*
 ; gan.
 ; ====
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -136,7 +136,7 @@ MODULE(
 
 #if (defined(USE_NN_HARDWARE))
 #define	NNH_INIT		nnh_init()
-#define	NNH_CLASSIFY	nnh_classify(&vInput[0], &vOutput[0])
+#define	NNH_CLASSIFY	nnh_classify(&vInput_f[0], &vOutput[0])
 
 #else
 #define	NNH_INIT
@@ -147,12 +147,12 @@ MODULE(
 
 namespace tfl {
 extern	void	tfl_init(void);
-extern	void	tfl_classify(float32_t *entry, uint8_t *face);
+extern	void	tfl_classify(float32_t *entry_f, uint8_t *face);
 }
 
 extern "C" {
 extern	void	nnh_init(void);
-extern	void	nnh_classify(float32_t *entry, uint8_t *face);
+extern	void	nnh_classify(float32_t *entry_f, uint8_t *face);
 extern	void	lvgl_init(void);
 extern	void	ui_drawFace(const uint8_t *face);
 extern	void	ui_drawRandom(const char_t *s);
@@ -164,7 +164,7 @@ namespace {
 }
 
 namespace {
-	float32_t	vInput[KNN_INPUT_SIZE];
+	float32_t	vInput_f[KNN_INPUT_SIZE];
 	uint8_t		vOutput[KNN_OUTPUT_SIZE];
 }
 
@@ -196,13 +196,13 @@ void	aProcess_0([[maybe_unused]] const void *argument) {
 // like "monster" faces
 
 		for (i = 0u; i < KNN_INPUT_SIZE; i++) {
-			vInput[i] = (i < 10u) ? (local_randomGaussian()) : (0.0f);
+			vInput_f[i] = (i < 10u) ? (local_randomGaussian()) : (0.0f);
 		}
 
-		tfl::tfl_classify(&vInput[0], &vOutput[0]);
+		tfl::tfl_classify(&vInput_f[0], &vOutput[0]);
 		NNH_CLASSIFY;
 
-		(void)snprintf(text, sizeof(text), "%.3f", vInput[0]);
+		(void)snprintf(text, sizeof(text), "%.3f", vInput_f[0]);
 
 		ui_drawRandom(text);
 		ui_drawFace(&vOutput[0]);
@@ -285,11 +285,11 @@ float32_t	local_randomUniform(void) {
 namespace {
 float32_t	local_randomGaussian(void) {
 	uint32_t	i;
-	float32_t	z = 0.0f;
+	float32_t	z_f = 0.0f;
 
 	for (i = 0u; i < 10u; i++) {
-		z += local_randomUniform();
+		z_f += local_randomUniform();
 	}
-	return (z - 6.0f);
+	return (z_f - 6.0f);
 }
 }

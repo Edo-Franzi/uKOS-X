@@ -1,10 +1,10 @@
 /*
 ; plotSin.
 ; ========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -169,7 +169,7 @@ MODULE(
 static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint16_t	x;
 	uint32_t	random;
-	float64_t	y;
+	float64_t	y_f;
 
 // Wait a bit (to allow to switch CoolTerm2 in the right mode)
 
@@ -182,15 +182,15 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 // Add a random noise
 // Scale the final signal
 
-			y = KAMPLITUDE_BASIC * sin(x * M_PI / 180.0);
+			y_f = KAMPLITUDE_BASIC * sin(x * M_PI / 180.0);
 
 			random_read(KRANDOM_SOFT, &random, 1u);
-			y = y + ((((float64_t)random / KRAND_MAX) - 0.5) * KAMPLITUDE_NOISE);
-			y = KAMPLITUDE_FINAL * y;
+			y_f = y_f + ((((float64_t)random / KRAND_MAX) - 0.5) * KAMPLITUDE_NOISE);
+			y_f = KAMPLITUDE_FINAL * y_f;
 
 // Print the data using the Arduino format in CoolTerm2
 
-			(void)dprintf(KSYST, "%"PRIu16"\t%5.2f\n", x, y);
+			(void)dprintf(KSYST, "%"PRIu16"\t%5.2f\n", x, y_f);
 			kern_suspendProcess(10u);
 		}
 		led_toggle(KLED_1);

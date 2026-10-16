@@ -1,10 +1,10 @@
 /*
 ; text.
 ; =====
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:	Edo. Franzi		The 2025-01-01	Correct for matching some MISRA recommendations

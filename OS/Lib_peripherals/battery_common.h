@@ -1,10 +1,10 @@
 /*
 ; battery_common.
 ; ===============
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -70,11 +70,11 @@
 typedef	struct	batteryInfo	batteryInfo_t;
 
 struct batteryInfo {
-			float64_t	oVoltage;								// Battery voltage [V]
-			float64_t	oCurrent;								// Battery average current (- = charging current) [mA]
-			float64_t	oTemperature;							// Battery temperature [K]
-			float64_t	oFullChargedCapacity;					// Battery full charged capacity [mAh]
-			float64_t	oRemainingCapacity;						// Battery remaining capacity [mAh]
+			float64_t	oVoltage_f;								// Battery voltage [V]
+			float64_t	oCurrent_f;								// Battery average current (- = charging current) [mA]
+			float64_t	oTemperature_f;							// Battery temperature [K]
+			float64_t	oFullChargedCapacity_f;					// Battery full charged capacity [mAh]
+			float64_t	oRemainingCapacity_f;					// Battery remaining capacity [mAh]
 			uint16_t	oTimeToEmpty;							// Time to battery empty [m]
 			uint16_t	oCycles;								// Number of cycles [-]
 };

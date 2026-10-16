@@ -1,10 +1,10 @@
 /*
 ; getTemp.
 ; ========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -170,7 +170,7 @@ static	void	local_process(const void *argument) {
 					uint16_t	i;
 					int32_t		value;
 					uint32_t	sizeSnd;
-					float64_t	raw;
+					float64_t	raw_f;
 					mcnf_t		configure = {
 									.oNbMaxPacks	= 10u,
 									.oDataEntrySize	= 0u
@@ -179,7 +179,7 @@ static	void	local_process(const void *argument) {
 
 	#if (!defined(CONFIG_REAL_TMPERATURE_S))
 					uint32_t	random;
-	static	const	float64_t	aSimule[KNB_SAMPLES] = {
+	static	const	float64_t	aSimule_f[KNB_SAMPLES] = {
 									20.23, 20.52, 21.23, 21.87, 22.21, 22.67, 23.12, 23.67,
 									23.78, 23.34, 22.76, 22.09, 21.56, 21.14, 20.55, 20.03,
 									20.23, 20.52, 21.23, 21.87, 22.21, 22.67, 23.12, 23.67,
@@ -199,7 +199,7 @@ static	void	local_process(const void *argument) {
 								};
 
 	#else
-					float64_t	instTemperature;
+					float64_t	instTemperature_f;
 	#endif
 
 	killRequest	= (const bool *)argument;
@@ -231,14 +231,14 @@ static	void	local_process(const void *argument) {
 			temperature[KNB_SAMPLES - 1u - i] = temperature[KNB_SAMPLES - 2u - i];
 		}
 
-		temperature_read(&instTemperature);
-		temperature[0] = (int16_t)((instTemperature + 273.16) * 100.0);
+		temperature_read(&instTemperature_f);
+		temperature[0] = (int16_t)((instTemperature_f + 273.16) * 100.0);
 
 		#else
 		for (i = 0u; i < KNB_SAMPLES; i++) {
 			random_read(KRANDOM_SOFT, &random, 1u);
-			raw = (aSimule[i] + 273.16) * 100.0;
-			value = (int32_t)raw + (int32_t)(random & 0xFFu);
+			raw_f = (aSimule_f[i] + 273.16) * 100.0;
+			value = (int32_t)raw_f + (int32_t)(random & 0xFFu);
 			temperature[i] = (int16_t)value;
 		}
 		#endif

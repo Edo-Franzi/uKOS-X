@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
-
+#
 # build.
 # ======
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi		The 2026-04-26
 # Modifs:

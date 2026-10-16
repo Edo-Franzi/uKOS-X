@@ -1,10 +1,10 @@
 /*
 ; cluster_Py.
 ; ===========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -147,7 +147,7 @@ MODULE(
  */
 [[noreturn]]
 static	void	aProcess_0([[maybe_unused]] const void *argument) {
-			float32_t	x, y, result, gain = 2.0f;
+			float32_t	x_f, y_f, result_f, gain_f = 2.0f;
 			uint64_t	time[2];
 			uint32_t	random[2], delta = 0u;
 	const	char_t		*winner;
@@ -160,11 +160,11 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 // Prepare the inputs
 
 		random_read(KRANDOM_SOFT, &random[0], 2u);
-		x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
-		y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		x_f = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain_f;
+		y_f = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain_f;
 
-		vInput_L1[0] = x;
-		vInput_L1[1] = y;
+		vInput_L1_f[0] = x_f;
+		vInput_L1_f[1] = y_f;
 
 		kern_readTickCount(&time[0]);
 		mlpn_compute(&aNetwork);
@@ -175,24 +175,24 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 // The output is the probability of the class
 // The winner takes all
 
-									  result = vOutput_L3[0]; winner = "Class A                ";
-		if (vOutput_L3[1] > result) { result = vOutput_L3[1]; winner = "Class B                "; }
-		if (vOutput_L3[2] > result) { result = vOutput_L3[2]; winner = "Class C                "; }
-		if (vOutput_L3[3] > result) { result = vOutput_L3[3]; winner = "Class D                "; }
-		if (vOutput_L3[4] > result) { result = vOutput_L3[4]; winner = "Inter-class area       "; }
+										result_f = vOutput_L3_f[0]; winner = "Class A                ";
+		if (vOutput_L3_f[1] > result_f) { result_f = vOutput_L3_f[1]; winner = "Class B                "; }
+		if (vOutput_L3_f[2] > result_f) { result_f = vOutput_L3_f[2]; winner = "Class C                "; }
+		if (vOutput_L3_f[3] > result_f) { result_f = vOutput_L3_f[3]; winner = "Class D                "; }
+		if (vOutput_L3_f[4] > result_f) { result_f = vOutput_L3_f[4]; winner = "Inter-class area       "; }
 
-		if (result < 0.3) {									  winner = "Not well classified    "; }
+		if (result_f < 0.3) {									  winner = "Not well classified    "; }
 
 		(void)dprintf(KSYST, "In-0 %6.3f, In-1 %6.3f, "
 							 "result: Out-0 %6.1f%%, Out-1 %6.1f%%, Out-2 %6.1f%%, Out-3 %6.1f%%, Out-4 %6.1f%% "
 							 "    %s "
-							 "Exec time %"PRIu32" [us]\n", x,
-							 							   y,
-							 							   vOutput_L3[0] * 100,
-							 							   vOutput_L3[1] * 100,
-							 							   vOutput_L3[2] * 100,
-							 							   vOutput_L3[3] * 100,
-							 							   vOutput_L3[4] * 100,
+							 "Exec time %"PRIu32" [us]\n", x_f,
+							 							   y_f,
+							 							   vOutput_L3_f[0] * 100,
+							 							   vOutput_L3_f[1] * 100,
+							 							   vOutput_L3_f[2] * 100,
+							 							   vOutput_L3_f[3] * 100,
+							 							   vOutput_L3_f[4] * 100,
 							 							   winner,
 							 							   delta);
 	}

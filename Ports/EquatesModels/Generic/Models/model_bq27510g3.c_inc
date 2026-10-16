@@ -1,10 +1,10 @@
 /*
 ; model_bq27510g3.
 ; ================
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -72,13 +72,13 @@ int32_t	model_bq27510g3_read(batteryInfo_t *infoBattery) {
 	uint16_t	voltage, temperature, fullChargedCapacity, remainingCapacity, timeToEmpty, cycles;
 	bool		error;
 
-	infoBattery->oVoltage			  = 0.0;
-	infoBattery->oCurrent			  = 0.0;
-	infoBattery->oTemperature		  = 0.0;
-	infoBattery->oFullChargedCapacity = 0.0;
-	infoBattery->oRemainingCapacity	  = 0.0;
-	infoBattery->oTimeToEmpty		  = 0u;
-	infoBattery->oCycles			  = 0u;
+	infoBattery->oVoltage_f				= 0.0;
+	infoBattery->oCurrent_f				= 0.0;
+	infoBattery->oTemperature_f			= 0.0;
+	infoBattery->oFullChargedCapacity_f	= 0.0;
+	infoBattery->oRemainingCapacity_f	= 0.0;
+	infoBattery->oTimeToEmpty			= 0u;
+	infoBattery->oCycles				= 0u;
 
 // Get the battery information
 
@@ -92,12 +92,12 @@ int32_t	model_bq27510g3_read(batteryInfo_t *infoBattery) {
 
 	if (error == true) { return (KERR_BATTERY_GEERR); }
 
-	infoBattery->oVoltage			  = (float64_t)voltage / 1000.0;
-	infoBattery->oCurrent			  = (float64_t)current;
-	infoBattery->oTemperature		  = (float64_t)temperature / 10.0;
-	infoBattery->oFullChargedCapacity = (float64_t)fullChargedCapacity;
-	infoBattery->oRemainingCapacity	  = (float64_t)remainingCapacity;
-	infoBattery->oTimeToEmpty		  = timeToEmpty;
-	infoBattery->oCycles			  = cycles;
+	infoBattery->oVoltage_f				= (float64_t)voltage / 1000.0;
+	infoBattery->oCurrent_f				= (float64_t)current;
+	infoBattery->oTemperature_f			= (float64_t)temperature / 10.0;
+	infoBattery->oFullChargedCapacity_f	= (float64_t)fullChargedCapacity;
+	infoBattery->oRemainingCapacity_f	= (float64_t)remainingCapacity;
+	infoBattery->oTimeToEmpty			= timeToEmpty;
+	infoBattery->oCycles				= cycles;
 	return (KERR_BATTERY_NOERR);
 }

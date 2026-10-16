@@ -1,10 +1,10 @@
 /*
 ; first.
 ; ======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -60,7 +60,6 @@ extern	void		crt0(void);
 
 [[gnu::used, gnu::section(".isr_vector")]]
 const	uintptr_t	g_pfnVectors_C0[] = {
-
 
 	(uintptr_t)linker_topStackSystem_C0,						// MSP Stack
 

@@ -1,10 +1,10 @@
 /*
 ; cortexFPU.
 ; ==========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -184,11 +184,11 @@ MODULE(
  *			- Pi = Sum 1/16^^n * (4/(8n + 1) - 2/(8n + 4) - 1/(8n + 5) - 1/(8n + 6))
  *
  */
-extern	float64_t	pi_spigot(float64_t index, float64_t oldPi);
+extern	float64_t	pi_spigot(float64_t index_f, float64_t oldPi_f);
 
 [[noreturn]]
 static	void	aProcess_0([[maybe_unused]] const void *argument) {
-	volatile	float64_t	n = 0.0, pi = 0.0;
+	volatile	float64_t	n = 0.0, pi_f = 0.0;
 	uint64_t	time[2];
 	uint32_t	delta;
 
@@ -197,12 +197,12 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 		kern_suspendProcess(1000u);
 
 		kern_readTickCount(&time[0]);
-		pi = pi_spigot(n, pi);
+		pi_f = pi_spigot(n, pi_f);
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);
 
 		n = n + 1.0;
-		(void)dprintf(KSYST, "n = %"PRIu32", Pi = %10.7f Time = %"PRIu32"\n", (uint32_t)n, pi, delta);
+		(void)dprintf(KSYST, "n = %"PRIu32", Pi = %10.7f Time = %"PRIu32"\n", (uint32_t)n, pi_f, delta);
 		led_toggle(KLED_1);
 	}
 }
@@ -216,21 +216,21 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
  *			- Pi = sqrt(6 * (1/1^2 + 1/2^2 + 1/3^2 +...)
  *
  */
-extern	float64_t	pi_lambert(float64_t index, float64_t oldPi);
+extern	float64_t	pi_lambert(float64_t index_f, float64_t oldPi_f);
 
 [[noreturn]]
 static	void	aProcess_1([[maybe_unused]] const void *argument) {
-	volatile	float64_t	n = 1.0, pi = 0.0;
+	volatile	float64_t	n_f = 1.0, pi_f = 0.0;
 
 	(void)dprintf(KSYST, "\n\n");
 	while (true) {
 		kern_suspendProcess(1000u);
 
-		pi = pi_lambert(n, pi);
+		pi_f = pi_lambert(n_f, pi_f);
 
-		(void)dprintf(KSYST, "n = %"PRIu32", Pi = %10.7f\n", (uint32_t)n, pi);
+		(void)dprintf(KSYST, "n = %"PRIu32", Pi = %10.7f\n", (uint32_t)n_f, pi_f);
 
-		n = n + 1.0;
+		n_f = n_f + 1.0;
 		led_toggle(KLED_2);
 	}
 }

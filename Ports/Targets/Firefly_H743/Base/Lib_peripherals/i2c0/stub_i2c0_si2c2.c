@@ -1,10 +1,10 @@
 /*
 ; stub_i2c0_si2c2.
 ; ================
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2026-05-14
 ; Modifs:

@@ -1,6 +1,6 @@
 # Third-Party Notices — uKOS-X
 
-(c) 2025-2026, Edo. Franzi, 2026-10-11
+(c) 2025-2026, Edo. Franzi, 2026-10-16
 
 
 
@@ -37,7 +37,7 @@ the third-party components shipped in this repository.
 ### 2.2) decnumber
 - Location: `Third_Parties/decnumber/`
 - Upstream: https://github.com/raitechnology/libdecnumber.git
-- Version: 3.68 / commit 4771421
+- Version: 3.68 / commit f8d97fc
 - License: See `,LICENSES/License_DecNumbers.txt`
 - Copyright:
   -  See upstream project copyright notices in source headers
@@ -68,15 +68,7 @@ the third-party components shipped in this repository.
 - Copyright:
   -  Copyright (c) 20xx, ChaN, all right reserved
 
-### 2.6) IntelRDFPMath
-- Location: `Third_Parties/IntelRDFPMath/`
-- Upstream: https://github.com/xmake-mirror/IntelRDFPMathLib.git
-- Version: 2.3 / commit ffca6d2
-- License: Intel Corp.
-- Copyright:
-  -  Copyright (c) 2007-2024, Intel Corp.
-
-### 2.7) LVGL
+### 2.6) LVGL
 - Location: `Third_Parties/LVGL/`
 - Upstream: https://github.com/lvgl/lvgl.git
 - Version: 9.6.0
@@ -84,7 +76,7 @@ the third-party components shipped in this repository.
 - Copyright:
   -  Copyright (c) LVGL Kft and contributors
 
-### 2.8) MicroPython
+### 2.7) MicroPython
 - Location: `Third_Parties/MicroPython/`
 - Upstream: https://github.com/micropython/micropython.git
 - Version: 1.29.0
@@ -92,7 +84,7 @@ the third-party components shipped in this repository.
 - Copyright:
   -  Copyright (c) 2013-2019 Damien P. George
 
-### 2.9) STM32
+### 2.8) STM32
 
 - Location: `Third_Parties/STM32/`
 - Upstream: https://github.com/STMicroelectronics/STM32CubeN6.git
@@ -101,19 +93,19 @@ the third-party components shipped in this repository.
 - Copyright:
   -  Copyright (c) 2024, STMicroelectronics
 
-### 2.10) Tflite-micro
+### 2.9) Tflite-micro
 
 - Location: `Third_Parties/Tflite-micro/`
 - Upstream: https://github.com/tensorflow/tflite-micro.git
-- Version: commit 5328e0d
+- Version: commit ec2f97d
 - License: Apache-2.0
 - Copyright:
   -  Copyright (c) 2020 The TensorFlow Authors. All rights reserved.
 
-### 2.11) TinyUSB-micro
+### 2.10) TinyUSB-micro
 - Location: `Third_Parties/TinyUSB/`
 - Upstream: https://github.com/hathach/tinyusb.git
-- Version: 0.21.0 / commit 3174e76
+- Version: 0.21.0 / commit 3c6524e
 - License: MIT
 - Copyright:
   -  Copyright (c) 2018, hathach (tinyusb.org)

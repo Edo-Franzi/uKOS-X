@@ -1,10 +1,10 @@
 /*
 ; tfl_vs_ukos.
 ; ============
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -121,7 +121,6 @@
 #include	"tensorflow/lite/micro/micro_profiler.h"
 #include	"tensorflow/lite/micro/recording_micro_interpreter.h"
 #include	"tensorflow/lite/micro/system_setup.h"
-#include	"tensorflow/lite/schema/schema_generated.h"
 
 #if (defined(CORTEX))
 #include	"tensorflow/lite/micro/cortex_m_generic/debug_log_callback.h"
@@ -234,7 +233,7 @@ void	aProcess_0([[maybe_unused]] const void *argument) {
 	uint32_t						random[2], delta = 0u;
 	uint32_t						minUkos = 0xFFFFFFFFu, minTFL = 0xFFFFFFFFu;
 	uint32_t						maxUkos = 0u, maxTFL = 0u;
-	float32_t						x, y, gain = 2.0f;
+	float32_t						x_f, y_f, gain_f = 2.0f;
 
 	#if (defined(CORTEX))
 	RegisterDebugLogCallback(debuglog);
@@ -269,16 +268,16 @@ void	aProcess_0([[maybe_unused]] const void *argument) {
 // --------------------------
 
 		random_read(KRANDOM_SOFT, &random[0], 2u);
-		x = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
-		y = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain;
+		x_f = (((float32_t)random[0] / (float32_t)(KRAND_MAX)) - 0.5f) * gain_f;
+		y_f = (((float32_t)random[1] / (float32_t)(KRAND_MAX)) - 0.5f) * gain_f;
 
 // For TensorFlowLite
 // Prepare the inputs
 
 		kern_suspendProcess(500u);
 		input = interpreter.input(0);
-		input->data.f[0] = x;
-		input->data.f[1] = y;
+		input->data.f[0] = x_f;
+		input->data.f[1] = y_f;
 
 		kern_readTickCount(&time[0]);
 		if (interpreter.Invoke() != tflite::micro::kTfLiteOk) {
@@ -297,8 +296,8 @@ void	aProcess_0([[maybe_unused]] const void *argument) {
 // Prepare the inputs
 
 		kern_suspendProcess(500u);
-		vInput_L1[0] = x;
-		vInput_L1[1] = y;
+		vInput_L1_f[0] = x_f;
+		vInput_L1_f[1] = y_f;
 
 		kern_readTickCount(&time[0]);
 		mlpn_compute(&aNetwork);

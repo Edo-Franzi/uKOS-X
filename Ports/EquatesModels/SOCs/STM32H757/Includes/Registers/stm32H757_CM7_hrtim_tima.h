@@ -1,0 +1,562 @@
+/*
+; stm32H757_CM7_hrtim_tima.
+; =========================
+;
+; SPDX-License-Identifier: MIT
+;
+;------------------------------------------------------------------------
+; Author:	Generated using the .svd description	The 2025-01-01
+; Modifs:
+;
+; Project:	uKOS-X
+; Goal:		stm32H757_CM7_hrtim_tima equates.
+;
+;   (c) 2025-2026, Edo. Franzi
+;   --------------------------
+;                                              __ ______  _____
+;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
+;   5-Route de Cheseaux                / / / / ,< / / / /\__ \
+;   CH 1400 Cheseaux-Noréaz           / /_/ / /| / /_/ /___/ /
+;                                     \__,_/_/ |_\____//____/
+;   edo.franzi@ukos.ch
+;
+;   Description: Lightweight, real-time multitasking operating
+;   system for embedded microcontroller and DSP-based systems.
+;
+;   Permission is hereby granted, free of charge, to any person
+;   obtaining a copy of this software and associated documentation
+;   files (the "Software"), to deal in the Software without restriction,
+;   including without limitation the rights to use, copy, modify,
+;   merge, publish, distribute, sublicense, and/or sell copies of the
+;   Software, and to permit persons to whom the Software is furnished
+;   to do so, subject to the following conditions:
+;
+;   The above copyright notice and this permission notice shall be
+;   included in all copies or substantial portions of the Software.
+;
+;   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;   SOFTWARE.
+;
+;------------------------------------------------------------------------
+*/
+
+#pragma	once
+
+// HRTIM_TIMA address definitions
+// ------------------------------
+
+typedef struct {
+	volatile	uint32_t	TIMACR;
+	volatile	uint32_t	TIMAISR;
+	volatile	uint32_t	TIMAICR;
+	volatile	uint32_t	TIMADIER5;
+	volatile	uint32_t	CNTAR;
+	volatile	uint32_t	PERAR;
+	volatile	uint32_t	REPAR;
+	volatile	uint32_t	CMP1AR;
+	volatile	uint32_t	CMP1CAR;
+	volatile	uint32_t	CMP2AR;
+	volatile	uint32_t	CMP3AR;
+	volatile	uint32_t	CMP4AR;
+	volatile	uint32_t	CPT1AR;
+	volatile	uint32_t	CPT2AR;
+	volatile	uint32_t	DTAR;
+	volatile	uint32_t	SETA1R;
+	volatile	uint32_t	RSTA1R;
+	volatile	uint32_t	SETA2R;
+	volatile	uint32_t	RSTA2R;
+	volatile	uint32_t	EEFAR1;
+	volatile	uint32_t	EEFAR2;
+	volatile	uint32_t	RSTAR;
+	volatile	uint32_t	CHPAR;
+	volatile	uint32_t	CPT1ACR;
+	volatile	uint32_t	CPT2ACR;
+	volatile	uint32_t	OUTAR;
+	volatile	uint32_t	FLTAR;
+} HRTIM_TIMA_TypeDef;
+
+#if (defined(__cplusplus))
+#define	HRTIM_TIMA	reinterpret_cast<HRTIM_TIMA_TypeDef *>(0x40017480u)
+
+#else
+#define	HRTIM_TIMA	((HRTIM_TIMA_TypeDef *)0x40017480u)
+#endif
+
+// TIMACR Configuration
+
+#define	HRTIM_TIMA_TIMACR_CK_PSCX		(0x7u<<0)
+#define	HRTIM_TIMA_TIMACR_CK_PSCX_0		(0x1u<<0)
+#define	HRTIM_TIMA_TIMACR_CONT			(0x1u<<3)
+#define	HRTIM_TIMA_TIMACR_RETRIG		(0x1u<<4)
+#define	HRTIM_TIMA_TIMACR_HALF			(0x1u<<5)
+#define	HRTIM_TIMA_TIMACR_PSHPLL		(0x1u<<6)
+#define	HRTIM_TIMA_TIMACR_SYNCRSTX		(0x1u<<10)
+#define	HRTIM_TIMA_TIMACR_SYNCSTRTX		(0x1u<<11)
+#define	HRTIM_TIMA_TIMACR_DELCMP2		(0x3u<<12)
+#define	HRTIM_TIMA_TIMACR_DELCMP2_0		(0x1u<<12)
+#define	HRTIM_TIMA_TIMACR_DELCMP4		(0x3u<<14)
+#define	HRTIM_TIMA_TIMACR_DELCMP4_0		(0x1u<<14)
+#define	HRTIM_TIMA_TIMACR_TXREPU		(0x1u<<17)
+#define	HRTIM_TIMA_TIMACR_TXRSTU		(0x1u<<18)
+#define	HRTIM_TIMA_TIMACR_TBU			(0x1u<<20)
+#define	HRTIM_TIMA_TIMACR_TCU			(0x1u<<21)
+#define	HRTIM_TIMA_TIMACR_TDU			(0x1u<<22)
+#define	HRTIM_TIMA_TIMACR_TEU			(0x1u<<23)
+#define	HRTIM_TIMA_TIMACR_MSTU			(0x1u<<24)
+#define	HRTIM_TIMA_TIMACR_DACSYNC		(0x3u<<25)
+#define	HRTIM_TIMA_TIMACR_DACSYNC_0		(0x1u<<25)
+#define	HRTIM_TIMA_TIMACR_PREEN			(0x1u<<27)
+#define	HRTIM_TIMA_TIMACR_UPDGAT		(0xFu<<28)
+#define	HRTIM_TIMA_TIMACR_UPDGAT_0		(0x1u<<28)
+
+// TIMAISR Configuration
+
+#define	HRTIM_TIMA_TIMAISR_CMP1			(0x1u<<0)
+#define	HRTIM_TIMA_TIMAISR_CMP2			(0x1u<<1)
+#define	HRTIM_TIMA_TIMAISR_CMP3			(0x1u<<2)
+#define	HRTIM_TIMA_TIMAISR_CMP4			(0x1u<<3)
+#define	HRTIM_TIMA_TIMAISR_REP			(0x1u<<4)
+#define	HRTIM_TIMA_TIMAISR_UPD			(0x1u<<6)
+#define	HRTIM_TIMA_TIMAISR_CPT1			(0x1u<<7)
+#define	HRTIM_TIMA_TIMAISR_CPT2			(0x1u<<8)
+#define	HRTIM_TIMA_TIMAISR_SETX1		(0x1u<<9)
+#define	HRTIM_TIMA_TIMAISR_RSTX1		(0x1u<<10)
+#define	HRTIM_TIMA_TIMAISR_SETX2		(0x1u<<11)
+#define	HRTIM_TIMA_TIMAISR_RSTX2		(0x1u<<12)
+#define	HRTIM_TIMA_TIMAISR_RST			(0x1u<<13)
+#define	HRTIM_TIMA_TIMAISR_DLYPRT		(0x1u<<14)
+#define	HRTIM_TIMA_TIMAISR_CPPSTAT		(0x1u<<16)
+#define	HRTIM_TIMA_TIMAISR_IPPSTAT		(0x1u<<17)
+#define	HRTIM_TIMA_TIMAISR_O1STAT		(0x1u<<18)
+#define	HRTIM_TIMA_TIMAISR_O2STAT		(0x1u<<19)
+
+// TIMAICR Configuration
+
+#define	HRTIM_TIMA_TIMAICR_CMP1C		(0x1u<<0)
+#define	HRTIM_TIMA_TIMAICR_CMP2C		(0x1u<<1)
+#define	HRTIM_TIMA_TIMAICR_CMP3C		(0x1u<<2)
+#define	HRTIM_TIMA_TIMAICR_CMP4C		(0x1u<<3)
+#define	HRTIM_TIMA_TIMAICR_REPC			(0x1u<<4)
+#define	HRTIM_TIMA_TIMAICR_UPDC			(0x1u<<6)
+#define	HRTIM_TIMA_TIMAICR_CPT1C		(0x1u<<7)
+#define	HRTIM_TIMA_TIMAICR_CPT2C		(0x1u<<8)
+#define	HRTIM_TIMA_TIMAICR_SET1XC		(0x1u<<9)
+#define	HRTIM_TIMA_TIMAICR_RSTX1C		(0x1u<<10)
+#define	HRTIM_TIMA_TIMAICR_SET2XC		(0x1u<<11)
+#define	HRTIM_TIMA_TIMAICR_RSTX2C		(0x1u<<12)
+#define	HRTIM_TIMA_TIMAICR_RSTC			(0x1u<<13)
+#define	HRTIM_TIMA_TIMAICR_DLYPRTC		(0x1u<<14)
+
+// TIMADIER5 Configuration
+
+#define	HRTIM_TIMA_TIMADIER5_CMP1IE		(0x1u<<0)
+#define	HRTIM_TIMA_TIMADIER5_CMP2IE		(0x1u<<1)
+#define	HRTIM_TIMA_TIMADIER5_CMP3IE		(0x1u<<2)
+#define	HRTIM_TIMA_TIMADIER5_CMP4IE		(0x1u<<3)
+#define	HRTIM_TIMA_TIMADIER5_REPIE		(0x1u<<4)
+#define	HRTIM_TIMA_TIMADIER5_UPDIE		(0x1u<<6)
+#define	HRTIM_TIMA_TIMADIER5_CPT1IE		(0x1u<<7)
+#define	HRTIM_TIMA_TIMADIER5_CPT2IE		(0x1u<<8)
+#define	HRTIM_TIMA_TIMADIER5_SET1XIE	(0x1u<<9)
+#define	HRTIM_TIMA_TIMADIER5_RSTX1IE	(0x1u<<10)
+#define	HRTIM_TIMA_TIMADIER5_SETX2IE	(0x1u<<11)
+#define	HRTIM_TIMA_TIMADIER5_RSTX2IE	(0x1u<<12)
+#define	HRTIM_TIMA_TIMADIER5_RSTIE		(0x1u<<13)
+#define	HRTIM_TIMA_TIMADIER5_DLYPRTIE	(0x1u<<14)
+#define	HRTIM_TIMA_TIMADIER5_CMP1DE		(0x1u<<16)
+#define	HRTIM_TIMA_TIMADIER5_CMP2DE		(0x1u<<17)
+#define	HRTIM_TIMA_TIMADIER5_CMP3DE		(0x1u<<18)
+#define	HRTIM_TIMA_TIMADIER5_CMP4DE		(0x1u<<19)
+#define	HRTIM_TIMA_TIMADIER5_REPDE		(0x1u<<20)
+#define	HRTIM_TIMA_TIMADIER5_UPDDE		(0x1u<<22)
+#define	HRTIM_TIMA_TIMADIER5_CPT1DE		(0x1u<<23)
+#define	HRTIM_TIMA_TIMADIER5_CPT2DE		(0x1u<<24)
+#define	HRTIM_TIMA_TIMADIER5_SET1XDE	(0x1u<<25)
+#define	HRTIM_TIMA_TIMADIER5_RSTX1DE	(0x1u<<26)
+#define	HRTIM_TIMA_TIMADIER5_SETX2DE	(0x1u<<27)
+#define	HRTIM_TIMA_TIMADIER5_RSTX2DE	(0x1u<<28)
+#define	HRTIM_TIMA_TIMADIER5_RSTDE		(0x1u<<29)
+#define	HRTIM_TIMA_TIMADIER5_DLYPRTDE	(0x1u<<30)
+
+// CNTAR Configuration
+
+#define	HRTIM_TIMA_CNTAR_CNTX			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CNTAR_CNTX_0			(0x1u<<0)
+
+// PERAR Configuration
+
+#define	HRTIM_TIMA_PERAR_PERX			(0xFFFFu<<0)
+#define	HRTIM_TIMA_PERAR_PERX_0			(0x1u<<0)
+
+// REPAR Configuration
+
+#define	HRTIM_TIMA_REPAR_REPX			(0xFFu<<0)
+#define	HRTIM_TIMA_REPAR_REPX_0			(0x1u<<0)
+
+// CMP1AR Configuration
+
+#define	HRTIM_TIMA_CMP1AR_CMP1X			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CMP1AR_CMP1X_0		(0x1u<<0)
+
+// CMP1CAR Configuration
+
+#define	HRTIM_TIMA_CMP1CAR_CMP1X		(0xFFFFu<<0)
+#define	HRTIM_TIMA_CMP1CAR_CMP1X_0		(0x1u<<0)
+#define	HRTIM_TIMA_CMP1CAR_REPX			(0xFFu<<16)
+#define	HRTIM_TIMA_CMP1CAR_REPX_0		(0x1u<<16)
+
+// CMP2AR Configuration
+
+#define	HRTIM_TIMA_CMP2AR_CMP2X			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CMP2AR_CMP2X_0		(0x1u<<0)
+
+// CMP3AR Configuration
+
+#define	HRTIM_TIMA_CMP3AR_CMP3X			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CMP3AR_CMP3X_0		(0x1u<<0)
+
+// CMP4AR Configuration
+
+#define	HRTIM_TIMA_CMP4AR_CMP4X			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CMP4AR_CMP4X_0		(0x1u<<0)
+
+// CPT1AR Configuration
+
+#define	HRTIM_TIMA_CPT1AR_CPT1X			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CPT1AR_CPT1X_0		(0x1u<<0)
+
+// CPT2AR Configuration
+
+#define	HRTIM_TIMA_CPT2AR_CPT2X			(0xFFFFu<<0)
+#define	HRTIM_TIMA_CPT2AR_CPT2X_0		(0x1u<<0)
+
+// DTAR Configuration
+
+#define	HRTIM_TIMA_DTAR_DTRX			(0x1FFu<<0)
+#define	HRTIM_TIMA_DTAR_DTRX_0			(0x1u<<0)
+#define	HRTIM_TIMA_DTAR_SDTRX			(0x1u<<9)
+#define	HRTIM_TIMA_DTAR_DTPRSC			(0x7u<<10)
+#define	HRTIM_TIMA_DTAR_DTPRSC_0		(0x1u<<10)
+#define	HRTIM_TIMA_DTAR_DTRSLKX			(0x1u<<14)
+#define	HRTIM_TIMA_DTAR_DTRLKX			(0x1u<<15)
+#define	HRTIM_TIMA_DTAR_DTFX			(0x1FFu<<16)
+#define	HRTIM_TIMA_DTAR_DTFX_0			(0x1u<<16)
+#define	HRTIM_TIMA_DTAR_SDTFX			(0x1u<<25)
+#define	HRTIM_TIMA_DTAR_DTFSLKX			(0x1u<<30)
+#define	HRTIM_TIMA_DTAR_DTFLKX			(0x1u<<31)
+
+// SETA1R Configuration
+
+#define	HRTIM_TIMA_SETA1R_SST			(0x1u<<0)
+#define	HRTIM_TIMA_SETA1R_RESYNC		(0x1u<<1)
+#define	HRTIM_TIMA_SETA1R_PER			(0x1u<<2)
+#define	HRTIM_TIMA_SETA1R_CMP1			(0x1u<<3)
+#define	HRTIM_TIMA_SETA1R_CMP2			(0x1u<<4)
+#define	HRTIM_TIMA_SETA1R_CMP3			(0x1u<<5)
+#define	HRTIM_TIMA_SETA1R_CMP4			(0x1u<<6)
+#define	HRTIM_TIMA_SETA1R_MSTPER		(0x1u<<7)
+#define	HRTIM_TIMA_SETA1R_MSTCMP1		(0x1u<<8)
+#define	HRTIM_TIMA_SETA1R_MSTCMP2		(0x1u<<9)
+#define	HRTIM_TIMA_SETA1R_MSTCMP3		(0x1u<<10)
+#define	HRTIM_TIMA_SETA1R_MSTCMP4		(0x1u<<11)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT1		(0x1u<<12)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT2		(0x1u<<13)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT3		(0x1u<<14)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT4		(0x1u<<15)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT5		(0x1u<<16)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT6		(0x1u<<17)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT7		(0x1u<<18)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT8		(0x1u<<19)
+#define	HRTIM_TIMA_SETA1R_TIMEVNT9		(0x1u<<20)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT1		(0x1u<<21)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT2		(0x1u<<22)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT3		(0x1u<<23)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT4		(0x1u<<24)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT5		(0x1u<<25)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT6		(0x1u<<26)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT7		(0x1u<<27)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT8		(0x1u<<28)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT9		(0x1u<<29)
+#define	HRTIM_TIMA_SETA1R_EXTEVNT10		(0x1u<<30)
+#define	HRTIM_TIMA_SETA1R_UPDATE		(0x1u<<31)
+
+// RSTA1R Configuration
+
+#define	HRTIM_TIMA_RSTA1R_SRT			(0x1u<<0)
+#define	HRTIM_TIMA_RSTA1R_RESYNC		(0x1u<<1)
+#define	HRTIM_TIMA_RSTA1R_PER			(0x1u<<2)
+#define	HRTIM_TIMA_RSTA1R_CMP1			(0x1u<<3)
+#define	HRTIM_TIMA_RSTA1R_CMP2			(0x1u<<4)
+#define	HRTIM_TIMA_RSTA1R_CMP3			(0x1u<<5)
+#define	HRTIM_TIMA_RSTA1R_CMP4			(0x1u<<6)
+#define	HRTIM_TIMA_RSTA1R_MSTPER		(0x1u<<7)
+#define	HRTIM_TIMA_RSTA1R_MSTCMP1		(0x1u<<8)
+#define	HRTIM_TIMA_RSTA1R_MSTCMP2		(0x1u<<9)
+#define	HRTIM_TIMA_RSTA1R_MSTCMP3		(0x1u<<10)
+#define	HRTIM_TIMA_RSTA1R_MSTCMP4		(0x1u<<11)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT1		(0x1u<<12)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT2		(0x1u<<13)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT3		(0x1u<<14)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT4		(0x1u<<15)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT5		(0x1u<<16)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT6		(0x1u<<17)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT7		(0x1u<<18)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT8		(0x1u<<19)
+#define	HRTIM_TIMA_RSTA1R_TIMEVNT9		(0x1u<<20)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT1		(0x1u<<21)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT2		(0x1u<<22)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT3		(0x1u<<23)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT4		(0x1u<<24)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT5		(0x1u<<25)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT6		(0x1u<<26)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT7		(0x1u<<27)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT8		(0x1u<<28)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT9		(0x1u<<29)
+#define	HRTIM_TIMA_RSTA1R_EXTEVNT10		(0x1u<<30)
+#define	HRTIM_TIMA_RSTA1R_UPDATE		(0x1u<<31)
+
+// SETA2R Configuration
+
+#define	HRTIM_TIMA_SETA2R_SST			(0x1u<<0)
+#define	HRTIM_TIMA_SETA2R_RESYNC		(0x1u<<1)
+#define	HRTIM_TIMA_SETA2R_PER			(0x1u<<2)
+#define	HRTIM_TIMA_SETA2R_CMP1			(0x1u<<3)
+#define	HRTIM_TIMA_SETA2R_CMP2			(0x1u<<4)
+#define	HRTIM_TIMA_SETA2R_CMP3			(0x1u<<5)
+#define	HRTIM_TIMA_SETA2R_CMP4			(0x1u<<6)
+#define	HRTIM_TIMA_SETA2R_MSTPER		(0x1u<<7)
+#define	HRTIM_TIMA_SETA2R_MSTCMP1		(0x1u<<8)
+#define	HRTIM_TIMA_SETA2R_MSTCMP2		(0x1u<<9)
+#define	HRTIM_TIMA_SETA2R_MSTCMP3		(0x1u<<10)
+#define	HRTIM_TIMA_SETA2R_MSTCMP4		(0x1u<<11)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT1		(0x1u<<12)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT2		(0x1u<<13)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT3		(0x1u<<14)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT4		(0x1u<<15)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT5		(0x1u<<16)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT6		(0x1u<<17)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT7		(0x1u<<18)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT8		(0x1u<<19)
+#define	HRTIM_TIMA_SETA2R_TIMEVNT9		(0x1u<<20)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT1		(0x1u<<21)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT2		(0x1u<<22)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT3		(0x1u<<23)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT4		(0x1u<<24)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT5		(0x1u<<25)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT6		(0x1u<<26)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT7		(0x1u<<27)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT8		(0x1u<<28)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT9		(0x1u<<29)
+#define	HRTIM_TIMA_SETA2R_EXTEVNT10		(0x1u<<30)
+#define	HRTIM_TIMA_SETA2R_UPDATE		(0x1u<<31)
+
+// RSTA2R Configuration
+
+#define	HRTIM_TIMA_RSTA2R_SRT			(0x1u<<0)
+#define	HRTIM_TIMA_RSTA2R_RESYNC		(0x1u<<1)
+#define	HRTIM_TIMA_RSTA2R_PER			(0x1u<<2)
+#define	HRTIM_TIMA_RSTA2R_CMP1			(0x1u<<3)
+#define	HRTIM_TIMA_RSTA2R_CMP2			(0x1u<<4)
+#define	HRTIM_TIMA_RSTA2R_CMP3			(0x1u<<5)
+#define	HRTIM_TIMA_RSTA2R_CMP4			(0x1u<<6)
+#define	HRTIM_TIMA_RSTA2R_MSTPER		(0x1u<<7)
+#define	HRTIM_TIMA_RSTA2R_MSTCMP1		(0x1u<<8)
+#define	HRTIM_TIMA_RSTA2R_MSTCMP2		(0x1u<<9)
+#define	HRTIM_TIMA_RSTA2R_MSTCMP3		(0x1u<<10)
+#define	HRTIM_TIMA_RSTA2R_MSTCMP4		(0x1u<<11)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT1		(0x1u<<12)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT2		(0x1u<<13)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT3		(0x1u<<14)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT4		(0x1u<<15)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT5		(0x1u<<16)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT6		(0x1u<<17)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT7		(0x1u<<18)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT8		(0x1u<<19)
+#define	HRTIM_TIMA_RSTA2R_TIMEVNT9		(0x1u<<20)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT1		(0x1u<<21)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT2		(0x1u<<22)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT3		(0x1u<<23)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT4		(0x1u<<24)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT5		(0x1u<<25)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT6		(0x1u<<26)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT7		(0x1u<<27)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT8		(0x1u<<28)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT9		(0x1u<<29)
+#define	HRTIM_TIMA_RSTA2R_EXTEVNT10		(0x1u<<30)
+#define	HRTIM_TIMA_RSTA2R_UPDATE		(0x1u<<31)
+
+// EEFAR1 Configuration
+
+#define	HRTIM_TIMA_EEFAR1_EE1LTCH		(0x1u<<0)
+#define	HRTIM_TIMA_EEFAR1_EE1FLTR		(0xFu<<1)
+#define	HRTIM_TIMA_EEFAR1_EE1FLTR_0		(0x1u<<1)
+#define	HRTIM_TIMA_EEFAR1_EE2LTCH		(0x1u<<6)
+#define	HRTIM_TIMA_EEFAR1_EE2FLTR		(0xFu<<7)
+#define	HRTIM_TIMA_EEFAR1_EE2FLTR_0		(0x1u<<7)
+#define	HRTIM_TIMA_EEFAR1_EE3LTCH		(0x1u<<12)
+#define	HRTIM_TIMA_EEFAR1_EE3FLTR		(0xFu<<13)
+#define	HRTIM_TIMA_EEFAR1_EE3FLTR_0		(0x1u<<13)
+#define	HRTIM_TIMA_EEFAR1_EE4LTCH		(0x1u<<18)
+#define	HRTIM_TIMA_EEFAR1_EE4FLTR		(0xFu<<19)
+#define	HRTIM_TIMA_EEFAR1_EE4FLTR_0		(0x1u<<19)
+#define	HRTIM_TIMA_EEFAR1_EE5LTCH		(0x1u<<24)
+#define	HRTIM_TIMA_EEFAR1_EE5FLTR		(0xFu<<25)
+#define	HRTIM_TIMA_EEFAR1_EE5FLTR_0		(0x1u<<25)
+
+// EEFAR2 Configuration
+
+#define	HRTIM_TIMA_EEFAR2_EE6LTCH		(0x1u<<0)
+#define	HRTIM_TIMA_EEFAR2_EE6FLTR		(0xFu<<1)
+#define	HRTIM_TIMA_EEFAR2_EE6FLTR_0		(0x1u<<1)
+#define	HRTIM_TIMA_EEFAR2_EE7LTCH		(0x1u<<6)
+#define	HRTIM_TIMA_EEFAR2_EE7FLTR		(0xFu<<7)
+#define	HRTIM_TIMA_EEFAR2_EE7FLTR_0		(0x1u<<7)
+#define	HRTIM_TIMA_EEFAR2_EE8LTCH		(0x1u<<12)
+#define	HRTIM_TIMA_EEFAR2_EE8FLTR		(0xFu<<13)
+#define	HRTIM_TIMA_EEFAR2_EE8FLTR_0		(0x1u<<13)
+#define	HRTIM_TIMA_EEFAR2_EE9LTCH		(0x1u<<18)
+#define	HRTIM_TIMA_EEFAR2_EE9FLTR		(0xFu<<19)
+#define	HRTIM_TIMA_EEFAR2_EE9FLTR_0		(0x1u<<19)
+#define	HRTIM_TIMA_EEFAR2_EE10LTCH		(0x1u<<24)
+#define	HRTIM_TIMA_EEFAR2_EE10FLTR		(0xFu<<25)
+#define	HRTIM_TIMA_EEFAR2_EE10FLTR_0	(0x1u<<25)
+
+// RSTAR Configuration
+
+#define	HRTIM_TIMA_RSTAR_UPDT			(0x1u<<1)
+#define	HRTIM_TIMA_RSTAR_CMP2			(0x1u<<2)
+#define	HRTIM_TIMA_RSTAR_CMP4			(0x1u<<3)
+#define	HRTIM_TIMA_RSTAR_MSTPER			(0x1u<<4)
+#define	HRTIM_TIMA_RSTAR_MSTCMP1		(0x1u<<5)
+#define	HRTIM_TIMA_RSTAR_MSTCMP2		(0x1u<<6)
+#define	HRTIM_TIMA_RSTAR_MSTCMP3		(0x1u<<7)
+#define	HRTIM_TIMA_RSTAR_MSTCMP4		(0x1u<<8)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT1		(0x1u<<9)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT2		(0x1u<<10)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT3		(0x1u<<11)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT4		(0x1u<<12)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT5		(0x1u<<13)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT6		(0x1u<<14)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT7		(0x1u<<15)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT8		(0x1u<<16)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT9		(0x1u<<17)
+#define	HRTIM_TIMA_RSTAR_EXTEVNT10		(0x1u<<18)
+#define	HRTIM_TIMA_RSTAR_TIMBCMP1		(0x1u<<19)
+#define	HRTIM_TIMA_RSTAR_TIMBCMP2		(0x1u<<20)
+#define	HRTIM_TIMA_RSTAR_TIMBCMP4		(0x1u<<21)
+#define	HRTIM_TIMA_RSTAR_TIMCCMP1		(0x1u<<22)
+#define	HRTIM_TIMA_RSTAR_TIMCCMP2		(0x1u<<23)
+#define	HRTIM_TIMA_RSTAR_TIMCCMP4		(0x1u<<24)
+#define	HRTIM_TIMA_RSTAR_TIMDCMP1		(0x1u<<25)
+#define	HRTIM_TIMA_RSTAR_TIMDCMP2		(0x1u<<26)
+#define	HRTIM_TIMA_RSTAR_TIMDCMP4		(0x1u<<27)
+#define	HRTIM_TIMA_RSTAR_TIMECMP1		(0x1u<<28)
+#define	HRTIM_TIMA_RSTAR_TIMECMP2		(0x1u<<29)
+#define	HRTIM_TIMA_RSTAR_TIMECMP4		(0x1u<<30)
+
+// CHPAR Configuration
+
+#define	HRTIM_TIMA_CHPAR_CHPFRQ			(0xFu<<0)
+#define	HRTIM_TIMA_CHPAR_CHPFRQ_0		(0x1u<<0)
+#define	HRTIM_TIMA_CHPAR_CHPDTY			(0x7u<<4)
+#define	HRTIM_TIMA_CHPAR_CHPDTY_0		(0x1u<<4)
+#define	HRTIM_TIMA_CHPAR_STRTPW			(0xFu<<7)
+#define	HRTIM_TIMA_CHPAR_STRTPW_0		(0x1u<<7)
+
+// CPT1ACR Configuration
+
+#define	HRTIM_TIMA_CPT1ACR_SWCPT		(0x1u<<0)
+#define	HRTIM_TIMA_CPT1ACR_UDPCPT		(0x1u<<1)
+#define	HRTIM_TIMA_CPT1ACR_EXEV1CPT		(0x1u<<2)
+#define	HRTIM_TIMA_CPT1ACR_EXEV2CPT		(0x1u<<3)
+#define	HRTIM_TIMA_CPT1ACR_EXEV3CPT		(0x1u<<4)
+#define	HRTIM_TIMA_CPT1ACR_EXEV4CPT		(0x1u<<5)
+#define	HRTIM_TIMA_CPT1ACR_EXEV5CPT		(0x1u<<6)
+#define	HRTIM_TIMA_CPT1ACR_EXEV6CPT		(0x1u<<7)
+#define	HRTIM_TIMA_CPT1ACR_EXEV7CPT		(0x1u<<8)
+#define	HRTIM_TIMA_CPT1ACR_EXEV8CPT		(0x1u<<9)
+#define	HRTIM_TIMA_CPT1ACR_EXEV9CPT		(0x1u<<10)
+#define	HRTIM_TIMA_CPT1ACR_EXEV10CPT	(0x1u<<11)
+#define	HRTIM_TIMA_CPT1ACR_TB1SET		(0x1u<<16)
+#define	HRTIM_TIMA_CPT1ACR_TB1RST		(0x1u<<17)
+#define	HRTIM_TIMA_CPT1ACR_TBCMP1		(0x1u<<18)
+#define	HRTIM_TIMA_CPT1ACR_TBCMP2		(0x1u<<19)
+#define	HRTIM_TIMA_CPT1ACR_TC1SET		(0x1u<<20)
+#define	HRTIM_TIMA_CPT1ACR_TC1RST		(0x1u<<21)
+#define	HRTIM_TIMA_CPT1ACR_TCCMP1		(0x1u<<22)
+#define	HRTIM_TIMA_CPT1ACR_TCCMP2		(0x1u<<23)
+#define	HRTIM_TIMA_CPT1ACR_TD1SET		(0x1u<<24)
+#define	HRTIM_TIMA_CPT1ACR_TD1RST		(0x1u<<25)
+#define	HRTIM_TIMA_CPT1ACR_TDCMP1		(0x1u<<26)
+#define	HRTIM_TIMA_CPT1ACR_TDCMP2		(0x1u<<27)
+#define	HRTIM_TIMA_CPT1ACR_TE1SET		(0x1u<<28)
+#define	HRTIM_TIMA_CPT1ACR_TE1RST		(0x1u<<29)
+#define	HRTIM_TIMA_CPT1ACR_TECMP1		(0x1u<<30)
+#define	HRTIM_TIMA_CPT1ACR_TECMP2		(0x1u<<31)
+
+// CPT2ACR Configuration
+
+#define	HRTIM_TIMA_CPT2ACR_SWCPT		(0x1u<<0)
+#define	HRTIM_TIMA_CPT2ACR_UDPCPT		(0x1u<<1)
+#define	HRTIM_TIMA_CPT2ACR_EXEV1CPT		(0x1u<<2)
+#define	HRTIM_TIMA_CPT2ACR_EXEV2CPT		(0x1u<<3)
+#define	HRTIM_TIMA_CPT2ACR_EXEV3CPT		(0x1u<<4)
+#define	HRTIM_TIMA_CPT2ACR_EXEV4CPT		(0x1u<<5)
+#define	HRTIM_TIMA_CPT2ACR_EXEV5CPT		(0x1u<<6)
+#define	HRTIM_TIMA_CPT2ACR_EXEV6CPT		(0x1u<<7)
+#define	HRTIM_TIMA_CPT2ACR_EXEV7CPT		(0x1u<<8)
+#define	HRTIM_TIMA_CPT2ACR_EXEV8CPT		(0x1u<<9)
+#define	HRTIM_TIMA_CPT2ACR_EXEV9CPT		(0x1u<<10)
+#define	HRTIM_TIMA_CPT2ACR_EXEV10CPT	(0x1u<<11)
+#define	HRTIM_TIMA_CPT2ACR_TB1SET		(0x1u<<16)
+#define	HRTIM_TIMA_CPT2ACR_TB1RST		(0x1u<<17)
+#define	HRTIM_TIMA_CPT2ACR_TBCMP1		(0x1u<<18)
+#define	HRTIM_TIMA_CPT2ACR_TBCMP2		(0x1u<<19)
+#define	HRTIM_TIMA_CPT2ACR_TC1SET		(0x1u<<20)
+#define	HRTIM_TIMA_CPT2ACR_TC1RST		(0x1u<<21)
+#define	HRTIM_TIMA_CPT2ACR_TCCMP1		(0x1u<<22)
+#define	HRTIM_TIMA_CPT2ACR_TCCMP2		(0x1u<<23)
+#define	HRTIM_TIMA_CPT2ACR_TD1SET		(0x1u<<24)
+#define	HRTIM_TIMA_CPT2ACR_TD1RST		(0x1u<<25)
+#define	HRTIM_TIMA_CPT2ACR_TDCMP1		(0x1u<<26)
+#define	HRTIM_TIMA_CPT2ACR_TDCMP2		(0x1u<<27)
+#define	HRTIM_TIMA_CPT2ACR_TE1SET		(0x1u<<28)
+#define	HRTIM_TIMA_CPT2ACR_TE1RST		(0x1u<<29)
+#define	HRTIM_TIMA_CPT2ACR_TECMP1		(0x1u<<30)
+#define	HRTIM_TIMA_CPT2ACR_TECMP2		(0x1u<<31)
+
+// OUTAR Configuration
+
+#define	HRTIM_TIMA_OUTAR_POL1			(0x1u<<1)
+#define	HRTIM_TIMA_OUTAR_IDLEM1			(0x1u<<2)
+#define	HRTIM_TIMA_OUTAR_IDLES1			(0x1u<<3)
+#define	HRTIM_TIMA_OUTAR_FAULT1			(0x3u<<4)
+#define	HRTIM_TIMA_OUTAR_FAULT1_0		(0x1u<<4)
+#define	HRTIM_TIMA_OUTAR_CHP1			(0x1u<<6)
+#define	HRTIM_TIMA_OUTAR_DIDL1			(0x1u<<7)
+#define	HRTIM_TIMA_OUTAR_DTEN			(0x1u<<8)
+#define	HRTIM_TIMA_OUTAR_DLYPRTEN		(0x1u<<9)
+#define	HRTIM_TIMA_OUTAR_DLYPRT			(0x7u<<10)
+#define	HRTIM_TIMA_OUTAR_DLYPRT_0		(0x1u<<10)
+#define	HRTIM_TIMA_OUTAR_POL2			(0x1u<<17)
+#define	HRTIM_TIMA_OUTAR_IDLEM2			(0x1u<<18)
+#define	HRTIM_TIMA_OUTAR_IDLES2			(0x1u<<19)
+#define	HRTIM_TIMA_OUTAR_FAULT2			(0x3u<<20)
+#define	HRTIM_TIMA_OUTAR_FAULT2_0		(0x1u<<20)
+#define	HRTIM_TIMA_OUTAR_CHP2			(0x1u<<22)
+#define	HRTIM_TIMA_OUTAR_DIDL2			(0x1u<<23)
+
+// FLTAR Configuration
+
+#define	HRTIM_TIMA_FLTAR_FLT1EN			(0x1u<<0)
+#define	HRTIM_TIMA_FLTAR_FLT2EN			(0x1u<<1)
+#define	HRTIM_TIMA_FLTAR_FLT3EN			(0x1u<<2)
+#define	HRTIM_TIMA_FLTAR_FLT4EN			(0x1u<<3)
+#define	HRTIM_TIMA_FLTAR_FLT5EN			(0x1u<<4)
+#define	HRTIM_TIMA_FLTAR_FLTLCK			(0x1u<<31)

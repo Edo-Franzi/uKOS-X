@@ -1,10 +1,10 @@
 /*
 ; picobin.
 ; ========
-
+;
 ; SPDX-License-Identifier: BSD-3-Clause
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Laurent von Allmen	The 2026-04-30
 ; Modifs:

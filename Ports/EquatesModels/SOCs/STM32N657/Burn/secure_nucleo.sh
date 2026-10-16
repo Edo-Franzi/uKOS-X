@@ -1,12 +1,12 @@
 #!/usr/bin/env zsh
-
+#
 # secure_nucleo.
 # ==============
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
 # SPDX-FileCopyrightText: 2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi			The 2025-01-01
 # Modifs:	Laurent von Allmen	The 2026-09-18

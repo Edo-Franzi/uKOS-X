@@ -1,10 +1,10 @@
 /*
 ; clockTree.
 ; ==========
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -98,7 +98,7 @@
 #define KFREQUENCY_AHB4		KFREQUENCY_APB								// AHB4 bus frequency of 240-MHz
 #define KFREQUENCY_APB1		(KFREQUENCY_APB / KD2PPRE1)					// APB1 bus frequency of 120-MHz
 #define KFREQUENCY_APB2		(KFREQUENCY_APB / KD2PPRE2)					// APB2 bus frequency of 120-MHz
-#define KFREQUENCY_APB3		(KFREQUENCY_APB / KD1PPRE)					// APB3 bus frequency of 120-MHz
+#define KFREQUENCY_APB3		(KFREQUENCY_APB / KD1PPRE)					// APB3 bus frequency of 240-MHz
 #define KFREQUENCY_APB4		(KFREQUENCY_APB / KD3PPRE)					// APB4 bus frequency of 120-MHz
 #define KFREQUENCY_TIM		(KFREQUENCY_APB / KTIMPRE)					// Timer clock 240-MHz
 #define KFREQUENCY_1GHz		1000000000u									// Frequency of 1-GHz

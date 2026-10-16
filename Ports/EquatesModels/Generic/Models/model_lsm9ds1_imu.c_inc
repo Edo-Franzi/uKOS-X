@@ -1,10 +1,10 @@
 /*
 ; model_lsm9ds1_imu.
 ; ==================
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -165,17 +165,17 @@ int32_t	model_lsM9ds1imu_read(imuAccePack_t *accelerometer, imuGyroPack_t *gyros
 	uint8_t		xsb[2];
 
 	cb_control(KIMU_RESERVE);
-	cb_readAcceGyro(LSM9DS1_OUT_X_L_XL, xsb, 2u); accelerometer->oAcce_X = (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasAcce[0]) * vSensAcce;
-	cb_readAcceGyro(LSM9DS1_OUT_Y_L_XL, xsb, 2u); accelerometer->oAcce_Y = (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasAcce[1]) * vSensAcce;
-	cb_readAcceGyro(LSM9DS1_OUT_Z_L_XL, xsb, 2u); accelerometer->oAcce_Z = (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasAcce[2]) * vSensAcce;
+	cb_readAcceGyro(LSM9DS1_OUT_X_L_XL, xsb, 2u); accelerometer->oAcce_X_f = (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasAcce[0]) * vSensAcce;
+	cb_readAcceGyro(LSM9DS1_OUT_Y_L_XL, xsb, 2u); accelerometer->oAcce_Y_f = (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasAcce[1]) * vSensAcce;
+	cb_readAcceGyro(LSM9DS1_OUT_Z_L_XL, xsb, 2u); accelerometer->oAcce_Z_f = (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasAcce[2]) * vSensAcce;
 
-	cb_readAcceGyro(LSM9DS1_OUT_X_L_G, xsb, 2u);  gyroscope->oGyro_X =     (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasGyro[0]) * vSensGyro;
-	cb_readAcceGyro(LSM9DS1_OUT_Y_L_G, xsb, 2u);  gyroscope->oGyro_Y =     (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasGyro[1]) * vSensGyro;
-	cb_readAcceGyro(LSM9DS1_OUT_Z_L_G, xsb, 2u);  gyroscope->oGyro_Z =     (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasGyro[2]) * vSensGyro;
+	cb_readAcceGyro(LSM9DS1_OUT_X_L_G, xsb, 2u);  gyroscope->oGyro_X_f =     (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasGyro[0]) * vSensGyro;
+	cb_readAcceGyro(LSM9DS1_OUT_Y_L_G, xsb, 2u);  gyroscope->oGyro_Y_f =     (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasGyro[1]) * vSensGyro;
+	cb_readAcceGyro(LSM9DS1_OUT_Z_L_G, xsb, 2u);  gyroscope->oGyro_Z_f =     (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasGyro[2]) * vSensGyro;
 
-	cb_readMagn(LSM9DS1_OUT_X_L_M, xsb, 2u);      magnetometer->oMagn_X =  (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasMagn[0]) * vSensMagn;
-	cb_readMagn(LSM9DS1_OUT_Y_L_M, xsb, 2u);      magnetometer->oMagn_Y =  (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasMagn[1]) * vSensMagn;
-	cb_readMagn(LSM9DS1_OUT_Z_L_M, xsb, 2u);      magnetometer->oMagn_Z =  (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasMagn[2]) * vSensMagn;
+	cb_readMagn(LSM9DS1_OUT_X_L_M, xsb, 2u);      magnetometer->oMagn_X_f =  (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasMagn[0]) * vSensMagn;
+	cb_readMagn(LSM9DS1_OUT_Y_L_M, xsb, 2u);      magnetometer->oMagn_Y_f =  (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasMagn[1]) * vSensMagn;
+	cb_readMagn(LSM9DS1_OUT_Z_L_M, xsb, 2u);      magnetometer->oMagn_Z_f =  (float64_t)((int16_t)(xsb[1]<<8u | xsb[0]) - vBiasMagn[2]) * vSensMagn;
 	cb_control(KIMU_RELEASE);
 	return (KERR_IMU_NOERR);
 }

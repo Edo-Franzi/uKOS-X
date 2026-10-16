@@ -1,9 +1,9 @@
 /*
 ; stm32H747_CM4_otg2_hs_pwrclk.
 ; =============================
-
+;
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:

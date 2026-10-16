@@ -1,9 +1,9 @@
 /*
 ; RP2350_coresight_trace.
 ; =======================
-
+;
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:

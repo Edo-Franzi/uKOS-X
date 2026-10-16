@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
-
+#
 # picotool-riscv.
 # ===============
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Edo. Franzi		The 2025-01-01
 # Modifs:

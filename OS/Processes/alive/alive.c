@@ -1,10 +1,10 @@
 /*
 ; alive.
 ; ======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -136,7 +136,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 		KKERN_PRIORITY_MEDIUM_01			// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-	if (kern_createProcess(&specification, &vConfigure[core], &vProcess[core]) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "alive: reate proc"); exit(EXIT_OS_PANIC); }
+	if (kern_createProcess(&specification, &vConfigure[core], &vProcess[core]) != KERR_KERN_NOERR) { LOG(KFATAL_SYSTEM, "alive: create proc"); exit(EXIT_OS_PANIC); }
 
 	LOG(KINFO_SYSTEM, "alive: process alive launched");
 	return (EXIT_OS_SUCCESS_CLI);

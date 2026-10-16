@@ -1,10 +1,10 @@
 /*
 ; mlpn.
 ; =====
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:
@@ -108,13 +108,13 @@ static	void	local_init(void);
 static	void	local_initialiseLayer(mlpnLayer_t *layer);
 static	bool	local_isLayerValid(const mlpnLayer_t *layer);
 static	void	local_computeLayer(mlpnLayer_t *layer);
-static	void	local_nonLinear_tan0(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
-static	void	local_nonLinear_tan1(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
-static	void	local_nonLinear_tan2(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
-static	void	local_nonLinear_tan3(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
-static	void	local_nonLinear_relu(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
-static	void	local_nonLinear_line(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
-static	void	local_nonLinear_smax(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_tan0(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_tan1(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_tan2(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_tan3(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_relu(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_line(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
+static	void	local_nonLinear_smax(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput);
 
 /*
  * \brief Configure the mlpn manager
@@ -380,35 +380,35 @@ static	void	local_initialiseLayer(mlpnLayer_t *layer) {
 
 #if	(defined(__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE >= 3))
 [[gnu::always_inline]]
-static	inline	float32_t	local_hadd_f32x4(float32x4_t v) {
-	float32_t	tmp[4];
+static	inline	float32_t	local_hadd_f32x4(float32x4_t v_f) {
+	float32_t	tmp_f[4];
 
-	vstrwq_f32(tmp, v);
-	return (tmp[0] + tmp[1] + tmp[2] + tmp[3]);
+	vstrwq_f32(tmp_f, v_f);
+	return (tmp_f[0] + tmp_f[1] + tmp_f[2] + tmp_f[3]);
 }
 #endif
 
 [[gnu::always_inline]]
-static	inline	float32_t	local_dot_f32(const float32_t * __restrict w, const float32_t * __restrict x, uint16_t n) {
+static	inline	float32_t	local_dot_f32(const float32_t * __restrict w_f, const float32_t * __restrict x_f, uint16_t n) {
 
 	#if	(defined(__ARM_FEATURE_MVE) && (__ARM_FEATURE_MVE >= 3))
-	float32x4_t		acc0 = vdupq_n_f32(0.0f);
-	float32x4_t		acc1 = vdupq_n_f32(0.0f);
+	float32x4_t		acc0_f = vdupq_n_f32(0.0f);
+	float32x4_t		acc1_f = vdupq_n_f32(0.0f);
 	uint16_t		i = 0u, rem;
 
-	w = (const float32_t *)__builtin_assume_aligned(w, 16);
-	x = (const float32_t *)__builtin_assume_aligned(x, 16);
+	w_f = (const float32_t *)__builtin_assume_aligned(w_f, 16);
+	x_f = (const float32_t *)__builtin_assume_aligned(x_f, 16);
 
 // 8 floats per iteration
 
 	for (i = 0u; (uint16_t)(i + 8u) <= n; i = (uint16_t)(i + 8u)) {
-		float32x4_t		w0 = vldrwq_f32(&w[i + 0u]);
-		float32x4_t		x0 = vldrwq_f32(&x[i + 0u]);
-		acc0 = vfmaq_f32(acc0, w0, x0);
+		float32x4_t		w0 = vldrwq_f32(&w_f[i + 0u]);
+		float32x4_t		x0 = vldrwq_f32(&x_f[i + 0u]);
+		acc0_f = vfmaq_f32(acc0_f, w0, x0);
 
-		float32x4_t		w1 = vldrwq_f32(&w[i + 4u]);
-		float32x4_t		x1 = vldrwq_f32(&x[i + 4u]);
-		acc1 = vfmaq_f32(acc1, w1, x1);
+		float32x4_t		w1 = vldrwq_f32(&w_f[i + 4u]);
+		float32x4_t		x1 = vldrwq_f32(&x_f[i + 4u]);
+		acc1_f = vfmaq_f32(acc1_f, w1, x1);
 	}
 
 // Remaining: 0..7 floats, managed in 2 predictive blocs of 4
@@ -419,32 +419,32 @@ static	inline	float32_t	local_dot_f32(const float32_t * __restrict w, const floa
 // bloc 0..3
 
 		mve_pred16_t	p0 = vctp32q((uint32_t)rem);
-		float32x4_t		wR0 = vldrwq_z_f32(&w[i], p0);
-		float32x4_t		xR0 = vldrwq_z_f32(&x[i], p0);
+		float32x4_t		wR0 = vldrwq_z_f32(&w_f[i], p0);
+		float32x4_t		xR0 = vldrwq_z_f32(&x_f[i], p0);
 
-		acc0 = vfmaq_m_f32(acc0, wR0, xR0, p0);
+		acc0_f = vfmaq_m_f32(acc0_f, wR0, xR0, p0);
 
 // bloc 4..7 (if rem > 4)
 
 		if (rem > 4u) {
 			mve_pred16_t	p1 = vctp32q((uint32_t)(rem - 4u));
-			float32x4_t		wR1 = vldrwq_z_f32(&w[i + 4u], p1);
-			float32x4_t		xR1 = vldrwq_z_f32(&x[i + 4u], p1);
+			float32x4_t		wR1 = vldrwq_z_f32(&w_f[i + 4u], p1);
+			float32x4_t		xR1 = vldrwq_z_f32(&x_f[i + 4u], p1);
 
-			acc1 = vfmaq_m_f32(acc1, wR1, xR1, p1);
+			acc1_f = vfmaq_m_f32(acc1_f, wR1, xR1, p1);
 		}
 	}
 
 // Reduction
 
-	return (local_hadd_f32x4(vaddq_f32(acc0, acc1)));
+	return (local_hadd_f32x4(vaddq_f32(acc0_f, acc1_f)));
 
 	#else
 	float32_t	p = 0.0f;
 	uint16_t	i;
 
 	for (i = 0u; i < n; i++) {
-		p += w[i] * x[i];
+		p += w_f[i] * x_f[i];
 	}
     return (p);
 	#endif
@@ -472,7 +472,7 @@ static	void	local_computeLayer(mlpnLayer_t *layer) {
  *
  */
 NEURAL_OPTIMIZE
-static	void	local_nonLinear_tan0(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static	void	local_nonLinear_tan0(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 
 // For one neuron compute the activation
@@ -480,12 +480,12 @@ static	void	local_nonLinear_tan0(const float32_t *w, const float32_t *x, float32
 // Output = non-linear f(Activation)
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		y[j] = tanhf(a[j]);
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		y_f[j] = tanhf(a_f[j]);
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 }
 
@@ -520,18 +520,18 @@ static	void	local_nonLinear_tan0(const float32_t *w, const float32_t *x, float32
  */
 [[gnu::always_inline]]
 static	inline	float32_t	local_tan1(float32_t p) {
-	float32_t	s, a, b;
+	float32_t	s, a_f, b;
 
 	if (p < -3.0f) { return (-1.0f); }
 	if (p > +3.0f) { return (+1.0f); }
 	s = p * p;
-	a = (((((s + 378.0f) * s) + 17325.0f) * s) + 135135.0f) * p;
+	a_f = (((((s + 378.0f) * s) + 17325.0f) * s) + 135135.0f) * p;
 	b = (((((28.0f * s) + 3150.0f) * s) + 62370.0f) * s) + 135135.0f;
-	return (a / b);
+	return (a_f / b);
 }
 
 NEURAL_OPTIMIZE
-static void	local_nonLinear_tan1(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static void	local_nonLinear_tan1(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 
 // For one neuron compute the activation
@@ -539,12 +539,12 @@ static void	local_nonLinear_tan1(const float32_t *w, const float32_t *x, float32
 // Output = non-linear f(Activation)
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		y[j] = local_tan1(a[j]);
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		y_f[j] = local_tan1(a_f[j]);
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 }
 
@@ -572,7 +572,7 @@ static	inline	float32_t	local_tan2(float32_t p) {
 }
 
 NEURAL_OPTIMIZE
-static	void	local_nonLinear_tan2(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static	void	local_nonLinear_tan2(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 
 // For one neuron compute the activation
@@ -580,12 +580,12 @@ static	void	local_nonLinear_tan2(const float32_t *w, const float32_t *x, float32
 // Output = non-linear f(Activation)
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		y[j] = local_tan2(a[j]);
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		y_f[j] = local_tan2(a_f[j]);
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 }
 
@@ -608,7 +608,7 @@ static	inline	float32_t	local_tan3(float32_t p) {
 }
 
 NEURAL_OPTIMIZE
-static	void	local_nonLinear_tan3(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static	void	local_nonLinear_tan3(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 
 // For one neuron compute the activation
@@ -616,12 +616,12 @@ static	void	local_nonLinear_tan3(const float32_t *w, const float32_t *x, float32
 // Output = non-linear f(Activation)
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		y[j] = local_tan3(a[j]);
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		y_f[j] = local_tan3(a_f[j]);
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 }
 
@@ -643,7 +643,7 @@ static	inline	float32_t	local_relu(float32_t p) {
 }
 
 NEURAL_OPTIMIZE
-static	void	local_nonLinear_relu(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static	void	local_nonLinear_relu(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 
 // For one neuron compute the activation
@@ -651,12 +651,12 @@ static	void	local_nonLinear_relu(const float32_t *w, const float32_t *x, float32
 // Output = non-linear f(Activation)
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		y[j] = local_relu(a[j]);
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		y_f[j] = local_relu(a_f[j]);
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 }
 
@@ -669,7 +669,7 @@ static	void	local_nonLinear_relu(const float32_t *w, const float32_t *x, float32
  *
  */
 NEURAL_OPTIMIZE
-static	void	local_nonLinear_line(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static	void	local_nonLinear_line(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 
 // For one neuron compute the activation
@@ -677,12 +677,12 @@ static	void	local_nonLinear_line(const float32_t *w, const float32_t *x, float32
 // Output = non-linear f(Activation)
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		y[j] = a[j];
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		y_f[j] = a_f[j];
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 }
 
@@ -718,32 +718,32 @@ static	inline	float32_t	local_exp(float32_t p) {
 }
 
 NEURAL_OPTIMIZE
-static	void	local_nonLinear_smax(const float32_t *w, const float32_t *x, float32_t *a, float32_t *y, uint32_t nbInput, uint32_t nbOutput) {
+static	void	local_nonLinear_smax(const float32_t *w_f, const float32_t *x_f, float32_t *a_f, float32_t *y_f, uint32_t nbInput, uint32_t nbOutput) {
 	uint32_t	j;
 	float32_t	max = -FLT_MAX, sum = 0.0f;
 
 // First compute the activation vector and the max value
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_dot_f32(w, x, (uint16_t)nbInput);
-		if (a[j] > max) { max = a[j]; }
+		a_f[j] = local_dot_f32(w_f, x_f, (uint16_t)nbInput);
+		if (a_f[j] > max) { max = a_f[j]; }
 
 // Next neuron, next weight set
 
-		w = &w[nbInput];
+		w_f = &w_f[nbInput];
 	}
 
 // Second compute the new activation vector e^(pj-max(p)) & the sum(e^(pj-max(pj)))
 
 	for (j = 0u; j < nbOutput; j++) {
-		a[j] = local_exp(a[j] - max);
-		sum = sum + a[j];
+		a_f[j] = local_exp(a_f[j] - max);
+		sum = sum + a_f[j];
 	}
 
 // Third normalise (give the probability)
 
 	for (j = 0u; j < nbOutput; j++) {
-		y[j] = a[j] / sum;
+		y_f[j] = a_f[j] / sum;
 	}
 }
 

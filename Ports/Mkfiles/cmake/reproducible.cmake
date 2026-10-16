@@ -1,9 +1,9 @@
 # reproducible.
 # =============
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen	The 2026-06-01
 # Modifs:

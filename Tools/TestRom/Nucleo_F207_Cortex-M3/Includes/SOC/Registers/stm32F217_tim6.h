@@ -1,9 +1,9 @@
 /*
 ; stm32F217_tim6.
 ; ===============
-
+;
 ; SPDX-License-Identifier: MIT
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Generated using the .svd description	The 2025-01-01
 ; Modifs:
