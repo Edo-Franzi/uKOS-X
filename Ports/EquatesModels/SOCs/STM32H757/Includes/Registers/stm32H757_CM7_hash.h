@@ -507,6 +507,3 @@ typedef struct {
 
 #define	HASH_HR7_H7			(0xFFFFFFFFu<<0)
 #define	HASH_HR7_H7_0		(0x1u<<0)
-
-
-#endif

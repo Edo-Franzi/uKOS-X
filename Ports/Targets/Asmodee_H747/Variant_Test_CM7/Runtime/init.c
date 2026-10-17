@@ -189,8 +189,8 @@ static	void	local_USB_Configuration(void) {
 // The PHY was initialised under the GPIO_Configuration
 // Enable USB HS & ULPI Clocks
 
-	RCC->AHB1ENR |= RCC_AHB1ENR_USB1ULPIEN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_USB1OTGEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_USB1OTGHSULPIEN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_USB1OTGHSEN;
 
 // No VBUS sense
 // B-peripheral session valid override enable
@@ -720,8 +720,8 @@ static	void	local_RCC_Configuration(void) {
 // RNG & USB clocks
 // ----------------
 
-	RCC->D2CCIP2R = (1u * RCC_D2CCIP2R_RNGSRC_0)		// Set the clock for the RNG @ KFREQUENCY_PLL1Q (240-MHz)
-				  | (2u * RCC_D2CCIP2R_USBSRC_0);		// Set the clock for the USB @ KFREQUENCY_PLL3Q (48-MHz)
+	RCC->D2CCIP2R = (1u * RCC_D2CCIP2R_RNGSEL_0)		// Set the clock for the RNG @ KFREQUENCY_PLL1Q (240-MHz)
+				  | (2u * RCC_D2CCIP2R_USBSEL_0);		// Set the clock for the USB @ KFREQUENCY_PLL3Q (48-MHz)
 
 // Flash latency (for 4x0-MHz ... 4 wait states)
 // ---------------------------------------------

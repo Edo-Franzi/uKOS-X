@@ -67,6 +67,7 @@
 #include	"Registers/stm32H747_CM4_crc.h"
 #include	"Registers/stm32H747_CM4_crs.h"
 #include	"Registers/stm32H747_CM4_dac.h"
+#include	"Registers/stm32H747_CM4_dbgmcu.h"
 #include	"Registers/stm32H747_CM4_dcmi.h"
 #include	"Registers/stm32H747_CM4_dfsdm.h"
 #include	"Registers/stm32H747_CM4_dlyb.h"

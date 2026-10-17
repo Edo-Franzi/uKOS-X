@@ -116,43 +116,36 @@ typedef struct {
 
 // M1SR Configuration
 
-#define	RAMECC2_M1SR_ECCELEN		(0x1u<<5)
-#define	RAMECC2_M1SR_ECCDEBWIE		(0x1u<<4)
-#define	RAMECC2_M1SR_ECCDEIE		(0x1u<<3)
-#define	RAMECC2_M1SR_ECCSEIE		(0x1u<<2)
+#define	RAMECC2_M1SR_DEBWDF			(0x1u<<2)
+#define	RAMECC2_M1SR_DEDF			(0x1u<<1)
+#define	RAMECC2_M1SR_SEDCF			(0x1u<<0)
 
 // M1FAR Configuration
 
-#define	RAMECC2_M1FAR_ECCELEN		(0x1u<<5)
-#define	RAMECC2_M1FAR_ECCDEBWIE		(0x1u<<4)
-#define	RAMECC2_M1FAR_ECCDEIE		(0x1u<<3)
-#define	RAMECC2_M1FAR_ECCSEIE		(0x1u<<2)
+#define	RAMECC2_M1FAR_FADD			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M1FAR_FADD_0		(0x1u<<0)
 
 // M1FDRL Configuration
 
-#define	RAMECC2_M1FDRL_ECCELEN		(0x1u<<5)
-#define	RAMECC2_M1FDRL_ECCDEBWIE	(0x1u<<4)
-#define	RAMECC2_M1FDRL_ECCDEIE		(0x1u<<3)
-#define	RAMECC2_M1FDRL_ECCSEIE		(0x1u<<2)
+#define	RAMECC2_M1FDRL_FDATAL		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M1FDRL_FDATAL_0		(0x1u<<0)
 
 // M1FDRH Configuration
 
-#define	RAMECC2_M1FDRH_ECCELEN		(0x1u<<5)
-#define	RAMECC2_M1FDRH_ECCDEBWIE	(0x1u<<4)
-#define	RAMECC2_M1FDRH_ECCDEIE		(0x1u<<3)
-#define	RAMECC2_M1FDRH_ECCSEIE		(0x1u<<2)
+#define	RAMECC2_M1FDRH_FDATAH		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M1FDRH_FDATAH_0		(0x1u<<0)
 
 // M1FECR Configuration
 
-#define	RAMECC2_M1FECR_DEBWDF		(0x1u<<2)
-#define	RAMECC2_M1FECR_DEDF			(0x1u<<1)
-#define	RAMECC2_M1FECR_SEDCF		(0x1u<<0)
+#define	RAMECC2_M1FECR_FEC			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M1FECR_FEC_0		(0x1u<<0)
 
 // M2CR Configuration
 
-#define	RAMECC2_M2CR_DEBWDF			(0x1u<<2)
-#define	RAMECC2_M2CR_DEDF			(0x1u<<1)
-#define	RAMECC2_M2CR_SEDCF			(0x1u<<0)
+#define	RAMECC2_M2CR_ECCELEN		(0x1u<<5)
+#define	RAMECC2_M2CR_ECCDEBWIE		(0x1u<<4)
+#define	RAMECC2_M2CR_ECCDEIE		(0x1u<<3)
+#define	RAMECC2_M2CR_ECCSEIE		(0x1u<<2)
 
 // M2SR Configuration
 
@@ -162,35 +155,36 @@ typedef struct {
 
 // M2FAR Configuration
 
-#define	RAMECC2_M2FAR_DEBWDF		(0x1u<<2)
-#define	RAMECC2_M2FAR_DEDF			(0x1u<<1)
-#define	RAMECC2_M2FAR_SEDCF			(0x1u<<0)
+#define	RAMECC2_M2FAR_FADD			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M2FAR_FADD_0		(0x1u<<0)
 
 // M2FDRL Configuration
-
-#define	RAMECC2_M2FDRL_DEBWDF		(0x1u<<2)
-#define	RAMECC2_M2FDRL_DEDF			(0x1u<<1)
-#define	RAMECC2_M2FDRL_SEDCF		(0x1u<<0)
+	
+#define	RAMECC2_M2FDRL_FDATAL		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M2FDRL_FDATAL_0		(0x1u<<0)
 
 // M2FDRH Configuration
 
-#define	RAMECC2_M2FDRH_FADD			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M2FDRH_FADD_0		(0x1u<<0)
+#define	RAMECC2_M2FDRH_FDATAH		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M2FDRH_FDATAH_0		(0x1u<<0)
 
 // M2FECR Configuration
 
-#define	RAMECC2_M2FECR_FADD			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M2FECR_FADD_0		(0x1u<<0)
+#define	RAMECC2_M2FECR_FEC			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M2FECR_FEC_0		(0x1u<<0)
 
 // M3CR Configuration
 
-#define	RAMECC2_M3CR_FADD			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M3CR_FADD_0			(0x1u<<0)
+#define	RAMECC2_M3CR_ECCELEN		(0x1u<<5)
+#define	RAMECC2_M3CR_ECCDEBWIE		(0x1u<<4)
+#define	RAMECC2_M3CR_ECCDEIE		(0x1u<<3)
+#define	RAMECC2_M3CR_ECCSEIE		(0x1u<<2)
 
 // M3SR Configuration
 
-#define	RAMECC2_M3SR_FADD			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M3SR_FADD_0			(0x1u<<0)
+#define	RAMECC2_M3SR_DEBWDF			(0x1u<<2)
+#define	RAMECC2_M3SR_DEDF			(0x1u<<1)
+#define	RAMECC2_M3SR_SEDCF			(0x1u<<0)
 
 // M3FAR Configuration
 
@@ -204,33 +198,36 @@ typedef struct {
 
 // M3FDRH Configuration
 
-#define	RAMECC2_M3FDRH_FDATAL		(0xFFFFFFFFu<<0)
-#define	RAMECC2_M3FDRH_FDATAL_0		(0x1u<<0)
+#define	RAMECC2_M3FDRH_FDATAH		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M3FDRH_FDATAH_0		(0x1u<<0)
 
 // M3FECR Configuration
 
-#define	RAMECC2_M3FECR_FDATAL		(0xFFFFFFFFu<<0)
-#define	RAMECC2_M3FECR_FDATAL_0		(0x1u<<0)
+#define	RAMECC2_M3FECR_FEC			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M3FECR_FEC_0		(0x1u<<0)
 
 // M4CR Configuration
 
-#define	RAMECC2_M4CR_FDATAL			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M4CR_FDATAL_0		(0x1u<<0)
+#define	RAMECC2_M4CR_ECCELEN		(0x1u<<5)
+#define	RAMECC2_M4CR_ECCDEBWIE		(0x1u<<4)
+#define	RAMECC2_M4CR_ECCDEIE		(0x1u<<3)
+#define	RAMECC2_M4CR_ECCSEIE		(0x1u<<2)
 
 // M4SR Configuration
 
-#define	RAMECC2_M4SR_FDATAL			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M4SR_FDATAL_0		(0x1u<<0)
+#define	RAMECC2_M4SR_DEBWDF			(0x1u<<2)
+#define	RAMECC2_M4SR_DEDF			(0x1u<<1)
+#define	RAMECC2_M4SR_SEDCF			(0x1u<<0)
 
 // M4FAR Configuration
 
-#define	RAMECC2_M4FAR_FDATAH		(0xFFFFFFFFu<<0)
-#define	RAMECC2_M4FAR_FDATAH_0		(0x1u<<0)
+#define	RAMECC2_M4FAR_FADD			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M4FAR_FADD_0		(0x1u<<0)
 
 // M4FDRL Configuration
 
-#define	RAMECC2_M4FDRL_FDATAH		(0xFFFFFFFFu<<0)
-#define	RAMECC2_M4FDRL_FDATAH_0		(0x1u<<0)
+#define	RAMECC2_M4FDRL_FDATAL		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M4FDRL_FDATAL_0		(0x1u<<0)
 
 // M4FDRH Configuration
 
@@ -239,33 +236,36 @@ typedef struct {
 
 // M4FECR Configuration
 
-#define	RAMECC2_M4FECR_FDATAH		(0xFFFFFFFFu<<0)
-#define	RAMECC2_M4FECR_FDATAH_0		(0x1u<<0)
+#define	RAMECC2_M4FECR_FEC			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M4FECR_FEC_0		(0x1u<<0)
 
 // M5CR Configuration
 
-#define	RAMECC2_M5CR_FEC			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M5CR_FEC_0			(0x1u<<0)
+#define	RAMECC2_M5CR_ECCELEN		(0x1u<<5)
+#define	RAMECC2_M5CR_ECCDEBWIE		(0x1u<<4)
+#define	RAMECC2_M5CR_ECCDEIE		(0x1u<<3)
+#define	RAMECC2_M5CR_ECCSEIE		(0x1u<<2)
 
 // M5SR Configuration
 
-#define	RAMECC2_M5SR_FEC			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M5SR_FEC_0			(0x1u<<0)
+#define	RAMECC2_M5SR_DEBWDF			(0x1u<<2)
+#define	RAMECC2_M5SR_DEDF			(0x1u<<1)
+#define	RAMECC2_M5SR_SEDCF			(0x1u<<0)
 
 // M5FAR Configuration
 
-#define	RAMECC2_M5FAR_FEC			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M5FAR_FEC_0			(0x1u<<0)
+#define	RAMECC2_M5FAR_FADD			(0xFFFFFFFFu<<0)
+#define	RAMECC2_M5FAR_FADD_0		(0x1u<<0)
 
 // M5FDRL Configuration
 
-#define	RAMECC2_M5FDRL_FEC			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M5FDRL_FEC_0		(0x1u<<0)
+#define	RAMECC2_M5FDRL_FDATAL		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M5FDRL_FDATAL_0		(0x1u<<0)
 
 // M5FDRH Configuration
 
-#define	RAMECC2_M5FDRH_FEC			(0xFFFFFFFFu<<0)
-#define	RAMECC2_M5FDRH_FEC_0		(0x1u<<0)
+#define	RAMECC2_M5FDRH_FDATAH		(0xFFFFFFFFu<<0)
+#define	RAMECC2_M5FDRH_FDATAH_0		(0x1u<<0)
 
 // M5FECR Configuration
 

@@ -105,7 +105,7 @@ static	void	local_DMA2_Stream1_IRQHandler(void);
 int32_t	model_imager_init(void) {
 	int32_t		status;
 
-	RCC->AHB2ENR |= RCC_AHB2ENR_CAMITFEN;
+	RCC->AHB2ENR |= RCC_AHB2ENR_DCMIEN;
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 
 // Initialise the used interfaces

@@ -308,7 +308,7 @@ typedef enum IRQn {
 #define	OTG_HS_WKUP_C0_IRQn				OTG_HS_WKUP_IRQn
 #define	OTG_HS_C0_IRQn					OTG_HS_IRQn
 #define	DCMI_C0_IRQn					DCMI_IRQn
-#define	CRIP_C0_IRQn					CRIP_IRQn
+#define	CRYP_C0_IRQn					CRYP_IRQn
 #define	HASH_RNG_C0_IRQn				HASH_RNG_IRQn
 #define	FPU_C0_IRQn						FPU_IRQn
 #define	UART7_C0_IRQn					UART7_IRQn
@@ -476,6 +476,7 @@ void	OTG_HS_EP1_IN_C0_IRQHandler(void);
 void	OTG_HS_WKUP_C0_IRQHandler(void);
 void	OTG_HS_C0_IRQHandler(void);
 void	DCMI_C0_IRQHandler(void);
+void	CRYP_C0_IRQHandler(void);
 void	HASH_RNG_C0_IRQHandler(void);
 void	FPU_C0_IRQHandler(void);
 void	UART7_C0_IRQHandler(void);

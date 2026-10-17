@@ -649,6 +649,3 @@ typedef struct {
 
 #define	CRYP_CSGCM7R_CSGCM7R			(0xFFFFFFFFu<<0)
 #define	CRYP_CSGCM7R_CSGCM7R_0			(0x1u<<0)
-
-
-#endif

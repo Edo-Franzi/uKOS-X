@@ -95,7 +95,7 @@ typedef struct {
 #define	DMAMUX2_C0CR_SE				(0x1u<<16)
 #define	DMAMUX2_C0CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C0CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C0CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C0CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C0CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C1CR Configuration
@@ -109,7 +109,7 @@ typedef struct {
 #define	DMAMUX2_C1CR_SE				(0x1u<<16)
 #define	DMAMUX2_C1CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C1CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C1CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C1CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C1CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C2CR Configuration
@@ -123,7 +123,7 @@ typedef struct {
 #define	DMAMUX2_C2CR_SE				(0x1u<<16)
 #define	DMAMUX2_C2CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C2CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C2CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C2CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C2CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C3CR Configuration
@@ -137,7 +137,7 @@ typedef struct {
 #define	DMAMUX2_C3CR_SE				(0x1u<<16)
 #define	DMAMUX2_C3CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C3CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C3CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C3CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C3CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C4CR Configuration
@@ -151,7 +151,7 @@ typedef struct {
 #define	DMAMUX2_C4CR_SE				(0x1u<<16)
 #define	DMAMUX2_C4CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C4CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C4CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C4CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C4CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C5CR Configuration
@@ -165,7 +165,7 @@ typedef struct {
 #define	DMAMUX2_C5CR_SE				(0x1u<<16)
 #define	DMAMUX2_C5CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C5CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C5CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C5CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C5CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C6CR Configuration
@@ -179,7 +179,7 @@ typedef struct {
 #define	DMAMUX2_C6CR_SE				(0x1u<<16)
 #define	DMAMUX2_C6CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C6CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C6CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C6CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C6CR_DMAREQ_ID_0	(0x1u<<0)
 
 // C7CR Configuration
@@ -193,18 +193,30 @@ typedef struct {
 #define	DMAMUX2_C7CR_SE				(0x1u<<16)
 #define	DMAMUX2_C7CR_EGE			(0x1u<<9)
 #define	DMAMUX2_C7CR_SOIE			(0x1u<<8)
-#define	DMAMUX2_C7CR_DMAREQ_ID		(0xFFu<<0)
+#define	DMAMUX2_C7CR_DMAREQ_ID		(0x1Fu<<0)
 #define	DMAMUX2_C7CR_DMAREQ_ID_0	(0x1u<<0)
 
 // CSR Configuration
 
-#define	DMAMUX2_CSR_SOF				(0xFFFFu<<0)
-#define	DMAMUX2_CSR_SOF_0			(0x1u<<0)
+#define	DMAMUX2_CSR_SOF7			(0x1u<<7)
+#define	DMAMUX2_CSR_SOF6			(0x1u<<6)
+#define	DMAMUX2_CSR_SOF5			(0x1u<<5)
+#define	DMAMUX2_CSR_SOF4			(0x1u<<4)
+#define	DMAMUX2_CSR_SOF3			(0x1u<<3)
+#define	DMAMUX2_CSR_SOF2			(0x1u<<2)
+#define	DMAMUX2_CSR_SOF1			(0x1u<<1)
+#define	DMAMUX2_CSR_SOF0			(0x1u<<0)
 
 // CFR Configuration
 
-#define	DMAMUX2_CFR_CSOF			(0xFFFFu<<0)
-#define	DMAMUX2_CFR_CSOF_0			(0x1u<<0)
+#define	DMAMUX2_CFR_CSOF7			(0x1u<<7)
+#define	DMAMUX2_CFR_CSOF6			(0x1u<<6)
+#define	DMAMUX2_CFR_CSOF5			(0x1u<<5)
+#define	DMAMUX2_CFR_CSOF4			(0x1u<<4)
+#define	DMAMUX2_CFR_CSOF3			(0x1u<<3)
+#define	DMAMUX2_CFR_CSOF2			(0x1u<<2)
+#define	DMAMUX2_CFR_CSOF1			(0x1u<<1)
+#define	DMAMUX2_CFR_CSOF0			(0x1u<<0)
 
 // RG0CR Configuration
 
@@ -296,10 +308,22 @@ typedef struct {
 
 // RGSR Configuration
 
-#define	DMAMUX2_RGSR_OF				(0xFFu<<0)
-#define	DMAMUX2_RGSR_OF_0			(0x1u<<0)
+#define	DMAMUX2_RGSR_OF7			(0x1u<<7)
+#define	DMAMUX2_RGSR_OF6			(0x1u<<6)
+#define	DMAMUX2_RGSR_OF5			(0x1u<<5)
+#define	DMAMUX2_RGSR_OF4			(0x1u<<4)
+#define	DMAMUX2_RGSR_OF3			(0x1u<<3)
+#define	DMAMUX2_RGSR_OF2			(0x1u<<2)
+#define	DMAMUX2_RGSR_OF1			(0x1u<<1)
+#define	DMAMUX2_RGSR_OF0			(0x1u<<0)
 
 // RGCFR Configuration
 
-#define	DMAMUX2_RGCFR_COF			(0xFFu<<0)
-#define	DMAMUX2_RGCFR_COF_0			(0x1u<<0)
+#define	DMAMUX2_RGCFR_COF7			(0x1u<<7)
+#define	DMAMUX2_RGCFR_COF6			(0x1u<<6)
+#define	DMAMUX2_RGCFR_COF5			(0x1u<<5)
+#define	DMAMUX2_RGCFR_COF4			(0x1u<<4)
+#define	DMAMUX2_RGCFR_COF3			(0x1u<<3)
+#define	DMAMUX2_RGCFR_COF2			(0x1u<<2)
+#define	DMAMUX2_RGCFR_COF1			(0x1u<<1)
+#define	DMAMUX2_RGCFR_COF0			(0x1u<<0)

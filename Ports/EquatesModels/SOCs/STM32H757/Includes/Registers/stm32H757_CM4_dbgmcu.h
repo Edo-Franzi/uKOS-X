@@ -176,6 +176,3 @@ typedef struct {
 #define	DBGMCU_APB4FZ2_DBG_LPTIM3	(0x1u<<10)
 #define	DBGMCU_APB4FZ2_DBG_LPTIM2	(0x1u<<9)
 #define	DBGMCU_APB4FZ2_DBG_I2C4		(0x1u<<7)
-
-
-#endif
