@@ -104,3 +104,98 @@
 #define KFREQUENCY_1MHz		1000000u									// Frequency of 1-MHz
 #define KFREQUENCY_1KHz		1000u										// Frequency of 1-KHz
 #define KFREQUENCY_CORE		KFREQUENCY_CPU								// CORE frequency
+
+// PLL settings
+// ------------
+
+#define	KPLL_FVCO_MIN		800000000u									// FVCO min, 800-MHz
+#define	KPLL_FVCO_MAX		3200000000u									// FVCO max, 3200-MHz
+#define	KPLL_FVCO(m, n)		(((uint64_t)KCRYSTAL * (n)) / (m))			// f(vco) = f(ck in) * (N / M), PLLxSEL = HSI
+
+// Compile-time checks of a PLL configuration (RM0486, integer mode)
+
+#define	KPLL_STATIC_CHECKS(x, m, n, pdiv1, pdiv2, freq)																				\
+	static_assert(((m) >= 1u) && ((m) <= 63u), "PLL" #x ": DIVM shall be in 1..63");												\
+	static_assert(((n) >= 16u) && ((n) <= 640u), "PLL" #x ": DIVN shall be in 16..640");											\
+	static_assert(((pdiv1) >= 1u) && ((pdiv1) <= 7u), "PLL" #x ": PDIV1 shall be in 1..7");											\
+	static_assert(((pdiv2) >= 1u) && ((pdiv2) <= 7u), "PLL" #x ": PDIV2 shall be in 1..7");											\
+	static_assert((KPLL_FVCO(m, n) >= KPLL_FVCO_MIN) && (KPLL_FVCO(m, n) <= KPLL_FVCO_MAX), "PLL" #x ": FVCO out of range");		\
+	static_assert((KPLL_FVCO(m, n) / ((pdiv1) * (pdiv2))) == (freq), "PLL" #x ": configuration does not match KFREQUENCY_PLL" #x)
+
+// PLL 1
+
+#define	KCFG_PLL1DIVM	5u												// M = 5
+#define	KCFG_PLL1DIVN	125u											// N = 125
+#define	KCFG_PLL1PDIV1	2u												// VCO / 2
+#define	KCFG_PLL1PDIV2	1u												//
+
+// PLL 2
+
+#define	KCFG_PLL2DIVM	5u												// M = 5
+#define	KCFG_PLL2DIVN	125u											// N = 125
+#define	KCFG_PLL2PDIV1	2u												// VCO / 2
+#define	KCFG_PLL2PDIV2	1u												//
+
+// PLL 3
+
+#define	KCFG_PLL3DIVM	5u												// M = 5
+#define	KCFG_PLL3DIVN	125u											// N = 125
+#define	KCFG_PLL3PDIV1	4u												// VCO / 4
+#define	KCFG_PLL3PDIV2	1u												//
+
+// PLL 4
+
+#define	KCFG_PLL4DIVM	5u												// M = 5
+#define	KCFG_PLL4DIVN	125u											// N = 125
+#define	KCFG_PLL4PDIV1	4u												// VCO / 4
+#define	KCFG_PLL4PDIV2	1u												//
+
+// IC source selection
+// -------------------
+
+// ICx source selection (RM0486, RCC_ICxCFGR.ICxSEL)
+
+#define	KICSEL_PLL1_CK		0u											// pll1_ck
+#define	KICSEL_PLL2_CK		1u											// pll2_ck
+#define	KICSEL_PLL3_CK		2u											// pll3_ck
+#define	KICSEL_PLL4_CK		3u											// pll4_ck
+
+// IC1
+
+#define	KCFG_IC1SEL			KICSEL_PLL1_CK								// PLL1
+#define	KCFG_IC1INT_DIV		1u											// IC1 = PLL1 / 1, ~800-MHz
+
+// IC2
+
+#define	KCFG_IC2SEL			KICSEL_PLL1_CK								// PLL1
+#define	KCFG_IC2INT_DIV		2u											// IC2 = PLL1 / 2, ~400-MHz
+
+// IC4
+
+#define	KCFG_IC4SEL			KICSEL_PLL4_CK								// PLL4
+#define	KCFG_IC4INT_DIV		2u											// IC4 = PLL4 / 2, ~200-MHz
+
+// IC6
+
+#define	KCFG_IC6SEL			KICSEL_PLL2_CK								// PLL2
+#define	KCFG_IC6INT_DIV		1u											// IC6 = PLL2 / 1, ~800-MHz
+
+// IC9
+
+#define	KCFG_IC9SEL			KICSEL_PLL3_CK								// PLL3
+#define	KCFG_IC9INT_DIV		4u											// IC9 = PLL3 / 4, ~100-MHz
+
+// IC11
+
+#define	KCFG_IC11SEL		KICSEL_PLL3_CK								// PLL3
+#define	KCFG_IC11INT_DIV	1u											// IC11 = PLL3 / 1, ~400-MHz
+
+// IC15
+
+#define	KCFG_IC15SEL		KICSEL_PLL1_CK								// PLL1
+#define	KCFG_IC15INT_DIV	2u											// IC15 = PLL1 / 2, ~400-MHz
+
+// IC20
+
+#define	KCFG_IC20SEL		KICSEL_PLL3_CK								// PLL3
+#define	KCFG_IC20INT_DIV	10u											// IC20 = PLL3 / 10, ~40-MHz

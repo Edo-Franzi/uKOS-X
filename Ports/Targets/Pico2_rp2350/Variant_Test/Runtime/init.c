@@ -170,6 +170,8 @@ static	void	local_PLL_Configuration(void) {
 #define PLL_USB_CS_LOCK				PLL_SYS_CS_LOCK
 #define PLL_USB_PRIM_POSTDIV1_0		PLL_SYS_PRIM_POSTDIV1_0
 #define PLL_USB_PRIM_POSTDIV2_0		PLL_SYS_PRIM_POSTDIV2_0
+#define PLL_USB_CS_REFDIV_0			PLL_SYS_CS_REFDIV_0
+#define PLL_USB_FBDIV_INT_FBDIV_INT_0	PLL_SYS_FBDIV_INT_FBDIV_INT_0
 
 // Disable clock resuscitation (may have been enabled by bootrom)
 
@@ -207,19 +209,25 @@ static	void	local_PLL_Configuration(void) {
 
 	REG(PLL_SYS)->PWR |= (PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD | PLL_SYS_PWR_POSTDIVPD);
 
-// Configure PLL_SYS for 150 MHz
-// VCO = 1500 MHz, REFDIV = 1, FBDIV = 125 (12 * 125 = 1500)
-// postdiv1 = 5, postdiv2 = 2 => 1500 / (5 * 2) = 150 MHz
+// Configure PLL_SYS for 150-MHz
+// FVCO min..max, 750-MHz..1600-MHz
+// For f(ck in) = 12-MHz (XOSC)
+// f(ref) = f(ck in) / REFDIV					REFDIV = 1					---> f(ref) = 12-MHz
+// f(vco) = f(ref) * FBDIV						FBDIV = 125					---> f(vco) = 1500-MHz
+// f(out) = f(vco) / (POSTDIV1 * POSTDIV2)		POSTDIV1 = 5, POSTDIV2 = 2	---> f(out) = 150-MHz
 
-	REG(PLL_SYS)->CS		= 0x1u;
-	REG(PLL_SYS)->FBDIV_INT = 125u;
+	KPLL_STATIC_CHECKS(SYS, KCFG_PLLSYS_REFDIV, KCFG_PLLSYS_FBDIV, KCFG_PLLSYS_POSTDIV1, KCFG_PLLSYS_POSTDIV2);
+	KPLL_STATIC_CHECK_FVCO(SYS, KCFG_PLLSYS_REFDIV, KCFG_PLLSYS_FBDIV);
+
+	REG(PLL_SYS)->CS		= (KCFG_PLLSYS_REFDIV * PLL_SYS_CS_REFDIV_0);
+	REG(PLL_SYS)->FBDIV_INT = (KCFG_PLLSYS_FBDIV * PLL_SYS_FBDIV_INT_FBDIV_INT_0);
 
 // Turn on the VCO
 
 	REG(PLL_SYS)->PWR &= ~(PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD);
 	while ((REG(PLL_SYS)->CS & PLL_SYS_CS_LOCK) == 0u) { }
 
-	REG(PLL_SYS)->PRIM = (5u * PLL_SYS_PRIM_POSTDIV1_0) | (2u * PLL_SYS_PRIM_POSTDIV2_0);
+	REG(PLL_SYS)->PRIM = (KCFG_PLLSYS_POSTDIV1 * PLL_SYS_PRIM_POSTDIV1_0) | (KCFG_PLLSYS_POSTDIV2 * PLL_SYS_PRIM_POSTDIV2_0);
 	REG(PLL_SYS)->PWR &= ~PLL_SYS_PWR_POSTDIVPD;
 
 // Switch clk_sys to PLL_SYS (glitchless via SRC/AUXSRC)
@@ -246,18 +254,25 @@ static	void	local_PLL_Configuration(void) {
 	REG(PLL_USB)->PWR |= (PLL_USB_PWR_PD | PLL_USB_PWR_VCOPD | PLL_USB_PWR_POSTDIVPD);
 
 // Configure PLL_USB for 48-MHz
-// - VCO = 480-MHz, REFDIV = 1, FBDIV = 40 (12 * 40 = 480)
-// - postdiv1 = 5, postdiv2 = 2	 => 480 / (5 * 2) = 48-MHz
+// FVCO min..max, 750-MHz..1600-MHz
+// For f(ck in) = 12-MHz (XOSC)
+// f(ref) = f(ck in) / REFDIV					REFDIV = 1					---> f(ref) = 12-MHz
+// f(vco) = f(ref) * FBDIV						FBDIV = 40					---> f(vco) = 480-MHz
+// f(out) = f(vco) / (POSTDIV1 * POSTDIV2)		POSTDIV1 = 5, POSTDIV2 = 2	---> f(out) = 48-MHz
+//
+// !!! f(vco) = 480-MHz is below FVCO min, so KPLL_STATIC_CHECK_FVCO is not applied here
 
-	REG(PLL_USB)->CS		= 0x1u;
-	REG(PLL_USB)->FBDIV_INT = 40u;
+	KPLL_STATIC_CHECKS(USB, KCFG_PLLUSB_REFDIV, KCFG_PLLUSB_FBDIV, KCFG_PLLUSB_POSTDIV1, KCFG_PLLUSB_POSTDIV2);
+
+	REG(PLL_USB)->CS		= (KCFG_PLLUSB_REFDIV * PLL_USB_CS_REFDIV_0);
+	REG(PLL_USB)->FBDIV_INT = (KCFG_PLLUSB_FBDIV * PLL_USB_FBDIV_INT_FBDIV_INT_0);
 
 // Turn on the VCO
 
 	REG(PLL_USB)->PWR &= ~(PLL_USB_PWR_PD | PLL_USB_PWR_VCOPD);
 	while ((REG(PLL_USB)->CS & PLL_USB_CS_LOCK) == 0u) { }
 
-	REG(PLL_USB)->PRIM = (5u * PLL_USB_PRIM_POSTDIV1_0) | (2u * PLL_USB_PRIM_POSTDIV2_0);
+	REG(PLL_USB)->PRIM = (KCFG_PLLUSB_POSTDIV1 * PLL_USB_PRIM_POSTDIV1_0) | (KCFG_PLLUSB_POSTDIV2 * PLL_USB_PRIM_POSTDIV2_0);
 	REG(PLL_USB)->PWR &= ~PLL_USB_PWR_POSTDIVPD;
 
 // Switch the clk_usb on the PLL_USB (via SRC/AUXSRC)
@@ -675,6 +690,8 @@ static	void	local_PLL_Configuration(void) {
 #define	PLL_USB_CS_LOCK				PLL_SYS_CS_LOCK
 #define	PLL_USB_PRIM_POSTDIV1_0		PLL_SYS_PRIM_POSTDIV1_0
 #define	PLL_USB_PRIM_POSTDIV2_0		PLL_SYS_PRIM_POSTDIV2_0
+#define	PLL_USB_CS_REFDIV_0			PLL_SYS_CS_REFDIV_0
+#define	PLL_USB_FBDIV_INT_FBDIV_INT_0	PLL_SYS_FBDIV_INT_FBDIV_INT_0
 
 // The quartz oscillator
 // ---------------------
@@ -704,19 +721,25 @@ static	void	local_PLL_Configuration(void) {
 
 	REG(PLL_SYS)->PWR |= (PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD | PLL_SYS_PWR_POSTDIVPD);
 
-// Configurer PLL_SYS for 150-MHz
-// - VCO = 1500-MHz, REFDIV = 1, FBDIV = 125 (12 * 125 = 1500)
-// - postdiv1 = 5, postdiv2 = 2  => 1500 / (5 * 2) = 150-MHz
+// Configure PLL_SYS for 150-MHz
+// FVCO min..max, 750-MHz..1600-MHz
+// For f(ck in) = 12-MHz (XOSC)
+// f(ref) = f(ck in) / REFDIV					REFDIV = 1					---> f(ref) = 12-MHz
+// f(vco) = f(ref) * FBDIV						FBDIV = 125					---> f(vco) = 1500-MHz
+// f(out) = f(vco) / (POSTDIV1 * POSTDIV2)		POSTDIV1 = 5, POSTDIV2 = 2	---> f(out) = 150-MHz
 
-	REG(PLL_SYS)->CS		= 0x1u;
-	REG(PLL_SYS)->FBDIV_INT = 125u;
+	KPLL_STATIC_CHECKS(SYS, KCFG_PLLSYS_REFDIV, KCFG_PLLSYS_FBDIV, KCFG_PLLSYS_POSTDIV1, KCFG_PLLSYS_POSTDIV2);
+	KPLL_STATIC_CHECK_FVCO(SYS, KCFG_PLLSYS_REFDIV, KCFG_PLLSYS_FBDIV);
+
+	REG(PLL_SYS)->CS		= (KCFG_PLLSYS_REFDIV * PLL_SYS_CS_REFDIV_0);
+	REG(PLL_SYS)->FBDIV_INT = (KCFG_PLLSYS_FBDIV * PLL_SYS_FBDIV_INT_FBDIV_INT_0);
 
 // Turn on the VCO
 
 	REG(PLL_SYS)->PWR &= ~(PLL_SYS_PWR_PD | PLL_SYS_PWR_VCOPD);
 	while ((REG(PLL_SYS)->CS & PLL_SYS_CS_LOCK) == 0u) { ; }
 
-	REG(PLL_SYS)->PRIM = (5u * PLL_SYS_PRIM_POSTDIV1_0) | (2u * PLL_SYS_PRIM_POSTDIV2_0);
+	REG(PLL_SYS)->PRIM = (KCFG_PLLSYS_POSTDIV1 * PLL_SYS_PRIM_POSTDIV1_0) | (KCFG_PLLSYS_POSTDIV2 * PLL_SYS_PRIM_POSTDIV2_0);
 	REG(PLL_SYS)->PWR &= ~PLL_SYS_PWR_POSTDIVPD;
 
 // Switch the clk_sys on the PLL_SYS (glitchless via SRC/AUXSRC)
@@ -743,19 +766,26 @@ static	void	local_PLL_Configuration(void) {
 
 	REG(PLL_USB)->PWR |= (PLL_USB_PWR_PD | PLL_USB_PWR_VCOPD | PLL_USB_PWR_POSTDIVPD);
 
-// Configurer PLL_USB for 48-MHz
-// - VCO = 480-MHz, REFDIV = 1, FBDIV = 40 (12 * 40 = 480)
-// - postdiv1 = 5, postdiv2 = 2  => 480 / (5 * 2) = 48-MHz
+// Configure PLL_USB for 48-MHz
+// FVCO min..max, 750-MHz..1600-MHz
+// For f(ck in) = 12-MHz (XOSC)
+// f(ref) = f(ck in) / REFDIV					REFDIV = 1					---> f(ref) = 12-MHz
+// f(vco) = f(ref) * FBDIV						FBDIV = 40					---> f(vco) = 480-MHz
+// f(out) = f(vco) / (POSTDIV1 * POSTDIV2)		POSTDIV1 = 5, POSTDIV2 = 2	---> f(out) = 48-MHz
+//
+// !!! f(vco) = 480-MHz is below FVCO min, so KPLL_STATIC_CHECK_FVCO is not applied here
 
-	REG(PLL_USB)->CS		= 0x1u;
-	REG(PLL_USB)->FBDIV_INT = 40u;
+	KPLL_STATIC_CHECKS(USB, KCFG_PLLUSB_REFDIV, KCFG_PLLUSB_FBDIV, KCFG_PLLUSB_POSTDIV1, KCFG_PLLUSB_POSTDIV2);
+
+	REG(PLL_USB)->CS		= (KCFG_PLLUSB_REFDIV * PLL_USB_CS_REFDIV_0);
+	REG(PLL_USB)->FBDIV_INT = (KCFG_PLLUSB_FBDIV * PLL_USB_FBDIV_INT_FBDIV_INT_0);
 
 // Turn on the VCO
 
 	REG(PLL_USB)->PWR &= ~(PLL_USB_PWR_PD | PLL_USB_PWR_VCOPD);
 	while ((REG(PLL_USB)->CS & PLL_USB_CS_LOCK) == 0u) { ; }
 
-	REG(PLL_USB)->PRIM = (5u * PLL_USB_PRIM_POSTDIV1_0) | (2u * PLL_USB_PRIM_POSTDIV2_0);
+	REG(PLL_USB)->PRIM = (KCFG_PLLUSB_POSTDIV1 * PLL_USB_PRIM_POSTDIV1_0) | (KCFG_PLLUSB_POSTDIV2 * PLL_USB_PRIM_POSTDIV2_0);
 	REG(PLL_USB)->PWR &= ~PLL_USB_PWR_POSTDIVPD;
 
 // Switch the clk_usb on the PLL_USB (via SRC/AUXSRC)

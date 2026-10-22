@@ -349,6 +349,11 @@ static	void	local_GPIO_Configuration(void) {
  * - Clock, PLL configuration
  *
  */
+#define	KCFG_MCO1SEL		0u											// hsi_ck
+#define	KCFG_MCO1PRE		0u											// No division
+#define	KCFG_MCO2SEL		0u											// sysclk
+#define	KCFG_MCO2PRE		0u											// No division
+
 static	void	local_RCC_Configuration(void) {
 
 // Enable LSI clock
@@ -362,21 +367,24 @@ static	void	local_RCC_Configuration(void) {
 
 // Activate the ART + 3ws (OK for 120-MHz)
 
-	FLASH->ACR = (3u * FLASH_ACR_LATENCY_0);			// Enable caches and prefetch
+	FLASH->ACR = (3u * FLASH_ACR_LATENCY_0);							// Enable caches and prefetch
 
 // Main PLL
 // --------
 
-// For f(ck in) = 16-MHz
-// f(out) = f(vco) / P			f(out) = 120-MHz, P = 2		---> f(vco) = 240-MHz
-// f(vco) = f(ck in) * (N/M)	N/M = 240/16 = 15			---> N = 60, M = 4
-// f(4x)  = f(vco) / Q			Q = 5						---> f(4x)  = 48-MHz
+// FVCO min..max, 192-MHz..432-MHz
+// For f(ck in) = 16-MHz (HSI)
+// f(vco) = f(ck in) * (N / M)	M = 4, N = 60	---> f(vco) = 240-MHz
+// f(P)   = f(vco) / P			P = 2			---> f(P)   = 120-MHz
+// f(Q)   = f(vco) / Q			Q = 5			---> f(Q)   = 48-MHz
 
-	RCC->PLLCFGR = (5u * RCC_PLLCFGR_PLLQ0)				// Q = 5
-				 | (0u * RCC_PLLCFGR_PLLSRC)			// HSI16 as a PLL source
-				 | (0u * RCC_PLLCFGR_PLLP0)				// P = 2
-				 | (60u * RCC_PLLCFGR_PLLN0)			// N = 60
-				 | (4u * RCC_PLLCFGR_PLLM0);			// M = 4
+	KPLL_STATIC_CHECKS(KCFG_PLLDIVM, KCFG_PLLDIVN, KCFG_PLLDIVP, KCFG_PLLDIVQ);
+
+	RCC->PLLCFGR = (KCFG_PLLDIVQ * RCC_PLLCFGR_PLLQ0)					// Q
+				 | (0u * RCC_PLLCFGR_PLLSRC)							// HSI16 as a PLL source
+				 | (((KCFG_PLLDIVP / 2u) - 1u) * RCC_PLLCFGR_PLLP0)		// P
+				 | (KCFG_PLLDIVN * RCC_PLLCFGR_PLLN0)					// N
+				 | (KCFG_PLLDIVM * RCC_PLLCFGR_PLLM0);					// M
 
 // Waiting for stable clock and enable PLL
 // Waiting for the PLL lock
@@ -385,15 +393,15 @@ static	void	local_RCC_Configuration(void) {
 	RCC->CR |= RCC_CR_PLLON;
 	while ((RCC->CR & RCC_CR_PLLRDY) == 0u) { ; }
 
-	RCC->CFGR = (0u * RCC_CFGR_MCO20)					// MCO2 (system clock)
-			  | (0u * RCC_CFGR_MCO2PRE0)				// MCO2 (no division)
-			  | (0u * RCC_CFGR_MCO1PRE0)				// MCO1 (no division)
-			  | (0u * RCC_CFGR_MCO10)					// MCO1 (HSI clock selected)
-			  | (4u * RCC_CFGR_RTCPRE0)					// HSE/4
-			  | (4u * RCC_CFGR_PPRE20)					// APB2 bus @ 120/2 = 60-MHz
-			  | (5u * RCC_CFGR_PPRE10)					// APB1 bus @ 120/4 = 30-MHz
-			  | (0u * RCC_CFGR_HPRE0)					// HPRE bus @ 120-MHz
-			  | (2u * RCC_CFGR_SW0);					// System clock on the PLL
+	RCC->CFGR = (KCFG_MCO2SEL * RCC_CFGR_MCO20)							// MCO2
+			  | (KCFG_MCO2PRE * RCC_CFGR_MCO2PRE0)						// MCO2 prescaler
+			  | (KCFG_MCO1PRE * RCC_CFGR_MCO1PRE0)						// MCO1 prescaler
+			  | (KCFG_MCO1SEL * RCC_CFGR_MCO10)							// MCO1
+			  | (4u * RCC_CFGR_RTCPRE0)									// HSE/4
+			  | (4u * RCC_CFGR_PPRE20)									// APB2 bus @ 120/2 = 60-MHz
+			  | (5u * RCC_CFGR_PPRE10)									// APB1 bus @ 120/4 = 30-MHz
+			  | (0u * RCC_CFGR_HPRE0)									// HPRE bus @ 120-MHz
+			  | (2u * RCC_CFGR_SW0);									// System clock on the PLL
 
 	while ((RCC->CFGR & (3u * RCC_CFGR_SWS0)) != (2u * RCC_CFGR_SWS0)) { ; }
 }

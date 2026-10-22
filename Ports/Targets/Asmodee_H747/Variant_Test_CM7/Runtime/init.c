@@ -589,27 +589,30 @@ static	void	local_GPIO_Configuration(void) {
  * TIM 1,2,3,4,5,6,7,8,12,13,14,15,16,17	ck = ??? -> A??
  *
  */
+#define	KCFG_MCO1SEL		4u											// hsi48_ck
+#define	KCFG_MCO1PRE_DIV	1u											// Clock / 1
+
 static	void	local_RCC_Configuration(void) {
 
-	RCC->CSR       |= RCC_CSR_LSION;					// Enable the LSI
-	RCC->CR         = RCC_CR_HSION						// Set HSION bit
-					| RCC_CR_HSEON						// Set HSEON bit
-					| RCC_CR_RC48ON						// Set HSI48ON bit
-					| RCC_CR_HSEBYP;					// Set the oscillator bypass
+	RCC->CSR       |= RCC_CSR_LSION;									// Enable the LSI
+	RCC->CR         = RCC_CR_HSION										// Set HSION bit
+					| RCC_CR_HSEON										// Set HSEON bit
+					| RCC_CR_RC48ON										// Set HSI48ON bit
+					| RCC_CR_HSEBYP;									// Set the oscillator bypass
 
-	RCC->CFGR       = 0x00000000u;						// Reset CFGR registe
-	RCC->D1CFGR     = 0x00000000u;						// Reset D1CFGR register
-	RCC->D2CFGR     = 0x00000000u;						// Reset D2CFGR register
-	RCC->D3CFGR     = 0x00000000u;						// Reset D3CFGR register
-	RCC->PLLCKSELR  = 0x00000000u;						// Reset PLLCKSELR register
-	RCC->PLLCFGR    = 0x00000000u;						// Reset PLLCFGR register
-	RCC->PLL1DIVR   = 0x00000000u;						// Reset PLL1DIVR register
-	RCC->PLL1FRACR  = 0x00000000u;						// Reset PLL1FRACR register
-	RCC->PLL2DIVR   = 0x00000000u;						// Reset PLL2DIVR register
-	RCC->PLL2FRACR  = 0x00000000u;						// Reset PLL2FRACR register
-	RCC->PLL3DIVR   = 0x00000000u;						// Reset PLL3DIVR register
-	RCC->PLL3FRACR  = 0x00000000u;						// Reset PLL3FRACR register
-	RCC->CIER       = 0x00000000u;						// Disable all interrupts
+	RCC->CFGR       = 0x00000000u;										// Reset CFGR registe
+	RCC->D1CFGR     = 0x00000000u;										// Reset D1CFGR register
+	RCC->D2CFGR     = 0x00000000u;										// Reset D2CFGR register
+	RCC->D3CFGR     = 0x00000000u;										// Reset D3CFGR register
+	RCC->PLLCKSELR  = 0x00000000u;										// Reset PLLCKSELR register
+	RCC->PLLCFGR    = 0x00000000u;										// Reset PLLCFGR register
+	RCC->PLL1DIVR   = 0x00000000u;										// Reset PLL1DIVR register
+	RCC->PLL1FRACR  = 0x00000000u;										// Reset PLL1FRACR register
+	RCC->PLL2DIVR   = 0x00000000u;										// Reset PLL2DIVR register
+	RCC->PLL2FRACR  = 0x00000000u;										// Reset PLL2FRACR register
+	RCC->PLL3DIVR   = 0x00000000u;										// Reset PLL3DIVR register
+	RCC->PLL3FRACR  = 0x00000000u;										// Reset PLL3FRACR register
+	RCC->CIER       = 0x00000000u;										// Disable all interrupts
 
 // Change the switch matrix read issuing capability to 1 for the AXI SRAM target (Target 7)
 // Document ES0392, section 2.2.10
@@ -618,120 +621,133 @@ static	void	local_RCC_Configuration(void) {
 		*((volatile uint32_t *)0x51008108u) = 0x000000001u;
 	}
 
-	while ((RCC->CR & RCC_CR_RC48RDY) == 0) { ; }		// Waiting for the 48-MHz
+	while ((RCC->CR & RCC_CR_RC48RDY) == 0) { ; }						// Waiting for the 48-MHz
 
 // Source for the PLL 1 , 2 & 3 input clock (see DM00314099 pages 296, 309 & 348)
 
-	RCC->PLLCKSELR = (0u * RCC_PLLCKSELR_PLLSRC_0)		// PLL1, 2, 3 source HSI (64-MHz)
-				   | (4u * RCC_PLLCKSELR_DIVM1_0)		// DivM1 / 4
-				   | (4u * RCC_PLLCKSELR_DIVM2_0)		// DivM2 / 4
-				   | (4u * RCC_PLLCKSELR_DIVM3_0);		// DivM3 / 4
+	RCC->PLLCKSELR = (0u * RCC_PLLCKSELR_PLLSRC_0)						// PLL1, 2, 3 source HSI (64-MHz)
+				   | (KCFG_PLL1DIVM * RCC_PLLCKSELR_DIVM1_0)			// M1
+				   | (KCFG_PLL2DIVM * RCC_PLLCKSELR_DIVM2_0)			// M2
+				   | (KCFG_PLL3DIVM * RCC_PLLCKSELR_DIVM3_0);			// M3
 
-// PLL 1 CPU
-// ---------
+// PLL 1, CPU
+// ----------
 
-// For f(ck in) = 16-MHz
-// f(vco) = f(ck in) * (N + 1)   f(vco) = 16-MHz, N = 59 ---> f(vco) = 960-MHz
-// f(P) = f(vco) / (P + 1) P = 1 			 			 ---> f(P) = 480
-// f(Q) = f(vco) / (Q + 1) Q = 3 			 			 ---> f(Q) = 240
-// f(R) = f(vco) / (R + 1) R = 7 			 			 ---> f(R) = 120
+// FVCO min..max, 192-MHz..960-MHz
+// For f(ck in) = 64-MHz (HSI)
+// f(ref) = f(ck in) / M		M = 4		---> f(ref) = 16-MHz
+// f(vco) = f(ref) * N			N = 60		---> f(vco) = 960-MHz
+// f(P)   = f(vco) / P			P = 2		---> f(P)   = 480-MHz
+// f(Q)   = f(vco) / Q			Q = 4		---> f(Q)   = 240-MHz
+// f(R)   = f(vco) / R			R = 8		---> f(R)   = 120-MHz
 
-	RCC->PLLCFGR |= RCC_PLLCFGR_DIVR1EN					// Div R enable
-				  | RCC_PLLCFGR_DIVQ1EN					// Div Q enable
-				  | RCC_PLLCFGR_DIVP1EN					// Div P enable
-				  | (3u * RCC_PLLCFGR_PLL1RGE_0);		// Input 16-MHz
+	KPLL_STATIC_CHECKS(1, KCFG_PLL1DIVM, KCFG_PLL1RGE, KCFG_PLL1DIVN, KCFG_PLL1DIVP, KCFG_PLL1DIVQ, KCFG_PLL1DIVR);
+	static_assert((KCFG_PLL1DIVP % 2u) == 0u, "PLL1: DIVP shall be even");
 
-	RCC->PLL1DIVR = (7u * RCC_PLL1DIVR_DIVR1_0)			// Div R
-				  | (3u * RCC_PLL1DIVR_DIVQ1_0)			// Div Q
-				  | (1u * RCC_PLL1DIVR_DIVP1_0)			// Div P
-				  | (59u * RCC_PLL1DIVR_DIVN1_0);		// Div N 59 = 960-MHz
+	RCC->PLLCFGR |= RCC_PLLCFGR_DIVR1EN									// Div R enable
+				  | RCC_PLLCFGR_DIVQ1EN									// Div Q enable
+				  | RCC_PLLCFGR_DIVP1EN									// Div P enable
+				  | (KCFG_PLL1RGE * RCC_PLLCFGR_PLL1RGE_0);				// f(ref) range
 
-	RCC->PLL1FRACR = 0x00000000u;						// Reset PLL1FRACR register
-	RCC->CR       |= RCC_CR_PLL1ON;						// PLL1 on
+	RCC->PLL1DIVR = ((KCFG_PLL1DIVR - 1u) * RCC_PLL1DIVR_DIVR1_0)		// R
+				  | ((KCFG_PLL1DIVQ - 1u) * RCC_PLL1DIVR_DIVQ1_0)		// Q
+				  | ((KCFG_PLL1DIVP - 1u) * RCC_PLL1DIVR_DIVP1_0)		// P
+				  | ((KCFG_PLL1DIVN - 1u) * RCC_PLL1DIVR_DIVN1_0);		// N
 
-// Waiting for the lock
-
-	while ((RCC->CR & RCC_CR_PLL1RDY) == 0) { ; }		// Waiting for the lock of the PLL
-
-// PLL 2 CPU
-// ---------
-
-// For f(ck in) = 16-MHz
-// f(vco) = f(ck in) * (N + 1)	 f(vco) = 16-MHz, N = 24 ---> f(vco) = 400-MHz
-// f(P) = f(vco) / (P + 1) P = 3 			 			 ---> f(P) = 100
-// f(Q) = f(vco) / (Q + 1) Q = 7 			 			 ---> f(Q) = 50
-// f(R) = f(vco) / (R + 1) R = 15 			 			 ---> f(R) = 25
-
-	RCC->PLLCFGR |= RCC_PLLCFGR_DIVR2EN					// Div R enable
-				  | RCC_PLLCFGR_DIVQ2EN					// Div Q enable
-				  | RCC_PLLCFGR_DIVP2EN					// Div P enable
-				  | (3u * RCC_PLLCFGR_PLL2RGE_0);		// Input 16-MHz
-
-	RCC->PLL2DIVR = (15u * RCC_PLL2DIVR_DIVR2_0)		// Div R
-				  | (7u * RCC_PLL2DIVR_DIVQ2_0)			// Div Q
-				  | (3u * RCC_PLL2DIVR_DIVP2_0)			// Div P
-				  | (24u * RCC_PLL2DIVR_DIVN2_0);		// Div N 24 = 400-MHz
-
-	RCC->PLL2FRACR = 0x00000000u;						// Reset PLL2FRACR register
-	RCC->CR       |= RCC_CR_PLL2ON;						// PLL2 on
+	RCC->PLL1FRACR = 0x00000000u;										// Reset PLL1FRACR register
+	RCC->CR       |= RCC_CR_PLL1ON;										// PLL1 on
 
 // Waiting for the lock
 
-	while ((RCC->CR & RCC_CR_PLL2RDY) == 0u) { ; }		// Waiting for the lock of the PLL
+	while ((RCC->CR & RCC_CR_PLL1RDY) == 0u) { ; }						// Waiting for the lock of the PLL
 
-// PLL 3 CPU
-// ---------
+// PLL 2, ADC
+// ----------
 
-// For f(ck in) = 16-MHz
-// f(vco) = f(ck in) * (N + 1)	 f(vco) = 16-MHz, N = 14 ---> f(vco) = 240-MHz
-// f(P) = f(vco) / (P + 1) P = 1 			 			 ---> f(P) = 120
-// f(Q) = f(vco) / (Q + 1) Q = 4 			 			 ---> f(Q) = 48
-// f(R) = f(vco) / (R + 1) R = 1 			 			 ---> f(R) = 120
+// FVCO min..max, 192-MHz..960-MHz
+// For f(ck in) = 64-MHz (HSI)
+// f(ref) = f(ck in) / M		M = 4		---> f(ref) = 16-MHz
+// f(vco) = f(ref) * N			N = 25		---> f(vco) = 400-MHz
+// f(P)   = f(vco) / P			P = 4		---> f(P)   = 100-MHz
+// f(Q)   = f(vco) / Q			Q = 8		---> f(Q)   = 50-MHz
+// f(R)   = f(vco) / R			R = 16		---> f(R)   = 25-MHz
 
-	RCC->PLLCFGR |= RCC_PLLCFGR_DIVR3EN					// Div R enable
-				  | RCC_PLLCFGR_DIVQ3EN					// Div Q enable
-				  | RCC_PLLCFGR_DIVP3EN					// Div P enable
-				  | (3u * RCC_PLLCFGR_PLL3RGE_0);		// Input 16-MHz
+	KPLL_STATIC_CHECKS(2, KCFG_PLL2DIVM, KCFG_PLL2RGE, KCFG_PLL2DIVN, KCFG_PLL2DIVP, KCFG_PLL2DIVQ, KCFG_PLL2DIVR);
 
-	RCC->PLL3DIVR = (1u * RCC_PLL3DIVR_DIVR3_0)			// Div R
-				  | (4u * RCC_PLL3DIVR_DIVQ3_0)			// Div Q
-				  | (1u * RCC_PLL3DIVR_DIVP3_0)			// Div P
-				  | (14u * RCC_PLL3DIVR_DIVN3_0);		// Div N 14 = 240-MHz
+	RCC->PLLCFGR |= RCC_PLLCFGR_DIVR2EN									// Div R enable
+				  | RCC_PLLCFGR_DIVQ2EN									// Div Q enable
+				  | RCC_PLLCFGR_DIVP2EN									// Div P enable
+				  | (KCFG_PLL2RGE * RCC_PLLCFGR_PLL2RGE_0);				// f(ref) range
 
-	RCC->PLL3FRACR = 0x00000000u;						// Reset PLL3FRACR register
-	RCC->CR       |= RCC_CR_PLL3ON;						// PLL3 on
+	RCC->PLL2DIVR = ((KCFG_PLL2DIVR - 1u) * RCC_PLL2DIVR_DIVR2_0)		// R
+				  | ((KCFG_PLL2DIVQ - 1u) * RCC_PLL2DIVR_DIVQ2_0)		// Q
+				  | ((KCFG_PLL2DIVP - 1u) * RCC_PLL2DIVR_DIVP2_0)		// P
+				  | ((KCFG_PLL2DIVN - 1u) * RCC_PLL2DIVR_DIVN2_0);		// N
+
+	RCC->PLL2FRACR = 0x00000000u;										// Reset PLL2FRACR register
+	RCC->CR       |= RCC_CR_PLL2ON;										// PLL2 on
 
 // Waiting for the lock
 
-	while ((RCC->CR & RCC_CR_PLL3RDY) == 0u) { ; }		// Waiting for the lock of the PLL
+	while ((RCC->CR & RCC_CR_PLL2RDY) == 0u) { ; }						// Waiting for the lock of the PLL
+
+// PLL 3, USB
+// ----------
+
+// FVCO min..max, 192-MHz..960-MHz
+// For f(ck in) = 64-MHz (HSI)
+// f(ref) = f(ck in) / M		M = 4		---> f(ref) = 16-MHz
+// f(vco) = f(ref) * N			N = 15		---> f(vco) = 240-MHz
+// f(P)   = f(vco) / P			P = 2		---> f(P)   = 120-MHz
+// f(Q)   = f(vco) / Q			Q = 5		---> f(Q)   = 48-MHz
+// f(R)   = f(vco) / R			R = 2		---> f(R)   = 120-MHz
+
+	KPLL_STATIC_CHECKS(3, KCFG_PLL3DIVM, KCFG_PLL3RGE, KCFG_PLL3DIVN, KCFG_PLL3DIVP, KCFG_PLL3DIVQ, KCFG_PLL3DIVR);
+
+	RCC->PLLCFGR |= RCC_PLLCFGR_DIVR3EN									// Div R enable
+				  | RCC_PLLCFGR_DIVQ3EN									// Div Q enable
+				  | RCC_PLLCFGR_DIVP3EN									// Div P enable
+				  | (KCFG_PLL3RGE * RCC_PLLCFGR_PLL3RGE_0);				// f(ref) range
+
+	RCC->PLL3DIVR = ((KCFG_PLL3DIVR - 1u) * RCC_PLL3DIVR_DIVR3_0)		// R
+				  | ((KCFG_PLL3DIVQ - 1u) * RCC_PLL3DIVR_DIVQ3_0)		// Q
+				  | ((KCFG_PLL3DIVP - 1u) * RCC_PLL3DIVR_DIVP3_0)		// P
+				  | ((KCFG_PLL3DIVN - 1u) * RCC_PLL3DIVR_DIVN3_0);		// N
+
+	RCC->PLL3FRACR = 0x00000000u;										// Reset PLL3FRACR register
+	RCC->CR       |= RCC_CR_PLL3ON;										// PLL3 on
+
+// Waiting for the lock
+
+	while ((RCC->CR & RCC_CR_PLL3RDY) == 0u) { ; }						// Waiting for the lock of the PLL
 
 // Domain clocks
 // -------------
 
-	RCC->D1CFGR = (0u * RCC_D1CFGR_D1CPRE_0)			// D1CPRE / 1
-				| (0u * RCC_D1CFGR_D1PPRE_0)			// D1PPRE / 1
-				| (8u * RCC_D1CFGR_HPRE_0);				// HPRE / 2
+	RCC->D1CFGR = (0u * RCC_D1CFGR_D1CPRE_0)							// D1CPRE / 1
+				| (0u * RCC_D1CFGR_D1PPRE_0)							// D1PPRE / 1
+				| (8u * RCC_D1CFGR_HPRE_0);								// HPRE / 2
 
-	RCC->D2CFGR = (5u * RCC_D2CFGR_D2PPRE2_0)			// D2PPRE2 / 4
-				| (5u * RCC_D2CFGR_D2PPRE1_0);			// D2PPRE1 / 4
+	RCC->D2CFGR = (5u * RCC_D2CFGR_D2PPRE2_0)							// D2PPRE2 / 4
+				| (5u * RCC_D2CFGR_D2PPRE1_0);							// D2PPRE1 / 4
 
-	RCC->D3CFGR = (4u * RCC_D3CFGR_D3PPRE_0);			// D3PPRE / 2
+	RCC->D3CFGR = (4u * RCC_D3CFGR_D3PPRE_0);							// D3PPRE / 2
 
 // RNG & USB clocks
 // ----------------
 
-	RCC->D2CCIP2R = (1u * RCC_D2CCIP2R_RNGSEL_0)		// Set the clock for the RNG @ KFREQUENCY_PLL1Q (240-MHz)
-				  | (2u * RCC_D2CCIP2R_USBSEL_0);		// Set the clock for the USB @ KFREQUENCY_PLL3Q (48-MHz)
+	RCC->D2CCIP2R = (1u * RCC_D2CCIP2R_RNGSEL_0)						// Set the clock for the RNG @ KFREQUENCY_PLL1Q (240-MHz)
+				  | (2u * RCC_D2CCIP2R_USBSEL_0);						// Set the clock for the USB @ KFREQUENCY_PLL3Q (48-MHz)
 
 // Flash latency (for 4x0-MHz ... 4 wait states)
 // ---------------------------------------------
 
-	FLASH->ACR = (3u * FLASH_ACR_WRHIGHFREQ_0)			// Bus > 385-MHz
-			   | (4u * FLASH_ACR_LATENCY_0);			// 4 wait states
+	FLASH->ACR = (3u * FLASH_ACR_WRHIGHFREQ_0)							// Bus > 385-MHz
+			   | (4u * FLASH_ACR_LATENCY_0);							// 4 wait states
 
-	RCC->CFGR = (4u * RCC_CFGR_MCO1SEL_0)				// MCO1 HSI48
-			  | (1u * RCC_CFGR_MCO1PRE_0)				// prescaler / 1
-			  | (3u * RCC_CFGR_SW_0);					// CPU clock = PLL
+	RCC->CFGR = (KCFG_MCO1SEL * RCC_CFGR_MCO1SEL_0)						// MCO1
+			  | (KCFG_MCO1PRE_DIV * RCC_CFGR_MCO1PRE_0)					// MCO1 prescaler
+			  | (3u * RCC_CFGR_SW_0);									// CPU clock = PLL
 }
 
 /*
@@ -888,6 +904,12 @@ static	void	local_Boot_CM4(void) {
  */
 #define	KEXTEND
 
+#define	KCFG_I2C_PRESC_DIV	5u													// tPRESC  = 5 x tI2CCLK
+#define	KCFG_I2C_SCLDEL_DIV	10u													// tSCLDEL = 10 x tPRESC
+#define	KCFG_I2C_SDADEL		1u													// tSDADEL = 1 x tPRESC
+#define	KCFG_I2C_SCLH_DIV	53u													// tSCLH   = 53 x tPRESC
+#define	KCFG_I2C_SCLL_DIV	53u													// tSCLL   = 53 x tPRESC
+
 static	void	local_load_PF1550(void) {
 					uint8_t		i;
 	static	const	pf1550_t	aTabInitPF1550[] = {
@@ -939,16 +961,16 @@ static	void	local_load_PF1550(void) {
 
 	I2C1->CR1 &= (uint32_t)~I2C_CR1_PE;
 
-	I2C1->TIMINGR = (4u * I2C_TIMINGR_PRESC_0)						// Timing prescaler
-				  | (9u * I2C_TIMINGR_SCLDEL_0)						// Data setup time
-				  | (1u * I2C_TIMINGR_SDADEL_0)						// Data hold time
-				  | (52u * I2C_TIMINGR_SCLH_0)						// SCL high period
-				  | (52u * I2C_TIMINGR_SCLL_0);						// SCL Low period
+	I2C1->TIMINGR = ((KCFG_I2C_PRESC_DIV - 1u) * I2C_TIMINGR_PRESC_0)		// Timing prescaler
+				  | ((KCFG_I2C_SCLDEL_DIV - 1u) * I2C_TIMINGR_SCLDEL_0)		// Data setup time
+				  | (KCFG_I2C_SDADEL * I2C_TIMINGR_SDADEL_0)				// Data hold time
+				  | ((KCFG_I2C_SCLH_DIV - 1u) * I2C_TIMINGR_SCLH_0)			// SCL high period
+				  | ((KCFG_I2C_SCLL_DIV - 1u) * I2C_TIMINGR_SCLL_0);		// SCL Low period
 
-	I2C1->CR1     = I2C_CR1_NOSTRETCH								// Clock stretching disabled
-				  | I2C_CR1_ANFOFF;									// Analog noise filter disabled
+	I2C1->CR1     = I2C_CR1_NOSTRETCH										// Clock stretching disabled
+				  | I2C_CR1_ANFOFF;											// Analog noise filter disabled
 
-	I2C1->CR1	  |= I2C_CR1_PE;									// Periph enable
+	I2C1->CR1	  |= I2C_CR1_PE;											// Periph enable
 
 // Minimal send of data to the PF1550
 
@@ -956,33 +978,33 @@ static	void	local_load_PF1550(void) {
 		local_waitingForFlagOff(I2C_ISR_BERR);
 		local_waitingForFlagOn(I2C_ISR_TXE);
 
-		I2C1->CR2 = (0u * I2C_CR2_PECBYTE)							// No packet error
-				  | I2C_CR2_AUTOEND									// Automatic end mode
-				  | (0u * I2C_CR2_RELOAD)							// No reload mode
-				  | ((KPF1550_NB_MONO & 0xFFu) * I2C_CR2_NBYTES_0)	// Number of bytes to transfer
-				  | (0u * I2C_CR2_NACK)								// No NACK
-				  | (0u * I2C_CR2_STOP)								// No STOP
-				  | (0u * I2C_CR2_HEAD10R)							// No HEADER 10
-				  | (0u * I2C_CR2_ADD10)							// Address on 7 bits
-				  | (0u * I2C_CR2_RD_WRN)							// Write transfer
-				  | ((KI2C_ADD_PF1550<<1u) * I2C_CR2_SADD0);		// The slave address
+		I2C1->CR2 = (0u * I2C_CR2_PECBYTE)									// No packet error
+				  | I2C_CR2_AUTOEND											// Automatic end mode
+				  | (0u * I2C_CR2_RELOAD)									// No reload mode
+				  | ((KPF1550_NB_MONO & 0xFFu) * I2C_CR2_NBYTES_0)			// Number of bytes to transfer
+				  | (0u * I2C_CR2_NACK)										// No NACK
+				  | (0u * I2C_CR2_STOP)										// No STOP
+				  | (0u * I2C_CR2_HEAD10R)									// No HEADER 10
+				  | (0u * I2C_CR2_ADD10)									// Address on 7 bits
+				  | (0u * I2C_CR2_RD_WRN)									// Write transfer
+				  | ((KI2C_ADD_PF1550<<1u) * I2C_CR2_SADD0);				// The slave address
 
-		I2C1->CR2 |= I2C_CR2_START;									// START
+		I2C1->CR2 |= I2C_CR2_START;											// START
 
-		local_waitingForFlagOff(I2C_ISR_BERR);						//
-		local_waitingForFlagOn(I2C_ISR_TXE);						//
-		local_waitingForFlagOff(I2C_ISR_NACKF);						//
+		local_waitingForFlagOff(I2C_ISR_BERR);								//
+		local_waitingForFlagOn(I2C_ISR_TXE);								//
+		local_waitingForFlagOff(I2C_ISR_NACKF);								//
 
-		local_writeByte(aTabInitPF1550[i].oRegister);				//
-		local_writeByte(aTabInitPF1550[i].oData);					//
+		local_writeByte(aTabInitPF1550[i].oRegister);						//
+		local_writeByte(aTabInitPF1550[i].oData);							//
 
 // Wait after each write
 
-		local_wait_us(aTabInitPF1550[i].oDelay);					//
+		local_wait_us(aTabInitPF1550[i].oDelay);							//
 	}
 
-	local_wait_us(1000000u);										//
-	RCC->APB1LENR &= ~RCC_APB1LENR_I2C1EN;							// Disable the periph
+	local_wait_us(1000000u);												//
+	RCC->APB1LENR &= ~RCC_APB1LENR_I2C1EN;									// Disable the periph
 }
 
 /*

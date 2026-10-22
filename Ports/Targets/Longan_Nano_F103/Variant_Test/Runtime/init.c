@@ -238,36 +238,39 @@ static	void	local_RCU_Configuration(void) {
 
 // Main PLL CPU
 
-// For f(ck in) = 8 / 2 = 4-MHz
-//		CK_SYS  = 108-MHz -> factor = 108 / 4 = 27 (108-MHz to permit the USB 54-MHz clock !!)
+// For f(ck in) = 8 / 2 = 4-MHz (IRC8M / 2)
+// f(PLL) = f(ck in) * PLLMF		PLLMF = 27	---> CK_PLL = 108-MHz (108-MHz to permit the USB 54-MHz clock !!)
+//		CK_SYS  = 108-MHz
 //		CK AHB  = 108-MHz
 //		CK APB1 = 54-MHz
 //		CK APB2 = 54-MHz
 //		CK USB  = 54-MHz
 
-	RCU->CFG0 = (0x1u<<29u)									// PLLMF4 for 27 (1 1010)
-			  | (0x0u<<28u)									// ADCPSC
-			  | (0x4u<<24u)									// CLOCKOUT = CKSYS
-			  | (0x3u<<22u)									// 54-MHz = CK_PLL / 2
-			  | (0xAu<<18u)									// PLLMF3-0 for 27 (1 1010)
-			  | (0x0u<<17u)									// PREDIV0 not used
-			  | (0x0u<<16u)									// PLLSEL = IRC8M / 2
-			  | (0x0u<<14u)									// ADC clock = CK_APB2 / 2
-			  | (0x4u<<11u)									// APB2 = CK_AHB / 2 = 54-MHz
-			  | (0x4u<<8u)									// APB1 = CK_AHB / 2 = 54-MHz
-			  | (0x0u<<4u)									// AHB  = CK_SYS / 1 = 108-MHz
-			  | (0x2u<<0u);									// CK_PLL as the CK_SYS source
+	KPLL_STATIC_CHECKS(KCFG_PLLMF);
 
-	RCU->CTL |= (0x0u<<28u)									// PLL2 off
-			  | (0x0u<<26u)									// PLL1 off
-			  | (0x1u<<24u)									// PLL on
-			  | (0x0u<<19u)									// Clock monitor disable
-			  | (0x0u<<18u)									// HXTAL bypassed
-			  | (0x0u<<16u);								// RC 8-MHz enable
+	RCU->CFG0 = ((KPLL_PLLMF(KCFG_PLLMF) >> 4u) * RCU_CFG0_PLLMF_4)			// PLLMF bit 4
+			  | (0u * RCU_CFG0_ADCPSC_2)									// ADCPSC
+			  | (4u * RCU_CFG0_CKOUT0SEL_0)									// CLOCKOUT = CKSYS
+			  | (KCFG_USBFSPSC * RCU_CFG0_USBFSPSC_0)						// 54-MHz = CK_PLL / 2
+			  | ((KPLL_PLLMF(KCFG_PLLMF) & 0xFu) * RCU_CFG0_PLLMF_3_0_0)	// PLLMF bits 3-0
+			  | (0u * RCU_CFG0_PREDV0_LSB)									// PREDIV0 not used
+			  | (0u * RCU_CFG0_PLLSEL)										// PLLSEL = IRC8M / 2
+			  | (0u * RCU_CFG0_ADCPSC_1_0_0)								// ADC clock = CK_APB2 / 2
+			  | (4u * RCU_CFG0_APB2PSC_0)									// APB2 = CK_AHB / 2 = 54-MHz
+			  | (4u * RCU_CFG0_APB1PSC_0)									// APB1 = CK_AHB / 2 = 54-MHz
+			  | (0u * RCU_CFG0_AHBPSC_0)									// AHB  = CK_SYS / 1 = 108-MHz
+			  | (2u * RCU_CFG0_SCS_0);										// CK_PLL as the CK_SYS source
 
-	RCU->AHBEN |= RCU_AHBEN_USBFSEN;						// USBFS clock enable
+	RCU->CTL |= (0u * RCU_CTL_PLL2EN)										// PLL2 off
+			  | (0u * RCU_CTL_PLL1EN)										// PLL1 off
+			  | (1u * RCU_CTL_PLLEN)										// PLL on
+			  | (0u * RCU_CTL_CKMEN)										// Clock monitor disable
+			  | (0u * RCU_CTL_HXTALBPS)										// HXTAL not bypassed
+			  | (0u * RCU_CTL_HXTALEN);										// HXTAL off
 
-	while ((RCU->CTL & RCU_CTL_PLLSTB) == 0u) { ; }			// Waiting for PLL stable
+	RCU->AHBEN |= RCU_AHBEN_USBFSEN;										// USBFS clock enable
+
+	while ((RCU->CTL & RCU_CTL_PLLSTB) == 0u) { ; }							// Waiting for PLL stable
 
 // Turn on the 40-KHz clock
 

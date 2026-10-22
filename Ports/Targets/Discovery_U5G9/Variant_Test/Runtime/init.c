@@ -508,21 +508,24 @@ static	void	local_GPIO_Configuration(void) {
  * - Clock, PLL configuration
  *
  */
+#define	KCFG_MCOSEL			1u											// sysclk
+#define	KCFG_MCOPRE			2u											// Div 4 (2^2)
+
 static	void	local_RCC_Configuration(void) {
 
 	#if (KCALENDAR_WITH_HW_RTC_S == true)
 
 // Enable backup domain access
 
-	REG(PWR)->DBPR |= PWR_DBPR_DBP;								// Disable backup domain write protection
+	REG(PWR)->DBPR |= PWR_DBPR_DBP;										// Disable backup domain write protection
 
 // Enable LSI, select it as RTC source, and enable RTC (on STM32U5G9, LSI is in BDCR register)
 // Do all BDCR modifications in minimal writes to avoid backup domain issues
 
 	REG(RCC)->BDCR = (REG(RCC)->BDCR & ~RCC_BDCR_RTCSEL)
-				   | RCC_BDCR_LSION								// Enable the LSI
-				   | (2u * RCC_BDCR_RTCSEL_0)					// LSI is the source for the RTC
-				   | RCC_BDCR_RTCEN;							// RTC enable
+				   | RCC_BDCR_LSION										// Enable the LSI
+				   | (2u * RCC_BDCR_RTCSEL_0)							// LSI is the source for the RTC
+				   | RCC_BDCR_RTCEN;									// RTC enable
 
 // Waiting for LSI ready
 
@@ -546,25 +549,29 @@ static	void	local_RCC_Configuration(void) {
 // PLL 1
 // -----
 
+// FVCO min..max, 128-MHz..544-MHz
 // For f(ck in) = 16-MHz (HSI)
-// f(out) = f(vco) / R			f(out) = 160-MHz, R = 2		---> f(vco) = 320-MHz
-// f(vco) = f(ck in) * (N/M)	N/M = 20/1 = 20				---> N = 20, M = 1
-// f(Q)   = f(vco) / Q			Q = 2						---> f(Q) = 160-MHz
-// f(P)   = f(vco) / P			P = 2						---> f(P) = 160-MHz
+// f(ref) = f(ck in) / M		M = 1		---> f(ref) = 16-MHz
+// f(vco) = f(ref) * N			N = 20		---> f(vco) = 320-MHz
+// f(P)   = f(vco) / P			P = 2		---> f(P)   = 160-MHz
+// f(Q)   = f(vco) / Q			Q = 2		---> f(Q)   = 160-MHz
+// f(R)   = f(vco) / R			R = 2		---> f(R)   = 160-MHz
 
-	REG(RCC)->PLL1DIVR = 0u;									//
-	REG(RCC)->PLL1DIVR = ((2u - 1u) * RCC_PLL1DIVR_PLL1R_0)		// Divider for R
-					   | ((2u - 1u) * RCC_PLL1DIVR_PLL1Q_0)		// Divider for Q
-					   | ((2u - 1u) * RCC_PLL1DIVR_PLL1P_0)		// Divider for P
-					   | ((20u - 1u) * RCC_PLL1DIVR_PLL1N_0);	// Divider for N
+	KPLL_STATIC_CHECKS(1, KCFG_PLL1DIVM, KCFG_PLL1RGE, KCFG_PLL1DIVN, KCFG_PLL1DIVP, KCFG_PLL1DIVQ, KCFG_PLL1DIVR);
 
-	REG(RCC)->PLL1CFGR = RCC_PLL1CFGR_PLL1REN					// Out R enable
-					   | RCC_PLL1CFGR_PLL1QEN					// Out Q enable
-					   | RCC_PLL1CFGR_PLL1PEN					// Out P enable
-					   | (0u * RCC_PLL1CFGR_PLL1MBOOST_0)		// PLL1 M Booster / 1
-					   | (0u * RCC_PLL1CFGR_PLL1M_0)			// PLL1 M Prescaler / 1
-					   | (3u * RCC_PLL1CFGR_PLL1RGE_0)			// PLL input frequency in the range of 8-MHz..16-MHz
-					   | (2u * RCC_PLL1CFGR_PLL1SRC_0);			// HSI 16-MHz as a PLL input
+	REG(RCC)->PLL1DIVR = 0u;											//
+	REG(RCC)->PLL1DIVR = ((KCFG_PLL1DIVR - 1u) * RCC_PLL1DIVR_PLL1R_0)	// R
+					   | ((KCFG_PLL1DIVQ - 1u) * RCC_PLL1DIVR_PLL1Q_0)	// Q
+					   | ((KCFG_PLL1DIVP - 1u) * RCC_PLL1DIVR_PLL1P_0)	// P
+					   | ((KCFG_PLL1DIVN - 1u) * RCC_PLL1DIVR_PLL1N_0);	// N
+
+	REG(RCC)->PLL1CFGR = RCC_PLL1CFGR_PLL1REN							// Out R enable
+					   | RCC_PLL1CFGR_PLL1QEN							// Out Q enable
+					   | RCC_PLL1CFGR_PLL1PEN							// Out P enable
+					   | (0u * RCC_PLL1CFGR_PLL1MBOOST_0)				// PLL1 M Booster / 1
+					   | ((KCFG_PLL1DIVM - 1u) * RCC_PLL1CFGR_PLL1M_0)	// M
+					   | (KCFG_PLL1RGE * RCC_PLL1CFGR_PLL1RGE_0)		// PLL input frequency in the range of 8-MHz..16-MHz
+					   | (2u * RCC_PLL1CFGR_PLL1SRC_0);					// HSI 16-MHz as a PLL input
 
 // Waiting for stable clock and enable PLL
 // Waiting for the PLL lock
@@ -575,24 +582,28 @@ static	void	local_RCC_Configuration(void) {
 // PLL 3
 // -----
 
+// FVCO min..max, 128-MHz..544-MHz
 // For f(ck in) = 16-MHz (HSI)
-// f(out) = f(vco) / R			f(out) = 20.84-MHz, R = 24	---> f(vco) = 500-MHz
-// f(vco) = f(ck in) * (N/M)	N/M = 125/4					---> N = 125, M = 4
-// f(Q)   = f(vco) / Q			Q = 2						---> f(Q) = 250-MHz
-// f(P)   = f(vco) / P			P = 24						---> f(P) = 20.84-MHz
+// f(ref) = f(ck in) / M		M = 4		---> f(ref) = 4-MHz
+// f(vco) = f(ref) * N			N = 125		---> f(vco) = 500-MHz
+// f(P)   = f(vco) / P			P = 24		---> f(P)   = 20.83-MHz
+// f(Q)   = f(vco) / Q			Q = 2		---> f(Q)   = 250-MHz
+// f(R)   = f(vco) / R			R = 24		---> f(R)   = 20.83-MHz
 
-	REG(RCC)->PLL3DIVR = 0u;									//
-	REG(RCC)->PLL3DIVR = ((24u - 1u) * RCC_PLL3DIVR_PLL3R_0)	// Divider for R
-					   | ((2u - 1u) * RCC_PLL3DIVR_PLL3Q_0)		// Divider for Q
-					   | ((24u - 1u) * RCC_PLL3DIVR_PLL3P_0)	// Divider for P
-					   | ((125u - 1u) * RCC_PLL3DIVR_PLL3N_0);	// Divider for N
+	KPLL_STATIC_CHECKS(3, KCFG_PLL3DIVM, KCFG_PLL3RGE, KCFG_PLL3DIVN, KCFG_PLL3DIVP, KCFG_PLL3DIVQ, KCFG_PLL3DIVR);
 
-	REG(RCC)->PLL3CFGR = RCC_PLL3CFGR_PLL3REN					// Out R enable
-					   | RCC_PLL3CFGR_PLL3QEN					// Out Q enable
-					   | RCC_PLL3CFGR_PLL3PEN					// Out P enable
-					   | ((4u - 1u) * RCC_PLL3CFGR_PLL3M_0)		// PLL3 M Prescaler / 4
-					   | (0u * RCC_PLL3CFGR_PLL3RGE_0)			// PLL input frequency in the range of 4-MHz..8-MHz
-					   | (2u * RCC_PLL3CFGR_PLL3SRC_0);			// HSI 16-MHz as a PLL input
+	REG(RCC)->PLL3DIVR = 0u;											//
+	REG(RCC)->PLL3DIVR = ((KCFG_PLL3DIVR - 1u) * RCC_PLL3DIVR_PLL3R_0)	// R
+					   | ((KCFG_PLL3DIVQ - 1u) * RCC_PLL3DIVR_PLL3Q_0)	// Q
+					   | ((KCFG_PLL3DIVP - 1u) * RCC_PLL3DIVR_PLL3P_0)	// P
+					   | ((KCFG_PLL3DIVN - 1u) * RCC_PLL3DIVR_PLL3N_0);	// N
+
+	REG(RCC)->PLL3CFGR = RCC_PLL3CFGR_PLL3REN							// Out R enable
+					   | RCC_PLL3CFGR_PLL3QEN							// Out Q enable
+					   | RCC_PLL3CFGR_PLL3PEN							// Out P enable
+					   | ((KCFG_PLL3DIVM - 1u) * RCC_PLL3CFGR_PLL3M_0)	// M
+					   | (KCFG_PLL3RGE * RCC_PLL3CFGR_PLL3RGE_0)		// PLL input frequency in the range of 4-MHz..8-MHz
+					   | (2u * RCC_PLL3CFGR_PLL3SRC_0);					// HSI 16-MHz as a PLL input
 
 // Waiting for stable clock and enable PLL
 // Waiting for the PLL lock
@@ -602,53 +613,53 @@ static	void	local_RCC_Configuration(void) {
 
 // Set-up the MCO
 
-	REG(RCC)->CFGR1 = (2u * RCC_CFGR1_MCOPRE_0)					// MCO / 4
-					| (1u * RCC_CFGR1_MCOSEL_0)					// SYSCLK output
-					| (3u * RCC_CFGR1_SW_0);					// System clock on the PLL1
+	REG(RCC)->CFGR1 = (KCFG_MCOPRE * RCC_CFGR1_MCOPRE_0)				// MCO prescaler
+					| (KCFG_MCOSEL * RCC_CFGR1_MCOSEL_0)				// MCO
+					| (3u * RCC_CFGR1_SW_0);							// System clock on the PLL1
 
-	REG(RCC)->CFGR2 = (4u * RCC_CFGR2_PPRE2_0)					// APB2 = HCLK / 2
-					| (4u * RCC_CFGR2_PPRE1_0)					// APB1 = HCLK / 2
-					| (0u * RCC_CFGR2_HPRE_0);					// HCLK = SYSCLK / 1
+	REG(RCC)->CFGR2 = (4u * RCC_CFGR2_PPRE2_0)							// APB2 = HCLK / 2
+					| (4u * RCC_CFGR2_PPRE1_0)							// APB1 = HCLK / 2
+					| (0u * RCC_CFGR2_HPRE_0);							// HCLK = SYSCLK / 1
 
-	REG(RCC)->CFGR3 = (4u * RCC_CFGR3_PPRE3_0);					// APB3 = HCLK / 2
+	REG(RCC)->CFGR3 = (4u * RCC_CFGR3_PPRE3_0);							// APB3 = HCLK / 2
 
-	REG(RCC)->CCIPR1 = (0u * RCC_CCIPR1_TIMICSEL_0)				//
-					 | (0u * RCC_CCIPR1_ICLKSEL_0)				// USB_OTG_FS uses 48-MHz clock
-					 | (1u * RCC_CCIPR1_FDCAN1SEL_0)			// FDCAN uses PLL1Q clock
-					 | (0u * RCC_CCIPR1_SYSTICKSEL_0)			// SYSTICK uses HCLK / 8 clock
-					 | (0u * RCC_CCIPR1_SPI1SEL_0)				// SPI1 uses PCLK2 clock
-					 | (0u * RCC_CCIPR1_LPTIM2SEL_0)			// LPTIM2 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_SPI2SEL_0)				// SPI2 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_I2C4SEL_0)				// I2C4 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_I2C2SEL_0)				// I2C2 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_I2C1SEL_0)				// I2C1 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_UART5SEL_0)				// UART5 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_UART4SEL_0)				// UART4 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_USART3SEL_0)			// USART3 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_USART2SEL_0)			// USART2 uses PCLK1 clock
-					 | (0u * RCC_CCIPR1_USART1SEL_0);			// USART1 uses PCLK2 clock
+	REG(RCC)->CCIPR1 = (0u * RCC_CCIPR1_TIMICSEL_0)						//
+					 | (0u * RCC_CCIPR1_ICLKSEL_0)						// USB_OTG_FS uses 48-MHz clock
+					 | (1u * RCC_CCIPR1_FDCAN1SEL_0)					// FDCAN uses PLL1Q clock
+					 | (0u * RCC_CCIPR1_SYSTICKSEL_0)					// SYSTICK uses HCLK / 8 clock
+					 | (0u * RCC_CCIPR1_SPI1SEL_0)						// SPI1 uses PCLK2 clock
+					 | (0u * RCC_CCIPR1_LPTIM2SEL_0)					// LPTIM2 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_SPI2SEL_0)						// SPI2 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_I2C4SEL_0)						// I2C4 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_I2C2SEL_0)						// I2C2 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_I2C1SEL_0)						// I2C1 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_UART5SEL_0)						// UART5 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_UART4SEL_0)						// UART4 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_USART3SEL_0)					// USART3 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_USART2SEL_0)					// USART2 uses PCLK1 clock
+					 | (0u * RCC_CCIPR1_USART1SEL_0);					// USART1 uses PCLK2 clock
 
-	REG(RCC)->CCIPR2 = (0u * RCC_CCIPR2_OTGHSSEL_0)				// OTGH uses HSE clock
-					 | (0u * RCC_CCIPR2_I2C6SEL_0)				// I2C6 uses PCLK1 clock
-					 | (0u * RCC_CCIPR2_I2C5SEL_0)				// I2C5 uses PCLK1 clock
-					 | (0u * RCC_CCIPR2_HSPI1SEL_0)				// HSPI1 uses System Clock clock
-					 | (0u * RCC_CCIPR2_OCTOSPISEL_0)			// OCTOSP uses System Clock clock
-					 | (0u * RCC_CCIPR2_LTDCSEL)				// LTDC uses PLL3R clock
-					 | (0u * RCC_CCIPR2_USART6SEL_0)			// USART6 uses PCLK1 clock
-					 | (0u * RCC_CCIPR2_DSISEL)					// DSI uses PLL3P clock
-					 | (2u * RCC_CCIPR2_RNGSEL_0)				// RNG uses HSI clock
-					 | (4u * RCC_CCIPR2_SAI2SEL_0)				// SAI2 uses HSI clock
-					 | (4u * RCC_CCIPR2_SAI1SEL_0)				// SAI1 uses HSI clock
-					 | (0u * RCC_CCIPR2_MDF1SEL_0);				// MDF1 uses HCLK clock
+	REG(RCC)->CCIPR2 = (0u * RCC_CCIPR2_OTGHSSEL_0)						// OTGH uses HSE clock
+					 | (0u * RCC_CCIPR2_I2C6SEL_0)						// I2C6 uses PCLK1 clock
+					 | (0u * RCC_CCIPR2_I2C5SEL_0)						// I2C5 uses PCLK1 clock
+					 | (0u * RCC_CCIPR2_HSPI1SEL_0)						// HSPI1 uses System Clock clock
+					 | (0u * RCC_CCIPR2_OCTOSPISEL_0)					// OCTOSP uses System Clock clock
+					 | (0u * RCC_CCIPR2_LTDCSEL)						// LTDC uses PLL3R clock
+					 | (0u * RCC_CCIPR2_USART6SEL_0)					// USART6 uses PCLK1 clock
+					 | (0u * RCC_CCIPR2_DSISEL)							// DSI uses PLL3P clock
+					 | (2u * RCC_CCIPR2_RNGSEL_0)						// RNG uses HSI clock
+					 | (4u * RCC_CCIPR2_SAI2SEL_0)						// SAI2 uses HSI clock
+					 | (4u * RCC_CCIPR2_SAI1SEL_0)						// SAI1 uses HSI clock
+					 | (0u * RCC_CCIPR2_MDF1SEL_0);						// MDF1 uses HCLK clock
 
-	REG(RCC)->CCIPR3 = (0u * RCC_CCIPR3_ADF1SEL_0)				// ADF1 uses HCLK clock
-					 | RCC_CCIPR3_DAC1SEL						// DAC1 uses LSI clock
-					 | (0u * RCC_CCIPR3_ADCDACSEL_0)			// ADCDAC uses HCLK clock
-					 | (2u * RCC_CCIPR3_LPTIM1SEL_0)			// LPTIM1 uses HSI16 clock
-					 | (2u * RCC_CCIPR3_LPTIM34SEL_0)			// LPTIM34 uses HSI clock
-					 | (0u * RCC_CCIPR3_I2C3SEL_0)				// I2C3 uses PCLK3 clock
-					 | (0u * RCC_CCIPR3_SPI3SEL_0)				// SPI3 uses PCLK3 clock
-					 | (0u * RCC_CCIPR3_LPUART1SEL_0);			// LPUART1 uses PCLK3 clock
+	REG(RCC)->CCIPR3 = (0u * RCC_CCIPR3_ADF1SEL_0)						// ADF1 uses HCLK clock
+					 | RCC_CCIPR3_DAC1SEL								// DAC1 uses LSI clock
+					 | (0u * RCC_CCIPR3_ADCDACSEL_0)					// ADCDAC uses HCLK clock
+					 | (2u * RCC_CCIPR3_LPTIM1SEL_0)					// LPTIM1 uses HSI16 clock
+					 | (2u * RCC_CCIPR3_LPTIM34SEL_0)					// LPTIM34 uses HSI clock
+					 | (0u * RCC_CCIPR3_I2C3SEL_0)						// I2C3 uses PCLK3 clock
+					 | (0u * RCC_CCIPR3_SPI3SEL_0)						// SPI3 uses PCLK3 clock
+					 | (0u * RCC_CCIPR3_LPUART1SEL_0);					// LPUART1 uses PCLK3 clock
 }
 
 /*

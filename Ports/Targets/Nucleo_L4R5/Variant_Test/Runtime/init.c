@@ -385,61 +385,69 @@ static	void	local_GPIO_Configuration(void) {
  * - Clock, PLL configuration
  *
  */
+#define	KCFG_MCOSEL			2u												// msi_ck
+#define	KCFG_MCOPRE			0u												// Div 1 (2^0)
+
 static	void	local_RCC_Configuration(void) {
 
-	RCC->CSR	 |= RCC_CSR_LSION;						// Enable the LSI
+	RCC->CSR	 |= RCC_CSR_LSION;											// Enable the LSI
 
 	#if (KCALENDAR_WITH_HW_RTC_S == true)
-	while ((RCC->CSR & RCC_CSR_LSIRDY) == 0u) { ; }		// Wait for LSI ready
+	while ((RCC->CSR & RCC_CSR_LSIRDY) == 0u) { ; }							// Wait for LSI ready
 
 // Enable backup domain access and configure RTC
 
-	PWR->CR1 |= PWR_CR1_DBP;							// Disable backup domain write protection
+	PWR->CR1 |= PWR_CR1_DBP;												// Disable backup domain write protection
 
 // Select LSI as RTC clock source and enable RTC
 
 	RCC->BDCR = (RCC->BDCR & ~RCC_BDCR_RTCSEL)
-			  | (2u * RCC_BDCR_RTCSEL_0);				// LSI is the source for the RTC
-	RCC->BDCR |= RCC_BDCR_RTCEN;						// RTC enable
+			  | (2u * RCC_BDCR_RTCSEL_0);									// LSI is the source for the RTC
+	RCC->BDCR |= RCC_BDCR_RTCEN;											// RTC enable
 	#endif
 
-	RCC->CR      &= 0xFFFFFF0EU;						// MSI off
-	RCC->CR      |= 0x000101BCU;						// HSI & HSE on, MSI 48-MHz
-	RCC->CFGR     = 0x00000000U;						// Reset CFGR register
-	RCC->CR      &= 0xFEF7FFFFU;						// Reset CSSON and PLLON bits
-	RCC->PLLCFGR  = 0x00001000U;						// Reset PLLCFGR register
-	RCC->CR      &= 0xFFFBFFFFU;						// Reset HSEBYP bit
-	RCC->CR      |= 0x00000001U;						// MSI on
+	RCC->CR      &= 0xFFFFFF0EU;											// MSI off
+	RCC->CR      |= 0x000101BCU;											// HSI & HSE on, MSI 48-MHz
+	RCC->CFGR     = 0x00000000U;											// Reset CFGR register
+	RCC->CR      &= 0xFEF7FFFFU;											// Reset CSSON and PLLON bits
+	RCC->PLLCFGR  = 0x00001000U;											// Reset PLLCFGR register
+	RCC->CR      &= 0xFFFBFFFFU;											// Reset HSEBYP bit
+	RCC->CR      |= 0x00000001U;											// MSI on
 
 // Activate the ART + 5ws (OK for 120-MHz)
 
-	FLASH->ACR = FLASH_ACR_DCEN							//
-			   | FLASH_ACR_ICEN							//
-			   | FLASH_ACR_PRFTEN						//
-			   | (5u * FLASH_ACR_LATENCY_0);			// Enable caches and prefetch
+	FLASH->ACR = FLASH_ACR_DCEN												//
+			   | FLASH_ACR_ICEN												//
+			   | FLASH_ACR_PRFTEN											//
+			   | (5u * FLASH_ACR_LATENCY_0);								// Enable caches and prefetch
 
-// For f(ck in) = 16-MHz
-// f(out) = f(vco) / R			f(out) = 120-MHz, R = 2		---> f(vco) = 240-MHz
-// f(vco) = f(ck in) * (N/M)	N/M = 30/2 = 15				---> N = 30, M = 2
-// f(usb) = f(vco) / Q			Q = 6						---> f(xx) = 40-MHz
+// FVCO min..max, 64-MHz..344-MHz
+// For f(ck in) = 16-MHz (HSI)
+// f(ref) = f(ck in) / M		M = 2		---> f(ref) = 8-MHz
+// f(vco) = f(ref) * N			N = 30		---> f(vco) = 240-MHz
+// f(P)   = f(vco) / P			P = 7		---> f(P)   = 34.29-MHz
+// f(Q)   = f(vco) / Q			Q = 6		---> f(Q)   = 40-MHz
+// f(R)   = f(vco) / R			R = 2		---> f(R)   = 120-MHz
 
-	RCC->PLLCFGR = (0u * RCC_PLLCFGR_PLLPDIV_0)			// PLLPDIV (not available)
-				 | (0u * RCC_PLLCFGR_PLLR_0)			// R = 2
-				 | RCC_PLLCFGR_PLLREN					// PLLR enabled
-				 | (2u * RCC_PLLCFGR_PLLQ_0)			// Q = 6
-				 | RCC_PLLCFGR_PLLQEN					// PLLQ enabled
-				 | (0u * RCC_PLLCFGR_PLLP)				// P = 7
-				 | RCC_PLLCFGR_PLLPEN					// PLLP enabled
-				 | (30u * RCC_PLLCFGR_PLLN_0)			// N = 30
-				 | (1u * RCC_PLLCFGR_PLLM_0)			// M = 2
-				 | (2u * RCC_PLLCFGR_PLLSRC_0);			// HSI16 as a PLL source
+	KPLL_STATIC_CHECKS(KCFG_PLLDIVM, KCFG_PLLDIVN, KCFG_PLLDIVP, KCFG_PLLDIVQ, KCFG_PLLDIVR);
 
-	RCC->CFGR = (0u * RCC_CFGR_MCOPRE_0)				// MCO (no division)
-			  | (2u * RCC_CFGR_MCOSEL_0)				// MSI output
-			  | (0u * RCC_CFGR_PPRE2_0)					// APB2 bus @ 120/1 = 120-MHz
-			  | (0u * RCC_CFGR_PPRE1_0)					// APB1 bus @ 120/1 = 120-MHz
-			  | (0u * RCC_CFGR_HPRE_0)					// HPRE bus @ 120-MHz
-			  | (3u * RCC_CFGR_SW_0);					// PLL selected as a system clock
+	RCC->PLLCFGR = (0u * RCC_PLLCFGR_PLLPDIV_0)								// PLLPDIV (not used)
+				 | (((KCFG_PLLDIVR / 2u) - 1u) * RCC_PLLCFGR_PLLR_0)		// R
+				 | RCC_PLLCFGR_PLLREN										// PLLR enabled
+				 | (((KCFG_PLLDIVQ / 2u) - 1u) * RCC_PLLCFGR_PLLQ_0)		// Q
+				 | RCC_PLLCFGR_PLLQEN										// PLLQ enabled
+				 | (((KCFG_PLLDIVP == 17u) ? 1u : 0u) * RCC_PLLCFGR_PLLP)	// P
+				 | RCC_PLLCFGR_PLLPEN										// PLLP enabled
+				 | (KCFG_PLLDIVN * RCC_PLLCFGR_PLLN_0)						// N
+				 | ((KCFG_PLLDIVM - 1u) * RCC_PLLCFGR_PLLM_0)				// M
+				 | (2u * RCC_PLLCFGR_PLLSRC_0);								// HSI16 as a PLL source
+
+	RCC->CFGR = (KCFG_MCOPRE * RCC_CFGR_MCOPRE_0)							// MCO prescaler
+			  | (KCFG_MCOSEL * RCC_CFGR_MCOSEL_0)							// MCO
+			  | (0u * RCC_CFGR_PPRE2_0)										// APB2 bus @ 120/1 = 120-MHz
+			  | (0u * RCC_CFGR_PPRE1_0)										// APB1 bus @ 120/1 = 120-MHz
+			  | (0u * RCC_CFGR_HPRE_0)										// HPRE bus @ 120-MHz
+			  | (3u * RCC_CFGR_SW_0);										// PLL selected as a system clock
 
 // MSI 48-MHz for RNG, USB, ..., PCLK (120-MHz) for LPUART1
 

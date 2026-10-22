@@ -107,3 +107,55 @@
 #define KFREQUENCY_1MHz		1000000u									// Frequency of 1-MHz
 #define KFREQUENCY_1KHz		1000u										// Frequency of 1-KHz
 #define KFREQUENCY_CORE		KFREQUENCY_AHB								// CORE frequency
+
+// PLL settings
+// ------------
+
+#define	KPLL_CK_IN			64000000u									// f(ck in), PLLSRC = HSI (64-MHz)
+#define	KPLL_FVCO_MIN		192000000u									// FVCO min, 192-MHz (wide VCO range)
+#define	KPLL_FVCO_MAX		960000000u									// FVCO max, 960-MHz (wide VCO range, VOS0)
+#define	KPLL_FREF(m)		(KPLL_CK_IN / (m))							// f(ref) = f(ck in) / M
+#define	KPLL_FREF_MIN(rge)	(1000000u<<(rge))							// f(ref) min for PLLxRGE, 1-MHz<<rge
+#define	KPLL_FREF_MAX(rge)	(2000000u<<(rge))							// f(ref) max for PLLxRGE, 2-MHz<<rge
+#define	KPLL_FVCO(m, n)		(((uint64_t)KPLL_CK_IN * (n)) / (m))		// f(vco) = f(ck in) * (N / M)
+
+// Compile-time checks of a PLL configuration (RM0433, integer mode)
+
+#define	KPLL_STATIC_CHECKS(x, m, rge, n, p, q, r)																						\
+	static_assert(((m) >= 1u) && ((m) <= 63u), "PLL" #x ": DIVM shall be in 1..63");													\
+	static_assert(((n) >= 4u) && ((n) <= 512u), "PLL" #x ": DIVN shall be in 4..512");													\
+	static_assert(((p) >= 1u) && ((p) <= 128u), "PLL" #x ": DIVP shall be in 1..128");													\
+	static_assert(((q) >= 1u) && ((q) <= 128u), "PLL" #x ": DIVQ shall be in 1..128");													\
+	static_assert(((r) >= 1u) && ((r) <= 128u), "PLL" #x ": DIVR shall be in 1..128");													\
+	static_assert((KPLL_FREF(m) >= KPLL_FREF_MIN(rge)) && (KPLL_FREF(m) <= KPLL_FREF_MAX(rge)), "PLL" #x ": f(ref) out of the PLLxRGE range");	\
+	static_assert((KPLL_FVCO(m, n) >= KPLL_FVCO_MIN) && (KPLL_FVCO(m, n) <= KPLL_FVCO_MAX), "PLL" #x ": FVCO out of range");			\
+	static_assert((KPLL_FVCO(m, n) / (p)) == KFREQUENCY_PLL##x##P, "PLL" #x ": configuration does not match KFREQUENCY_PLL" #x "P");	\
+	static_assert((KPLL_FVCO(m, n) / (q)) == KFREQUENCY_PLL##x##Q, "PLL" #x ": configuration does not match KFREQUENCY_PLL" #x "Q");	\
+	static_assert((KPLL_FVCO(m, n) / (r)) == KFREQUENCY_PLL##x##R, "PLL" #x ": configuration does not match KFREQUENCY_PLL" #x "R")
+
+// PLL 1
+
+#define	KCFG_PLL1DIVM		4u											// M = 4, f(ref) = 16-MHz
+#define	KCFG_PLL1RGE		3u											// f(ref) in 8-MHz..16-MHz
+#define	KCFG_PLL1DIVN		60u											// N = 60, f(vco) = 960-MHz
+#define	KCFG_PLL1DIVP		2u											// VCO / 2, 480-MHz
+#define	KCFG_PLL1DIVQ		4u											// VCO / 4, 240-MHz
+#define	KCFG_PLL1DIVR		8u											// VCO / 8, 120-MHz
+
+// PLL 2
+
+#define	KCFG_PLL2DIVM		4u											// M = 4, f(ref) = 16-MHz
+#define	KCFG_PLL2RGE		3u											// f(ref) in 8-MHz..16-MHz
+#define	KCFG_PLL2DIVN		25u											// N = 25, f(vco) = 400-MHz
+#define	KCFG_PLL2DIVP		4u											// VCO / 4, 100-MHz
+#define	KCFG_PLL2DIVQ		8u											// VCO / 8, 50-MHz
+#define	KCFG_PLL2DIVR		16u											// VCO / 16, 25-MHz
+
+// PLL 3
+
+#define	KCFG_PLL3DIVM		4u											// M = 4, f(ref) = 16-MHz
+#define	KCFG_PLL3RGE		3u											// f(ref) in 8-MHz..16-MHz
+#define	KCFG_PLL3DIVN		15u											// N = 15, f(vco) = 240-MHz
+#define	KCFG_PLL3DIVP		2u											// VCO / 2, 120-MHz
+#define	KCFG_PLL3DIVQ		5u											// VCO / 5, 48-MHz
+#define	KCFG_PLL3DIVR		10u											// VCO / 10, 24-MHz
