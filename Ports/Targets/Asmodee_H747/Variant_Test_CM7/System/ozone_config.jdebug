@@ -32,7 +32,8 @@ void OnProjectLoad (void) {
   // User settings
   //
   File.Open ("$(ProjectDir)/FLASH.elf");
-  Project.SetSmartViewPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS.js");
+  Project.SetSmartViewPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X.js");
+  Project.SetOSPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X_OS_Cortex_M.js");
 }
 
 /*********************************************************************

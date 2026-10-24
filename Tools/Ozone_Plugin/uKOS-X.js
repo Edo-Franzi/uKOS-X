@@ -1,10 +1,10 @@
 /*
 ; uKOS-X.
 ; =======
-
+;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
-
+;
 ;------------------------------------------------------------------------
 ; Author:	Edo. Franzi		The 2025-01-01
 ; Modifs:	Edo. Franzi		The 2026-03-10	Support the version 2.x of the OS
@@ -82,14 +82,15 @@ var		vCurrentRowOnPage	  = [];
  *
  *  Functions description:
  *    This function... Not yet sure what it does...
+ *
  */
 function init() {
 	var		arch;
 
 	vuKOSArchitecture = Debug.evaluate("uKOS_ARCHITECTURE");
-	vuKOS		  	  = Debug.evaluate("uKOS_VERSION_OS");	  vuKOSString	   = vuKOS.toString();
-	vuKOSMajor	  	  = Debug.evaluate("uKOS_VERSION_MAJOR"); vuKOSMajorString = vuKOSMajor.toString();
-	vuKOSMinor	  	  = Debug.evaluate("uKOS_VERSION_MINOR"); vuKOSMinorString = vuKOSMinor.toString();
+	vuKOS			  = Debug.evaluate("uKOS_VERSION_OS");	  vuKOSString	   = vuKOS.toString();
+	vuKOSMajor		  = Debug.evaluate("uKOS_VERSION_MAJOR"); vuKOSMajorString = vuKOSMajor.toString();
+	vuKOSMinor		  = Debug.evaluate("uKOS_VERSION_MINOR"); vuKOSMinorString = vuKOSMinor.toString();
 	vuKOSPatch		  = Debug.evaluate("uKOS_VERSION_PATCH"); vuKOSPatchString = vuKOSPatch.toString();
 
 	arch = Number(vuKOSArchitecture);
@@ -145,6 +146,7 @@ function init() {
  *  Functions description:
  *    Returns the name of the middleware this script supplies support
  *    for.
+ *
  */
 function getName() {
 
@@ -156,6 +158,7 @@ function getName() {
  *
  *  Functions description:
  *    Returns the names of the pages this script is capable to display.
+ *
  */
 function getPages() {
 
@@ -168,6 +171,7 @@ function getPages() {
  *
  *  Functions description:
  *    Returns the names of the colums for a given page.
+ *
  */
 function getColHeaders(pageName) {
 	var		result;
@@ -181,6 +185,7 @@ function getColHeaders(pageName) {
  *
  *  Functions description:
  *    Returns the values of the 1st row for a given page.
+ *
  */
 function getFirstRow(pageName) {
 	var		result;
@@ -202,6 +207,7 @@ function getFirstRow(pageName) {
  *
  *  Functions description:
  *    Returns the values of the next row for a given page.
+ *
  */
 function getNextRow(pageName) {
 	var		result;
@@ -221,6 +227,7 @@ function getNextRow(pageName) {
  *
  *  Functions description:
  *    Handles the event of target state having changed.
+ *
  */
 function onTargetChanged() {
 
@@ -234,6 +241,7 @@ function onTargetChanged() {
  *
  *  Functions description:
  *    Returns the values of the currently selected row for a given page.
+ *
  */
 function local_getCurrentRow(pageName) {
 	var		result;
@@ -260,7 +268,8 @@ function local_getCurrentRow(pageName) {
  * local_geStackFrameCortex()
  *
  *  Functions description:
- *    Returns the stack frame of a process for a specific architecture
+ *    Returns the stack frame of a process for a specific architecture.
+ *
  */
 function local_geStackFrameCortex(stack) {
 	var		i;
@@ -314,7 +323,8 @@ function local_geStackFrameCortex(stack) {
  * local_geStackFrameRV32()
  *
  *  Functions description:
- *    Returns the stack frame of a process for a specific architecture
+ *    Returns the stack frame of a process for a specific architecture.
+ *
  */
 function local_geStackFrameRV32(stack) {
 	var		stackframe = new Array(vSzFrame);
@@ -374,7 +384,8 @@ function local_geStackFrameRV32(stack) {
  * local_geStackFrameRV64()
  *
  *  Functions description:
- *    Returns the stack frame of a process for a specific architecture
+ *    Returns the stack frame of a process for a specific architecture.
+ *
  */
 function local_geStackFrameRV64(stack) {
 	var		stackframe = new Array(vSzFrame);
@@ -434,7 +445,8 @@ function local_geStackFrameRV64(stack) {
  * local_padLeftString()
  *
  *  Functions description:
- *    Returns a string padded with "0"
+ *    Returns a string padded with "0".
+ *
  */
 function local_padLeftString(string, width) {
 	var		tmp;
@@ -459,6 +471,7 @@ function local_padLeftString(string, width) {
  *
  *  Functions description:
  *    Returns the names of the colums for a given page.
+ *
  */
 function uKOS_getColHeaders(pageName) {
 	var		result;
@@ -489,6 +502,7 @@ function uKOS_getColHeaders(pageName) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getProcessHeader() {
 
@@ -584,7 +598,12 @@ function uKOS_getProcessRow(rowIndex) {
 
 			if (process != runProcess) {
 				for (j = 0; j < vSzFrame; j++) {
-					result.push("0x" + local_padLeftString(stackframe[j].toString(16).toUpperCase(), vPadding));
+					if (stackframe[j] == undefined) {
+						result.push("?");
+					}
+					else {
+					    result.push("0x" + local_padLeftString(stackframe[j].toString(16).toUpperCase(), vPadding));
+					}
 				}
 			}
 			else {
@@ -606,6 +625,7 @@ function uKOS_getProcessRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getMailboxHeader() {
 	var		result;
@@ -619,6 +639,7 @@ function uKOS_getMailboxHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getMailboxRow(rowIndex) {
 	var		BMBOX_INSTALLED	 = 0;
@@ -675,6 +696,7 @@ function uKOS_getMailboxRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getSemaphoreHeader() {
 	var		result;
@@ -688,6 +710,7 @@ function uKOS_getSemaphoreHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getSemaphoreRow(rowIndex) {
 	var		BSEMA_INSTALLED = 0;
@@ -737,6 +760,7 @@ function uKOS_getSemaphoreRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getMutexHeader() {
 	var		result;
@@ -750,6 +774,7 @@ function uKOS_getMutexHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getMutexRow(rowIndex) {
 	var		BMUTX_INSTALLED = 0;
@@ -799,6 +824,7 @@ function uKOS_getMutexRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getSignalHeader() {
 	var		result;
@@ -812,6 +838,7 @@ function uKOS_getSignalHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getSignalRow(rowIndex) {
 	var		BPROC_INSTALLED		   = 1;
@@ -880,6 +907,7 @@ function uKOS_getSignalRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getPreciseSignalHeader() {
 	var		result;
@@ -893,6 +921,7 @@ function uKOS_getPreciseSignalHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getPreciseSignalRow(rowIndex) {
 	var		BPRCS_INSTALLED	  = 0;
@@ -957,6 +986,7 @@ function uKOS_getPreciseSignalRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getSoftwareTimerHeader() {
 	var		result;
@@ -970,6 +1000,7 @@ function uKOS_getSoftwareTimerHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getSoftwareTimerRow(rowIndex) {
 	var		BSTIM_INSTALLED		= 0;
@@ -1041,6 +1072,7 @@ function uKOS_getSoftwareTimerRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getPoolHeader() {
 	var		result;
@@ -1054,6 +1086,7 @@ function uKOS_getPoolHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getPoolRow(rowIndex) {
 	var		BPOOL_INSTALLED	 = 0;
@@ -1115,6 +1148,7 @@ function uKOS_getPoolRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getTraceHeader() {
 	var		result;
@@ -1128,6 +1162,7 @@ function uKOS_getTraceHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getTraceRow(rowIndex) {
 	var		szTraceFifo;
@@ -1166,6 +1201,7 @@ function uKOS_getTraceRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getLogHeader() {
 	var		result;
@@ -1179,6 +1215,7 @@ function uKOS_getLogHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getLogRow(rowIndex) {
 	var		KFATAL_SYSTEM	 = 0x10;
@@ -1258,6 +1295,7 @@ function uKOS_getLogRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getMemoryHeader() {
 	var		result;
@@ -1271,6 +1309,7 @@ function uKOS_getMemoryHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function local_displayHeapInformation(heap, heapStart, heapSize, heapUsedMemory, heapNbBlocks, heapNbMaxBlocks) {
 	var		address;
@@ -1327,6 +1366,7 @@ function uKOS_getMemoryRow(rowIndex) {
  *
  *  Functions description:
  *    Delivers the column headers of the respective page.
+ *
  */
 function uKOS_getAboutHeader() {
 	var		result;
@@ -1340,10 +1380,11 @@ function uKOS_getAboutHeader() {
  *
  *  Functions description:
  *    Returns a row for the respective page.
+ *
  */
 function uKOS_getAboutRow(rowIndex) {
-	var		line0 = ["uKOS-X plug-in V-2.0.0"																				 ];
-	var		line1 = ["Last modification: 2026-02-22"																		 ];
+	var		line0 = ["uKOS-X plug-in V-2.0.1"																				 ];
+	var		line1 = ["Last modification: 2026-10-24"																		 ];
 	var		line2 = [" "																									 ];
 	var		line3 = ["uKOS-" + vuKOSString																					 ];
 	var		line4 = ["uKOS-X OS version under debug V " + vuKOSMajorString + "." + vuKOSMinorString + "." + vuKOSPatchString ];
