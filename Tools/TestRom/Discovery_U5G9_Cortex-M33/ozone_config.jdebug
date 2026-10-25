@@ -33,7 +33,7 @@ void OnProjectLoad (void) {
   //
   File.Open ("$(ProjectDir)/testROM.elf");
   Project.SetSmartViewPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X.js");
-  Project.SetOSPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X_OS_Cortex_M.js");
+  Project.SetOSPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X_OS.js");
 }
 
 /*********************************************************************

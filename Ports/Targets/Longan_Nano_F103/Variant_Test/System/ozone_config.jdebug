@@ -24,7 +24,7 @@ void OnProjectLoad (void) {
   //
   Project.SetDevice ("GD32VF103VBT6");
   Project.SetHostIF ("USB", "");
-  Project.SetTargetIF ("SWD");
+  Project.SetTargetIF ("JTAG");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/RV32IFD.svd");
   Project.AddSvdFile ("$(ProjectDir)/../../../../../Ports/EquatesModels/SOCs/GD32VF103/Includes/Registers/GD32VF103.svd");
@@ -33,6 +33,7 @@ void OnProjectLoad (void) {
   //
   File.Open ("$(ProjectDir)/FLASH.elf");
   Project.SetSmartViewPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X.js");
+  Project.SetOSPlugin("$(ProjectDir)/../../../../../Tools/Ozone_Plugin/uKOS-X_OS.js");
 }
 
 /*********************************************************************

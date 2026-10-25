@@ -1,6 +1,6 @@
 /*
-; uKOS-X.
-; =======
+; uKOS-X_OS.
+; ==========
 ;
 ; SPDX-License-Identifier: MIT
 ; SPDX-FileCopyrightText: 2025-2026 Edo. Franzi
@@ -13,7 +13,11 @@
 ; Goal:		Ozone uKOS RTOS OSA OS plugin.
 ;
 ;			Installing the plugin:
-;			Project.SetOSPlugin("xyz/OS_Kernel-X/Ports/Tools/Ozone_Plugin/uKOS-X")
+;			Project.SetOSPlugin("xyz/OS_Kernel-X/Ports/Tools/Ozone_Plugin/uKOS-X_OS")
+;
+;			Limitations:
+;			This plugin was tested only for cortex M & RV32 cpus.
+;			The RVx64 implementation is not tested.
 ;
 ;   (c) 2025-2026, Edo. Franzi
 ;
@@ -43,6 +47,12 @@
 ;------------------------------------------------------------------------
 */
 
+var		vuKOS				= 0;
+var		vuKOSArchitecture	= 0;
+var		vCortex				= 0;
+var		vRisc_vRV32			= 1;
+var		vRisc_vRV64			= 2;
+var		vuKOSRegRoutine		= null;
 var		vukosMaxProcesses	= 0;
 var		vCore				= 0;
 var		vIndex				= [];
@@ -57,6 +67,27 @@ var		vIndex				= [];
  *
  */
 function init() {
+	var		arch;
+
+	vuKOSArchitecture = Debug.evaluate("uKOS_ARCHITECTURE");
+
+	arch = Number(vuKOSArchitecture);
+
+	switch (arch) {
+		default:
+		case vCortex: {
+			vuKOSRegRoutine = local_ukosRegsCortex;
+			break;
+		}
+		case vRisc_vRV32: {
+			vuKOSRegRoutine = local_ukosRegsRV32;
+			break;
+		}
+		case vRisc_vRV64: {
+			vuKOSRegRoutine = local_ukosRegsRV64;
+			break;
+		}
+	}
 
 	vukosMaxProcesses = Number(Debug.evaluate("KKERN_NB_PROCESSES"));
 	vIndex = [];
@@ -121,7 +152,7 @@ function update() {
 		stack		 = Debug.evaluate(local_ukosExpr(i, "oSpecification.oStack"));
 		mode		 = Debug.evaluate(local_ukosExpr(i, "oSpecification.oMode"));
 
-		active = (Number(ptr) == Number(current));
+		active = (current != undefined && Number(ptr) == Number(current));
 		flags  = local_ukosState(Number(state), active);
 		handle = active ? (undefined) : (Number(ptr));
 		vIndex[String(ptr)] = i;
@@ -152,20 +183,20 @@ function getregs(handle) {
 	var		stack;
 
 	if (handle == undefined) {
-		return ([]);
+		return (null);
 	}
 
 	i = local_ukosFindProcess(handle);
 	if (i < 0) {
-		return ([]);
+		return (null);
 	}
 
 	stack = Debug.evaluate(local_ukosExpr(i, "oSpecification.oStack"));
 	if (stack == undefined || Number(stack) == 0) {
-		return ([]);
+		return (null);
 	}
 
-	return (local_ukosCortexRegs(stack));
+	return (vuKOSRegRoutine(stack));
 }
 
 /*
@@ -297,7 +328,7 @@ function local_ukosFindProcess(handle) {
 	for (i = 0; i < vukosMaxProcesses; i++) {
 		ptr = Debug.evaluate("&vKern_proc[" + vCore + "][" + i + "]");
 
-		if (Number(ptr) == Number(handle)) {
+		if (ptr != undefined && Number(ptr) == Number(handle)) {
 			return (i);
 		}
 	}
@@ -305,7 +336,7 @@ function local_ukosFindProcess(handle) {
 }
 
 /*
- * local_ukosCortexRegs()
+ * local_ukosRegsCortex()
  *
  * Reconstructs the register context of a suspended Cortex-M process.
  *
@@ -332,7 +363,7 @@ function local_ukosFindProcess(handle) {
  * by GOTO_KERN before SVC.
  *
  */
-function local_ukosCortexRegs(stack) {
+function local_ukosRegsCortex(stack) {
 	var		addr;
 	var		excReturn;
 	var		offset;
@@ -371,4 +402,151 @@ function local_ukosCortexRegs(stack) {
 		TargetInterface.peekWord(addr + offset + 0x40),		// R15 (PC)
 		TargetInterface.peekWord(addr + offset + 0x44)		// xPSR
 	];
+}
+
+/*
+ * local_ukosRegsRV32()
+ *
+ * Reconstructs the register context of a suspended
+ * uKOS-X RISC-V RV32 process.
+ *
+ * Saved frame:
+ *
+ *  +0x94  Original SP (before GOTO_KERN)
+ *  +0x8C  SP at exception return (before GOTO_KERN cleanup)
+ *  +0x88  RA
+ *  +0x7C  T2..T0
+ *  +0x78  S0
+ *  +0x58  A7..A0
+ *  +0x48  T6..T3
+ *  +0x40  GP
+ *  +0x3C  TP
+ *  +0x10  S11..S1
+ *  +0x08  MSTATUS
+ *  +0x04  MCAUSE
+ *  +0x00  MEPC
+ *
+ * Returns x0..x31, PC.
+ *
+ */
+function local_ukosRegsRV32(stack) {
+	var		addr;
+	var		sp;
+
+	addr = Number(stack);
+	sp	 = addr + 0x90;
+
+	var r = [
+		0,													// x0  zero
+		TargetInterface.peekWord(addr + 0x88),				// x1  ra
+		sp,													// x2  sp
+		TargetInterface.peekWord(addr + 0x40),				// x3  gp
+		TargetInterface.peekWord(addr + 0x3C),				// x4  tp
+		TargetInterface.peekWord(addr + 0x84),				// x5  t0
+		TargetInterface.peekWord(addr + 0x80),				// x6  t1
+		TargetInterface.peekWord(addr + 0x7C),				// x7  t2
+		TargetInterface.peekWord(addr + 0x78),				// x8  s0 / fp
+		TargetInterface.peekWord(addr + 0x38),				// x9  s1
+		TargetInterface.peekWord(addr + 0x74),				// x10 a0
+		TargetInterface.peekWord(addr + 0x70),				// x11 a1
+		TargetInterface.peekWord(addr + 0x6C),				// x12 a2
+		TargetInterface.peekWord(addr + 0x68),				// x13 a3
+		TargetInterface.peekWord(addr + 0x64),				// x14 a4
+		TargetInterface.peekWord(addr + 0x60),				// x15 a5
+		TargetInterface.peekWord(addr + 0x5C),				// x16 a6
+		TargetInterface.peekWord(addr + 0x58),				// x17 a7
+		TargetInterface.peekWord(addr + 0x34),				// x18 s2
+		TargetInterface.peekWord(addr + 0x30),				// x19 s3
+		TargetInterface.peekWord(addr + 0x2C),				// x20 s4
+		TargetInterface.peekWord(addr + 0x28),				// x21 s5
+		TargetInterface.peekWord(addr + 0x24),				// x22 s6
+		TargetInterface.peekWord(addr + 0x20),				// x23 s7
+		TargetInterface.peekWord(addr + 0x1C),				// x24 s8
+		TargetInterface.peekWord(addr + 0x18),				// x25 s9
+		TargetInterface.peekWord(addr + 0x14),				// x26 s10
+		TargetInterface.peekWord(addr + 0x10),				// x27 s11
+		TargetInterface.peekWord(addr + 0x54),				// x28 t3
+		TargetInterface.peekWord(addr + 0x50),				// x29 t4
+		TargetInterface.peekWord(addr + 0x4C),				// x30 t5
+		TargetInterface.peekWord(addr + 0x48),				// x31 t6
+		TargetInterface.peekWord(addr + 0x00)				// PC (mepc)
+	];
+
+	return (r);
+}
+
+/*
+ * local_ukosRegsRV64()
+ *
+ * Reconstructs the register context of a suspended
+ * uKOS-X RISC-V RV64 process.
+ *
+ * Complete saved context: 560 bytes (0x230).
+ *
+ * SP at exception return = stack + 560.
+ * SP before GOTO_KERN  = stack + 568.
+ *
+ * The additional 8 bytes pushed by GOTO_KERN
+ * remain above the saved frame.
+ *
+ * Returns x0..x31, PC.
+ *
+ */
+function local_ukosRegsRV64(stack) {
+	var		addr;
+	var		sp;
+ 	var		r = [];
+ 
+	addr = Number(stack);
+	sp	 = addr + 560;
+
+// Read a 64-bit little-endian register.
+// Note: JavaScript Number has 53 bits of integer precision.
+
+	function read64(offset) {
+		var		lsw;
+		var		msw;
+
+		lsw = TargetInterface.peekWord(addr + offset)>>>0;
+		msw = TargetInterface.peekWord(addr + offset + 4)>>>0;
+		return ((msw * 0x100000000) + lsw);
+    }
+
+	r = [
+		0,													// x0  zero
+		read64(552),										// x1  ra
+		sp,													// x2  sp
+		read64(144),										// x3  gp
+		read64(152),										// x4  tp
+		read64(544),										// x5  t0
+		read64(528),										// x6  t1
+		read64(520),										// x7  t2
+		read64(512),										// x8  s0 / fp
+		read64(504),										// x9  s1
+		read64(496),										// x10 a0
+		read64(488),										// x11 a1
+		read64(480),										// x12 a2
+		read64(472),										// x13 a3
+		read64(464),										// x14 a4
+		read64(456),										// x15 a5
+		read64(448),										// x16 a6
+		read64(440),										// x17 a7
+		read64(160),										// x18 s2
+		read64(168),										// x19 s3
+		read64(176),										// x20 s4
+		read64(184),										// x21 s5
+		read64(192),										// x22 s6
+		read64(200),										// x23 s7
+		read64(208),										// x24 s8
+		read64(216),										// x25 s9
+		read64(224),										// x26 s10
+		read64(232),										// x27 s11
+		read64(432),										// x28 t3
+		read64(424),										// x29 t4
+		read64(416),										// x30 t5
+		read64(408),										// x31 t6
+		read64(32)											// PC = mepc
+	];
+
+	return (r);
 }

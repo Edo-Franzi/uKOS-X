@@ -15,6 +15,10 @@
 ;
 ;			Project.SetSmartViewPlugin("xyz/OS_Kernel-X/Ports/Tools/Ozone_Plugin/uKOS-X")
 ;
+;			Limitations:
+;			This plugin was tested only for cortex M & RV32 cpus.
+;			The RVx64 implementation is not tested.
+;
 ;   (c) 2025-2026, Edo. Franzi
 ;   --------------------------
 ;                                              __ ______  _____
@@ -61,8 +65,8 @@ var		vRisc_vRV32			  = 1;
 var		vRisc_vRV64			  = 2;
 var		vNbCores			  = 1;
 var		vSzFrame			  = 0;
-var		vInterface			  = [];
-var		vStackFrameRoutine	  = [];
+var		vInterface			  = null;
+var		vStackFrameRoutine	  = null;
 var		vArchString			  = "";
 var		vuKOSString			  = ""
 var		vuKOSMajorString	  = ""
@@ -276,20 +280,20 @@ function local_geStackFrameCortex(stack) {
 	var		add;
 	var		lre;
 	var		basepri;
-	var		stackframe = new Array(vSzFrame);
+	var		stackFrame = new Array(vSzFrame);
 
-	i		= 0;
-	add		= stack;
+	i   = 0;
+	add = Number(stack);;
 
 // For cortex machine we collect the following frame
 
-// uKOS-X cortex stackframe
+// uKOS-X cortex stackFrame
 // lre (s31..s16) basepri r4 r5 r6 r7 r8 r9 r10 r11 r0 r1 r2 r3 r12 lr pc xpdr (s15..s0) (fpscr)
 //
 // Collected in this format
 // lre r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 lr pc xpdr basepri
 
-	lre		= TargetInterface.peekWord(add); add += 4;
+	lre = TargetInterface.peekWord(add); add += 4;
 
 // Verify if it is a lazy stacking (with or without FPU)
 // If it is the case, then skip S16..S31
@@ -310,13 +314,13 @@ function local_geStackFrameCortex(stack) {
 // ..........................................r12 lr pc xpdr........
 // .........................................................basepri
 
-									  stackframe[0]  = lre;
-	for (i = 5;  i < (5  + 8); i++) { stackframe[i]  = TargetInterface.peekWord(add); add += 4; }
-	for (i = 1;  i < (1  + 4); i++) { stackframe[i]  = TargetInterface.peekWord(add); add += 4; }
-	for (i = 13; i < (13 + 4); i++) { stackframe[i]  = TargetInterface.peekWord(add); add += 4; }
-									  stackframe[17] = basepri;
+									  stackFrame[0]  = lre;
+	for (i = 5;  i < (5  + 8); i++) { stackFrame[i]  = TargetInterface.peekWord(add); add += 4; }
+	for (i = 1;  i < (1  + 4); i++) { stackFrame[i]  = TargetInterface.peekWord(add); add += 4; }
+	for (i = 13; i < (13 + 4); i++) { stackFrame[i]  = TargetInterface.peekWord(add); add += 4; }
+									  stackFrame[17] = basepri;
 
-	return (stackframe);
+	return (stackFrame);
 }
 
 /*
@@ -327,11 +331,11 @@ function local_geStackFrameCortex(stack) {
  *
  */
 function local_geStackFrameRV32(stack) {
-	var		stackframe = new Array(vSzFrame);
+	var		stackFrame = new Array(vSzFrame);
 
 // For RV32 machine we collect the following frame
 
-// uKOS-X RV32 stackframe
+// uKOS-X RV32 stackFrame
 // 0    1      2       3   4   5   6  7  8  9  10 11 12 13 14 15 16 17   18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
 // mepc mcause mstatus mth s11 s10 s9 s8 s7 s6 s5 s4 s3 s2 s1 tp gp (x0) t6 t5 t4 t3 a7 a6 a5 a4 a3 a2 a1 a0 s0 t2 t1 t0 ra
 //
@@ -342,42 +346,42 @@ function local_geStackFrameRV32(stack) {
 // 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20  21  22 23 24 25 26 27 28 29 30 31   32     33      34
 // ra sp gp tp t0 t1 t2 t3 t4 t5 t6 s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 a0 a1 a2 a3 a4 a5 a6 a7 mepc mcause mstatus mth
 
-	stackframe[0]  = TargetInterface.peekWord(4 * 34);
-	stackframe[1]  = stack;
-	stackframe[2]  = TargetInterface.peekWord(4 * 16);
-	stackframe[3]  = TargetInterface.peekWord(4 * 15);
-	stackframe[4]  = TargetInterface.peekWord(4 * 33);
-	stackframe[5]  = TargetInterface.peekWord(4 * 32);
-	stackframe[6]  = TargetInterface.peekWord(4 * 31);
-	stackframe[7]  = TargetInterface.peekWord(4 * 21);
-	stackframe[8]  = TargetInterface.peekWord(4 * 20);
-	stackframe[9]  = TargetInterface.peekWord(4 * 19);
-	stackframe[10] = TargetInterface.peekWord(4 * 18);
-	stackframe[11] = TargetInterface.peekWord(4 * 30);
-	stackframe[12] = TargetInterface.peekWord(4 * 14);
-	stackframe[13] = TargetInterface.peekWord(4 * 13);
-	stackframe[14] = TargetInterface.peekWord(4 * 12);
-	stackframe[15] = TargetInterface.peekWord(4 * 11);
-	stackframe[16] = TargetInterface.peekWord(4 * 10);
-	stackframe[17] = TargetInterface.peekWord(4 * 9);
-	stackframe[18] = TargetInterface.peekWord(4 * 8);
-	stackframe[19] = TargetInterface.peekWord(4 * 7);
-	stackframe[20] = TargetInterface.peekWord(4 * 6);
-	stackframe[21] = TargetInterface.peekWord(4 * 5);
-	stackframe[22] = TargetInterface.peekWord(4 * 4);
-	stackframe[23] = TargetInterface.peekWord(4 * 29);
-	stackframe[24] = TargetInterface.peekWord(4 * 28);
-	stackframe[25] = TargetInterface.peekWord(4 * 27);
-	stackframe[26] = TargetInterface.peekWord(4 * 26);
-	stackframe[27] = TargetInterface.peekWord(4 * 25);
-	stackframe[28] = TargetInterface.peekWord(4 * 24);
-	stackframe[29] = TargetInterface.peekWord(4 * 23);
-	stackframe[30] = TargetInterface.peekWord(4 * 22);
-	stackframe[31] = TargetInterface.peekWord(4 * 0);
-	stackframe[32] = TargetInterface.peekWord(4 * 1);
-	stackframe[33] = TargetInterface.peekWord(4 * 2);
-	stackframe[34] = TargetInterface.peekWord(4 * 3);
-	return (stackframe);
+	stackFrame[0]  = TargetInterface.peekWord(Number(stack) + 4 * 34);
+	stackFrame[1]  = stack;
+	stackFrame[2]  = TargetInterface.peekWord(Number(stack) + 4 * 16);
+	stackFrame[3]  = TargetInterface.peekWord(Number(stack) + 4 * 15);
+	stackFrame[4]  = TargetInterface.peekWord(Number(stack) + 4 * 33);
+	stackFrame[5]  = TargetInterface.peekWord(Number(stack) + 4 * 32);
+	stackFrame[6]  = TargetInterface.peekWord(Number(stack) + 4 * 31);
+	stackFrame[7]  = TargetInterface.peekWord(Number(stack) + 4 * 21);
+	stackFrame[8]  = TargetInterface.peekWord(Number(stack) + 4 * 20);
+	stackFrame[9]  = TargetInterface.peekWord(Number(stack) + 4 * 19);
+	stackFrame[10] = TargetInterface.peekWord(Number(stack) + 4 * 18);
+	stackFrame[11] = TargetInterface.peekWord(Number(stack) + 4 * 30);
+	stackFrame[12] = TargetInterface.peekWord(Number(stack) + 4 * 14);
+	stackFrame[13] = TargetInterface.peekWord(Number(stack) + 4 * 13);
+	stackFrame[14] = TargetInterface.peekWord(Number(stack) + 4 * 12);
+	stackFrame[15] = TargetInterface.peekWord(Number(stack) + 4 * 11);
+	stackFrame[16] = TargetInterface.peekWord(Number(stack) + 4 * 10);
+	stackFrame[17] = TargetInterface.peekWord(Number(stack) + 4 * 9);
+	stackFrame[18] = TargetInterface.peekWord(Number(stack) + 4 * 8);
+	stackFrame[19] = TargetInterface.peekWord(Number(stack) + 4 * 7);
+	stackFrame[20] = TargetInterface.peekWord(Number(stack) + 4 * 6);
+	stackFrame[21] = TargetInterface.peekWord(Number(stack) + 4 * 5);
+	stackFrame[22] = TargetInterface.peekWord(Number(stack) + 4 * 4);
+	stackFrame[23] = TargetInterface.peekWord(Number(stack) + 4 * 29);
+	stackFrame[24] = TargetInterface.peekWord(Number(stack) + 4 * 28);
+	stackFrame[25] = TargetInterface.peekWord(Number(stack) + 4 * 27);
+	stackFrame[26] = TargetInterface.peekWord(Number(stack) + 4 * 26);
+	stackFrame[27] = TargetInterface.peekWord(Number(stack) + 4 * 25);
+	stackFrame[28] = TargetInterface.peekWord(Number(stack) + 4 * 24);
+	stackFrame[29] = TargetInterface.peekWord(Number(stack) + 4 * 23);
+	stackFrame[30] = TargetInterface.peekWord(Number(stack) + 4 * 22);
+	stackFrame[31] = TargetInterface.peekWord(Number(stack) + 4 * 0);
+	stackFrame[32] = TargetInterface.peekWord(Number(stack) + 4 * 1);
+	stackFrame[33] = TargetInterface.peekWord(Number(stack) + 4 * 2);
+	stackFrame[34] = TargetInterface.peekWord(Number(stack) + 4 * 3);
+	return (stackFrame);
 }
 
 /*
@@ -388,11 +392,25 @@ function local_geStackFrameRV32(stack) {
  *
  */
 function local_geStackFrameRV64(stack) {
-	var		stackframe = new Array(vSzFrame);
+	var		stackFrame = new Array(vSzFrame);
+
+// Read a 64-bit little-endian value
+
+	function rd64(address) {
+		var		lsw;
+		var		msw;
+
+		lsw = TargetInterface.peekWord(address)>>>0;
+		msw = TargetInterface.peekWord(address + 4)>>>0;
+
+		return ("0x" +
+			local_padLeftString(msw.toString(16).toUpperCase(), 8) +
+			local_padLeftString(lsw.toString(16).toUpperCase(), 8));
+	}
 
 // For RV64 machine we collect the following frame
 
-// uKOS-X RV64 stackframe
+// uKOS-X RV64 stackFrame
 // 0   1    2       3      4                     18 19 20 21 22 23 24 25 26 27 28 29  30                                  51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68
 // mth core mstatus mcause mepc (fcr, fs0..fs11) x0 gp tp s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 (ft11..ft8, fa7..fa0, ft7..ft0) t6 t5 t4 t3 a7 a6 a5 a4 a3 a2 a1 a0 s1 s0 t2 t1 t0 ra
 //
@@ -403,42 +421,42 @@ function local_geStackFrameRV64(stack) {
 // 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20  21  22 23 24 25 26 27 28 29 30 31   32     33      34
 // ra sp gp tp t0 t1 t2 t3 t4 t5 t6 s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 a0 a1 a2 a3 a4 a5 a6 a7 mepc mcause mstatus mth
 
-	stackframe[0]  = TargetInterface.peekWord(8 * 68);
-	stackframe[1]  = stack;
-	stackframe[2]  = TargetInterface.peekWord(8 * 19);
-	stackframe[3]  = TargetInterface.peekWord(8 * 20);
-	stackframe[4]  = TargetInterface.peekWord(8 * 67);
-	stackframe[5]  = TargetInterface.peekWord(8 * 66);
-	stackframe[6]  = TargetInterface.peekWord(8 * 65);
-	stackframe[7]  = TargetInterface.peekWord(8 * 54);
-	stackframe[8]  = TargetInterface.peekWord(8 * 53);
-	stackframe[9]  = TargetInterface.peekWord(8 * 52);
-	stackframe[10] = TargetInterface.peekWord(8 * 51);
-	stackframe[11] = TargetInterface.peekWord(8 * 64);
-	stackframe[12] = TargetInterface.peekWord(8 * 63);
-	stackframe[13] = TargetInterface.peekWord(8 * 21);
-	stackframe[14] = TargetInterface.peekWord(8 * 22);
-	stackframe[15] = TargetInterface.peekWord(8 * 23);
-	stackframe[16] = TargetInterface.peekWord(8 * 24);
-	stackframe[17] = TargetInterface.peekWord(8 * 25);
-	stackframe[18] = TargetInterface.peekWord(8 * 26);
-	stackframe[19] = TargetInterface.peekWord(8 * 27);
-	stackframe[20] = TargetInterface.peekWord(8 * 28);
-	stackframe[21] = TargetInterface.peekWord(8 * 29);
-	stackframe[22] = TargetInterface.peekWord(8 * 30);
-	stackframe[23] = TargetInterface.peekWord(8 * 62);
-	stackframe[24] = TargetInterface.peekWord(8 * 61);
-	stackframe[25] = TargetInterface.peekWord(8 * 60);
-	stackframe[26] = TargetInterface.peekWord(8 * 59);
-	stackframe[27] = TargetInterface.peekWord(8 * 58);
-	stackframe[28] = TargetInterface.peekWord(8 * 57);
-	stackframe[29] = TargetInterface.peekWord(8 * 56);
-	stackframe[30] = TargetInterface.peekWord(8 * 55);
-	stackframe[31] = TargetInterface.peekWord(8 * 4);
-	stackframe[32] = TargetInterface.peekWord(8 * 3);
-	stackframe[33] = TargetInterface.peekWord(8 * 2);
-	stackframe[34] = TargetInterface.peekWord(8 * 0);
-	return (stackframe);
+	stackFrame[0]  = rd64(Number(stack) + 8 * 68);
+	stackFrame[1]  = stack;
+	stackFrame[2]  = rd64(Number(stack) + 8 * 19);
+	stackFrame[3]  = rd64(Number(stack) + 8 * 20);
+	stackFrame[4]  = rd64(Number(stack) + 8 * 67);
+	stackFrame[5]  = rd64(Number(stack) + 8 * 66);
+	stackFrame[6]  = rd64(Number(stack) + 8 * 65);
+	stackFrame[7]  = rd64(Number(stack) + 8 * 54);
+	stackFrame[8]  = rd64(Number(stack) + 8 * 53);
+	stackFrame[9]  = rd64(Number(stack) + 8 * 52);
+	stackFrame[10] = rd64(Number(stack) + 8 * 51);
+	stackFrame[11] = rd64(Number(stack) + 8 * 64);
+	stackFrame[12] = rd64(Number(stack) + 8 * 63);
+	stackFrame[13] = rd64(Number(stack) + 8 * 21);
+	stackFrame[14] = rd64(Number(stack) + 8 * 22);
+	stackFrame[15] = rd64(Number(stack) + 8 * 23);
+	stackFrame[16] = rd64(Number(stack) + 8 * 24);
+	stackFrame[17] = rd64(Number(stack) + 8 * 25);
+	stackFrame[18] = rd64(Number(stack) + 8 * 26);
+	stackFrame[19] = rd64(Number(stack) + 8 * 27);
+	stackFrame[20] = rd64(Number(stack) + 8 * 28);
+	stackFrame[21] = rd64(Number(stack) + 8 * 29);
+	stackFrame[22] = rd64(Number(stack) + 8 * 30);
+	stackFrame[23] = rd64(Number(stack) + 8 * 62);
+	stackFrame[24] = rd64(Number(stack) + 8 * 61);
+	stackFrame[25] = rd64(Number(stack) + 8 * 60);
+	stackFrame[26] = rd64(Number(stack) + 8 * 59);
+	stackFrame[27] = rd64(Number(stack) + 8 * 58);
+	stackFrame[28] = rd64(Number(stack) + 8 * 57);
+	stackFrame[29] = rd64(Number(stack) + 8 * 56);
+	stackFrame[30] = rd64(Number(stack) + 8 * 55);
+	stackFrame[31] = rd64(Number(stack) + 8 * 4);
+	stackFrame[32] = rd64(Number(stack) + 8 * 3);
+	stackFrame[33] = rd64(Number(stack) + 8 * 2);
+	stackFrame[34] = rd64(Number(stack) + 8 * 0);
+	return (stackFrame);
 }
 
 /*
@@ -564,8 +582,6 @@ function uKOS_getProcessRow(rowIndex) {
 			dynaPriority   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oDynamicPriority");
 			timeout		   = Debug.evaluate("vKern_proc["+ core +"]["+ i +"].oInternal.oTimeout");
 
-			stackframe = vStackFrameRoutine(stack);
-
 			stateText  = (process == runProcess) ? ("Running")  : ("Scheduled");
 			status	   = (process == runProcess) ? ("Running")  : ("Scheduled");
 
@@ -597,12 +613,20 @@ function uKOS_getProcessRow(rowIndex) {
 // because when Ozone stops execution, the stack frame of the running process has not been built yet.
 
 			if (process != runProcess) {
+				stackFrame = vStackFrameRoutine(stack);
+				if (stackFrame == undefined || stackFrame == null) {
+					return (null);
+				}
+
 				for (j = 0; j < vSzFrame; j++) {
-					if (stackframe[j] == undefined) {
+					if (stackFrame[j] == undefined) {
 						result.push("?");
 					}
+					else if (typeof stackFrame[j] == "string") {
+						result.push(stackFrame[j]);
+					}
 					else {
-					    result.push("0x" + local_padLeftString(stackframe[j].toString(16).toUpperCase(), vPadding));
+						result.push("0x" + local_padLeftString(stackFrame[j].toString(16).toUpperCase(), vPadding));
 					}
 				}
 			}
@@ -653,7 +677,7 @@ function uKOS_getMailboxRow(rowIndex) {
 	var		state;
 	var		stateText;
 	var		nbMaxPacks;
-	var		nNbUsdPacks;
+	var		nbUsdPacks;
 	var		dataEntrySize;
 	var		core;
 	var		i;
@@ -734,7 +758,7 @@ function uKOS_getSemaphoreRow(rowIndex) {
 			identifier = Debug.evaluate("vKern_sema["+ core +"]["+ i +"].oIdentifier").toString();
 			counter	   = Debug.evaluate("vKern_sema["+ core +"]["+ i +"].oCounter");
 			maxCounter = Debug.evaluate("vKern_sema["+ core +"]["+ i +"].oMaxCounter");
-			owner	   = Debug.evaluate("vKern_sema["+ core +"]["+ i +"].oOwner->oSpecification.oIdentifier").toString();
+			owner	   = Debug.evaluate("vKern_sema["+ core +"]["+ i +"].oOwner") ? (Debug.evaluate("vKern_sema["+ core +"]["+ i +"].oOwner->oSpecification.oIdentifier").toString()) : ("-");
 
 			stateText = "Installed";
 			maxCounter = (maxCounter == 0x7FFFFFFF) ? ("2^31 - 1") : (maxCounter);
@@ -798,7 +822,7 @@ function uKOS_getMutexRow(rowIndex) {
 			identifier = Debug.evaluate("vKern_mutx["+ core +"]["+ i +"].oIdentifier").toString();
 			counter	   = Debug.evaluate("vKern_mutx["+ core +"]["+ i +"].oCounter");
 			maxCounter = Debug.evaluate("vKern_mutx["+ core +"]["+ i +"].oMaxCounter");
-			owner	   = Debug.evaluate("vKern_mutx["+ core +"]["+ i +"].oOwner->oSpecification.oIdentifier").toString();
+			owner	   = Debug.evaluate("vKern_mutx["+ core +"]["+ i +"].oOwner") ? (Debug.evaluate("vKern_mutx["+ core +"]["+ i +"].oOwner->oSpecification.oIdentifier").toString()) : ("-");
 
 			stateText = "Installed";
 			maxCounter = (maxCounter == 0x7FFFFFFF) ? ("2^31 - 1") : (maxCounter);
@@ -892,9 +916,9 @@ function uKOS_getSignalRow(rowIndex) {
 				}
 
 			}
-			vLastPrimaryUsedRow++;
-			vLastAuxiliaryUsedRow = 0;
 		}
+		vLastPrimaryUsedRow++;
+		vLastAuxiliaryUsedRow = 0;
 	}
 	return (null);
 }
@@ -934,10 +958,12 @@ function uKOS_getPreciseSignalRow(rowIndex) {
 	var		nextTime;
 	var		period;
 	var		signal;
+	var		state;
+	var		stateText;
 	var		mode;
+	var		modeText;
 	var		signalGroup;
 	var		process;
-	var		state;
 	var		core;
 	var		i;
 
@@ -1122,7 +1148,9 @@ function uKOS_getPoolRow(rowIndex) {
 			blocksSize	= blocksSize / 1024;
 
 			stateText = "Installed";
-			if ((state & (1<<BPOOL_CONFIGURED)) != 0) { stateText += ", Configured";	}
+			if ((state & (1<<BPOOL_CONFIGURED)) != 0) {
+				stateText += ", Configured";
+			}
 
 			result.push(identifier);
 			result.push(i.toString(10));
@@ -1177,14 +1205,23 @@ function uKOS_getTraceRow(rowIndex) {
 	core		= vNbCores - 1;
 	i			= rowIndex;
 	szTraceFifo = Debug.evaluate("KRECORD_SZ_TRACE_FIFO");
+
+	if (i >= szTraceFifo) {
+		return (null);
+	}
+
 	timeStamp	= Debug.evaluate("vRecord_traceFifo["+ core +"]["+ i +"].oTimeStamp");
 
-	if ((i >= szTraceFifo) || (timeStamp == 0)) { return (null); }
+	if (timeStamp == 0) {
+		return (null);
+	}
 
 	message	   = Debug.evaluate("vRecord_traceFifo["+ core +"]["+ i +"].oMessage").toString();
 	parameter  = Debug.evaluate("vRecord_traceFifo["+ core +"]["+ i +"].oParameter");
 	identifier = Debug.evaluate("vRecord_traceFifo["+ core +"]["+ i +"].oProcess->oSpecification.oIdentifier").toString();
-	if (identifier == "") { identifier = "From ISR routine"; }
+	if (identifier == "") {
+		identifier = "From ISR routine";
+	}
 
 	result.push(timeStamp.toString(10));
 	result.push(identifier);
@@ -1218,23 +1255,7 @@ function uKOS_getLogHeader() {
  *
  */
 function uKOS_getLogRow(rowIndex) {
-	var		KFATAL_SYSTEM	 = 0x10;
-	var		KFATAL_KERNEL	 = 0x11;
-	var		KFATAL_MANAGER	 = 0x12;
-	var		KFATAL_USER		 = 0x13;
-	var		KERROR_SYSTEM	 = 0x20;
-	var		KERROR_KERNEL	 = 0x21;
-	var		KERROR_MANAGER	 = 0x22;
-	var		KERROR_USER		 = 0x23;
-	var		KWARNING_SYSTEM	 = 0x30;
-	var		KWARNING_KERNEL	 = 0x31;
-	var		KWARNING_MANAGER = 0x32;
-	var		KWARNING_USER	 = 0x33;
-	var		KINFO_SYSTEM	 = 0x40;
-	var		KINFO_KERNEL	 = 0x41;
-	var		KINFO_MANAGER 	 = 0x42;
-	var		KINFO_USER		 = 0x43;
-	var		result			 = [];
+	var		result = [];
 	var		szTraceLog;
 	var		timeStamp;
 	var		category;
@@ -1245,39 +1266,32 @@ function uKOS_getLogRow(rowIndex) {
 	var		core;
 	var		i;
 
-	core		= vNbCores - 1;
-	i			= rowIndex;
-	szTraceLog	= Debug.evaluate("KRECORD_SZ_LOG_BUF");
-	timeStamp	= Debug.evaluate("vRecord_logBuffer["+ core +"]["+ i +"].oTimeStamp");
+	core	   = vNbCores - 1;
+	i		   = rowIndex;
+	szTraceLog = Debug.evaluate("KRECORD_SZ_LOG_BUF");
 
-	if ((i >= szTraceLog) || (timeStamp == 0)) { return (null); }
+	if (i >= szTraceLog) {
+		return (null);
+	}
+
+	timeStamp = Debug.evaluate("vRecord_logBuffer["+ core +"]["+ i +"].oTimeStamp");
+
+	if (timeStamp == 0) {
+		return (null);
+	}
 
 	category   = Debug.evaluate("vRecord_logBuffer["+ core +"]["+ i +"].oLogCategory");
 	message	   = Debug.evaluate("vRecord_logBuffer["+ core +"]["+ i +"].oMessage").toString();
 	identifier = Debug.evaluate("vRecord_logBuffer["+ core +"]["+ i +"].oFunction").toString();
 	lineNumber = Debug.evaluate("vRecord_logBuffer["+ core +"]["+ i +"].oLineNumber");
-	if (identifier == "") { identifier = "From ISR routine"; }
 
-	categoryText = "";
-	if (category == KFATAL_SYSTEM)	  { categoryText = "FATAL system";	  }
-	if (category == KFATAL_KERNEL)	  { categoryText = "FATAL uKernel";	  }
-	if (category == KFATAL_MANAGER)	  { categoryText = "FATAL manager";	  }
-	if (category == KFATAL_USER)	  { categoryText = "FATAL user";	  }
+	if (identifier == "") {
+		identifier = "From ISR routine";
+	}
 
-	if (category == KERROR_SYSTEM)	  { categoryText = "ERROR system";	  }
-	if (category == KERROR_KERNEL)	  { categoryText = "ERROR uKernel";	  }
-	if (category == KERROR_MANAGER)	  { categoryText = "ERROR manager";	  }
-	if (category == KERROR_USER)	  { categoryText = "ERROR user";	  }
+// Ozone returns the symbolic C enumeration name.
 
-	if (category == KWARNING_SYSTEM)  { categoryText = "WARNING system";  }
-	if (category == KWARNING_KERNEL)  { categoryText = "WARNING uKernel"; }
-	if (category == KWARNING_MANAGER) { categoryText = "WARNING manager"; }
-	if (category == KWARNING_USER)	  { categoryText = "WARNING user";	  }
-
-	if (category == KINFO_SYSTEM)  	  { categoryText = "KINFO system";	  }
-	if (category == KINFO_KERNEL)  	  { categoryText = "KINFO uKernel";	  }
-	if (category == KINFO_MANAGER) 	  { categoryText = "KINFO manager";	  }
-	if (category == KINFO_USER)		  { categoryText = "KINFO user";	  }
+	categoryText = String(category);
 
 	result.push(timeStamp.toString(10));
 	result.push(categoryText);
@@ -1313,8 +1327,8 @@ function uKOS_getMemoryHeader() {
  */
 function local_displayHeapInformation(heap, heapStart, heapSize, heapUsedMemory, heapNbBlocks, heapNbMaxBlocks) {
 	var		address;
+	var		used;
 	var		totalSize;
-	var		uesed;
 	var		usedPerCent;
 	var		nbBloks;
 	var		nbMaxBloks;
@@ -1354,7 +1368,10 @@ function local_displayHeapInformation(heap, heapStart, heapSize, heapUsedMemory,
 
 function uKOS_getMemoryRow(rowIndex) {
 
-	if (rowIndex == 0) { return (local_displayHeapInformation(" ", "linker_stHeap", "linker_lnHeap", "vMemo_heapInfo.oUsdMemory", "vMemo_heapInfo.oNbBlocks", "vMemo_heapInfo.oNbMaxBlocks")); }
+	if (rowIndex == 0) {
+		return (local_displayHeapInformation(" ", "linker_stHeap", "linker_lnHeap", "vMemo_heapInfo.oUsdMemory", "vMemo_heapInfo.oNbBlocks", "vMemo_heapInfo.oNbMaxBlocks"));
+	}
+
 	return (null);
 }
 
@@ -1383,8 +1400,8 @@ function uKOS_getAboutHeader() {
  *
  */
 function uKOS_getAboutRow(rowIndex) {
-	var		line0 = ["uKOS-X plug-in V-2.0.1"																				 ];
-	var		line1 = ["Last modification: 2026-10-24"																		 ];
+	var		line0 = ["uKOS-X plug-in V-2.0.2"																				 ];
+	var		line1 = ["Last modification: 2026-10-25"																		 ];
 	var		line2 = [" "																									 ];
 	var		line3 = ["uKOS-" + vuKOSString																					 ];
 	var		line4 = ["uKOS-X OS version under debug V " + vuKOSMajorString + "." + vuKOSMinorString + "." + vuKOSPatchString ];
