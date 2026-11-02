@@ -154,6 +154,7 @@ static	void	local_GPIO_Configuration(void) {
 			{ 1u,     FUNC_JTAG_TDI,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 2u,     FUNC_JTAG_TMS,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 3u,     FUNC_JTAG_TDO,		FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       0u,   0u,   0u,      0u,    0u,     0u,       0u,       0u,   0u,       0u,        0u,      0u },
+
 			{ 4u,     FUNC_UART2_RX,		FPIOA_DRIVING_0,  0u,      0u,       0u,       0u,       1u,   0u,   0u,      0u,    1u,     0u,       0u,       1u,   0u,       0u,        0u,      0u },
 			{ 5u,     FUNC_UART2_TX,		FPIOA_DRIVING_15, 1u,      0u,       0u,       0u,       1u,   0u,   0u,      0u,    0u,     0u,       0u,       0u,   0u,       0u,        0u,      0u },
 

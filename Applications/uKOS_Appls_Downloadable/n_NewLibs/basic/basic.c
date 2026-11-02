@@ -174,10 +174,10 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 		led_toggle(KLED_1);
 
 		kern_readTickCount(&time[0]);
-		Pi_f = Pi_f + ((1.0 / pow(16, n_f)) * ((4.0 / ((8.0 * n_f) + 1.0)))
+		Pi_f = Pi_f + ((1.0 / pow(16, n_f)) * ((4.0 / ((8.0 * n_f) + 1.0))
 	   				-  (2.0 / ((8.0 * n_f) + 4.0))
 	    			-  (1.0 / ((8.0 * n_f) + 5.0))
-					-  (1.0 / ((8.0 * n_f) + 6.0)));
+					-  (1.0 / ((8.0 * n_f) + 6.0))));
 
 		kern_readTickCount(&time[1]);
 		delta = (uint32_t)(time[1] - time[0]);

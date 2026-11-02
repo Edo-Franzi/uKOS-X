@@ -199,7 +199,13 @@ static	void	test_listDirectoryTree(const char *path, uint8_t depth);
 #endif
 
 #if (defined(Firefly_H743_S))
-#undef	WITH_SDCARD_S
+#define	WITH_SDCARD_S
+#define	WITH_SERIAL_FLASH_S
+#define	WITH_FORMAT_S
+#endif
+
+#if (defined(Firefly_H757_S))
+#define	WITH_SDCARD_S
 #define	WITH_SERIAL_FLASH_S
 #define	WITH_FORMAT_S
 #endif

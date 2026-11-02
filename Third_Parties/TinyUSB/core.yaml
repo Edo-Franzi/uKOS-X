@@ -36,6 +36,12 @@ h7:
       - cdc_cdc
       - cdc_msc
       - cdc_video
+  - dependency: null
+    soc: STM32H757
+    profiles:
+      - cdc_cdc
+      - cdc_msc
+      - cdc_video
 
 l4:
   - dependency: null

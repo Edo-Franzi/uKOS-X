@@ -170,11 +170,13 @@ static	void	local_PWR_Configuration(void) {
 
 	PWR->CR2   = PWR_CR2_BREN;
 	PWR->CR3   = (3u * PWR_CR3_SDLEVEL_0) | PWR_CR3_SDEN | PWR_CR3_LDOEN;
+
 	PWR->D3CR &= ~PWR_D3CR_VOS;
-	PWR->D3CR  = (2u * PWR_D3CR_VOS_0);
+	PWR->D3CR = (3u *PWR_D3CR_VOS_0);
+
 	while ((PWR->D3CR & PWR_D3CR_VOSRDY) == 0u) { ; }
 
-	PWR->D3CR	   = (3u *PWR_D3CR_VOS_0);
+	RCC->APB4ENR  |= RCC_APB4ENR_SYSCFGEN;
 	SYSCFG->PWRCR |= SYSCFG_PWRCR_ODEN;
 }
 

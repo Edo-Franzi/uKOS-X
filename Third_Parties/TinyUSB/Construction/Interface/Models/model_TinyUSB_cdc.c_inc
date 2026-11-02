@@ -50,6 +50,9 @@
 #define	KCONNECTED		true
 #define	KDISCONNECTED	false
 
+#define	KPORT0			0
+#define	KPORT1			1
+
 static	bool	vConnected[CFG_TUD_CDC] = MCSET(KDISCONNECTED);
 extern	mutx_t	*vTinyUSB_API[KNB_CORES];
 
@@ -176,6 +179,36 @@ void	tud_cdc_line_state_cb(uint8_t itf, bool dtr, [[maybe_unused]] bool rts) {
  * - Called when CDC interface received data from host
  *
  */
-void	tud_cdc_rx_cb([[maybe_unused]] uint8_t itf) {
+void	tud_cdc_rx_cb(uint8_t itf) {
+
+	#if (defined(CONFIG_MAN_CDC0_S))
+	static	sema_t	*semaphoreCDC0 = nullptr;
+
+	if (itf == KPORT0) {
+		if (semaphoreCDC0 == nullptr) {
+			if (kern_getSemaphoreById(KCDC0_SEMAPHORE_RX, &semaphoreCDC0) != KERR_KERN_NOERR) {
+				semaphoreCDC0 = nullptr;
+				return;
+			}
+
+		}
+		kern_signalSemaphore(semaphoreCDC0);
+	}
+	#endif
+
+	#if (defined(CONFIG_MAN_CDC1_S))
+	static	sema_t	*semaphoreCDC1 = nullptr;
+
+	if (itf == KPORT0) {
+		if (semaphoreCDC1 == nullptr) {
+			if (kern_getSemaphoreById(KCDC1_SEMAPHORE_RX, &semaphoreCDC1) != KERR_KERN_NOERR) {
+				semaphoreCDC1 = nullptr;
+				return;
+			}
+
+		}
+		kern_signalSemaphore(semaphoreCDC1);
+	}
+	#endif
 
 }

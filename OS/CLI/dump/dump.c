@@ -184,7 +184,7 @@ static	void	local_printLine(const uint8_t *memory, uint32_t nbBytes) {
 
 	for (i = 0u; i < ((nbBytes + 15u) / 16u); i++) {
 		offset = (size_t)i * (size_t)16u;
-		param  = (const uint8_t *)(memory + offset);
+		param  = (memory + offset);
 
 		(void)dprintf(KSYST, "0x%016"PRIXPTR": ", (uintptr_t)param);
 		for (j = 0u; j < 15u; j++) {

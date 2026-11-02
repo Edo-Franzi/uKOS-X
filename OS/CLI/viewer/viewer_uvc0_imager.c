@@ -184,7 +184,7 @@ static	void	aProcess_acquisition(const void *argument) {
 	configureIMAGER.oFrameNbRows	= (uint16_t)h;
 	configureIMAGER.oFrameNbCols	= (uint16_t)w;
 	configureIMAGER.oKernSync		= (0u);
-	configureIMAGER.oKernSync		= (1u<<BIMAGER_SEMAPHORE_IM);
+	configureIMAGER.oKernSync		= (uint8_t)(1u<<BIMAGER_SEMAPHORE_IM);
 	configureIMAGER.oHSync			= nullptr;
 	configureIMAGER.oFrame			= nullptr;
 	configureIMAGER.oVSync			= nullptr;

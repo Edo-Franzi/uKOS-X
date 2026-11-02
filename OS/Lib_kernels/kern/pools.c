@@ -320,12 +320,10 @@ int32_t	kern_allocateBlock(pool_t *handle, void **address, uint32_t timeout) {
 	INTERRUPTION_RESTORE;
 	PRIVILEGE_RESTORE;
 
-	if (timeout > 0u) {
-		if (kern_waitSemaphore(handle->oReleaseSema, timeout) == KERR_KERN_NOERR) {
-			return (kern_allocateBlock(handle, address, 0u));
-		}
-
+	if ((timeout > 0u) && (kern_waitSemaphore(handle->oReleaseSema, timeout) == KERR_KERN_NOERR)) {
+		return (kern_allocateBlock(handle, address, 0u));
 	}
+
 	return (KERR_KERN_BKFUL);
 }
 

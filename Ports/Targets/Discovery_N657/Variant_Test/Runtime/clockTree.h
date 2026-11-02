@@ -114,13 +114,13 @@
 
 // Compile-time checks of a PLL configuration (RM0486, integer mode)
 
-#define	KPLL_STATIC_CHECKS(x, m, n, pdiv1, pdiv2, freq)																				\
-	static_assert(((m) >= 1u) && ((m) <= 63u), "PLL" #x ": DIVM shall be in 1..63");												\
-	static_assert(((n) >= 16u) && ((n) <= 640u), "PLL" #x ": DIVN shall be in 16..640");											\
-	static_assert(((pdiv1) >= 1u) && ((pdiv1) <= 7u), "PLL" #x ": PDIV1 shall be in 1..7");											\
-	static_assert(((pdiv2) >= 1u) && ((pdiv2) <= 7u), "PLL" #x ": PDIV2 shall be in 1..7");											\
-	static_assert((KPLL_FVCO(m, n) >= KPLL_FVCO_MIN) && (KPLL_FVCO(m, n) <= KPLL_FVCO_MAX), "PLL" #x ": FVCO out of range");		\
-	static_assert((KPLL_FVCO(m, n) / ((pdiv1) * (pdiv2))) == (freq), "PLL" #x ": configuration does not match KFREQUENCY_PLL" #x)
+#define	KPLL_STATIC_CHECKS(x, m, n, pdiv1, pdiv2, freq)																									\
+	static_assert(((m) >= 1u) && ((m) <= 63u), "PLL" #x ": DIVM shall be in 1..63");																	\
+	static_assert(((n) >= 16u) && ((n) <= 640u), "PLL" #x ": DIVN shall be in 16..640");																\
+	static_assert(((pdiv1) >= 1u) && ((pdiv1) <= 7u), "PLL" #x ": PDIV1 shall be in 1..7");																\
+	static_assert(((pdiv2) >= 1u) && ((pdiv2) <= 7u), "PLL" #x ": PDIV2 shall be in 1..7");																\
+	static_assert((KPLL_FVCO(m, n) >= KPLL_FVCO_MIN) && (KPLL_FVCO(m, n) <= KPLL_FVCO_MAX), "PLL" #x ": FVCO out of range");							\
+	static_assert((KPLL_FVCO(m, n) / ((uint64_t)(pdiv1) * (uint64_t)(pdiv2))) == (freq), "PLL" #x ": configuration does not match KFREQUENCY_PLL" #x);
 
 // PLL 1
 

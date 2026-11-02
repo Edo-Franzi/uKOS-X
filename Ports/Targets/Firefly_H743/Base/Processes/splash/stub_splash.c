@@ -13,8 +13,8 @@
 ; Project:	uKOS-X
 ; Goal:		Connect the splash process to the WKS43WV067 LTDC display.
 ;
-;   (c) 2026, Laurent von Allmen
-;   ----------------------------
+;   (c) 2025-2026, Laurent von Allmen
+;   ---------------------------------
 ;                                              __ ______  _____
 ;   Edo. Franzi                         __  __/ //_/ __ \/ ___/
 ;   5-Route de Cheseaux                / / / / ,< / / / /\__ \

@@ -75,15 +75,15 @@
 
 // Compile-time checks of a PLL configuration (RP2350 datasheet)
 
-#define	KPLL_STATIC_CHECKS(x, r, fb, pd1, pd2)																							\
-	static_assert(((r) >= 1u) && ((r) <= 63u), "PLL_" #x ": REFDIV shall be in 1..63");													\
-	static_assert(((fb) >= 16u) && ((fb) <= 320u), "PLL_" #x ": FBDIV shall be in 16..320");											\
-	static_assert(((pd1) >= 1u) && ((pd1) <= 7u), "PLL_" #x ": POSTDIV1 shall be in 1..7");												\
-	static_assert(((pd2) >= 1u) && ((pd2) <= 7u), "PLL_" #x ": POSTDIV2 shall be in 1..7");												\
-	static_assert(KPLL_FREF(r) >= KPLL_FREF_MIN, "PLL_" #x ": f(ref) out of range");													\
-	static_assert((KPLL_FVCO(r, fb) / ((pd1) * (pd2))) == KFREQUENCY_PLL##x, "PLL_" #x ": configuration does not match KFREQUENCY_PLL" #x)
+#define	KPLL_STATIC_CHECKS(x, r, fb, pd1, pd2)																													\
+	static_assert(((r) >= 1u) && ((r) <= 63u), "PLL_" #x ": REFDIV shall be in 1..63");																			\
+	static_assert(((fb) >= 16u) && ((fb) <= 320u), "PLL_" #x ": FBDIV shall be in 16..320");																	\
+	static_assert(((pd1) >= 1u) && ((pd1) <= 7u), "PLL_" #x ": POSTDIV1 shall be in 1..7");																		\
+	static_assert(((pd2) >= 1u) && ((pd2) <= 7u), "PLL_" #x ": POSTDIV2 shall be in 1..7");																		\
+	static_assert(KPLL_FREF(r) >= KPLL_FREF_MIN, "PLL_" #x ": f(ref) out of range");																			\
+	static_assert((KPLL_FVCO(r, fb) / ((uint64_t)(pd1) * (uint64_t)(pd2))) == KFREQUENCY_PLL##x, "PLL_" #x ": configuration does not match KFREQUENCY_PLL" #x)
 
-#define	KPLL_STATIC_CHECK_FVCO(x, r, fb)																								\
+#define	KPLL_STATIC_CHECK_FVCO(x, r, fb)																														\
 	static_assert((KPLL_FVCO(r, fb) >= KPLL_FVCO_MIN) && (KPLL_FVCO(r, fb) <= KPLL_FVCO_MAX), "PLL_" #x ": FVCO out of range")
 
 // PLL SYS

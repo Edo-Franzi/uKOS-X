@@ -166,10 +166,8 @@ static	void	local_process([[maybe_unused]] const void *argument) {
 
 	index = 0u;
 	while (system_getModuleFamily((uint8_t)KID_FAM_PROCESSES, &idModule, &index, &module) == KERR_SYSTEM_NOERR) {
-		if (!((idModule == (uint32_t)KID_ALIVE) || (idModule == (uint32_t)KID_LAUNCHER))) {
-			if (((1u<<core) & module->oExecutionCore) != 0u) {
-				module->oExecution(0u, nullptr);
-			}
+		if ((idModule != (uint32_t)KID_ALIVE) && (idModule != (uint32_t)KID_LAUNCHER) && (((1u << core) & module->oExecutionCore) != 0u)) {
+			module->oExecution(0u, nullptr);
 		}
 		index++;
 	}

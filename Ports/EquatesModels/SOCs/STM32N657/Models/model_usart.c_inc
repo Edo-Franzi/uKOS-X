@@ -165,8 +165,8 @@ int32_t	model_usart_configure(const urtxCnf_t *configure) {
 		default:					   { USART->BRR = BAUDRATE(USART_FREQUENCY, KSERIAL_DEFAULT_BAUDRATE); break; }
 	}
 
-	vWithSemaphore_RX = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
-	vWithSemaphore_TX = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
+	vWithSemaphore_RX = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
+	vWithSemaphore_TX = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
 	USART->CR1_FIFO |= USART_CR1_FIFO_UE;
 	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
 }

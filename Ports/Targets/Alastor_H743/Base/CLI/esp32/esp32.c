@@ -113,7 +113,7 @@ static	int32_t	prgm(uint32_t argc, const char_t *argv[]) {
 					.oStopBits = KSERIAL_STOPBITS_1,
 					.oParity   = KSERIAL_PARITY_NONE,
 					.oBaudRate = KSERIAL_BAUDRATE_DEFAULT,
-					.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)
+					.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)
 				};
 
 	(void)dprintf(KSYST, "Control of the ESP32 chip.\n");

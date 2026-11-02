@@ -320,7 +320,7 @@ int32_t	sdcard_read(uint8_t *buffer, uint32_t size, uint32_t sector) {
 			return (KERR_STORAGE_TRANT);
 		}
 
-		for (i = 0; i < nbBytesLastSector; i++) {
+		for (i = 0u; i < nbBytesLastSector; i++) {
 			*memory = lastSectorBuffer[i];
 			memory++;
 		}

@@ -404,7 +404,7 @@ MAIN_ENTRY(argc, argv[]) {
 		KKERN_PRIORITY_HIGH_01				// KKERN_PRIORITY_HIGH < Priority < KKERN_PRIORITY_LOW_14. KKERN_PRIORITY_LOW_15 is reserved for the idle process
 	);
 
-	if (kern_createMutex("Critical", &mutex)				   != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create mutx"); return (EXIT_OS_FAILURE); }
+	if (kern_createMutex("Critical", &mutex)					  != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create mutx"); return (EXIT_OS_FAILURE); }
 	if (kern_createProcess(&specification_0, nullptr, &process_0) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 	if (kern_createProcess(&specification_1, nullptr, &process_1) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }
 	if (kern_createProcess(&specification_2, nullptr, &process_2) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create proc"); return (EXIT_OS_FAILURE); }

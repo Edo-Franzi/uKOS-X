@@ -114,6 +114,33 @@ MODULE(
 );
 #endif
 
+#if (defined(Firefly_H757_S))
+#define	SEMAPHORE	KCDC0_SEMAPHORE_RX
+#define	FLUSH		cdc0_flush
+#define	CONFIG		static	const	cdcxCnf_t	configureCDCx = {							\
+										.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)	\
+									};														\
+																							\
+					serial_configure(KCDC0, &configureCDCx);								\
+					serial_flush(KCDC0);
+
+#else
+#define	SEMAPHORE	KURT0_SEMAPHORE_RX
+#define	FLUSH		urt0_flush
+#define	CONFIG		static	const	urtxCnf_t	configureURTx = {							\
+										.oNBBits   = KSERIAL_NB_BITS_8,						\
+										.oStopBits = KSERIAL_STOPBITS_1,					\
+										.oParity   = KSERIAL_PARITY_NONE,					\
+										.oBaudRate = KSERIAL_BAUDRATE_DEFAULT,				\
+										.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)	\
+									};														\
+																							\
+					serial_configure(KURT0, &configureURTx);								\
+					serial_flush(KURT0);
+#endif
+
+
+
 /*
  * \brief aProcess 0
  *
@@ -132,27 +159,32 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	int32_t		status;
 	sema_t		*semaphore;
 
-	while (kern_getSemaphoreById(KURT0_SEMAPHORE_RX, &semaphore) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
+	while (kern_getSemaphoreById(SEMAPHORE, &semaphore) != KERR_KERN_NOERR) { kern_suspendProcess(1u); }
+	FLUSH();
 
 	while (true) {
-		status = kern_waitSemaphore(semaphore, 500u);
+ 		status = kern_waitSemaphore(semaphore, 500u);
 
 // Maintains the sampling rate always @ 500-ms
 // Thanks to the kern_suspendProcess(KWAIT_REMAINING_TIMEOUT);
 
 		if (status == KERR_KERN_NOERR) {
 
-// We got an event after xx-ms
-// To maintain the sampling rate @ 500-ms, we should wait (500-xx)-ms
-// Thanks to the kern_suspendProcess(KWAIT_REMAINING_TIMEOUT);
+// An event occurred after xx ms.
+// To maintain a sampling interval of 500 ms, we must wait another (500 - xx) ms.
+// This is achieved by calling kern_suspendProcess(KWAIT_REMAINING_TIMEOUT).
+// IMPORTANT: No code that could suspend the process may be executed
+// between kern_waitSemaphore() and kern_suspendProcess(KWAIT_REMAINING_TIMEOUT)!
 
 			kern_suspendProcess(KWAIT_REMAINING_TIMEOUT);
+			FLUSH();
+
 			led_on(KLED_1);
 			led_on(KLED_2);
 			kern_suspendProcess(50u);
 			led_off(KLED_1);
 			led_off(KLED_2);
-
+			(void)dprintf(KSYST, "Synchro ...\n");
 		}
 		else {
 
@@ -174,18 +206,9 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
  *
  */
 MAIN_ENTRY(argc, argv[]) {
-					proc_t		*process_0;
-	static	const	urtxCnf_t	configureURTx = {
-									.oNBBits   = KSERIAL_NB_BITS_8,
-									.oStopBits = KSERIAL_STOPBITS_1,
-									.oParity   = KSERIAL_PARITY_NONE,
-									.oBaudRate = KSERIAL_BAUDRATE_DEFAULT,
-									.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)
-								};
+	proc_t	*process_0;
 
-	kern_suspendProcess(100u);
-	serial_configure(KURT0, &configureURTx);
-	serial_flush(KURT0);
+	CONFIG;
 
 // ---------------------------------I-----------------------------------------I--------------I
 

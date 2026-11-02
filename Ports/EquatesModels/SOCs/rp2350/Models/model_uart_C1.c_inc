@@ -176,8 +176,8 @@ static	int32_t	model_uart_configure_C1(const urtxCnf_t *configure) {
 		default:					   { BAUDRATE(UART1, UART_FREQUENCY_C1, KSERIAL_DEFAULT_BAUDRATE); break; }
 	}
 
-	vWithSemaphore_RX_C1 = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
-	vWithSemaphore_TX_C1 = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
+	vWithSemaphore_RX_C1 = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
+	vWithSemaphore_TX_C1 = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
 	UART_C1->UARTCR |= UART_UARTCR_UARTEN;
 	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
 }

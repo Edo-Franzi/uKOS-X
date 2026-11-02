@@ -114,7 +114,7 @@ int32_t	model_sdcard_readStatus(void) {
 	int32_t		status;
 
 	#if (defined(WITH_SD_INSERTED_S))
-	status = (cb_cardInserted() == true)	? (KERR_STORAGE_NOERR) : (KERR_STORAGE_NODEV);
+	status = (cb_cardInserted() == true) ? (KERR_STORAGE_NOERR) : (KERR_STORAGE_NODEV);
 
 	#else
 	status = KERR_STORAGE_NOERR;

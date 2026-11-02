@@ -80,16 +80,20 @@ MODULE(
 // Library specific
 // ================
 
+#define	CDC0_SEMA_RX_S
 #define	CDC0_SEMA_TX_S
 
 #define	KCDC0_SZ_TX_BUF		CFG_TUD_CDC_TX_BUFSIZE
 #define	KCDC0_SZ_RX_BUF		CFG_TUD_CDC_RX_BUFSIZE
 #define	KPORT0				0
 
+STRG_LOC_CONST(aStrSemaphore_RX[]) = KCDC0_SEMAPHORE_RX;
 STRG_LOC_CONST(aStrSemaphore_TX[]) = KCDC0_SEMAPHORE_TX;
 
+static	bool		vWithSemaphore_RX[KNB_CORES] = MCSET(false);
 static	bool		vWithSemaphore_TX[KNB_CORES] = MCSET(false);
 
+static	sema_t		*vSemaphore_RX[KNB_CORES];
 static	sema_t		*vSemaphore_TX[KNB_CORES];
 static	mutx_t		*vMutex_Reserve_RX[KNB_CORES];
 static	mutx_t		*vMutex_Reserve_TX[KNB_CORES];
@@ -478,6 +482,7 @@ static	int32_t	local_init(void) {
 
 		if (kern_createMutex(KCDC0_MUTEX_RESERVE_RX, &vMutex_Reserve_RX[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "cdc0: create mutx"); exit(EXIT_OS_PANIC); }
 		if (kern_createMutex(KCDC0_MUTEX_RESERVE_TX, &vMutex_Reserve_TX[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "cdc0: create mutx"); exit(EXIT_OS_PANIC); }
+		if (kern_createSemaphore(aStrSemaphore_RX, 0, 1, &vSemaphore_RX[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "cdc0: Create sema"); exit(EXIT_OS_PANIC); }
 		if (kern_createSemaphore(aStrSemaphore_TX, 0, 1, &vSemaphore_TX[core]) != KERR_KERN_NOERR) { LOG(KFATAL_MANAGER, "cdc0: Create sema"); exit(EXIT_OS_PANIC); }
 	}
 	RETURN_INT_RESTORE(status);
@@ -495,7 +500,8 @@ static	int32_t	local_configure(const cdcxCnf_t *configure) {
 	core = GET_RUNNING_CORE;
 
 	INTERRUPTION_OFF;
-	vWithSemaphore_TX[core] = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
+	vWithSemaphore_RX[core] = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
+	vWithSemaphore_TX[core] = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
 	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
 }
 
@@ -578,9 +584,14 @@ static	int32_t	local_flush(void) {
 	uint8_t		i, buffer[32];
 	uint32_t	size;
 
-	INTERRUPTION_OFF;
-	for (i = 0u; i < (512u / 32u); i++) { TinyUSB_cdc_read(KPORT0, &buffer[0], &size); }
-	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
+	for (i = 0u; i < (512u / 32u); i++) {
+		size = sizeof(buffer);
+		TinyUSB_cdc_read(KPORT0, buffer, &size);
+		if (size == 0u) {
+			break;
+		}
+	}
+	return (KERR_SERIAL_NOERR);
 }
 
 #endif

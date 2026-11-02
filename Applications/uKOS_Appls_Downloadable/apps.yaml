@@ -6,6 +6,7 @@ a_Basics:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -20,6 +21,7 @@ a_Basics:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_L4R5
@@ -33,6 +35,7 @@ a_Basics:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -47,6 +50,7 @@ a_Basics:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -61,6 +65,7 @@ a_Basics:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -84,6 +89,7 @@ a_Basics:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -99,6 +105,7 @@ b_MailBoxes:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -113,6 +120,7 @@ b_MailBoxes:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -127,6 +135,7 @@ b_MailBoxes:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -140,6 +149,7 @@ b_MailBoxes:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_F207
     - Nucleo_H743
     - Nucleo_L4R5
@@ -154,6 +164,7 @@ c_Semaphores:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -169,6 +180,7 @@ d_Mutexes:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -184,6 +196,7 @@ e_SoftwareTimers:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -199,6 +212,7 @@ f_Signals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -213,6 +227,7 @@ f_Signals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -228,6 +243,7 @@ g_PreciseSignals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_F207
     - Nucleo_H743
     - Nucleo_L4R5
@@ -241,6 +257,7 @@ i_MoreKernels:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -255,6 +272,7 @@ i_MoreKernels:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -269,6 +287,7 @@ i_MoreKernels:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -282,6 +301,7 @@ i_MoreKernels:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_F207
     - Nucleo_H743
     - Nucleo_L4R5
@@ -299,6 +319,7 @@ j_LowLevels:
     - Asmodee_H747
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_F207
     - Nucleo_H743
     - Nucleo_L4R5
@@ -309,6 +330,7 @@ j_LowLevels:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_F207
     - Nucleo_H743
     - Nucleo_L4R5
@@ -322,6 +344,7 @@ k_Mathematicals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_N657
@@ -333,6 +356,7 @@ k_Mathematicals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -347,6 +371,7 @@ k_Mathematicals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_H743
     - Nucleo_L4R5
     - Nucleo_N657
@@ -359,6 +384,7 @@ k_Mathematicals:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_F207
     - Nucleo_H743
     - Nucleo_L4R5
@@ -370,6 +396,7 @@ k_Mathematicals:
     - Asmodee_H747
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
 
@@ -380,6 +407,7 @@ l_MLPs:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_N657
@@ -391,6 +419,7 @@ l_MLPs:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_N657
@@ -402,6 +431,7 @@ l_MLPs:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_N657
@@ -413,6 +443,7 @@ l_MLPs:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_N657
@@ -421,6 +452,7 @@ l_MLPs:
   gan:
     - Discovery_N657
     - Firefly_H743
+    - Firefly_H757
 
   tfl_vs_ukos:
     - Alastor_H743
@@ -428,6 +460,7 @@ l_MLPs:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_H743
     - Nucleo_N657
@@ -441,6 +474,7 @@ m_MicroPythons:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_H743
     - Nucleo_L4R5
     - Nucleo_N657
@@ -453,6 +487,7 @@ m_MicroPythons:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_H743
     - Nucleo_L4R5
     - Nucleo_N657
@@ -462,6 +497,7 @@ n_NewLibs:
   basic:
     - Alastor_H743
     - Firefly_H743
+    - Firefly_H757
     - Nucleo_H743
     - Nucleo_L4R5
 
@@ -486,6 +522,7 @@ p_Specials:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -496,6 +533,7 @@ p_Specials:
   sdcard:
     - Alastor_H743
     - Firefly_H743
+    - Firefly_H757
 
   speed:
     - Alastor_H743
@@ -504,6 +542,7 @@ p_Specials:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -518,6 +557,7 @@ p_Specials:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -528,6 +568,7 @@ p_Specials:
   test_fatfs:
     - Alastor_H743
     - Firefly_H743
+    - Firefly_H757
 
   uKOS_minimal:
     - Alastor_H743
@@ -536,6 +577,7 @@ p_Specials:
     - Discovery_N657
     - Discovery_U5G9
     - Firefly_H743
+    - Firefly_H757
     - MAiXDUiNO_K210
     - Nucleo_F207
     - Nucleo_H743
@@ -551,8 +593,8 @@ q_LVGL:
 
   big:
     - Discovery_N657
-    - Discovery_V873
     - Firefly_H743
+    - Firefly_H757
 
   team:
     - MAiXDUiNO_K210

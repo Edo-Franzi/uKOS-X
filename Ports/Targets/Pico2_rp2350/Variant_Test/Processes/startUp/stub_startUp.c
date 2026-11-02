@@ -162,14 +162,14 @@ void	stub_startUp_launch(void) {
 			configureURTx.oStopBits = KSERIAL_STOPBITS_1;
 			configureURTx.oParity   = KSERIAL_PARITY_NONE;
 			configureURTx.oBaudRate = functions[mode].oBaudrate;
-			configureURTx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
+			configureURTx.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX);
 			serial_configure(KURT0, &configureURTx);
 
 			configureCDCx.oNBBits   = KSERIAL_NB_BITS_8;
 			configureCDCx.oStopBits = KSERIAL_STOPBITS_1;
 			configureCDCx.oParity   = KSERIAL_PARITY_NONE;
 			configureCDCx.oBaudRate = functions[mode].oBaudrate;
-			configureCDCx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
+			configureCDCx.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX);
 			serial_configure(KCDC0, &configureCDCx);
 			break;
 		}
@@ -184,7 +184,7 @@ void	stub_startUp_launch(void) {
 			configureURTx.oStopBits = KSERIAL_STOPBITS_1;
 			configureURTx.oParity   = KSERIAL_PARITY_NONE;
 			configureURTx.oBaudRate = functions[mode].oBaudrate;
-			configureURTx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
+			configureURTx.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX);
 			serial_configure(KURT0, &configureURTx);
 			break;
 		}
@@ -201,7 +201,7 @@ void	stub_startUp_launch(void) {
 	configureURTx.oStopBits = KSERIAL_STOPBITS_1;
 	configureURTx.oParity   = KSERIAL_PARITY_NONE;
 	configureURTx.oBaudRate = functions[mode].oBaudrate;
-	configureURTx.oKernSync = ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX);
+	configureURTx.oKernSync = (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX);
 	serial_configure(KURT0, &configureURTx);
 	#endif
 

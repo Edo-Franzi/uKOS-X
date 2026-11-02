@@ -512,8 +512,8 @@ static	int32_t	local_confImag(const imagerCnf_t *configure) {
 
 // The semaphore mode
 
-	vWithSemaphore_IM = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BIMAGER_SEMAPHORE_IM)) != 0u) ? (true) : (false);
-	vWithSemaphore_VS = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BIMAGER_SEMAPHORE_VS)) != 0u) ? (true) : (false);
+	vWithSemaphore_IM = ((configure->oKernSync & (uint8_t)(1u<<BIMAGER_SEMAPHORE_IM)) != 0u) ? (true) : (false);
+	vWithSemaphore_VS = ((configure->oKernSync & (uint8_t)(1u<<BIMAGER_SEMAPHORE_VS)) != 0u) ? (true) : (false);
 
 // The interruption callbacks
 // Start the stream

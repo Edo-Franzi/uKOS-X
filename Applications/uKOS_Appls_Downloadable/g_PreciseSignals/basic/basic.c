@@ -158,7 +158,6 @@ static	proc_t		*vProcess_0, *vProcess_1;
 static	enum		{ KSTATE1, KSTATE2, KSTATE3, KSTATE4 } vState = KSTATE1;
 
 #define	KSYNC_STATE_MACHINE		(1u<<0u)	// Synchro for the state machine (P1)
-#define	KSYNC_CONTINUOUS		(1u<<1u)	// Synchro for the continuous (P2)
 
 /*
  * \brief aProcess_0

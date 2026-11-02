@@ -1,11 +1,9 @@
----
-
 # dot-clang-tidy.
 # ===============
-
+#
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025-2026 Laurent von Allmen
-
+#
 #------------------------------------------------------------------------
 # Author:	Laurent von Allmen		The 2025-01-01
 # Modifs:
@@ -60,6 +58,8 @@ Checks: >
   -bugprone-integer-division,
   -bugprone-unsafe-functions,
   -bugprone-easily-swappable-parameters,
+  -bugprone-signed-bitwise,
+  -bugprone-branch-clone,
 
   cert-*,
   -cert-dcl37-c,
@@ -72,6 +72,7 @@ Checks: >
   -performance-no-int-to-ptr,
 
   portability-*,
+  -portability-no-assembler,
 
   modernize-*
   -modernize-macro-to-enum
@@ -97,11 +98,16 @@ Checks: >
   -readability-redundant-declaration,
   -readability-redundant-parentheses,
   -readability-suspicious-call-argument,
+  -readability-trailing-comma,
+  -readability-trivial-switch,
+  -readability-redundant-nested-if,
+  -readability-redundant-casting,
 
   clang-analyzer-*,
   -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
   -clang-analyzer-security.insecureAPI.strcpy,
   -clang-analyzer-optin.performance.Padding,
+  -clang-analyzer-optin.core.FixedAddressDereference,
 
   -google-*,
   -fuchsia-*,

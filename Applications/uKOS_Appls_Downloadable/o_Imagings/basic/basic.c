@@ -174,7 +174,7 @@ static	void	aProcess_1([[maybe_unused]] const void *argument) {
 										.oStopBits		= KSERIAL_STOPBITS_1,
 										.oParity		= KSERIAL_PARITY_NONE,
 										.oBaudRate		= KSERIAL_BAUDRATE_3000000,
-										.oKernSync		= ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)
+										.oKernSync		= (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)
 									};
 
 	if (kern_createSemaphore(aStrAcqu, 0, 1, &vSemaphore_IM) != KERR_KERN_NOERR) { LOG(KFATAL_USER, "Create sema G"); exit(EXIT_OS_FAILURE); }

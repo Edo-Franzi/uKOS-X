@@ -41,6 +41,12 @@ Asmodee_H747:
   - name: Test_CM7
     core: arm
 
+Firefly_H757:
+  - name: Test_CM4
+    core: arm
+  - name: Test_CM7
+    core: arm
+
 DevKit_nRF5340:
   - name: Test_Net
     core: arm

@@ -162,7 +162,7 @@ const	uintptr_t	g_pfnVectors_C0[] = {
 	(uintptr_t)OTG_HS_WKUP_C0_IRQHandler,						// Address: 0x0000_0170
 	(uintptr_t)OTG_HS_C0_IRQHandler,							// Address: 0x0000_0174
 	(uintptr_t)DCMI_C0_IRQHandler,								// Address: 0x0000_0178
-	(uintptr_t)CRIP_C0_IRQHandler,								// Address: 0x0000_017C
+	(uintptr_t)CRYP_C0_IRQHandler,								// Address: 0x0000_017C
 	(uintptr_t)HASH_RNG_C0_IRQHandler,							// Address: 0x0000_0180
 	(uintptr_t)FPU_C0_IRQHandler,								// Address: 0x0000_0184
 	(uintptr_t)UART7_C0_IRQHandler,								// Address: 0x0000_0188

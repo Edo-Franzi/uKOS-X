@@ -173,8 +173,8 @@ static	int32_t	model_usart_configure_C1(const urtxCnf_t *configure) {
 	}
 	USART_C1->LCR &= (uint32_t)~(1u<<7u);
 
-	vWithSemaphore_RX_C1 = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
-	vWithSemaphore_TX_C1 = ((configure->oKernSync & ((uint32_t)1u<<(uint32_t)BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
+	vWithSemaphore_RX_C1 = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_RX)) != 0u) ? (true) : (false);
+	vWithSemaphore_TX_C1 = ((configure->oKernSync & (uint8_t)(1u<<BSERIAL_SEMAPHORE_TX)) != 0u) ? (true) : (false);
 	RETURN_INT_RESTORE(KERR_SERIAL_NOERR);
 }
 
