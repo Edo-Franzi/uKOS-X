@@ -91,7 +91,7 @@ FAMILY					=  h7
 SPEED					=  FS
 PROFILE					=  cdc_cdc
 
-STORAGE					=  sdcard_flash
+STORAGE					=  sdcard_sdnand_flash
 PATH_LIB_FATFS			=  $(PATH_UKOS)/Third_Parties/FatFs/Library/$(CORE)/$(STORAGE)
 FATFS					=  libFatFs
 
@@ -235,12 +235,15 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/cdc1/cdc1.c
 # With the SERIAL communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/serial/serial.c
+# With the FLASH manager
+CONF_SYSTEM		+= -DCONFIG_MAN_FLASH_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/flash/flash.c
 # With the SDCARD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SDCARD_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdcard/sdcard.c
-# With the SERIAL_FLASH manager
-CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_FLASH_S
-LIBX_P			+= $(PATH_OSYS)/Lib_storages/serialFlash/serialFlash.c
+# With the SDNAND manager
+CONF_SYSTEM		+= -DCONFIG_MAN_SDNAND_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdnand/sdnand.c
 # With the STORAGE manager
 CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
@@ -253,7 +256,8 @@ LIBX_P			+= 												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
 LIBX_P			+=  											$(PATH_BASE)/Lib_peripherals/led/stub_led.c
 LIBX_P			+=  											$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
-LIBX_P			+=												$(PATH_BASE)/Lib_storages/serialFlash/stub_serialFlash.c
+LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdnand/stub_sdnand.c
+LIBX_P			+=												$(PATH_BASE)/Lib_storages/flash/stub_flash.c
 LIBX_P			+= 												$(PATH_COMX)/Lib_generics/asmp/stub_asmp_hsem.c
 
 # The Lib_xxxx components (user)

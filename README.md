@@ -7,8 +7,9 @@
 <div>
   <img src="Tools/Ozone_Plugin/assets/segger.jpg" align="right" width="95" />
   <p>This project is developed independently.</p>
-  <p><b>Ozone SmartView</b> support for μKOS-X is available through <b>SEGGER Ozone</b> (via the SmartView plugin).</p>
+  <p><b>Ozone SmartView and OS</b> support for μKOS-X is available through <b>SEGGER Ozone</b> (via SmartView and OS plugins).</p>
 </div>
+
 
 ## Introduction
 

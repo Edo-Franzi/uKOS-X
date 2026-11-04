@@ -123,9 +123,9 @@ MODULE(
 // and not local; the size of the variable is huge!!
 
 [[maybe_unused]]
-static			FATFS		fs_sdcard, fs_serialFlash;
+static			FATFS		fs_sdcard, fs_sdnand, fs_flash;
 [[maybe_unused]]
-static			FIL			fp_sdcard_1, fp_sdcard_2, fp_sdcard_3, fp_serialFlash_1, fp_serialFlash_2, fp_serialFlash_3;
+static			FIL			fp_sdcard_1, fp_sdcard_2, fp_sdcard_3, fp_sdnand_1, fp_sdnand_2, fp_sdnand_3, fp_flash_1, fp_flash_2, fp_flash_3;
 [[maybe_unused]]
 static			DIR			dir;
 [[maybe_unused]]
@@ -139,24 +139,36 @@ static			char_t		buffer_sdcard_2[128];
 [[maybe_unused]]
 static			char_t		buffer_sdcard_3[128];
 [[maybe_unused]]
-static			char_t		buffer_serialFlash_1[128];
+static			char_t		buffer_sdnand_1[128];
 [[maybe_unused]]
-static			char_t		buffer_serialFlash_2[128];
+static			char_t		buffer_sdnand_2[128];
 [[maybe_unused]]
-static			char_t		buffer_serialFlash_3[128];
+static			char_t		buffer_sdnand_3[128];
+[[maybe_unused]]
+static			char_t		buffer_flash_1[128];
+[[maybe_unused]]
+static			char_t		buffer_flash_2[128];
+[[maybe_unused]]
+static			char_t		buffer_flash_3[128];
 
 [[maybe_unused]]
-static	const	char_t		aTest_sdcard_1[]		= "F1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.";
+static	const	char_t		aTest_sdcard_1[]	= "F1: The old dreams were good dreams. They didn't work out, but I'm glad I had them.";
 [[maybe_unused]]
-static	const	char_t		aTest_sdcard_2[]		= "F2: The quick brown fox jumps over the lazy dog.";
+static	const	char_t		aTest_sdcard_2[]	= "F2: The quick brown fox jumps over the lazy dog.";
 [[maybe_unused]]
-static	const	char_t		aTest_sdcard_3[]		= "F3: I didn't know he was dead...I thought he was British. (Woody Allen).";
+static	const	char_t		aTest_sdcard_3[]	= "F3: I didn't know he was dead...I thought he was British. (Woody Allen).";
 [[maybe_unused]]
-static	const	char_t		aTest_serialFlash_1[]	= "F4: The best time to code was yesterday; the next best time is now.";
+static	const	char_t		aTest_sdnand_1[]	= "F4: Life is what happens when you're busy making other plans. (John Lennon).";
 [[maybe_unused]]
-static	const	char_t		aTest_serialFlash_2[]	= "F5: Measure twice, cut once; test thrice, deploy once.";
+static	const	char_t		aTest_sdnand_2[]	= "F5: Pack my box with five dozen liquor jugs.";
 [[maybe_unused]]
-static	const	char_t		aTest_serialFlash_3[]	= "F6: When in doubt, print it out - logs are cheap, bugs aren't.";
+static	const	char_t		aTest_sdnand_3[]	= "F6: I am not afraid of death; I just don't want to be there when it happens. (Woody Allen).";
+[[maybe_unused]]
+static	const	char_t		aTest_flash_1[]		= "F7: The best time to code was yesterday; the next best time is now.";
+[[maybe_unused]]
+static	const	char_t		aTest_flash_2[]		= "F8: Measure twice, cut once; test thrice, deploy once.";
+[[maybe_unused]]
+static	const	char_t		aTest_flash_3[]		= "F9: When in doubt, print it out - logs are cheap, bugs aren't.";
 
 // Prototype
 
@@ -194,24 +206,26 @@ static	void	test_listDirectoryTree(const char *path, uint8_t depth);
  */
 #if (defined(Alastor_H743_S))
 #define	WITH_SDCARD_S
-#define	WITH_SERIAL_FLASH_S
+#define	WITH_FLASH_S
 #define	WITH_FORMAT_S
 #endif
 
 #if (defined(Firefly_H743_S))
 #define	WITH_SDCARD_S
-#define	WITH_SERIAL_FLASH_S
+#define	WITH_FLASH_S
 #define	WITH_FORMAT_S
 #endif
 
 #if (defined(Firefly_H757_S))
 #define	WITH_SDCARD_S
-#define	WITH_SERIAL_FLASH_S
+#define	WITH_SDNAND_S
+#define	WITH_FLASH_S
 #define	WITH_FORMAT_S
 #endif
 
-#define	DRIVE_FLASH		"/flash"
 #define	DRIVE_SDCARD	"/sdcard"
+#define	DRIVE_SDNAND	"/sdnand"
+#define	DRIVE_FLASH		"/flash"
 
 [[noreturn]]
 static	void	aProcess_0([[maybe_unused]] const void *argument) {
@@ -219,13 +233,19 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	UINT	bytesRead_sdcard_1, bytesRead_sdcard_2, bytesRead_sdcard_3;
 
 	[[maybe_unused]]
-	UINT	bytesRead_serialFlash_1, bytesRead_serialFlash_2, bytesRead_serialFlash_3;
+	UINT	bytesRead_sdnand_1, bytesRead_sdnand_2, bytesRead_sdnand_3;
+
+	[[maybe_unused]]
+	UINT	bytesRead_flash_1, bytesRead_flash_2, bytesRead_flash_3;
 
 	[[maybe_unused]]
 	UINT	bytesWrote_sdcard_1, bytesWrote_sdcard_2, bytesWrote_sdcard_3;
 
 	[[maybe_unused]]
-	UINT	bytesWrote_serialFlash_1, bytesWrote_serialFlash_2, bytesWrote_serialFlash_3;
+	UINT	bytesWrote_sdnand_1, bytesWrote_sdnand_2, bytesWrote_sdnand_3;
+
+	[[maybe_unused]]
+	UINT	bytesWrote_flash_1, bytesWrote_flash_2, bytesWrote_flash_3;
 
 // Format the devices
 // ------------------
@@ -235,7 +255,11 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_format(DRIVE_SDCARD);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
+	#if (defined(WITH_SDNAND_S))
+	test_format(DRIVE_SDNAND);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
 	test_format(DRIVE_FLASH);
 	#endif
 	#endif
@@ -247,8 +271,12 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_mount(&fs_sdcard, DRIVE_SDCARD);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_mount(&fs_serialFlash, DRIVE_FLASH);
+	#if (defined(WITH_SDNAND_S))
+	test_mount(&fs_sdnand, DRIVE_SDNAND);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_mount(&fs_flash, DRIVE_FLASH);
 	#endif
 
 // Create the folders
@@ -260,7 +288,13 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_folder(DRIVE_SDCARD	"/Floppet");
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
+	#if (defined(WITH_SDNAND_S))
+	test_folder(DRIVE_SDNAND	"/Buzz");
+	test_folder(DRIVE_SDNAND	"/Neil");
+	test_folder(DRIVE_SDNAND	"/Collins");
+	#endif
+
+	#if (defined(WITH_FLASH_S))
 	test_folder(DRIVE_FLASH		"/Snuppet");
 	test_folder(DRIVE_FLASH		"/Bloopet");
 	test_folder(DRIVE_FLASH		"/Truppet");
@@ -270,30 +304,42 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 // ----------------
 
 	#if (defined(WITH_SDCARD_S))
-	test_create(&fp_sdcard_1,		DRIVE_SDCARD	"/Poppett/test_1.txt", FA_CREATE_ALWAYS | FA_WRITE);
-	test_create(&fp_sdcard_2,		DRIVE_SDCARD	"/Muppett/test_2.txt", FA_CREATE_ALWAYS | FA_WRITE);
-	test_create(&fp_sdcard_3,		DRIVE_SDCARD	"/Floppet/test_3.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_sdcard_1,	DRIVE_SDCARD	"/Poppett/test_1.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_sdcard_2,	DRIVE_SDCARD	"/Muppett/test_2.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_sdcard_3,	DRIVE_SDCARD	"/Floppet/test_3.txt", FA_CREATE_ALWAYS | FA_WRITE);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_create(&fp_serialFlash_1,	DRIVE_FLASH		"/Snuppet/test_1.txt", FA_CREATE_ALWAYS | FA_WRITE);
-	test_create(&fp_serialFlash_2,	DRIVE_FLASH		"/Bloopet/test_2.txt", FA_CREATE_ALWAYS | FA_WRITE);
-	test_create(&fp_serialFlash_3,	DRIVE_FLASH		"/Truppet/test_3.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	#if (defined(WITH_SDNAND_S))
+	test_create(&fp_sdnand_1,	DRIVE_SDNAND	"/Buzz/test_1.txt",	   FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_sdnand_2,	DRIVE_SDNAND	"/Neil/test_2.txt",	   FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_sdnand_3,	DRIVE_SDNAND	"/Collins/test_3.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_create(&fp_flash_1,	DRIVE_FLASH		"/Snuppet/test_1.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_flash_2,	DRIVE_FLASH		"/Bloopet/test_2.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	test_create(&fp_flash_3,	DRIVE_FLASH		"/Truppet/test_3.txt", FA_CREATE_ALWAYS | FA_WRITE);
 	#endif
 
 // Write into the files
 // --------------------
 
 	#if (defined(WITH_SDCARD_S))
-	test_write(&fp_sdcard_1,		aTest_sdcard_1,			sizeof(aTest_sdcard_1),			&bytesWrote_sdcard_1);
-	test_write(&fp_sdcard_2,		aTest_sdcard_2,			sizeof(aTest_sdcard_2),			&bytesWrote_sdcard_2);
-	test_write(&fp_sdcard_3,		aTest_sdcard_3,			sizeof(aTest_sdcard_3),			&bytesWrote_sdcard_3);
+	test_write(&fp_sdcard_1,	aTest_sdcard_1,	(UINT)strlen(aTest_sdcard_1),	&bytesWrote_sdcard_1);
+	test_write(&fp_sdcard_2,	aTest_sdcard_2,	(UINT)strlen(aTest_sdcard_2),	&bytesWrote_sdcard_2);
+	test_write(&fp_sdcard_3,	aTest_sdcard_3,	(UINT)strlen(aTest_sdcard_3),	&bytesWrote_sdcard_3);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_write(&fp_serialFlash_1,	aTest_serialFlash_1,	sizeof(aTest_serialFlash_1),	&bytesWrote_serialFlash_1);
-	test_write(&fp_serialFlash_2,	aTest_serialFlash_2,	sizeof(aTest_serialFlash_2),	&bytesWrote_serialFlash_2);
-	test_write(&fp_serialFlash_3,	aTest_serialFlash_3,	sizeof(aTest_serialFlash_3),	&bytesWrote_serialFlash_3);
+	#if (defined(WITH_SDNAND_S))
+	test_write(&fp_sdnand_1,	aTest_sdnand_1,	(UINT)strlen(aTest_sdnand_1),	&bytesWrote_sdnand_1);
+	test_write(&fp_sdnand_2,	aTest_sdnand_2,	(UINT)strlen(aTest_sdnand_2),	&bytesWrote_sdnand_2);
+	test_write(&fp_sdnand_3,	aTest_sdnand_3,	(UINT)strlen(aTest_sdnand_3),	&bytesWrote_sdnand_3);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_write(&fp_flash_1,		aTest_flash_1,	(UINT)strlen(aTest_flash_1),	&bytesWrote_flash_1);
+	test_write(&fp_flash_2,		aTest_flash_2,	(UINT)strlen(aTest_flash_2),	&bytesWrote_flash_2);
+	test_write(&fp_flash_3,		aTest_flash_3,	(UINT)strlen(aTest_flash_3),	&bytesWrote_flash_3);
 	#endif
 
 // Close the files
@@ -305,40 +351,58 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_close(&fp_sdcard_3);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_close(&fp_serialFlash_1);
-	test_close(&fp_serialFlash_2);
-	test_close(&fp_serialFlash_3);
+	#if (defined(WITH_SDNAND_S))
+	test_close(&fp_sdnand_1);
+	test_close(&fp_sdnand_2);
+	test_close(&fp_sdnand_3);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_close(&fp_flash_1);
+	test_close(&fp_flash_2);
+	test_close(&fp_flash_3);
 	#endif
 
 // Open the files
 // --------------
 
 	#if (defined(WITH_SDCARD_S))
-	test_open(&fp_sdcard_1,			DRIVE_SDCARD	"/Poppett/test_1.txt", FA_READ);
-	test_open(&fp_sdcard_2,			DRIVE_SDCARD	"/Muppett/test_2.txt", FA_READ);
-	test_open(&fp_sdcard_3,			DRIVE_SDCARD	"/Floppet/test_3.txt", FA_READ);
+	test_open(&fp_sdcard_1,		DRIVE_SDCARD	"/Poppett/test_1.txt", FA_READ);
+	test_open(&fp_sdcard_2,		DRIVE_SDCARD	"/Muppett/test_2.txt", FA_READ);
+	test_open(&fp_sdcard_3,		DRIVE_SDCARD	"/Floppet/test_3.txt", FA_READ);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_open(&fp_serialFlash_1,	DRIVE_FLASH		"/Snuppet/test_1.txt", FA_READ);
-	test_open(&fp_serialFlash_2,	DRIVE_FLASH		"/Bloopet/test_2.txt", FA_READ);
-	test_open(&fp_serialFlash_3,	DRIVE_FLASH		"/Truppet/test_3.txt", FA_READ);
+	#if (defined(WITH_SDNAND_S))
+	test_open(&fp_sdnand_1,		DRIVE_SDNAND	"/Buzz/test_1.txt",	   FA_READ);
+	test_open(&fp_sdnand_2,		DRIVE_SDNAND	"/Neil/test_2.txt",	   FA_READ);
+	test_open(&fp_sdnand_3,		DRIVE_SDNAND	"/Collins/test_3.txt", FA_READ);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_open(&fp_flash_1,		DRIVE_FLASH		"/Snuppet/test_1.txt", FA_READ);
+	test_open(&fp_flash_2,		DRIVE_FLASH		"/Bloopet/test_2.txt", FA_READ);
+	test_open(&fp_flash_3,		DRIVE_FLASH		"/Truppet/test_3.txt", FA_READ);
 	#endif
 
 // Read from the files
 // -------------------
 
 	#if (defined(WITH_SDCARD_S))
-	test_read(&fp_sdcard_1,			buffer_sdcard_1,		sizeof(buffer_sdcard_1),		&bytesRead_sdcard_1);
-	test_read(&fp_sdcard_2,			buffer_sdcard_2,		sizeof(buffer_sdcard_2),		&bytesRead_sdcard_2);
-	test_read(&fp_sdcard_3,			buffer_sdcard_3,		sizeof(buffer_sdcard_3),		&bytesRead_sdcard_3);
+	test_read(&fp_sdcard_1,		buffer_sdcard_1,	sizeof(buffer_sdcard_1),	&bytesRead_sdcard_1);
+	test_read(&fp_sdcard_2,		buffer_sdcard_2,	sizeof(buffer_sdcard_2),	&bytesRead_sdcard_2);
+	test_read(&fp_sdcard_3,		buffer_sdcard_3,	sizeof(buffer_sdcard_3),	&bytesRead_sdcard_3);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_read(&fp_serialFlash_1,	buffer_serialFlash_1,	sizeof(buffer_serialFlash_1),	&bytesRead_serialFlash_1);
-	test_read(&fp_serialFlash_2,	buffer_serialFlash_2,	sizeof(buffer_serialFlash_2),	&bytesRead_serialFlash_2);
-	test_read(&fp_serialFlash_3,	buffer_serialFlash_3,	sizeof(buffer_serialFlash_3),	&bytesRead_serialFlash_3);
+	#if (defined(WITH_SDNAND_S))
+	test_read(&fp_sdnand_1,		buffer_sdnand_1,	sizeof(buffer_sdnand_1),	&bytesRead_sdnand_1);
+	test_read(&fp_sdnand_2,		buffer_sdnand_2,	sizeof(buffer_sdnand_2),	&bytesRead_sdnand_2);
+	test_read(&fp_sdnand_3,		buffer_sdnand_3,	sizeof(buffer_sdnand_3),	&bytesRead_sdnand_3);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_read(&fp_flash_1,		buffer_flash_1,		sizeof(buffer_flash_1),		&bytesRead_flash_1);
+	test_read(&fp_flash_2,		buffer_flash_2,		sizeof(buffer_flash_2),		&bytesRead_flash_2);
+	test_read(&fp_flash_3,		buffer_flash_3,		sizeof(buffer_flash_3),		&bytesRead_flash_3);
 	#endif
 
 // Close the files
@@ -350,25 +414,37 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_close(&fp_sdcard_3);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_close(&fp_serialFlash_1);
-	test_close(&fp_serialFlash_2);
-	test_close(&fp_serialFlash_3);
+	#if (defined(WITH_SDNAND_S))
+	test_close(&fp_sdnand_1);
+	test_close(&fp_sdnand_2);
+	test_close(&fp_sdnand_3);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_close(&fp_flash_1);
+	test_close(&fp_flash_2);
+	test_close(&fp_flash_3);
 	#endif
 
 // Display the files
 // -----------------
 
 	#if (defined(WITH_SDCARD_S))
-	test_display(buffer_sdcard_1,		bytesRead_sdcard_1);
-	test_display(buffer_sdcard_2,		bytesRead_sdcard_2);
-	test_display(buffer_sdcard_3,		bytesRead_sdcard_3);
+	test_display(buffer_sdcard_1,	bytesRead_sdcard_1);
+	test_display(buffer_sdcard_2,	bytesRead_sdcard_2);
+	test_display(buffer_sdcard_3,	bytesRead_sdcard_3);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
-	test_display(buffer_serialFlash_1,	bytesRead_serialFlash_1);
-	test_display(buffer_serialFlash_2,	bytesRead_serialFlash_2);
-	test_display(buffer_serialFlash_3,	bytesRead_serialFlash_3);
+	#if (defined(WITH_SDNAND_S))
+	test_display(buffer_sdnand_1,	bytesRead_sdnand_1);
+	test_display(buffer_sdnand_2,	bytesRead_sdnand_2);
+	test_display(buffer_sdnand_3,	bytesRead_sdnand_3);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
+	test_display(buffer_flash_1,	bytesRead_flash_1);
+	test_display(buffer_flash_2,	bytesRead_flash_2);
+	test_display(buffer_flash_3,	bytesRead_flash_3);
 	#endif
 
 // List the directory
@@ -378,7 +454,11 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_listDirectory(DRIVE_SDCARD "/");
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
+	#if (defined(WITH_SDNAND_S))
+	test_listDirectory(DRIVE_SDNAND "/");
+	#endif
+
+	#if (defined(WITH_FLASH_S))
 	test_listDirectory(DRIVE_FLASH "/");
 	#endif
 
@@ -386,7 +466,11 @@ static	void	aProcess_0([[maybe_unused]] const void *argument) {
 	test_listDirectoryTree(DRIVE_SDCARD "/", 0u);
 	#endif
 
-	#if (defined(WITH_SERIAL_FLASH_S))
+	#if (defined(WITH_SDNAND_S))
+	test_listDirectoryTree(DRIVE_SDNAND "/", 0u);
+	#endif
+
+	#if (defined(WITH_FLASH_S))
 	test_listDirectoryTree(DRIVE_FLASH "/", 0u);
 	#endif
 

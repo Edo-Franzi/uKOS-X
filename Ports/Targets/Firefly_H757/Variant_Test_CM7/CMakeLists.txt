@@ -169,8 +169,9 @@ add_source_with_define(libx_p ${PATH_OSYS}/Lib_peripherals/watchdog/watchdog.c C
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/cdc0/cdc0.c CONFIG_MAN_CDC0_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/cdc1/cdc1.c CONFIG_MAN_CDC1_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_serials/serial/serial.c CONFIG_MAN_SERIAL_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/flash/flash.c CONFIG_MAN_FLASH_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/sdcard/sdcard.c CONFIG_MAN_SDCARD_S)
-add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/serialFlash/serialFlash.c CONFIG_MAN_SERIAL_FLASH_S)
+add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/sdnand/sdnand.c CONFIG_MAN_SDNAND_S)
 add_source_with_define(libx_p ${PATH_OSYS}/Lib_storages/storage/storage.c CONFIG_MAN_STORAGE_S)
 target_sources(libx_p PRIVATE
 	${PATH_BASE}/Lib_cryptographics/random/stub_random.c
@@ -181,8 +182,8 @@ target_sources(libx_p PRIVATE
 	${PATH_BASE}/Lib_peripherals/watchdog/stub_watchdog.c
 	${PATH_BASE}/Lib_peripherals/led/stub_led.c
 	${PATH_BASE}/Lib_peripherals/switch/stub_switch.c
+	${PATH_BASE}/Lib_storages/flash/stub_flash.c
 	${PATH_BASE}/Lib_storages/sdcard/stub_sdcard.c
-	${PATH_BASE}/Lib_storages/serialFlash/stub_serialFlash.c
 	${PATH_COMX}/Lib_generics/asmp/stub_asmp_hsem.c
 )
 target_link_libraries(libx_p PUBLIC system_compiler_flags ${TINYUSB})
@@ -279,7 +280,7 @@ set(UKOS_COMPONENTS rtcb_p kern_p kern_u libx_p libx_u proc_p proc_u tool_u ${TI
 add_MicroPython()
 add_LVGL(DISPLAY WKS43WV067_5_Inches)
 target_include_directories(proc_u PRIVATE ${LVGL_INCLUDE_DIRECTORIES})
-add_FatFs(STORAGE sdcard_flash)
+add_FatFs(STORAGE sdcard_sdnand_flash)
 
 # System configuration flags
 

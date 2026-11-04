@@ -230,12 +230,12 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt2/urt2.c
 # With the URT3 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_URT3_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt3/urt3.c
+# With the FLASH manager
+CONF_SYSTEM		+= -DCONFIG_MAN_FLASH_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/flash/flash.c
 # With the SDCARD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SDCARD_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdcard/sdcard.c
-# With the SERIAL_FLASH manager
-CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_FLASH_S
-LIBX_P			+= $(PATH_OSYS)/Lib_storages/serialFlash/serialFlash.c
 # With the STORAGE manager
 CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
@@ -255,7 +255,7 @@ LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt1/stub_urt1_usart3.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt2/stub_urt2_usart1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt3/stub_urt3_uart4.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
-LIBX_P			+=												$(PATH_BASE)/Lib_storages/serialFlash/stub_serialFlash.c
+LIBX_P			+=												$(PATH_BASE)/Lib_storages/flash/stub_flash.c
 LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/imager/stub_imager_mt9v03x.c
 LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/imu/stub_imu_lsm9ds1.c
 LIBX_P			+=												$(PATH_VARI)/Lib_peripherals/temperature/stub_temperature_lsm9ds1.c

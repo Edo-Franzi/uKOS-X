@@ -226,14 +226,14 @@ static	void	local_process(const void *argument) {
 		default:			 	 { voltage = (const char_t *)"Unknown";				break; }
 	}
 
-	(void)dprintf(KURT0, "\n\n");
-	(void)dprintf(KURT0, "Card type             %s\n",				 card);
-	(void)dprintf(KURT0, "Card Manufacturer ID  0x%02"PRIX8", %s\n", sdCard.oManufacturer, manufacturer);
-	(void)dprintf(KURT0, "Card Product Name     %s\n",				 sdCard.oProductName);
-	(void)dprintf(KURT0, "Card Serial Number    %08"PRIX32"\n",		 sdCard.oSerialNumber);
-	(void)dprintf(KURT0, "Card size [Bytes]     %"PRIu64"\n",		 sdCard.oSize);
-	(void)dprintf(KURT0, "Card speed            %"PRIu32"-bit/s\n",  sdCard.oSpeed);
-	(void)dprintf(KURT0, "Card voltage          %s\n",				 voltage);
+	(void)dprintf(KSYST, "\n\n");
+	(void)dprintf(KSYST, "Card type             %s\n",				 card);
+	(void)dprintf(KSYST, "Card Manufacturer ID  0x%02"PRIX8", %s\n", sdCard.oManufacturer, manufacturer);
+	(void)dprintf(KSYST, "Card Product Name     %s\n",				 sdCard.oProductName);
+	(void)dprintf(KSYST, "Card Serial Number    %08"PRIX32"\n",		 sdCard.oSerialNumber);
+	(void)dprintf(KSYST, "Card size [Bytes]     %"PRIu64"\n",		 sdCard.oSize);
+	(void)dprintf(KSYST, "Card speed            %"PRIu32"-bit/s\n",  sdCard.oSpeed);
+	(void)dprintf(KSYST, "Card voltage          %s\n",				 voltage);
 
 	while (*killRequest == false) {
 		kern_suspendProcess(1u);

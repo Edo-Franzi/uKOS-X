@@ -123,12 +123,12 @@ int32_t	model_flash_qspi_initialise(void) {
 }
 
 /*
- * \brief model_flash_qspi_readStatus
+ * \brief model_flash_qspi_isPresent
  *
- * - Read the status of the card (only inserted)
+ * - Read the status of the flash (only inserted)
  *
  */
-int32_t	model_flash_qspi_readStatus(void) {
+int32_t	model_flash_qspi_isPresent(void) {
 
 	return (KERR_STORAGE_NOERR);
 }

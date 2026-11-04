@@ -121,15 +121,15 @@ int32_t	model_sdcard_init(void) {
 }
 
 /*
- * \brief model_sdcard_readStatus
+ * \brief model_sdcard_isPresent
  *
- * - Read the status of the card (only if it is inserted)
+ * - Read the status of the sdcard (only inserted)
  *
  */
-int32_t	model_sdcard_readStatus(void) {
+int32_t	model_sdcard_isPresent(void) {
 	int32_t		status;
 
-	status = (cb_cardInserted() == true) ? (KERR_STORAGE_NOERR) : (KERR_STORAGE_NODEV);
+	status = (cb_isPresent() == true) ? (KERR_STORAGE_NOERR) : (KERR_STORAGE_NODEV);
 	return (status);
 }
 
@@ -162,7 +162,7 @@ int32_t	model_sdcard_initialise(sdcard_specification_t *specification) {
 	vSdCard = (sdcard_specification_t){ 0 };
 
 	cb_speed(speed);
-	if (cb_cardInserted() == false) {
+	if (cb_isPresent() == false) {
 		local_deselectRelease();
 		return (KERR_STORAGE_NODEV);
 	}
@@ -305,7 +305,7 @@ int32_t	model_sdcard_read(const sdcard_specification_t *specification, uint8_t *
 	uint8_t		*wkBuffer = buffer;
 
 	cb_speed(specification->oSpeed);
-	if (cb_cardInserted() == false) {
+	if (cb_isPresent() == false) {
 		local_deselectRelease();
 		return (KERR_STORAGE_NODEV);
 	}
@@ -344,7 +344,7 @@ int32_t	model_sdcard_read(const sdcard_specification_t *specification, uint8_t *
 	uint8_t		*wkBuffer = buffer;
 
 	cb_speed(specification->oSpeed);
-	if (cb_cardInserted() == false) {
+	if (cb_isPresent() == false) {
 		local_deselectRelease();
 		return (KERR_STORAGE_NODEV);
 	}
@@ -392,7 +392,7 @@ int32_t	model_sdcard_write(const sdcard_specification_t *specification, const ui
 	const	uint8_t		*wkBuffer = buffer;
 
 	cb_speed(specification->oSpeed);
-	if (cb_cardInserted() == false) {
+	if (cb_isPresent() == false) {
 		local_deselectRelease();
 		return (KERR_STORAGE_NODEV);
 	}

@@ -65,18 +65,19 @@
  */
 
 typedef	enum {
-			KSDCARD		  = (((uint32_t)'s'<<24u) | ((uint32_t)'d'<<16u) | ((uint32_t)'c'<<8u) | (uint32_t)'d'),	// sdcard manager
-			KSERIAL_FLASH = (((uint32_t)'s'<<24u) | ((uint32_t)'f'<<16u) | ((uint32_t)'l'<<8u) | (uint32_t)'h')		// serial flash manager
+			KSDCARD = (((uint32_t)'s'<<24u) | ((uint32_t)'d'<<16u) | ((uint32_t)'c'<<8u) | (uint32_t)'d'),	// sdcard manager
+			KSDNAND = (((uint32_t)'s'<<24u) | ((uint32_t)'d'<<16u) | ((uint32_t)'n'<<8u) | (uint32_t)'d'),	// sdnand manager
+			KFLASH	= (((uint32_t)'s'<<24u) | ((uint32_t)'f'<<16u) | ((uint32_t)'l'<<8u) | (uint32_t)'h')	// flash manager
 } storage_manager_t;
 
 // For ioctl (!! Maintain the same order than suggested by FatFs)
 
 typedef enum {
-		KGET_CNTRL_SYNC = 0,																						// Not supported
-		KGET_SECTOR_COUNT,																							// Sector count
-		KGET_SECTOR_SIZE,																							// Sector site
-		KGET_BLOCK_SIZE,																							// Block size (1)
-		KGET_CTRL_TRIM																								// Not supported
+		KGET_CNTRL_SYNC = 0,																				// Not supported
+		KGET_SECTOR_COUNT,																					// Sector count
+		KGET_SECTOR_SIZE,																					// Sector site
+		KGET_BLOCK_SIZE,																					// Block size (1)
+		KGET_CTRL_TRIM																						// Not supported
 } storageIoctl_t;
 
 // Prototypes
@@ -153,21 +154,22 @@ extern	int32_t	storage_release(storage_manager_t manager, reserveMode_t reserveM
 extern	int32_t	storage_initialise(storage_manager_t manager, void *specification);
 
 /*!
- * \brief Read the status of the storage manager
+ * \brief Is the storage manager present
  *
  * Call example in C:
  *
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_readStatus();
+ *    status = storage_isPresent(FLASH);
  * \endcode
  *
- * \param[in]	manager				Storage manager
- * \return		KERR_STORAGE_XXXXX	Depends on the "xxxx" device manager
+ * \return		KERR_STORAGE_NOERR	OK
+ * \return		KERR_STORAGE_GEERR	General error
+ * \return		KERR_STORAGE_NODEV	No sdnand
  *
  */
-extern	int32_t	storage_readStatus(storage_manager_t manager);
+extern	int32_t	storage_isPresent(storage_manager_t manager);
 
 /*!
  * \brief Read 1 or more sectors from the storage manager

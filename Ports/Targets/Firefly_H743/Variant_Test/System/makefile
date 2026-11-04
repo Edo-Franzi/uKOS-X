@@ -230,12 +230,12 @@ LIBX_P			+= $(PATH_OSYS)/Lib_serials/serial/serial.c
 # With the URT0 communication manager
 CONF_SYSTEM		+= -DCONFIG_MAN_URT0_S
 LIBX_P			+= $(PATH_OSYS)/Lib_serials/urt0/urt0.c
+# With the FLASH manager
+CONF_SYSTEM		+= -DCONFIG_MAN_FLASH_S
+LIBX_P			+= $(PATH_OSYS)/Lib_storages/flash/flash.c
 # With the SDCARD manager
 CONF_SYSTEM		+= -DCONFIG_MAN_SDCARD_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/sdcard/sdcard.c
-# With the SERIAL_FLASH manager
-CONF_SYSTEM		+= -DCONFIG_MAN_SERIAL_FLASH_S
-LIBX_P			+= $(PATH_OSYS)/Lib_storages/serialFlash/serialFlash.c
 # With the STORAGE manager
 CONF_SYSTEM		+= -DCONFIG_MAN_STORAGE_S
 LIBX_P			+= $(PATH_OSYS)/Lib_storages/storage/storage.c
@@ -248,7 +248,7 @@ LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/switch/stub_switch.c
 LIBX_P			+=												$(PATH_BASE)/Lib_peripherals/watchdog/stub_watchdog.c
 LIBX_P			+=												$(PATH_BASE)/Lib_serials/urt0/stub_urt0_usart1.c
 LIBX_P			+=												$(PATH_BASE)/Lib_storages/sdcard/stub_sdcard.c
-LIBX_P			+=												$(PATH_BASE)/Lib_storages/serialFlash/stub_serialFlash.c
+LIBX_P			+=												$(PATH_BASE)/Lib_storages/flash/stub_flash.c
 
 # The Lib_xxxx components (user)
 

@@ -85,7 +85,7 @@ static	mutx_t		*vMutex_Reserve[KNB_CORES];
 
 extern	int32_t		stub_sdcard_init(void);
 extern	int32_t		stub_sdcard_initialise(sdcard_specification_t *specification);
-extern	int32_t		stub_sdcard_readStatus(void);
+extern	int32_t		stub_sdcard_isPresent(void);
 extern	int32_t		stub_sdcard_read(const sdcard_specification_t *specification, uint8_t *buffer, uint8_t nbSectors, uint32_t sector);
 extern	int32_t		stub_sdcard_write(const sdcard_specification_t *specification, const uint8_t *buffer, uint8_t nbSectors, uint32_t sector);
 extern	int32_t		stub_sdcard_ioctl(storageIoctl_t command, void *buffer);
@@ -183,7 +183,7 @@ int32_t	sdcard_release([[maybe_unused]] reserveMode_t reserveMode) {
  * int32_t                   status;
  * sdcard_specification_t    sdcard;
  *
- *    status = sdcard_initialise(&sdCard);
+ *    status = sdcard_initialise(&sdcard);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }
@@ -212,14 +212,14 @@ int32_t	sdcard_initialise(sdcard_specification_t *specification) {
 }
 
 /*
- * \brief Read the status of the sdcard
+ * \brief Is the sdcard present
  *
  * Call example in C:
  *
  * \code{.c}
  * int32_t    status;
  *
- *    status = sdcard_readStatus();
+ *    status = sdcard_isPresent();
  * \endcode
  *
  * \return		KERR_STORAGE_NOERR	OK
@@ -227,14 +227,14 @@ int32_t	sdcard_initialise(sdcard_specification_t *specification) {
  * \return		KERR_STORAGE_NODEV	No sdcard
  *
  */
-int32_t	sdcard_readStatus(void) {
+int32_t	sdcard_isPresent(void) {
 	int32_t		status;
 
 	PRIVILEGE_ELEVATE;
 	status = local_init();
 	if (status != KERR_STORAGE_NOERR) { PRIVILEGE_RESTORE; return (status); }
 
-	status = stub_sdcard_readStatus();
+	status = stub_sdcard_isPresent();
 	PRIVILEGE_RESTORE;
 	return (status);
 }

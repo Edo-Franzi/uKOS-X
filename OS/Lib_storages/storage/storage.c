@@ -84,11 +84,11 @@ MODULE(
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_reserve(KSERIAL_FLASH, KMODE_READ_WRITE, 1234u);
+ *    status = storage_reserve(FLASH, KMODE_READ_WRITE, 1234u);
  *    ....
  *    storage__xyz();
  *    ....
- *    status = storage_release(KSERIAL_FLASH, KMODE_READ_WRITE);
+ *    status = storage_release(FLASH, KMODE_READ_WRITE);
  * \endcode
  *
  * \param[in]	manager				Storage manager
@@ -104,14 +104,18 @@ int32_t	storage_reserve(storage_manager_t manager, reserveMode_t reserveMode, ui
 	switch (manager) {
 
 		#if (defined(CONFIG_MAN_SDCARD_S))
-		case KSDCARD: { return (sdcard_reserve(reserveMode, timeout));			  }
+		case KSDCARD: { return (sdcard_reserve(reserveMode, timeout)); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_reserve(reserveMode, timeout)); }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_reserve(reserveMode, timeout)); }
 		#endif
 
-		default: { return (KERR_STORAGE_NODEV);									  }
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_reserve(reserveMode, timeout));   }
+		#endif
+
+		default: { return (KERR_STORAGE_NODEV);						   }
 	}
 
 }
@@ -124,7 +128,7 @@ int32_t	storage_reserve(storage_manager_t manager, reserveMode_t reserveMode, ui
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_release(KSERIAL_FLASH, KMODE_READ_WRITE);
+ *    status = storage_release(FLASH, KMODE_READ_WRITE);
  * \endcode
  *
  * \param[in]	manager				Storage manager
@@ -137,14 +141,18 @@ int32_t	storage_release(storage_manager_t manager, reserveMode_t reserveMode) {
 	switch (manager) {
 
 		#if (defined(CONFIG_MAN_SDCARD_S))
-		case KSDCARD: { return (sdcard_release(reserveMode));			 }
+		case KSDCARD: { return (sdcard_release(reserveMode)); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_release(reserveMode)); }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_release(reserveMode)); }
 		#endif
 
-		default: { return (KERR_STORAGE_NODEV);							 }
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_release(reserveMode));	  }
+		#endif
+
+		default: { return (KERR_STORAGE_NODEV);				  }
 	}
 
 }
@@ -157,7 +165,7 @@ int32_t	storage_release(storage_manager_t manager, reserveMode_t reserveMode) {
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_initialise(KSERIAL_FLASH, nullptr);
+ *    status = storage_initialise(FLASH, nullptr);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }
@@ -176,8 +184,12 @@ int32_t	storage_initialise(storage_manager_t manager, [[maybe_unused]] void  *sp
 		case KSDCARD: { return (sdcard_initialise((sdcard_specification_t *)specification)); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_initialise());							 }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_initialise((sdnand_specification_t *)specification)); }
+		#endif
+
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_initialise());											 }
 		#endif
 
 		default: { return (KERR_STORAGE_NODEV);												 }
@@ -186,33 +198,38 @@ int32_t	storage_initialise(storage_manager_t manager, [[maybe_unused]] void  *sp
 }
 
 /*
- * \brief Read the status of the storage manager
+ * \brief Is the storage manager present
  *
  * Call example in C:
  *
  * \code{.c}
  * int32_t    status;
  *
- *    status = storage_readStatus();
+ *    status = storage_isPresent(FLASH);
  * \endcode
  *
- * \param[in]	manager				Storage manager
- * \return		KERR_STORAGE_XXXXX	Depends on the "xxxx" device manager
+ * \return		KERR_STORAGE_NOERR	OK
+ * \return		KERR_STORAGE_GEERR	General error
+ * \return		KERR_STORAGE_NODEV	No sdnand
  *
  */
-int32_t	storage_readStatus(storage_manager_t manager) {
+int32_t	storage_isPresent(storage_manager_t manager) {
 
 	switch (manager) {
 
 		#if (defined(CONFIG_MAN_SDCARD_S))
-		case KSDCARD: { return (sdcard_readStatus());			 }
+		case KSDCARD: { return (sdcard_isPresent()); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_readStatus()); }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_isPresent()); }
 		#endif
 
-		default: { return (KERR_STORAGE_NODEV);					 }
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_isPresent());	 }
+		#endif
+
+		default: { return (KERR_STORAGE_NODEV);		 }
 	}
 
 }
@@ -228,7 +245,7 @@ int32_t	storage_readStatus(storage_manager_t manager) {
  * int32_t    status;
  * int8_t     readBuffer[KNB_BYTES];
  *
- *    status = storage_read(KSERIAL_FLASH, &readBuffer[], KNB_BYTES, 5);
+ *    status = storage_read(FLASH, &readBuffer[], KNB_BYTES, 5);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }
@@ -246,14 +263,18 @@ int32_t	storage_read(storage_manager_t manager, uint8_t *buffer, uint32_t size, 
 	switch (manager) {
 
 		#if (defined(CONFIG_MAN_SDCARD_S))
-		case KSDCARD: { return (sdcard_read(buffer, size, sector));			   }
+		case KSDCARD: { return (sdcard_read(buffer, size, sector)); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_read(buffer, size, sector)); }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_read(buffer, size, sector)); }
 		#endif
 
-		default: { return (KERR_STORAGE_NODEV);								   }
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_read(buffer, size, sector));	}
+		#endif
+
+		default: { return (KERR_STORAGE_NODEV);						}
 	}
 
 }
@@ -269,7 +290,7 @@ int32_t	storage_read(storage_manager_t manager, uint8_t *buffer, uint32_t size, 
  *          int32_t    status;
  * const    int8_t     writeBuffer[KNB_BYTES];
  *
- *    status = storage_write(KSERIAL_FLASH, &writeBuffer[], KNB_BYTES, 5);
+ *    status = storage_write(FLASH, &writeBuffer[], KNB_BYTES, 5);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }
@@ -287,14 +308,18 @@ int32_t	storage_write(storage_manager_t manager, const uint8_t *buffer, uint32_t
 	switch (manager) {
 
 		#if (defined(CONFIG_MAN_SDCARD_S))
-		case KSDCARD: { return (sdcard_write(buffer, size, sector));			}
+		case KSDCARD: { return (sdcard_write(buffer, size, sector)); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_write(buffer, size, sector)); }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_write(buffer, size, sector)); }
 		#endif
 
-		default: { return (KERR_STORAGE_NODEV);									}
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_write(buffer, size, sector));	 }
+		#endif
+
+		default: { return (KERR_STORAGE_NODEV);						 }
 	}
 
 }
@@ -309,7 +334,7 @@ int32_t	storage_write(storage_manager_t manager, const uint8_t *buffer, uint32_t
  *
  * int32_t    status;
  *
- *    status = storage_ioctl(KSERIAL_FLASH, KGET_BLOCK_SIZE, buffer);
+ *    status = storage_ioctl(FLASH, KGET_BLOCK_SIZE, buffer);
  *    if (status != KERR_STORAGE_NOERR) {
  *        exit(EXIT_OS_FAILURE);
  *    }
@@ -326,14 +351,18 @@ int32_t	storage_ioctl(storage_manager_t manager, storageIoctl_t command, void *b
 	switch (manager) {
 
 		#if (defined(CONFIG_MAN_SDCARD_S))
-		case KSDCARD: { return (sdcard_ioctl(command, buffer));			   }
+		case KSDCARD: { return (sdcard_ioctl(command, buffer)); }
 		#endif
 
-		#if (defined(CONFIG_MAN_SERIAL_FLASH_S))
-		case KSERIAL_FLASH: { return (serialFlash_ioctl(command, buffer)); }
+		#if (defined(CONFIG_MAN_SDNAND_S))
+		case KSDNAND: { return (sdnand_ioctl(command, buffer)); }
 		#endif
 
-		default: { return (KERR_STORAGE_NODEV);							   }
+		#if (defined(CONFIG_MAN_FLASH_S))
+		case KFLASH: { return (flash_ioctl(command, buffer));	}
+		#endif
+
+		default: { return (KERR_STORAGE_NODEV);					}
 	}
 
 }

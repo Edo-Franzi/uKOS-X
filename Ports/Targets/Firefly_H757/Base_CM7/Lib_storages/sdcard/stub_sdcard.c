@@ -58,8 +58,8 @@
 #define	SDMMC_FREQUENCY				KFREQUENCY_PLL1Q
 
 #define	model_sdcard_init			stub_sdcard_init
-#define	model_sdcard_readStatus		stub_sdcard_readStatus
 #define	model_sdcard_initialise		stub_sdcard_initialise
+#define	model_sdcard_isPresent		stub_sdcard_isPresent
 #define	model_sdcard_read			stub_sdcard_read
 #define	model_sdcard_write			stub_sdcard_write
 #define	model_sdcard_ioctl			stub_sdcard_ioctl

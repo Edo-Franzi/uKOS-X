@@ -107,47 +107,18 @@ rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/FatFs-${package}/source/ffcon
 rm -rf "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/FatFs-${package}/source/diskio.c"
 
 build_core() {
-	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/flash"
-	echo "Start of building: $(date)" > libFatFs_temp.log
-	make -j all
-	echo "End of building: $(date)" >> libFatFs_temp.log
-	mv libFatFs_temp.log libFatFs_ready.txt
-
-	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/sdcard"
-	echo "Start of building: $(date)" > libFatFs_temp.log
-	make -j all
-	echo "End of building: $(date)" >> libFatFs_temp.log
-	mv libFatFs_temp.log libFatFs_ready.txt
-
-	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/sdcard_flash"
+	cd "${PATH_UKOS_X_PACKAGE}/Third_Parties/FatFs/Library/${1}/${2}"
 	echo "Start of building: $(date)" > libFatFs_temp.log
 	make -j all
 	echo "End of building: $(date)" >> libFatFs_temp.log
 	mv libFatFs_temp.log libFatFs_ready.txt
 }
 
-printf '\n%bBuilding for cortex M3! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M3
-
-printf '\n%bBuilding for cortex M4! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M4
-
 printf '\n%bBuilding for cortex M7! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M7
-
-printf '\n%bBuilding for cortex M33! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M33
-
-printf '\n%bBuilding for cortex M55! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M55
-
-printf '\n%bBuilding for cortex M85! ...%b\n' "${BOLD}" "${NC}"
-build_core CORTEX_M85
-
-printf '\n%bBuilding for RV32IMAC! ...%b\n' "${BOLD}" "${NC}"
-build_core RV32IMAC
-
-printf '\n%bBuilding for RV64IMAFDC! ...%b\n' "${BOLD}" "${NC}"
-build_core RV64IMAFDC
+build_core CORTEX_M7 sdcard
+build_core CORTEX_M7 sdnand
+build_core CORTEX_M7 flash
+build_core CORTEX_M7 sdcard_flash
+build_core CORTEX_M7 sdcard_sdnand_flash
 
 printf '\n🎉 %bBuild Complete%b\n\n' "${GREEN}" "${NC}"
