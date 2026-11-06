@@ -53,7 +53,7 @@ PROJECT			=  big
 
 PATH_BASE		=  $(PATH_UKOS)/Ports/Targets/$(BOARD)/Base_CM7
 
-DISPLAY			?= WKS43WV067_5_Inches
+DISPLAY			=  WKS43WV067_5_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure

@@ -47,7 +47,7 @@
 
 PROJECT			=  basic
 
-DISPLAY			?= RK050HR18_5_Inches
+DISPLAY			=  RK050HR18_5_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure

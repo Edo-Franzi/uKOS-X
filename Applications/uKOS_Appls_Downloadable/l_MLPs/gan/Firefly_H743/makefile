@@ -58,7 +58,7 @@ APPL_SRC		+= $(PATH_DEMO)/Classifier
 APPL_SRC		+= $(PATH_DEMO)/Graphics
 APPL_SRC		+= $(PATH_DEMO)/Graphics/Widgets/$(BOARD)/background
 
-DISPLAY			?= WKS43WV067_5_Inches
+DISPLAY			=  WKS43WV067_5_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure

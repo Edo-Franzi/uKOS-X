@@ -88,7 +88,7 @@ case "$(uname)" in
 		fi
 		;;
 	*)
-		if [[ -f "libftd2xx-linux-arm-v8-1.4.36.tgz" ]]; then
+		if [[ -f "libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz" ]]; then
 			rm -fr ../D2XX
 			tar xf "libftd2xx-linux-arm-v8-${D2XX_LINUX_VER}.tgz"
 			mv linux-arm-v8 ../D2XX

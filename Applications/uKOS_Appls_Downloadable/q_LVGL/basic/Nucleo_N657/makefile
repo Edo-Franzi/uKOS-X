@@ -47,7 +47,7 @@
 
 PROJECT			=  basic
 
-DISPLAY			?= WaveShare_2_Inches
+DISPLAY			=  WaveShare_2_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure

@@ -47,7 +47,7 @@
 
 PROJECT			=  team
 
-DISPLAY			?= TFT_2_4_Inches
+DISPLAY			=  TFT_2_4_Inches
 PATH_LVGL		=  $(PATH_UKOS)/Third_Parties/LVGL
 
 # Target & Infrastructure
